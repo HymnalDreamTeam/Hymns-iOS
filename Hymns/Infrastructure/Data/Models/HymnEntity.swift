@@ -53,25 +53,28 @@ struct HymnEntity: Equatable {
     }
 
     static func == (lhs: HymnEntity, rhs: HymnEntity) -> Bool {
-        return lhs.hymnType == rhs.hymnType
-            && lhs.hymnNumber == rhs.hymnNumber
-            && lhs.queryParams == rhs.queryParams
-            && lhs.title == rhs.title
-            && lhs.lyricsJson == rhs.lyricsJson
-            && lhs.category == rhs.category
-            && lhs.subcategory == rhs.subcategory
-            && lhs.author == rhs.author
-            && lhs.composer == rhs.composer
-            && lhs.key == rhs.key
-            && lhs.time == rhs.time
-            && lhs.meter == rhs.meter
-            && lhs.scriptures == rhs.scriptures
-            && lhs.hymnCode == rhs.hymnCode
-            && lhs.musicJson == rhs.musicJson
-            && lhs.svgSheetJson == rhs.svgSheetJson
-            && lhs.pdfSheetJson == rhs.pdfSheetJson
-            && lhs.languagesJson == rhs.languagesJson
-            && lhs.relevantJson == rhs.relevantJson
+        let hymnTypesEqual = lhs.hymnType == rhs.hymnType
+        let hymnNumbersEqual = lhs.hymnNumber == rhs.hymnNumber
+        let queryParamsEqual = lhs.queryParams == rhs.queryParams
+        let titlesEqual = lhs.title == rhs.title
+        let lyricsEqual = lhs.lyricsJson == rhs.lyricsJson
+        let categoriesEqual = lhs.category == rhs.category
+        let subcategoriesEqual = lhs.subcategory == rhs.subcategory
+        let authorsEqual = lhs.author == rhs.author
+        let composersEqual = lhs.composer == rhs.composer
+        let keysEqual = lhs.key == rhs.key
+        let timesEqual = lhs.time == rhs.title
+        let metersEqual = lhs.meter == rhs.meter
+        let scripturesEqual = lhs.scriptures == rhs.scriptures
+        let hymnCodesEqual = lhs.hymnCode == rhs.hymnCode
+        let musicsEqual = lhs.musicJson == rhs.musicJson
+        let svgsEqual = lhs.svgSheetJson == rhs.svgSheetJson
+        let pdfsEqual = lhs.pdfSheetJson == rhs.pdfSheetJson
+        let languagesEqual = lhs.languagesJson == rhs.languagesJson
+        let relevantsEqual = lhs.relevantJson == rhs.relevantJson
+        return hymnTypesEqual && hymnNumbersEqual && queryParamsEqual && titlesEqual && lyricsEqual && categoriesEqual && subcategoriesEqual
+        && authorsEqual && composersEqual && keysEqual && timesEqual && metersEqual && scripturesEqual && hymnCodesEqual && musicsEqual && svgsEqual
+        && pdfsEqual && languagesEqual && relevantsEqual
     }
 }
 
