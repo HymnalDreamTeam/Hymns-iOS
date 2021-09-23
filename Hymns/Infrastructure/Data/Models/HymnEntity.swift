@@ -64,14 +64,20 @@ struct HymnEntity: Equatable {
             && lhs.composer == rhs.composer
             && lhs.key == rhs.key
             && lhs.time == rhs.time
-            && lhs.meter == rhs.meter
-            && lhs.scriptures == rhs.scriptures
-            && lhs.hymnCode == rhs.hymnCode
-            && lhs.musicJson == rhs.musicJson
-            && lhs.svgSheetJson == rhs.svgSheetJson
-            && lhs.pdfSheetJson == rhs.pdfSheetJson
-            && lhs.languagesJson == rhs.languagesJson
-            && lhs.relevantJson == rhs.relevantJson
+            && brokenEquals(lhs: lhs, rhs: rhs)
+    }
+/**
+Function is only to solve the issue that the compiler is not able to type check the == because it is too large. This fixes my build from not being able to compile.
+*/
+    static func brokenEquals(lhs: HymnEntity, rhs: HymnEntity) -> Bool {
+        return lhs.meter == rhs.meter
+        && lhs.scriptures == rhs.scriptures
+        && lhs.hymnCode == rhs.hymnCode
+        && lhs.musicJson == rhs.musicJson
+        && lhs.svgSheetJson == rhs.svgSheetJson
+        && lhs.pdfSheetJson == rhs.pdfSheetJson
+        && lhs.languagesJson == rhs.languagesJson
+        && lhs.relevantJson == rhs.relevantJson
     }
 }
 

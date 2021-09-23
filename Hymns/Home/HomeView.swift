@@ -67,27 +67,21 @@ struct HomeView: View {
                     Spacer()
                 } else {
                     List(viewModel.songResults) { songResult in
-
                         Button(action: {
                             currentClicked = songResult.destinationView
                             activeNav = true
                         }, label: { SongResultView(viewModel: songResult)}
                         ).foregroundColor(.primary)
-
-                .onAppear {
-                            self.viewModel.loadMore(at: songResult)
-                        }
+                            .onAppear {
+                                self.viewModel.loadMore(at: songResult)
+                            }
                     }.resignKeyboardOnDragGesture()
                 }
             }
-
             NavigationLink(destination: currentClicked, isActive: $activeNav) {
                 EmptyView()
             }
-        }
-
-
-        .onAppear {
+        }.onAppear {
             let params: [String: Any] = [
                 AnalyticsParameterScreenName: "HomeView"]
             Analytics.logEvent(AnalyticsEventScreenView, parameters: params)
@@ -128,8 +122,7 @@ struct HomeView_Previews: PreviewProvider {
         noResultsViewModel.searchActive = true
         noResultsViewModel.searchParameter = "She loves me not"
 
-        return
-        Group {
+        return Group {
             HomeView(viewModel: defaultViewModel)
                 .previewDisplayName("Default state")
             HomeView(viewModel: recentSongsViewModel)
