@@ -5,6 +5,8 @@ import SwiftUI
 struct HomeView: View {
 
     @ObservedObject private var viewModel: HomeViewModel
+    @State var currentClicked: AnyView = EmptyView().eraseToAnyView()
+    @State var activeNav = false
 
     init(viewModel: HomeViewModel = Resolver.resolve()) {
         self.viewModel = viewModel
@@ -30,19 +32,19 @@ struct HomeView: View {
                     dimens[.bottom] // align tool tip to bottom of the view
                 }).overlay(
                     self.viewModel.showSearchByTypeToolTip ?
-                        ToolTipView(tapAction: {
-                            self.viewModel.hasSeenSearchByTypeTooltip = true
-                        }, label: {
-                            HStack(alignment: .center, spacing: CGFloat.zero) {
-                                Image(systemName: "xmark").padding()
-                                Text("Try searching by hymn type (e.g. ns151, ch1, s3)").font(.caption).padding(.trailing)
-                            }
-                        }, configuration:
-                            ToolTipConfiguration(cornerRadius: 10,
-                                                 arrowPosition: ToolTipConfiguration.ArrowPosition(midX: 0.5, alignmentType: .percentage),
-                                                 arrowHeight: 7)).alignmentGuide(.toolTipHorizontalAlignment, computeValue: { dimens -> CGFloat in
-                                                    dimens[HorizontalAlignment.center]
-                                                 }).eraseToAnyView() : EmptyView().eraseToAnyView(),
+                    ToolTipView(tapAction: {
+                        self.viewModel.hasSeenSearchByTypeTooltip = true
+                    }, label: {
+                        HStack(alignment: .center, spacing: CGFloat.zero) {
+                            Image(systemName: "xmark").padding()
+                            Text("Try searching by hymn type (e.g. ns151, ch1, s3)").font(.caption).padding(.trailing)
+                        }
+                    }, configuration:
+                                    ToolTipConfiguration(cornerRadius: 10,
+                                                         arrowPosition: ToolTipConfiguration.ArrowPosition(midX: 0.5, alignmentType: .percentage),
+                                                         arrowHeight: 7)).alignmentGuide(.toolTipHorizontalAlignment, computeValue: { dimens -> CGFloat in
+                                                             dimens[HorizontalAlignment.center]
+                                                         }).eraseToAnyView() : EmptyView().eraseToAnyView(),
                     alignment: .toolTipAlignment).zIndex(1)
 
             viewModel.label.map {
@@ -65,15 +67,27 @@ struct HomeView: View {
                     Spacer()
                 } else {
                     List(viewModel.songResults) { songResult in
-                        NavigationLink(destination: songResult.destinationView) {
-                            SongResultView(viewModel: songResult)
-                        }.onAppear {
+
+                        Button(action: {
+                            currentClicked = songResult.destinationView
+                            activeNav = true
+                        }, label: { SongResultView(viewModel: songResult)}
+                        ).foregroundColor(.primary)
+
+                .onAppear {
                             self.viewModel.loadMore(at: songResult)
                         }
                     }.resignKeyboardOnDragGesture()
                 }
             }
-        }.onAppear {
+
+            NavigationLink(destination: currentClicked, isActive: $activeNav) {
+                EmptyView()
+            }
+        }
+
+
+        .onAppear {
             let params: [String: Any] = [
                 AnalyticsParameterScreenName: "HomeView"]
             Analytics.logEvent(AnalyticsEventScreenView, parameters: params)
@@ -115,21 +129,21 @@ struct HomeView_Previews: PreviewProvider {
         noResultsViewModel.searchParameter = "She loves me not"
 
         return
-            Group {
-                HomeView(viewModel: defaultViewModel)
-                    .previewDisplayName("Default state")
-                HomeView(viewModel: recentSongsViewModel)
-                    .previewDisplayName("Recent songs")
-                HomeView(viewModel: recentSongsEmptyViewModel)
-                    .previewDisplayName("No recent songs")
-                HomeView(viewModel: searchActiveViewModel)
-                    .previewDisplayName("Active search without recent songs")
-                HomeView(viewModel: loadingViewModel)
-                    .previewDisplayName("Active search loading")
-                HomeView(viewModel: searchResults)
-                    .previewDisplayName("Search results")
-                HomeView(viewModel: noResultsViewModel)
-                    .previewDisplayName("No results")
+        Group {
+            HomeView(viewModel: defaultViewModel)
+                .previewDisplayName("Default state")
+            HomeView(viewModel: recentSongsViewModel)
+                .previewDisplayName("Recent songs")
+            HomeView(viewModel: recentSongsEmptyViewModel)
+                .previewDisplayName("No recent songs")
+            HomeView(viewModel: searchActiveViewModel)
+                .previewDisplayName("Active search without recent songs")
+            HomeView(viewModel: loadingViewModel)
+                .previewDisplayName("Active search loading")
+            HomeView(viewModel: searchResults)
+                .previewDisplayName("Search results")
+            HomeView(viewModel: noResultsViewModel)
+                .previewDisplayName("No results")
         }
     }
 }
