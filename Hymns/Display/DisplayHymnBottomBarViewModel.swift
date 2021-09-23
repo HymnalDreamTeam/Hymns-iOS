@@ -9,7 +9,11 @@ class DisplayHymnBottomBarViewModel: ObservableObject {
      */
     public var overflowThreshold = 6
 
-    @Published var buttons: [BottomBarButton]
+    var buttons: [BottomBarButton] {
+        didSet {
+            objectWillChange.send()
+        }
+    }
     @Published var overflowButtons: [BottomBarButton]?
 
     let identifier: HymnIdentifier

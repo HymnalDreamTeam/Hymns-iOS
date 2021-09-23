@@ -6,38 +6,66 @@ struct HomeContainerView: View {
     private let browseView = BrowseView()
     private let favoritesView = FavoritesView()
     private let settingsView = SettingsView()
-
     @State var selectedTab: HomeTab = .none
 
     var body: some View {
-        NavigationView {
-            TabView(selection: $selectedTab) {
-                HomeView()
-                    .tabItem {HomeTab.home.getImage(selectedTab == HomeTab.home).font(.system(size: buttonSize))}
-                    .tag(HomeTab.home)
-                    .hideNavigationBar()
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            //            https://lostmoa.com/blog/DoubleColumnNavigationSplitViewInSwiftUI/
+            GeometryReader { geo in
+                NavigationView {
+                    Group {
+                        List {
+                            ForEach(HomeTab.allCases) { tab in
+                                if tab != .none {
+                                    Button(action: {
+                                        selectedTab = tab
+                                    }, label: {
+                                        HStack { tab.getImage(selectedTab == tab)
+                                            tab.a11yLabel
+                                        }}
+                                    )
+                                }
+                            }
+                        }
+                    }.navigationBarTitle("Menu")
 
-                browseView
-                    .tabItem { HomeTab.browse.getImage(selectedTab == HomeTab.browse).font(.system(size: buttonSize))}
-                    .tag(HomeTab.browse)
-                    .hideNavigationBar()
-
-                favoritesView
-                    .tabItem {HomeTab.favorites.getImage(selectedTab == HomeTab.favorites).font(.system(size: buttonSize))}
-                    .tag(HomeTab.favorites)
-                    .hideNavigationBar()
-
-                settingsView
-                    .tabItem {HomeTab.settings.getImage(selectedTab == HomeTab.settings).font(.system(size: buttonSize))}
-                    .tag(HomeTab.settings)
-                    .hideNavigationBar()
-            }.onAppear {
-                if self.selectedTab == .none {
-                    self.selectedTab = .home
+                    selectedTab.content.navigationBarTitle("").navigationBarTitleDisplayMode(.inline)
                 }
-                UITabBar.appearance().unselectedItemTintColor = .label
-            }.hideNavigationBar()
-        }.navigationViewStyle(StackNavigationViewStyle())
+                .padding(.leading, geo.size.height > geo.size.width ? 1 : 0)
+
+                .navigationViewStyle(DoubleColumnNavigationViewStyle()).padding()
+            }
+            .eraseToAnyView()
+        } else {
+            NavigationView {
+                TabView(selection: $selectedTab) {
+                    HomeView()
+                        .tabItem {HomeTab.home.getImage(selectedTab == HomeTab.home).font(.system(size: buttonSize))}
+                        .tag(HomeTab.home)
+                        .hideNavigationBar()
+
+                    browseView
+                        .tabItem { HomeTab.browse.getImage(selectedTab == HomeTab.browse).font(.system(size: buttonSize))}
+                        .tag(HomeTab.browse)
+                        .hideNavigationBar()
+
+                    favoritesView
+                        .tabItem {HomeTab.favorites.getImage(selectedTab == HomeTab.favorites).font(.system(size: buttonSize))}
+                        .tag(HomeTab.favorites)
+                        .hideNavigationBar()
+
+                    settingsView
+                        .tabItem {HomeTab.settings.getImage(selectedTab == HomeTab.settings).font(.system(size: buttonSize))}
+                        .tag(HomeTab.settings)
+                        .hideNavigationBar()
+                }.onAppear {
+                    if self.selectedTab == .none {
+                        self.selectedTab = .home
+                    }
+                    UITabBar.appearance().unselectedItemTintColor = .label
+                }.hideNavigationBar()
+            }.navigationViewStyle(StackNavigationViewStyle()).eraseToAnyView()
+        }
     }
 }
 
