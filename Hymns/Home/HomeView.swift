@@ -5,6 +5,8 @@ import SwiftUI
 struct HomeView: View {
 
     @ObservedObject private var viewModel: HomeViewModel
+    @State var currentClicked: AnyView = EmptyView().eraseToAnyView()
+    @State var activeNav = false
 
     init(viewModel: HomeViewModel = Resolver.resolve()) {
         self.viewModel = viewModel
@@ -65,13 +67,19 @@ struct HomeView: View {
                     Spacer()
                 } else {
                     List(viewModel.songResults) { songResult in
-                        NavigationLink(destination: songResult.destinationView) {
-                            SongResultView(viewModel: songResult)
-                        }.onAppear {
-                            self.viewModel.loadMore(at: songResult)
-                        }
+                        Button(action: {
+                            currentClicked = songResult.destinationView
+                            activeNav = true
+                        }, label: { SongResultView(viewModel: songResult)}
+                        ).foregroundColor(.primary)
+                            .onAppear {
+                                self.viewModel.loadMore(at: songResult)
+                            }
                     }.resignKeyboardOnDragGesture()
                 }
+            }
+            NavigationLink(destination: currentClicked, isActive: $activeNav) {
+                EmptyView()
             }
         }.onAppear {
             let params: [String: Any] = [
