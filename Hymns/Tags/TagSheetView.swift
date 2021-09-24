@@ -7,11 +7,11 @@ struct TagSheetView: View {
     @Environment(\.presentationMode) var presentationMode
     @State private var tagName = ""
     @State private var tagColor = TagColor.none
-    var sheet: Binding<DisplayHymnSheet?>
+    @Binding var sheet: DisplayFullSheet?
 
-    init(viewModel: TagSheetViewModel, sheet: Binding<DisplayHymnSheet?>) {
+    init(viewModel: TagSheetViewModel, sheet: Binding<DisplayFullSheet?>) {
         self.viewModel = viewModel
-        self.sheet = sheet
+        self._sheet = sheet
     }
 
     var body: some View {
@@ -19,7 +19,10 @@ struct TagSheetView: View {
             HStack {
                 Spacer()
                 Button(action: {
-                    self.sheet.wrappedValue = nil
+                    print("tapped")
+                    self.sheet = nil
+//                    self.sheet = nil
+                    self.presentationMode.wrappedValue.dismiss()
                 }, label: {
                     Image(systemName: "xmark").foregroundColor(.primary).padding([.horizontal, .bottom])
                 })
@@ -49,7 +52,7 @@ struct TagSheetView: View {
                         HStack {
                             Spacer()
                             Button(action: {
-                                self.sheet.wrappedValue = nil
+                                self.sheet = nil
                             }, label: {
                                 Text("Close").foregroundColor(.primary).fontWeight(.light)
                             })

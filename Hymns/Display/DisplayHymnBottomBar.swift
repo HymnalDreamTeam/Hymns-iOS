@@ -6,6 +6,7 @@ struct DisplayHymnBottomBar: View {
     @Binding var dialogModel: DialogViewModel<AnyView>?
     @State private var actionSheet: ActionSheetItem?
     @State private var sheet: DisplayHymnSheet?
+    @State private var fullSheet: DisplayFullSheet?
 
     // Navigating out of an action sheet requires another state variable
     // https://stackoverflow.com/questions/59454407/how-to-navigate-out-of-a-actionsheet
@@ -40,8 +41,8 @@ struct DisplayHymnBottomBar: View {
                         switch button {
                         case .musicPlayback:
                             return self.audioPlayer == nil ?
-                                button.unselectedLabel.eraseToAnyView() :
-                                button.selectedLabel.eraseToAnyView()
+                            button.unselectedLabel.eraseToAnyView() :
+                            button.selectedLabel.eraseToAnyView()
                         default:
                             return button.unselectedLabel.eraseToAnyView()
                         }
@@ -69,66 +70,69 @@ struct DisplayHymnBottomBar: View {
             switch item {
             case .fontSize:
                 return
-                    ActionSheet(
-                        title: Text(NSLocalizedString("Lyrics font size",
-                                                      comment: "Title for the lyrics font size action sheet")),
-                        message: Text(NSLocalizedString("Change the song lyrics font size",
-                                                        comment: "Message for the lyrics font size action sheet")),
-                        buttons: [
-                            .default(Text(FontSize.normal.rawValue),
-                                     action: {
-                                        self.userDefaultsManager.fontSize = .normal
-                            }),
-                            .default(Text(FontSize.large.rawValue),
-                                     action: {
-                                        self.userDefaultsManager.fontSize = .large
-                            }),
-                            .default(Text(FontSize.xlarge.rawValue),
-                                     action: {
-                                        self.userDefaultsManager.fontSize = .xlarge
-                            }), .cancel()])
+                ActionSheet(
+                    title: Text(NSLocalizedString("Lyrics font size",
+                                                  comment: "Title for the lyrics font size action sheet")),
+                    message: Text(NSLocalizedString("Change the song lyrics font size",
+                                                    comment: "Message for the lyrics font size action sheet")),
+                    buttons: [
+                        .default(Text(FontSize.normal.rawValue),
+                                 action: {
+                                     self.userDefaultsManager.fontSize = .normal
+                                 }),
+                        .default(Text(FontSize.large.rawValue),
+                                 action: {
+                                     self.userDefaultsManager.fontSize = .large
+                                 }),
+                        .default(Text(FontSize.xlarge.rawValue),
+                                 action: {
+                                     self.userDefaultsManager.fontSize = .xlarge
+                                 }), .cancel()])
             case .languages(let viewModels):
                 return
-                    ActionSheet(
-                        title: Text(NSLocalizedString("Languages",
-                                                      comment: "Title for the languages action sheet")),
-                        message: Text(NSLocalizedString("Change to another language",
-                                                        comment: "Message for the languages action sheet")),
-                        buttons: viewModels.map({ viewModel -> Alert.Button in
+                ActionSheet(
+                    title: Text(NSLocalizedString("Languages",
+                                                  comment: "Title for the languages action sheet")),
+                    message: Text(NSLocalizedString("Change to another language",
+                                                    comment: "Message for the languages action sheet")),
+                    buttons: viewModels.map({ viewModel -> Alert.Button in
                             .default(Text(viewModel.title), action: {
                                 self.resultToShow = viewModel
                             })
-                        }) + [.cancel()])
+                    }) + [.cancel()])
             case .relevant(let viewModels):
                 return
-                    ActionSheet(
-                        title: Text("Relevant songs"),
-                        message: Text(NSLocalizedString("Change to a relevant hymn",
-                                                        comment: "Message for the relevant songs action sheet")),
-                        buttons: viewModels.map({ viewModel -> Alert.Button in
+                ActionSheet(
+                    title: Text("Relevant songs"),
+                    message: Text(NSLocalizedString("Change to a relevant hymn",
+                                                    comment: "Message for the relevant songs action sheet")),
+                    buttons: viewModels.map({ viewModel -> Alert.Button in
                             .default(Text(viewModel.title), action: {
                                 self.resultToShow = viewModel
                             })
-                        }) + [.cancel()])
+                    }) + [.cancel()])
             case .overflow(let buttons):
                 return
-                    ActionSheet(
-                        title: Text(NSLocalizedString("Additional options",
-                                                      comment: "Title for the overflow menu action sheet")),
-                        buttons: buttons.map({ button -> Alert.Button in
+                ActionSheet(
+                    title: Text(NSLocalizedString("Additional options",
+                                                  comment: "Title for the overflow menu action sheet")),
+                    buttons: buttons.map({ button -> Alert.Button in
                             .default(Text(button.label), action: {
                                 self.performAction(button: button)
                             })
-                        }) + [.cancel()])
+                    }) + [.cancel()])
             }
         }.sheet(item: $sheet) { tab -> AnyView in
+            switch tab {
+            case .songInfo(let viewModel): // Case only used for large accesability
+                return SongInfoSheetView(viewModel: viewModel).eraseToAnyView()
+            }
+        }.fullScreenCover(item: $fullSheet) { tab -> AnyView? in
             switch tab {
             case .share(let lyrics):
                 return ShareSheet(activityItems: [lyrics]).eraseToAnyView()
             case .tags:
-                return TagSheetView(viewModel: TagSheetViewModel(hymnToDisplay: self.viewModel.identifier), sheet: self.$sheet).eraseToAnyView()
-            case .songInfo(let viewModel): // Case only used for large accesability
-                return SongInfoSheetView(viewModel: viewModel).eraseToAnyView()
+                return TagSheetView(viewModel: TagSheetViewModel(hymnToDisplay: self.viewModel.identifier), sheet: self.$fullSheet).eraseToAnyView()
             }
         }.background(Color(.systemBackground))
     }
@@ -136,7 +140,7 @@ struct DisplayHymnBottomBar: View {
     private func performAction(button: BottomBarButton) {
         switch button {
         case .share(let lyrics):
-            self.sheet = .share(lyrics)
+            self.fullSheet = .share(lyrics)
         case .fontSize:
             self.actionSheet = .fontSize
         case .languages(let viewModels):
@@ -150,7 +154,7 @@ struct DisplayHymnBottomBar: View {
         case .relevant(let viewModels):
             self.actionSheet = .relevant(viewModels)
         case .tags:
-            self.sheet = .tags
+            self.fullSheet = .tags
         case .songInfo(let songInfoDialogViewModel):
             self.dialogModel = DialogViewModel(contentBuilder: {
                 SongInfoDialogView(viewModel: songInfoDialogViewModel).eraseToAnyView()
@@ -191,23 +195,40 @@ extension ActionSheetItem: Identifiable {
 }
 
 enum DisplayHymnSheet {
-    case share(String)
-    case tags
+    //    case share(String)
+    //    case tags
     case songInfo(SongInfoDialogViewModel)
 }
 
 extension DisplayHymnSheet: Identifiable {
     var id: Int {
         switch self {
-        case .share:
-            return 0
-        case .tags:
-            return 1
+            //        case .share:
+            //            return 0
+            //        case .tags:
+            //            return 1
         case .songInfo:
-            return 2
+            return 0
         }
     }
 }
+
+enum DisplayFullSheet {
+    case share(String)
+    case tags
+}
+
+extension DisplayFullSheet: Identifiable {
+    var id: Int {
+        switch self {
+        case .tags:
+            return 0
+        case .share:
+            return 1
+        }
+    }
+}
+
 
 #if DEBUG
 struct DisplayHymnBottomBar_Previews: PreviewProvider {
