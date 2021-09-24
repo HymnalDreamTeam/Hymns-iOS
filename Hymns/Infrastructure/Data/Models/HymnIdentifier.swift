@@ -4,7 +4,7 @@ import RealmSwift
 /**
  * Uniquely identifies a hymn.
  */
-struct HymnIdentifier: Hashable, Equatable {
+struct HymnIdentifier {
     let hymnType: HymnType
     let hymnNumber: String
     let queryParams: [String: String]?
@@ -46,6 +46,18 @@ extension HymnIdentifier {
         self.hymnType = entity.hymnType
         self.hymnNumber = entity.hymnNumber
         self.queryParams = entity.queryParams?.deserializeFromQueryParamString
+    }
+}
+
+extension HymnIdentifier: Hashable {
+    static func == (lhs: HymnIdentifier, rhs: HymnIdentifier) -> Bool {
+        lhs.hymnType == rhs.hymnType && lhs.hymnNumber == rhs.hymnNumber && lhs.queryParams == rhs.queryParams
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(hymnType)
+        hasher.combine(hymnNumber)
+        hasher.combine(queryParams)
     }
 }
 

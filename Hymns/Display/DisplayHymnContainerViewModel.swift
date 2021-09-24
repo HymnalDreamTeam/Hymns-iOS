@@ -45,3 +45,14 @@ class DisplayHymnContainerViewModel: ObservableObject {
         }
     }
 }
+
+extension DisplayHymnContainerViewModel: Hashable {
+    static func == (lhs: DisplayHymnContainerViewModel, rhs: DisplayHymnContainerViewModel) -> Bool {
+        lhs.identifier == rhs.identifier && lhs.storeInHistoryStore == rhs.storeInHistoryStore
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(identifier)
+        hasher.combine(storeInHistoryStore)
+    }
+}
