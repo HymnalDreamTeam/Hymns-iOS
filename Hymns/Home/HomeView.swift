@@ -70,7 +70,11 @@ struct HomeView: View {
                         Button(action: {
                             currentClicked = songResult.destinationView
                             activeNav = true
-                        }, label: { SongResultView(viewModel: songResult)}
+                        }, label: {
+                            NavigationLink(destination: EmptyView(), label: {
+                                SongResultView(viewModel: songResult)
+                            })
+                        }
                         ).foregroundColor(.primary)
                             .onAppear {
                                 self.viewModel.loadMore(at: songResult)
