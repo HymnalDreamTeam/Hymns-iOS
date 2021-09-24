@@ -121,8 +121,11 @@ class HomeViewModel: ObservableObject {
                     let identifier = HymnIdentifier(recentSong.hymnIdentifierEntity)
                     return SongResultViewModel(
                         title: recentSong.songTitle,
-                        destinationView: DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: identifier,
-                                                                                                           storeInHistoryStore: true)).eraseToAnyView())
+                        destinationView:
+                            DisplayHymnContainerView(
+                                viewModel:
+                                    DisplayHymnContainerViewModel(
+                                        hymnToDisplay: identifier, storeInHistoryStore: true)).eraseToAnyView())
                 }
             })
             .replaceError(with: [SongResultViewModel]())

@@ -144,8 +144,13 @@ class DisplayHymnViewModel: ObservableObject {
     }
 }
 
-extension DisplayHymnViewModel: Equatable {
+extension DisplayHymnViewModel: Hashable {
     static func == (lhs: DisplayHymnViewModel, rhs: DisplayHymnViewModel) -> Bool {
         lhs.identifier == rhs.identifier && lhs.storeInHistoryStore == rhs.storeInHistoryStore
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(identifier)
+        hasher.combine(storeInHistoryStore)
     }
 }
