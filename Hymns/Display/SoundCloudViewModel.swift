@@ -50,3 +50,13 @@ class SoundCloudViewModel: ObservableObject {
         hasSeenSoundCloudMinimizeTooltip = true
     }
 }
+
+extension SoundCloudViewModel: Hashable {
+    static func == (lhs: SoundCloudViewModel, rhs: SoundCloudViewModel) -> Bool {
+        lhs.url == rhs.url
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(url)
+    }
+}
