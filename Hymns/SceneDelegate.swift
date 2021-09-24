@@ -24,7 +24,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         #if DEBUG
         let isTesting = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil || CommandLine.arguments.contains(AppDelegate.uiTestingFlag)
 
-        let rootView = isTesting ? HomeContainerView().environment(\.managedObjectContext, context).eraseToAnyView() : LaunchRouterView().environment(\.managedObjectContext, context).eraseToAnyView()
+        let rootView = ContentView().environment(\.managedObjectContext, context).eraseToAnyView()
+//        let rootView = isTesting ? HomeContainerView().environment(\.managedObjectContext, context).eraseToAnyView() : LaunchRouterView().environment(\.managedObjectContext, context).eraseToAnyView()
         if isTesting, let appDomain = Bundle.main.bundleIdentifier {
             UserDefaults.standard.removePersistentDomain(forName: appDomain)
         }

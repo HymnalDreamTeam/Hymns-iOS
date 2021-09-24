@@ -179,6 +179,7 @@
 		3BC1328D243826280082A274 /* PreviewHymns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC1328C243826270082A274 /* PreviewHymns.swift */; };
 		3BC1329724385A580082A274 /* HomeContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC1329624385A580082A274 /* HomeContainerView.swift */; };
 		3BC1329924385C420082A274 /* HomeTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC1329824385C420082A274 /* HomeTab.swift */; };
+		3BC2C5A426FBE9020047B094 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC2C5A326FBE9020047B094 /* ContentView.swift */; };
 		3BC53641243EB13E00DA728F /* SongRepositoryImplTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC53640243EB13E00DA728F /* SongRepositoryImplTest.swift */; };
 		3BC53646243EDB8100DA728F /* TestConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC53645243EDB8100DA728F /* TestConstants.swift */; };
 		3BC5B15C247F7B0400F5D63A /* CategoryEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC5B15B247F7B0400F5D63A /* CategoryEntity.swift */; };
@@ -475,6 +476,7 @@
 		3BC13293243852C00082A274 /* classic1334.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = classic1334.json; sourceTree = "<group>"; };
 		3BC1329624385A580082A274 /* HomeContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeContainerView.swift; sourceTree = "<group>"; };
 		3BC1329824385C420082A274 /* HomeTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTab.swift; sourceTree = "<group>"; };
+		3BC2C5A326FBE9020047B094 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		3BC53640243EB13E00DA728F /* SongRepositoryImplTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongRepositoryImplTest.swift; sourceTree = "<group>"; };
 		3BC53645243EDB8100DA728F /* TestConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConstants.swift; sourceTree = "<group>"; };
 		3BC5B15B247F7B0400F5D63A /* CategoryEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryEntity.swift; sourceTree = "<group>"; };
@@ -739,6 +741,7 @@
 				3B04D2FA248980FA008C7E5E /* Tags */,
 				3B50B970243E450500EABDE4 /* Utility */,
 				3B1B901D2429CF57009FDCC5 /* Preview Content */,
+				3BC2C5A326FBE9020047B094 /* ContentView.swift */,
 			);
 			path = Hymns;
 			sourceTree = "<group>";
@@ -1819,6 +1822,7 @@
 				3BA91ED024ECD65100294830 /* MarqueeView.swift in Sources */,
 				3B04D2FC24898137008C7E5E /* TagEntity.swift in Sources */,
 				3B369CEC246D07580068A29C /* PDFViewer.swift in Sources */,
+				3BC2C5A426FBE9020047B094 /* ContentView.swift in Sources */,
 				5CA784A0242D1A3200B57903 /* BrowseView.swift in Sources */,
 				3BA4612724771EAD0068F269 /* SongInfoView.swift in Sources */,
 				3B8DD373249F2AC2001C6A7F /* HistoryStoreTestImpl.swift in Sources */,
