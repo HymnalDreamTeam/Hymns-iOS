@@ -89,10 +89,10 @@ extension BottomBarButton: Identifiable {
     var id: String { self.label }
 }
 
-extension BottomBarButton: Equatable {
+extension BottomBarButton: Hashable {
     static func == (lhs: BottomBarButton, rhs: BottomBarButton) -> Bool {
         switch (lhs, rhs) {
-        case (.share(let lyrics1), share(let lyrics2)):
+        case (.share(let lyrics1), .share(let lyrics2)):
             return lyrics1 == lyrics2
         case (.fontSize, .fontSize):
             return true
@@ -104,14 +104,44 @@ extension BottomBarButton: Equatable {
             return viewModels1 == viewModels2
         case (.tags, .tags):
             return true
-        case (songInfo(let viewModel1), songInfo(let viewModel2)):
+        case (.songInfo(let viewModel1), .songInfo(let viewModel2)):
             return viewModel1.songInfo.count == viewModel2.songInfo.count
-        case (soundCloud(let viewModel1), soundCloud(let viewModel2)):
+        case (.soundCloud(let viewModel1), .soundCloud(let viewModel2)):
             return viewModel1.url == viewModel2.url
-        case (youTube(let url1), youTube(let url2)):
+        case (.youTube(let url1), .youTube(let url2)):
             return url1 == url2
         default:
             return false
+        }
+    }
+
+    func hash(into hasher: inout Hasher) {
+        switch self {
+        case .share(let lyrics):
+            hasher.combine("share")
+            hasher.combine(lyrics)
+        case .fontSize:
+            hasher.combine("font size")
+        case .languages(let viewModels):
+            hasher.combine("languages")
+            hasher.combine(viewModels)
+        case .musicPlayback(let viewModel):
+            hasher.combine("music playback")
+            hasher.combine(viewModel)
+        case .relevant(let viewModels):
+            hasher.combine("relevant")
+            hasher.combine(viewModels)
+        case .tags:
+            hasher.combine("tags")
+        case .songInfo(let viewModel):
+            hasher.combine("song info")
+            hasher.combine(viewModel)
+        case .soundCloud(let viewModel):
+            hasher.combine("soundcloud")
+            hasher.combine(viewModel)
+        case .youTube(let url):
+            hasher.combine("youtube")
+            hasher.combine(url)
         }
     }
 }

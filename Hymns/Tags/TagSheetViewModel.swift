@@ -16,10 +16,14 @@ class TagSheetViewModel: ObservableObject {
     private let repository: HymnsRepository
     private var disposables = Set<AnyCancellable>()
 
-    init(hymnToDisplay identifier: HymnIdentifier, tagStore: TagStore = Resolver.resolve(), hymnsRepository repository: HymnsRepository = Resolver.resolve(), mainQueue: DispatchQueue = Resolver.resolve(name: "main"), backgroundQueue: DispatchQueue = Resolver.resolve(name: "background")) {
+    init(hymnToDisplay identifier: HymnIdentifier,
+         tagStore: TagStore = Resolver.resolve(),
+         hymnsRepository: HymnsRepository = Resolver.resolve(),
+         mainQueue: DispatchQueue = Resolver.resolve(name: "main"),
+         backgroundQueue: DispatchQueue = Resolver.resolve(name: "background")) {
         self.identifier = identifier
         self.tagStore = tagStore
-        self.repository = repository
+        self.repository = hymnsRepository
         self.mainQueue = mainQueue
         self.backgroundQueue = backgroundQueue
     }

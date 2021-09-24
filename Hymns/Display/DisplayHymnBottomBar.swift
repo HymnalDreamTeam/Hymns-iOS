@@ -32,7 +32,7 @@ struct DisplayHymnBottomBar: View {
                 AudioPlayer(viewModel: audioPlayer).padding()
             }
             HStack(spacing: 0) {
-                ForEach(viewModel.buttons) { button in
+                ForEach(viewModel.buttons, id: \.self) { button in
                     Spacer()
                     Button<AnyView>(action: {
                         self.performAction(button: button)
