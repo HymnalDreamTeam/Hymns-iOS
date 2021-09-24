@@ -64,7 +64,7 @@ struct HomeView: View {
                     }.padding(.horizontal)
                     Spacer()
                 } else {
-                    List(viewModel.songResults) { songResult in
+                    List(viewModel.songResults, id: \.self) { songResult in
                         NavigationLink(destination: songResult.destinationView) {
                             SongResultView(viewModel: songResult)
                         }.onAppear {
