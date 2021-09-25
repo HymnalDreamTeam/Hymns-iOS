@@ -121,7 +121,7 @@ struct DisplayHymnBottomBar: View {
                             })
                         }) + [.cancel()])
             }
-        }.sheet(item: $sheet) { tab -> AnyView in
+        }.fullScreenCover(item: $sheet) { tab -> AnyView in
             switch tab {
             case .share(let lyrics):
                 return ShareSheet(activityItems: [lyrics]).eraseToAnyView()
