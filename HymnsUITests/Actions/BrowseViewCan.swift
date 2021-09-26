@@ -25,13 +25,20 @@ public class BrowseViewCan: BaseViewCan {
     public func assertCategory(_ category: String, chevronUp: Bool) -> BrowseViewCan {
         for index in 0..<app.cells.count {
             let cell = app.cells.element(boundBy: index)
-            if cell.descendants(matching: .staticText).element.label == category {
-                if #available(iOS 14.5, *) {
-                    XCTAssertEqual(cell.descendants(matching: .image).element.label, chevronUp ? "go up" : "go down")
-                } else {
-                    XCTAssertEqual(cell.descendants(matching: .image).element.label, chevronUp ? "chevron.up" : "chevron.down")
+            let staticTexts = cell.descendants(matching: .staticText)
+            for index2 in 0..<staticTexts.count {
+                let staticText = staticTexts.element(boundBy: index2)
+                if staticText.label == category {
+                    let label = cell.descendants(matching: .image).element(boundBy: 0).label
+                    if #available(iOS 15.0, *) {
+                        XCTAssertEqual(label, chevronUp ? "Go Up" : "Go Down")
+                    } else if #available(iOS 14.5, *) {
+                        XCTAssertEqual(label, chevronUp ? "go up" : "go down")
+                    } else {
+                        XCTAssertEqual(label, chevronUp ? "chevron.up" : "chevron.down")
+                    }
+                    return self
                 }
-                return self
             }
         }
         testCase.record(XCTIssue(type: .assertionFailure, compactDescription: "unable to find category \(category) with chevron \(chevronUp ? "up" : "down")"))

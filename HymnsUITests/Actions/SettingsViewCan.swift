@@ -8,7 +8,9 @@ public class SettingsHymnViewCan: BaseViewCan {
     }
 
     public func toggleRepeatChorus() -> SettingsHymnViewCan {
-        app.switches.element(matching: NSPredicate(format: "label CONTAINS[c] 'Repeat chorus' && label CONTAINS[c] 'For songs with only one chorus, repeat the chorus after every verse'")).twoFingerTap()
+        let repeatChorus = app.switches.element(boundBy: 0)
+        XCTAssertEqual(repeatChorus.label, "Repeat chorus, For songs with only one chorus, repeat the chorus after every verse")
+        repeatChorus.tap()
         return self
     }
 

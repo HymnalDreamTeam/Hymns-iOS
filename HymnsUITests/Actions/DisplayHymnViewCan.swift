@@ -51,7 +51,9 @@ public class DisplayHymnViewCan: BaseViewCan {
     }
 
     public func waitForPlayButton() -> DisplayHymnViewCan {
-        if #available(iOS 14.5, *) {
+        if #available(iOS 15.0, *) {
+            return waitForButtons("Play")
+        } else if #available(iOS 14.5, *) {
             return waitForButtons("play")
         } else {
             return waitForButtons("play.circle")
