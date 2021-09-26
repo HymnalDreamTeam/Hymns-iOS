@@ -63,6 +63,10 @@ class Dictionary;
 class DictionaryLinkValues;
 using DictionaryPtr = std::unique_ptr<Dictionary>;
 
+namespace _impl {
+class DeepChangeChecker;
+}
+
 enum JSONOutputMode {
     output_mode_json,       // default / existing implementation for outputting realm to json
     output_mode_xjson,      // extended json as described in the spec
@@ -122,6 +126,10 @@ public:
     U get(ColKey col_key) const;
 
     Mixed get_any(ColKey col_key) const;
+    Mixed get_any(StringData col_name) const
+    {
+        return get_any(get_column_key(col_name));
+    }
     Mixed get_any(std::vector<std::string>::iterator path_start, std::vector<std::string>::iterator path_end) const;
     Mixed get_primary_key() const;
 
@@ -281,6 +289,12 @@ public:
     LinkCollectionPtr get_linkcollection_ptr(ColKey col_key) const;
 
     void assign_pk_and_backlinks(const Obj& other);
+
+    class Internal {
+        friend class _impl::DeepChangeChecker;
+
+        static ref_type get_ref(const Obj& obj, ColKey col_key);
+    };
 
 private:
     friend class ArrayBacklink;
