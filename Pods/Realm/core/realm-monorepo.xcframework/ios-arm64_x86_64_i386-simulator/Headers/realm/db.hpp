@@ -19,22 +19,20 @@
 #ifndef REALM_GROUP_SHARED_HPP
 #define REALM_GROUP_SHARED_HPP
 
-#include <functional>
-#include <cstdint>
-#include <limits>
-#include <unordered_map>
-#include <realm/util/features.h>
-#include <realm/util/thread.hpp>
-#include <realm/util/interprocess_condvar.hpp>
-#include <realm/util/interprocess_mutex.hpp>
+#include <realm/db_options.hpp>
 #include <realm/group.hpp>
 #include <realm/handover_defs.hpp>
 #include <realm/impl/transact_log.hpp>
 #include <realm/metrics/metrics.hpp>
 #include <realm/replication.hpp>
+#include <realm/util/features.h>
+#include <realm/util/interprocess_condvar.hpp>
+#include <realm/util/interprocess_mutex.hpp>
 #include <realm/version_id.hpp>
-#include <realm/db_options.hpp>
-#include <realm/util/logger.hpp>
+
+#include <functional>
+#include <cstdint>
+#include <limits>
 
 namespace realm {
 
@@ -117,6 +115,7 @@ public:
     // file (or another file), a new DB object is needed.
     static DBRef create(const std::string& file, bool no_create = false, const DBOptions options = DBOptions());
     static DBRef create(Replication& repl, const DBOptions options = DBOptions());
+    static DBRef create(std::unique_ptr<Replication> repl, const DBOptions options = DBOptions());
     static DBRef create(BinaryData, bool take_ownership = true);
 
     ~DB() noexcept;
@@ -161,6 +160,10 @@ public:
         m_replication = repl;
     }
 
+    const std::string& get_path() const
+    {
+        return m_db_path;
+    }
 
 #ifdef REALM_DEBUG
     /// Deprecated method, only called from a unit test
@@ -348,7 +351,7 @@ public:
         return m_metrics;
     }
 
-    // Try to grab a exclusive lock of the given realm path's lock file. If the lock
+    // Try to grab an exclusive lock of the given realm path's lock file. If the lock
     // can be acquired, the callback will be executed with the lock and then return true.
     // Otherwise false will be returned directly.
     // The lock taken precludes races with other threads or processes accessing the
@@ -358,7 +361,7 @@ public:
     using CallbackWithLock = std::function<void(const std::string& realm_path)>;
     static bool call_with_lock(const std::string& realm_path, CallbackWithLock callback);
 
-    enum CoreFileType : uint64_t {
+    enum CoreFileType : uint8_t {
         Lock,
         Storage,
         Management,
@@ -367,19 +370,32 @@ public:
         LogA, // This is a legacy version of `Log`.
         LogB, // This is a legacy version of `Log`.
     };
-    /// Return a list of files and directories core may use in the given realm file path.
-    /// The first element of the pair in the returned list is the path as string,
-    /// the second one indicates if the path is a directory or not.
-    /// It is safe to delete those returned files/directories in the call_with_lock's callback except for the lock
-    /// itself.
+
+    /// Get the path for the given type of file for a base Realm file path.
+    /// \param realm_path The path for the main Realm file.
+    /// \param type The type of associated file to get the path for.
+    /// \return The base path with the appropriate type-specific suffix appended to it.
+    static std::string get_core_file(const std::string& realm_path, CoreFileType type);
+
+    /// Delete a Realm file and all associated control files.
     ///
-    /// \param realm_path If provided the full path to the file including
-    ///                   the given path will be returned by this function.
+    /// This function does not perform any locking and requires external
+    /// synchronization to ensure that it is safe to call. If called within
+    /// call_with_lock(), \p delete_lockfile must be false as the lockfile is not
+    /// safe to delete while it is in use.
     ///
-    /// \return A map of all core files, providing the path (first) and an indicator
-    ///         if they are a folder or not (second).
-    static std::unordered_map<CoreFileType, std::pair<std::string, bool>>
-    get_core_files(const std::string& realm_path = "");
+    /// \param base_path The Realm file to delete, which auxiliary file paths will be derived from.
+    /// \param[out] did_delete_realm If non-null, will be set to true if the Realm file was deleted (even if a
+    ///             subsequent deletion failed)
+    /// \param delete_lockfile By default the lock file is not deleted as it is unsafe to
+    ///        do so. If this is true, the lock file is deleted along with the other files.
+    static void delete_files(const std::string& base_path, bool* did_delete_realm = nullptr,
+                             bool delete_lockfile = false);
+
+    /// Mark this DB as the sync agent for the file.
+    /// \throw MultipleSyncAgents if another DB is already the sync agent.
+    void claim_sync_agent();
+    void release_sync_agent();
 
 protected:
     explicit DB(const DBOptions& options); // Is this ever used?
@@ -388,6 +404,7 @@ private:
     std::recursive_mutex m_mutex;
     int m_transaction_count = 0;
     SlabAlloc m_alloc;
+    std::unique_ptr<Replication> m_history;
     Replication* m_replication = nullptr;
     struct SharedInfo;
     struct ReadCount;
@@ -439,8 +456,9 @@ private:
     util::InterprocessCondVar m_new_commit_available;
     util::InterprocessCondVar m_pick_next_writer;
     std::function<void(int, int)> m_upgrade_callback;
-
     std::shared_ptr<metrics::Metrics> m_metrics;
+    bool m_is_sync_agent = false;
+
     /// Attach this DB instance to the specified database file.
     ///
     /// While at least one instance of DB exists for a specific
@@ -845,14 +863,14 @@ inline DB::TransactStage Transaction::get_transact_stage() const noexcept
 class DB::ReadLockGuard {
 public:
     ReadLockGuard(DB& shared_group, ReadLockInfo& read_lock) noexcept
-        : m_shared_group(shared_group)
+        : m_db(shared_group)
         , m_read_lock(&read_lock)
     {
     }
     ~ReadLockGuard() noexcept
     {
         if (m_read_lock)
-            m_shared_group.release_read_lock(*m_read_lock);
+            m_db.release_read_lock(*m_read_lock);
     }
     void release() noexcept
     {
@@ -860,7 +878,7 @@ public:
     }
 
 private:
-    DB& m_shared_group;
+    DB& m_db;
     ReadLockInfo* m_read_lock;
 };
 

@@ -48,7 +48,7 @@ class RLMClassInfo;
 - (RLMFastEnumerator *)fastEnumerator;
 @end
 
-// An object which encapulates the shared logic for fast-enumerating RLMArray
+// An object which encapsulates the shared logic for fast-enumerating RLMArray
 // RLMSet and RLMResults, and has a buffer to store strong references to the current
 // set of enumerated items
 @interface RLMFastEnumerator : NSObject
@@ -99,6 +99,7 @@ realm::Results& RLMGetBackingCollection(RLMResults *);
 template<typename RLMCollection>
 RLMNotificationToken *RLMAddNotificationBlock(RLMCollection *collection,
                                               void (^block)(id, RLMCollectionChange *, NSError *),
+                                              NSArray<NSString *> *keyPaths,
                                               dispatch_queue_t queue);
 
 template<typename Collection>

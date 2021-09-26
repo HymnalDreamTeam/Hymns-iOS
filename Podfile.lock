@@ -106,11 +106,11 @@ PODS:
   - Nimble (9.2.0)
   - PromisesObjC (1.2.12)
   - Quick (4.0.0)
-  - Realm (10.8.1):
-    - Realm/Headers (= 10.8.1)
-  - Realm/Headers (10.8.1)
-  - RealmSwift (10.8.1):
-    - Realm (= 10.8.1)
+  - Realm (10.15.1):
+    - Realm/Headers (= 10.15.1)
+  - Realm/Headers (10.15.1)
+  - RealmSwift (10.15.1):
+    - Realm (= 10.15.1)
   - Resolver (1.4.3)
   - SnapshotTesting (1.9.0)
   - SwiftEventBus (5.0.0)
@@ -183,8 +183,8 @@ SPEC CHECKSUMS:
   Nimble: 4f4a345c80b503b3ea13606a4f98405974ee4d0b
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   Quick: 6473349e43b9271a8d43839d9ba1c442ed1b7ac4
-  Realm: a2db54d9dcceddeba936b429f5b3d6610a109686
-  RealmSwift: 2a3c75ecbf5a3b04080ff5f6f0554cf6337b4764
+  Realm: fbcbde2620d51623cc5b18e28f5b165c39abef52
+  RealmSwift: e4bea8e42efad3d543aea23b56504069c6faaea2
   Resolver: c0956ef605a64f63458166653fa4ef71df5acd98
   SnapshotTesting: 6141c48b6aa76ead61431ca665c14ab9a066c53b
   SwiftEventBus: b30f617a6aca5a9336464b4d3f5931034762f2d5
@@ -193,4 +193,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: eff2f19d14ce8a321ddb01d8331871cb382370f5
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.2
