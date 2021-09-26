@@ -26,7 +26,7 @@ public class BaseViewCan {
             XCTAssertTrue(
                 app.buttons.element(
                     matching: NSPredicate(
-                        format: "label == '\(string)'"))
+                        format: "label == '\(string.replacingOccurrences(of: "\'", with: "\\'"))'"))
                     .waitForExistence(timeout: timeout))
         }
         return self
