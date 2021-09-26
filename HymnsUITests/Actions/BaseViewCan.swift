@@ -23,7 +23,11 @@ public class BaseViewCan {
 
     public func waitForButtons(_ strings: String..., timeout: TimeInterval = 1) -> Self {
         for string in strings {
-            XCTAssertTrue(app.buttons[string].waitForExistence(timeout: timeout))
+            XCTAssertTrue(
+                app.buttons.element(
+                    matching: NSPredicate(
+                        format: "label == '\(string)'"))
+                    .waitForExistence(timeout: timeout))
         }
         return self
     }
