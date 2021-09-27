@@ -88,7 +88,7 @@ extension SongInfoDialogViewModel: Hashable {
     static func == (lhs: SongInfoDialogViewModel, rhs: SongInfoDialogViewModel) -> Bool {
         lhs.identifier == rhs.identifier
     }
-    
+
     func hash(into hasher: inout Hasher) {
         hasher.combine(identifier)
     }
