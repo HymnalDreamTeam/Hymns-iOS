@@ -61,11 +61,17 @@ public class DisplayHymnViewCan: BaseViewCan {
     }
 
     public func openSpeedPicker() -> DisplayHymnViewCan {
-        return pressButton("timer")
+        if #available(iOS 15.0, *) {
+            return pressButton("Timer")
+        } else {
+            return pressButton("minus")
+        }
     }
 
     public func waitForSpeedPickerButtons() -> DisplayHymnViewCan {
-        if #available(iOS 14.5, *) {
+        if #available(iOS 15.0, *) {
+            return waitForButtons("Remove", "Add")
+        } else if #available(iOS 14.5, *) {
             return waitForButtons("remove", "add")
         } else {
             return waitForButtons("minus", "plus")
