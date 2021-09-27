@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: macos-latest
     env:
-      XC_VERSION: ${{ '12.0.1' }}
+      XC_VERSION: ${{ '12.5.1' }}
     steps:
     - uses: actions/checkout@v2
     - name: Generate Mockingbird Mocks
