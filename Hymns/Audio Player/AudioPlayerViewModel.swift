@@ -181,15 +181,15 @@ class AudioPlayerViewModel: NSObject, ObservableObject {
 }
 
 extension AudioPlayerViewModel: AVAudioPlayerDelegate {
-    
+
     override func isEqual(_ object: Any?) -> Bool {
         return url == (object as? AudioPlayerViewModel)?.url
     }
-    
+
     override var hash: Int {
         return url.hashValue
     }
-    
+
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         player.currentTime = TimeInterval.zero
         currentTime = player.currentTime
