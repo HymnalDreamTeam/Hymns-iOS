@@ -36,7 +36,12 @@ struct HomeContainerView: View {
                     self.selectedTab = .home
                 }
                 UITabBar.appearance().unselectedItemTintColor = .label
-            }.hideNavigationBar()
+                if #available(iOS 15.0, *) {
+                    // Need to set the tab bar appearance to avoid the default transparent appearance
+                    // https://stackoverflow.com/a/69296019/1907538
+                    UITabBar.appearance().scrollEdgeAppearance = UITabBarAppearance()
+                }
+            }.hideNavigationBar().background(Color(.yellow))
         }.navigationViewStyle(StackNavigationViewStyle())
     }
 }
