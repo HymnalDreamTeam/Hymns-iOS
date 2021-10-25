@@ -20,10 +20,12 @@ import Foundation
     case spanish
     case korean
     case japanese
+    case indonesian
+    case farsi
 
     static var allCases: [HymnType] {
         return [classic, newTune, newSong, children, howardHigashi, dutch, german, chinese, chineseSupplement, cebuano,
-                tagalog, french, spanish, korean, japanese]
+                tagalog, french, spanish, korean, japanese, indonesian, farsi]
     }
 }
 
@@ -47,12 +49,14 @@ extension HymnType {
            HymnType.spanish.abbreviatedValue.lowercased(): .spanish,
            HymnType.korean.abbreviatedValue.lowercased(): .korean,
            HymnType.japanese.abbreviatedValue.lowercased(): .japanese,
+           HymnType.indonesian.abbreviatedValue.lowercased(): .indonesian,
+           HymnType.farsi.abbreviatedValue.lowercased(): .farsi,
            "classic": classic, "hymn": classic, "new tune": .newTune, "new song": .newSong, "chidren": .children,
            "howard higashi": .howardHigashi, "long beach": .howardHigashi, "longbeach": .howardHigashi, "dt": .dutch,
            "dutch": .dutch, "g": german, "ge": .german, "german": .german, "chinese": .chinese, "cs": .chineseSupplement,
            "chs": .chineseSupplement, "chinese supplement": .chineseSupplement, "cebuano": .cebuano, "tg": .tagalog,
-           "t": .tagalog, "tagalog": .tagalog, "fr": .french, "f": .french, "french": .french, "sp": .spanish,
-           "spanish": .spanish, "kr": .korean, "korean": .korean, "jp": .japanese, "japanese": .japanese
+           "t": .tagalog, "tagalog": .tagalog, "fr": .french, "french": .french, "sp": .spanish,
+           "spanish": .spanish, "kr": .korean, "korean": .korean, "jp": .japanese, "japanese": .japanese, "indonesian": .indonesian, "farsi": .farsi
     ]
 
     var abbreviatedValue: String {
@@ -87,6 +91,10 @@ extension HymnType {
             return "K"
         case .japanese:
             return "J"
+        case .indonesian:
+            return "I"
+        case .farsi:
+            return "F"
         }
     }
 
@@ -160,6 +168,10 @@ extension HymnType {
             return NSLocalizedString("Korean Hymns", comment: "Display name of 'Korean Hymns'. Usually appears just by itself (i.e. as a title)")
         case .japanese:
             return NSLocalizedString("Japanese Hymns", comment: "Display name of 'Japanese Hymns'. Usually appears just by itself (i.e. as a title)")
+        case .indonesian:
+            return NSLocalizedString("Indonesian Hymns", comment: "Display name of 'Indonesian Hymns'. Usually appears just by itself (i.e. as a title)")
+        case .farsi:
+            return NSLocalizedString("Farsi Hymns", comment: "Display name of 'Farsi Hymns'. Usually appears just by itself (i.e. as a title)")
         }
     }
 
@@ -195,6 +207,10 @@ extension HymnType {
             return NSLocalizedString("Korean", comment: "Will appear in conjunction with something else (e.g. Korean 7)")
         case .japanese:
             return NSLocalizedString("Japanese", comment: "Will appear in conjunction with something else (e.g. Japanese 7)")
+        case .indonesian:
+            return NSLocalizedString("Indonesian", comment: "Will appear in conjunction with something else (e.g. Indonesian 7)")
+        case .farsi:
+            return NSLocalizedString("Farsi", comment: "Will appear in conjunction with something else (e.g. Farsi 7)")
         }
     }
 }

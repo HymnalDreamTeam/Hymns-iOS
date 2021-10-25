@@ -79,6 +79,12 @@
 /* Display name of 'Dutch Hymns'. Usually appears just by itself (i.e. as a title) */
 "Dutch Hymns" = "Himnos Holandeses";
 
+/* Will appear in conjunction with something else (e.g. Farsi 7) */
+"Farsi" = "Farsi";
+
+/* Display name of 'Farsi Hymns'. Usually appears just by itself (i.e. as a title) */
+"Farsi Hymns" = "Himnos Farsi";
+
 /* Favorites tab title */
 "Favorites" = "Favoritos";
 
@@ -135,6 +141,12 @@
 
 /* Latter part of the empty tag state text */
 "icon on any hymn" = "en cualquier himno";
+
+/* Will appear in conjunction with something else (e.g. Indonesian 7) */
+"Indonesian" = "Indonesio";
+
+/* Display name of 'Indonesian Hymns'. Usually appears just by itself (i.e. as a title) */
+"Indonesian Hymns" = "Himnos indonesio";
 
 /* Will appear in conjuction with something elsxe (e.g. Japanese 7) */
 "Japanese" = "Japonés";
