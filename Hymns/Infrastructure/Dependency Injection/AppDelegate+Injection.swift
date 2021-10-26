@@ -6,7 +6,7 @@ import Foundation
 extension Resolver: ResolverRegistering {
 
     #if DEBUG
-    static let mock = Resolver(parent: main)
+    static let mock = Resolver(child: main)
     #endif
 
     public static func registerAllServices() {
