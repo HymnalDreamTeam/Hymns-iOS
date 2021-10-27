@@ -12,7 +12,7 @@ class SoundCloudViewModel: ObservableObject {
     @Published var showMinimizeToolTip: Bool = false
     @Published var title: String?
 
-    private var timerConnection: Cancellable?
+    var timerConnection: Cancellable?
 
     var titleObservation: NSKeyValueObservation?
 
@@ -25,7 +25,7 @@ class SoundCloudViewModel: ObservableObject {
 
     init(url: URL) {
         self.url = url
-        timerConnection = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect().sink(receiveValue: { [weak self ]_ in
+        timerConnection = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect().sink(receiveValue: { [weak self ] _ in
             guard let self = self else { return }
             if AVAudioSession.sharedInstance().secondaryAudioShouldBeSilencedHint {
                 // Media is playing

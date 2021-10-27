@@ -29,13 +29,13 @@ class TagStoreTestImpl: TagStore {
             return SongResultEntity(hymnType: hymnType, hymnNumber: hymnNumber, queryParams: queryParams, title: storedTag.songTitle)
         }
         return Just(matchingTags).mapError({ _ -> ErrorType in
-            .data(description: "This will never get called")
+            // This will never be triggered.
         }).eraseToAnyPublisher()
     }
 
     func getTagsForHymn(hymnIdentifier: HymnIdentifier) -> AnyPublisher<[Tag], ErrorType> {
         Just([Tag]()).mapError({ _ -> ErrorType in
-            .data(description: "This will never get called")
+            // This will never be triggered.
         }).eraseToAnyPublisher()
     }
 
@@ -47,7 +47,7 @@ class TagStoreTestImpl: TagStore {
                 uiTags.append(uiTag)
             }
         }).mapError({ _ -> ErrorType in
-            .data(description: "This will never get called")
+            // This will never be triggered.
         }).eraseToAnyPublisher()
     }
 }
