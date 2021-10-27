@@ -36,11 +36,16 @@ struct HomeContainerView: View {
                     self.selectedTab = .home
                 }
                 UITabBar.appearance().unselectedItemTintColor = .label
+
+                // Need to hide iOS 15 methods from iOS 14 builder so build doesn't fail
+                // https://stackoverflow.com/questions/68798163/is-it-possible-to-hide-code-based-on-sdk-version
+                #if __IPHONE_15_0
                 if #available(iOS 15.0, *) {
                     // Need to set the tab bar appearance to avoid the default transparent appearance
                     // https://stackoverflow.com/a/69296019/1907538
                     UITabBar.appearance().scrollEdgeAppearance = UITabBarAppearance()
                 }
+                #endif
             }.hideNavigationBar().background(Color(.yellow))
         }.navigationViewStyle(StackNavigationViewStyle())
     }

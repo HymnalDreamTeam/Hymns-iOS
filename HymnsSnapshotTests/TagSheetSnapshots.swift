@@ -14,13 +14,13 @@ class TagSheetSnapshots: XCTestCase {
 
     func test_noTags() {
         viewModel = TagSheetViewModel(hymnToDisplay: cupOfChrist_identifier)
-        assertVersionedSnapshot(matching: TagSheetView(viewModel: viewModel, sheet: Binding.constant(.tags)), as: .swiftUiImage())
+        assertVersionedSnapshot(matching: TagSheetView(viewModel: viewModel, sheet: Binding.constant(.tags)).ignoresSafeArea(), as: .swiftUiImage())
     }
 
     func test_oneTag() {
         viewModel = TagSheetViewModel(hymnToDisplay: cupOfChrist_identifier)
         viewModel.tags = [UiTag(title: "Lord's table", color: .green)]
-        assertVersionedSnapshot(matching: TagSheetView(viewModel: viewModel, sheet: Binding.constant(.tags)), as: .swiftUiImage())
+        assertVersionedSnapshot(matching: TagSheetView(viewModel: viewModel, sheet: Binding.constant(.tags)).ignoresSafeArea(), as: .swiftUiImage())
     }
 
     func test_manyTags() {
@@ -31,14 +31,14 @@ class TagSheetSnapshots: XCTestCase {
                           UiTag(title: "Tag 1", color: .yellow),
                           UiTag(title: "Tag 2", color: .blue),
                           UiTag(title: "Tag 3", color: .blue)]
-        assertVersionedSnapshot(matching: TagSheetView(viewModel: viewModel, sheet: Binding.constant(.tags)), as: .swiftUiImage())
+        assertVersionedSnapshot(matching: TagSheetView(viewModel: viewModel, sheet: Binding.constant(.tags)).ignoresSafeArea(), as: .swiftUiImage())
     }
 
     func test_colorSeletor_unselected() {
-        assertVersionedSnapshot(matching: ColorSelectorView(tagColor: .constant(.none)), as: .swiftUiImage())
+        assertVersionedSnapshot(matching: ColorSelectorView(tagColor: .constant(.none)).ignoresSafeArea(), as: .swiftUiImage())
     }
 
     func test_colorSeletor_blueSelected() {
-        assertVersionedSnapshot(matching: ColorSelectorView(tagColor: .constant(.blue)), as: .swiftUiImage())
+        assertVersionedSnapshot(matching: ColorSelectorView(tagColor: .constant(.blue)).ignoresSafeArea(), as: .swiftUiImage())
     }
 }

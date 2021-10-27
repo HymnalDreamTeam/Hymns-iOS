@@ -44,57 +44,57 @@ class HymnDataStoreTestImpl: HymnDataStore {
 
     func getHymn(_ hymnIdentifier: HymnIdentifier) -> AnyPublisher<HymnEntity?, ErrorType> {
         Just(hymnStore[hymnIdentifier]).mapError({ _ -> ErrorType in
-            .data(description: "This will never get called")
+            // This will never be triggered.
         }).eraseToAnyPublisher()
     }
 
     func searchHymn(_ searchParamter: String) -> AnyPublisher<[SearchResultEntity], ErrorType> {
         Just(searchStore[searchParamter] ?? [SearchResultEntity]()).mapError({ _ -> ErrorType in
-            .data(description: "This will never get called")
+            // This will never be triggered.
         }).eraseToAnyPublisher()
     }
 
     func getAllCategories() -> AnyPublisher<[CategoryEntity], ErrorType> {
         Just([CategoryEntity]()).mapError({ _ -> ErrorType in
-            .data(description: "This will never get called")
+            // This will never be triggered.
         }).eraseToAnyPublisher()
     }
 
     func getCategories(by hymnType: HymnType) -> AnyPublisher<[CategoryEntity], ErrorType> {
         Just(categories).mapError({ _ -> ErrorType in
-            .data(description: "This will never get called")
+            // This will never be triggered.
         }).eraseToAnyPublisher()
     }
 
     func getResultsBy(category: String, hymnType: HymnType?, subcategory: String?) -> AnyPublisher<[SongResultEntity], ErrorType> {
         Just(songResultsByCategory["\(category) \(hymnType?.abbreviatedValue ?? "") \(subcategory ?? "")"] ?? [SongResultEntity]())
             .mapError({ _ -> ErrorType in
-                .data(description: "This will never get called")
+                // This will never be triggered.
             }).eraseToAnyPublisher()
     }
 
     func getResultsBy(hymnCode: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
         Just(songResultsByHymnCode[hymnCode] ?? [SongResultEntity]())
             .mapError({ _ -> ErrorType in
-                .data(description: "This will never get called")
+                // This will never be triggered.
             }).eraseToAnyPublisher()
     }
 
     func getScriptureSongs() -> AnyPublisher<[ScriptureEntity], ErrorType> {
         Just(scriptureSongs).mapError({ _ -> ErrorType in
-            .data(description: "This will never get called")
+            // This will never be triggered.
         }).eraseToAnyPublisher()
     }
 
     func getAllSongs(hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType> {
         if hymnType == .classic {
             return Just(classicSongs).mapError({ _ -> ErrorType in
-                .data(description: "This will never get called")
+                // This will never be triggered.
             }).eraseToAnyPublisher()
         }
 
         return Just([SongResultEntity]()).mapError({ _ -> ErrorType in
-            .data(description: "This will never get called")
+            // This will never be triggered.
         }).eraseToAnyPublisher()
     }
 }

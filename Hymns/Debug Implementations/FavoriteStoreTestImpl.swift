@@ -20,7 +20,7 @@ class FavoriteStoreTestImpl: FavoriteStore {
 
     func favorites() -> AnyPublisher<[FavoriteEntity], ErrorType> {
         Just(entities).mapError({ _ -> ErrorType in
-            .data(description: "This will never get called")
+            // This will never be triggered.
         }).eraseToAnyPublisher()
     }
 
@@ -29,7 +29,7 @@ class FavoriteStoreTestImpl: FavoriteStore {
             HymnIdentifier(entity.hymnIdentifierEntity) == hymnIdentifier
         }.isEmpty
         return Just(isFavorite).mapError({ _ -> ErrorType in
-            .data(description: "This will never get called")
+            // This will never be triggered.
         }).eraseToAnyPublisher()
     }
 }

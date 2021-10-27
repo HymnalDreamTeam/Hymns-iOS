@@ -15,7 +15,7 @@ class HistoryStoreTestImpl: HistoryStore {
 
     func recentSongs() -> AnyPublisher<[RecentSong], ErrorType> {
         Just(results).mapError({ _ -> ErrorType in
-            .data(description: "This will never get called")
+            // This will never be triggered.
         }).eraseToAnyPublisher()
     }
 
