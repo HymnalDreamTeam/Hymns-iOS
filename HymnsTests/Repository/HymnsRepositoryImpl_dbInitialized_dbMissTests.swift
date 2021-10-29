@@ -26,7 +26,7 @@ class HymnsRepositoryImpl_dbInitialized_dbMissTests: XCTestCase {
         given(dataStore.getDatabaseInitializedProperly()) ~> true
         given(dataStore.getHymn(cebuano123)) ~> { _ in
             Just(nil).mapError({ _ -> ErrorType in
-                .data(description: "This will never get called")
+                // This will never be triggered.
             }).eraseToAnyPublisher()
         }
     }
@@ -113,7 +113,7 @@ class HymnsRepositoryImpl_dbInitialized_dbMissTests: XCTestCase {
         given(systemUtil.isNetworkAvailable()) ~> true
         given(service.getHymn(cebuano123)) ~> {  _ in
             return Just(self.networkResult).mapError({ _ -> ErrorType in
-                .data(description: "This will never get called")
+                // This will never be triggered.
             }).eraseToAnyPublisher()
         }
         given(converter.toHymnEntity(hymnIdentifier: cebuano123, hymn: self.networkResult)) ~> self.databaseResult
@@ -151,7 +151,7 @@ class HymnsRepositoryImpl_dbInitialized_dbMissTests: XCTestCase {
         given(systemUtil.isNetworkAvailable()) ~> true
         given(service.getHymn(cebuano123)) ~> {  _ in
             Just(self.networkResult).mapError({ _ -> ErrorType in
-                .data(description: "This will never get called")
+                // This will never be triggered.
             }).eraseToAnyPublisher()
         }
         given(converter.toHymnEntity(hymnIdentifier: cebuano123, hymn: self.networkResult)) ~> {_, _ in

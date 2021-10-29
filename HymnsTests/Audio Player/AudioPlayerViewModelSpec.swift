@@ -50,7 +50,7 @@ class AudioPlayerViewModelSpec: QuickSpec {
                     let data = try! Data(contentsOf: URL(fileURLWithPath: path))
                     given(service.getData(url)) ~> { _ in
                         Just(data).mapError({ _ -> ErrorType in
-                            .data(description: "This will never get called")
+                            // This will never be triggered.
                         }).eraseToAnyPublisher()
                     }
 
@@ -242,7 +242,7 @@ class AudioPlayerViewModelSpec: QuickSpec {
                         let data = try! Data(contentsOf: URL(fileURLWithPath: path))
                         given(service.getData(url)) ~> { _ in
                             Just(data).mapError({ _ -> ErrorType in
-                                .data(description: "This will never get called")
+                                // This will never be triggered.
                             }).eraseToAnyPublisher()
                         }
 

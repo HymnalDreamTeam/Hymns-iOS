@@ -26,7 +26,7 @@ class HomeViewModelSearchSpec: QuickSpec {
                 historyStore = mock(HistoryStore.self)
                 given(historyStore.recentSongs()) ~> {
                     Just(recentSongs).mapError({ _ -> ErrorType in
-                        .data(description: "forced data error")
+                        // This will never be triggered.
                     }).eraseToAnyPublisher()
                 }
                 hymnsRepository = mock(HymnsRepository.self)
@@ -51,7 +51,7 @@ class HomeViewModelSearchSpec: QuickSpec {
                             given(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 1)) ~> { _, _ in
                                 expect(target.state).to(equal(HomeResultState.loading))
                                 return Just(UiSongResultsPage(results: [UiSongResult](), hasMorePages: false)).mapError({ _ -> ErrorType in
-                                    .data(description: "This will never get called")
+                                    // This will never be triggered.
                                 }).eraseToAnyPublisher()
                             }
                             target.searchParameter = "\(searchParameter) \n  "
@@ -145,7 +145,7 @@ class HomeViewModelSearchSpec: QuickSpec {
                             expect(target.state).to(equal(HomeResultState.loading))
                             let page = UiSongResultsPage(results: [classic594, newTune7], hasMorePages: false)
                             return Just(page).mapError({ _ -> ErrorType in
-                                .data(description: "This will never get called")
+                                // This will never be triggered.
                             }).eraseToAnyPublisher()
                         }
                         target.searchParameter = searchParameter
@@ -173,7 +173,7 @@ class HomeViewModelSearchSpec: QuickSpec {
                         beforeEach {
                             given(historyStore.recentSongs()) ~> {
                                 Just(recentSongs).mapError({ _ -> ErrorType in
-                                    .data(description: "forced data error")
+                                    // This will never be triggered.
                                 }).eraseToAnyPublisher()
                             }
                             target.searchParameter = ""
@@ -270,14 +270,14 @@ class HomeViewModelSearchSpec: QuickSpec {
                                 expect(target.state).to(equal(HomeResultState.loading))
                                 let page = UiSongResultsPage(results: page1, hasMorePages: true)
                                 return Just(page).mapError({ _ -> ErrorType in
-                                    .data(description: "This will never get called")
+                                    // This will never be triggered.
                                 }).eraseToAnyPublisher()
                             }
                             given(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 2)) ~> { searchInput, pageNumber in
                                 expect(target.state).to(equal(HomeResultState.results))
                                 let page = UiSongResultsPage(results: page2, hasMorePages: false)
                                 return Just(page).mapError({ _ -> ErrorType in
-                                    .data(description: "This will never get called")
+                                    // This will never be triggered.
                                 }).eraseToAnyPublisher()
                             }
                             target.searchParameter = searchParameter
@@ -411,7 +411,7 @@ class HomeViewModelSearchSpec: QuickSpec {
                     beforeEach {
                         given(songResultsRepository.search(hymnCode: "171214436716555")) ~> { _ in
                             return Just([SongResultEntity]()).mapError({ _ -> ErrorType in
-                                .data(description: "This will never get called")
+                                // This will never be triggered.
                             }).eraseToAnyPublisher()
                         }
                         target.searchParameter = "\(searchParameter) \n  "
@@ -439,7 +439,7 @@ class HomeViewModelSearchSpec: QuickSpec {
                             Just([SongResultEntity(hymnType: .german, hymnNumber: "93", queryParams: nil, title: "title"),
                                   SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "933", queryParams: nil, title: "title 2")])
                                 .mapError({ _ -> ErrorType in
-                                    .data(description: "This will never get called")
+                                    // This will never be triggered.
                                 }).eraseToAnyPublisher()
                         }
                         target.searchParameter = "\(searchParameter) \n  "

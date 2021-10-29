@@ -22,7 +22,7 @@ class HomeViewModelSpec: QuickSpec {
                 historyStore = mock(HistoryStore.self)
                 given(historyStore.recentSongs()) ~> {
                     Just(recentSongs).mapError({ _ -> ErrorType in
-                        .data(description: "This will never get called")
+                        // This will never be triggered.
                     }).eraseToAnyPublisher()
                 }
                 hymnsRepository = mock(HymnsRepository.self)
@@ -110,7 +110,7 @@ class HomeViewModelSpec: QuickSpec {
                 beforeEach {
                     given(historyStore.recentSongs()) ~> {
                         Just([RecentSong]()).mapError({ _ -> ErrorType in
-                            .data(description: "This will never get called")
+                            // This will never be triggered.
                         }).eraseToAnyPublisher()
                     }
                     target = HomeViewModel(backgroundQueue: testQueue, historyStore: historyStore,

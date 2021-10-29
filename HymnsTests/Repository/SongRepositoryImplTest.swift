@@ -84,7 +84,7 @@ class SongRepositoryImplTest: XCTestCase {
         given(systemUtil.isNetworkAvailable()) ~> false
         given(dataStore.searchHymn("Chenaniah")) ~> { _ in
             Just(self.databaseResults).mapError({ _ -> ErrorType in
-                .data(description: "This will never get called")
+                // This will never be triggered.
             }).eraseToAnyPublisher()
         }
         // Since we're mocking out the converter, we can conveniently just return one result in the page for succinctness.
@@ -114,12 +114,12 @@ class SongRepositoryImplTest: XCTestCase {
         given(systemUtil.isNetworkAvailable()) ~> true
         given(dataStore.searchHymn("Chenaniah")) ~> { _ in
             Just(self.databaseResults).mapError({ _ -> ErrorType in
-                .data(description: "This will never get called")
+                // This will never be triggered.
             }).eraseToAnyPublisher()
         }
         given(service.search(for: "Chenaniah", onPage: 1)) ~> { _, _ in
             Just(self.networkResult).mapError({ _ -> ErrorType in
-                .data(description: "This will never get called")
+                // This will never be triggered.
             }).eraseToAnyPublisher()
         }
         // Since we're mocking out the converter, we can conveniently just return one result in the page for succinctness.
@@ -165,12 +165,12 @@ class SongRepositoryImplTest: XCTestCase {
         given(systemUtil.isNetworkAvailable()) ~> true
         given(dataStore.searchHymn("Chenaniah")) ~> { _ in
             Just([SearchResultEntity]()).mapError({ _ -> ErrorType in
-                .data(description: "This will never get called")
+                // This will never be triggered.
             }).eraseToAnyPublisher()
         }
         given(service.search(for: "Chenaniah", onPage: 1)) ~> { _, _ in
             Just(self.networkResult).mapError({ _ -> ErrorType in
-                .data(description: "This will never get called")
+                // This will never be triggered.
             }).eraseToAnyPublisher()
         }
         given(converter.toUiSongResultsPage(songResultsEntities: [SongResultEntity](), hasMorePages: false)) ~> UiSongResultsPage(results: [UiSongResult](), hasMorePages: false)
@@ -211,7 +211,7 @@ class SongRepositoryImplTest: XCTestCase {
         given(systemUtil.isNetworkAvailable()) ~> true
         given(dataStore.searchHymn("Chenaniah")) ~> { _ in
             Just(self.databaseResults).mapError({ _ -> ErrorType in
-                .data(description: "This will never get called")
+                // This will never be triggered.
             }).eraseToAnyPublisher()
         }
         given(service.search(for: "Chenaniah", onPage: 1)) ~> { _, _ in

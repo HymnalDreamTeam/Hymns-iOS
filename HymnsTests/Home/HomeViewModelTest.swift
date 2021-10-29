@@ -21,7 +21,7 @@ class HomeViewModelTest: XCTestCase {
         historyStore = mock(HistoryStore.self)
         given(historyStore.recentSongs()) ~> {
             Just(self.recentSongs).mapError({ _ -> ErrorType in
-                .data(description: "This will never get called")
+                // This will never be triggered.
             }).eraseToAnyPublisher()
         }
         songResultsRepository = mock(SongResultsRepository.self)
@@ -49,7 +49,7 @@ class HomeViewModelTest: XCTestCase {
         reset(historyStore)
         given(historyStore.recentSongs()) ~> {
             Just([RecentSong]()).mapError({ _ -> ErrorType in
-                .data(description: "This will never get called")
+                // This will never be triggered.
             }).eraseToAnyPublisher()
         }
         target = HomeViewModel(backgroundQueue: testQueue, historyStore: historyStore,

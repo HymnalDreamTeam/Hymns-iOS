@@ -42,7 +42,7 @@ class BrowseScripturesViewModelSpec: QuickSpec {
                 beforeEach {
                     given(repository.scriptureSongs()) ~> {
                         Just([ScriptureResult]()).mapError({ _ -> ErrorType in
-                            .data(description: "This will never get called")
+                            // This will never be triggered.
                         }).eraseToAnyPublisher()
                     }
                 }
@@ -69,7 +69,7 @@ class BrowseScripturesViewModelSpec: QuickSpec {
                 beforeEach {
                     given(repository.scriptureSongs()) ~> {
                         Just(scriptureResults).mapError({ _ -> ErrorType in
-                            .data(description: "This will never get called")
+                            // This will never be triggered.
                         }).eraseToAnyPublisher()
                     }
                 }

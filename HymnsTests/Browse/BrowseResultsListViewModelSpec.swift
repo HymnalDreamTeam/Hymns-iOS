@@ -24,7 +24,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                     beforeEach {
                         given(dataStore.getResultsBy(category: "category", hymnType: nil, subcategory: nil)) ~> { _, _, _ in
                             Just([SongResultEntity]()).mapError({ _ -> ErrorType in
-                                .data(description: "This will never get called")
+                                // This will never be triggered.
                             }).eraseToAnyPublisher()
                         }
                         target = BrowseResultsListViewModel(category: "category", subcategory: nil, hymnType: nil,
@@ -49,7 +49,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                             Just([SongResultEntity(hymnType: .classic, hymnNumber: "44", queryParams: nil, title: "classic44"),
                                   SongResultEntity(hymnType: .newSong, hymnNumber: "99", queryParams: nil, title: "newSong99")])
                                 .mapError({ _ -> ErrorType in
-                                    .data(description: "This will never get called")
+                                    // This will never be triggered.
                                 }).eraseToAnyPublisher()
                         target = BrowseResultsListViewModel(category: "category", subcategory: "subcategory", hymnType: nil,
                                                             backgroundQueue: testQueue, dataStore: dataStore,
@@ -102,7 +102,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                     beforeEach {
                         given(tagStore.getSongsByTag(UiTag(title: "FanIntoFlames", color: .none))) ~> { _ in
                             Just([SongResultEntity]()).mapError({ _ -> ErrorType in
-                                .data(description: "This will never get called")
+                                // This will never be triggered.
                             }).eraseToAnyPublisher()
                         }
                         target = BrowseResultsListViewModel(tag: UiTag(title: "FanIntoFlames", color: .none),
@@ -127,7 +127,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                             Just([SongResultEntity(hymnType: .classic, hymnNumber: "123", queryParams: nil, title: "classic123"),
                                   SongResultEntity(hymnType: .dutch, hymnNumber: "55", queryParams: nil, title: "dutch55")])
                                 .mapError({ _ -> ErrorType in
-                                    .data(description: "This will never get called")
+                                    // This will never be triggered.
                                 }).eraseToAnyPublisher()
                         }
                         target = BrowseResultsListViewModel(tag: UiTag(title: "FanIntoFlames", color: .none),
@@ -182,7 +182,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                     beforeEach {
                         given(dataStore.getAllSongs(hymnType: .classic)) ~> { _ in
                             Just([SongResultEntity]()).mapError({ _ -> ErrorType in
-                                .data(description: "This will never get called")
+                                // This will never be triggered.
                             }).eraseToAnyPublisher()
                         }
                         target = BrowseResultsListViewModel(hymnType: .classic, backgroundQueue: testQueue,
@@ -213,7 +213,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                       SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "5", queryParams: nil, title: "should not be filtered out"),
                                       SongResultEntity(hymnType: .chinese, hymnNumber: "3", queryParams: nil, title: "should not be filtered out")])
                                     .mapError({ _ -> ErrorType in
-                                        .data(description: "This will never get called")
+                                        // This will never be triggered.
                                     }).eraseToAnyPublisher()
                             }
                             target = BrowseResultsListViewModel(hymnType: .chinese, backgroundQueue: testQueue,
@@ -247,7 +247,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                       SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "5", queryParams: nil, title: "should not be filtered out"),
                                       SongResultEntity(hymnType: .chinese, hymnNumber: "3", queryParams: nil, title: "should not be filtered out")])
                                     .mapError({ _ -> ErrorType in
-                                        .data(description: "This will never get called")
+                                        // This will never be triggered.
                                     }).eraseToAnyPublisher()
                             }
                             target = BrowseResultsListViewModel(hymnType: .cebuano, backgroundQueue: testQueue,
@@ -278,7 +278,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                       SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "5", queryParams: nil, title: "should not be filtered out"),
                                       SongResultEntity(hymnType: .chinese, hymnNumber: "3", queryParams: nil, title: "should not be filtered out")])
                                     .mapError({ _ -> ErrorType in
-                                        .data(description: "This will never get called")
+                                        // This will never be triggered.
                                     }).eraseToAnyPublisher()
                             }
                             target = BrowseResultsListViewModel(hymnType: .german, backgroundQueue: testQueue,

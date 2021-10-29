@@ -29,7 +29,7 @@ class HymnsRepositoryImpl_dbInitialized_dbHitTests: XCTestCase {
         given(dataStore.getDatabaseInitializedProperly()) ~> true
         given(dataStore.getHymn(cebuano123)) ~> { _ in
             Just(self.databaseResult).mapError({ _ -> ErrorType in
-                .data(description: "This will never get called")
+                // This will never be triggered.
             }).eraseToAnyPublisher()
         }
     }
@@ -74,7 +74,7 @@ class HymnsRepositoryImpl_dbInitialized_dbHitTests: XCTestCase {
     func test_getHymn_noNetwork() {
         given(dataStore.getHymn(cebuano123)) ~> { _ in
             Just(self.databaseResult).mapError({ _ -> ErrorType in
-                .data(description: "This will never get called")
+                // This will never be triggered.
             }).subscribe(on: self.backgroundQueue).eraseToAnyPublisher()
             // Test asynchronous data store call as well to make sure the loading values are being dropped
         }
@@ -104,7 +104,7 @@ class HymnsRepositoryImpl_dbInitialized_dbHitTests: XCTestCase {
         given(systemUtil.isNetworkAvailable()) ~> true
         given(service.getHymn(cebuano123)) ~> {  _ in
             Just(self.networkResult).mapError({ _ -> ErrorType in
-                .data(description: "This will never get called")
+                // This will never be triggered.
             }).eraseToAnyPublisher()
         }
         given(converter.toUiHymn(hymnIdentifier: cebuano123, hymnEntity: self.databaseResult)) ~> self.expected
@@ -161,7 +161,7 @@ class HymnsRepositoryImpl_dbInitialized_dbHitTests: XCTestCase {
         given(systemUtil.isNetworkAvailable()) ~> true
         given(service.getHymn(cebuano123)) ~> {  _ in
             Just(self.networkResult).mapError({ _ -> ErrorType in
-                .data(description: "This will never get called")
+                // This will never be triggered.
             }).eraseToAnyPublisher()
         }
         given(converter.toUiHymn(hymnIdentifier: cebuano123, hymnEntity: self.databaseResult)) ~> nil
