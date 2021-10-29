@@ -20,7 +20,7 @@ class BrowseRepositoryTest: XCTestCase {
         given(dataStore.getScriptureSongs()) ~> {
             Just([ScriptureEntity(title: "title", hymnType: .classic, hymnNumber: "43", queryParams: nil, scriptures: "Revelation 22;Hosea 14:8;;Genesis 1:1-6;7:9;12")])
                 .mapError({ _ -> ErrorType in
-                    .data(description: "This will never get called")
+                    // This will never be triggered.
                 }).eraseToAnyPublisher()
         }
 

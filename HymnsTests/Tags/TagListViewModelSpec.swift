@@ -42,7 +42,7 @@ class TagListViewModelSpec: QuickSpec {
                 beforeEach {
                     given(tagStore.getUniqueTags()) ~> {
                         Just([UiTag]()).mapError({ _ -> ErrorType in
-                            .data(description: "This will never get called")
+                            // This will never be triggered.
                         }).eraseToAnyPublisher()
                     }
                     target.fetchUniqueTags()
@@ -60,7 +60,7 @@ class TagListViewModelSpec: QuickSpec {
                 beforeEach {
                     given(tagStore.getUniqueTags()) ~> {
                         Just(uniqueTags).mapError({ _ -> ErrorType in
-                            .data(description: "This will never get called")
+                            // This will never be triggered.
                         }).eraseToAnyPublisher()
                     }
                     target.fetchUniqueTags()

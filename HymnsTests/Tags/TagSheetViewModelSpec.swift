@@ -111,7 +111,7 @@ class TagSheetViewModelSpec: QuickSpec {
                     beforeEach {
                         given(tagStore.getTagsForHymn(hymnIdentifier: cebuano123)) ~> { _ in
                             Just([Tag]()).mapError({ _ -> ErrorType in
-                                .data(description: "This will never get called")
+                                // This will never be triggered.
                             }).eraseToAnyPublisher()
                         }
                         target.fetchTags()
@@ -129,7 +129,7 @@ class TagSheetViewModelSpec: QuickSpec {
                     beforeEach {
                         given(tagStore.getTagsForHymn(hymnIdentifier: cebuano123)) ~> { _ in
                             Just(tags).mapError({ _ -> ErrorType in
-                                .data(description: "This will never get called")
+                                // This will never be triggered.
                             }).eraseToAnyPublisher()
                         }
                         target.fetchTags()

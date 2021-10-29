@@ -71,7 +71,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                             beforeEach {
                                 given(favoriteStore.isFavorite(hymnIdentifier: classic1151)) ~> { _ in
                                     Just(true).mapError({ _ -> ErrorType in
-                                        .data(description: "This will never get called")
+                                        // This will never be triggered.
                                     }).eraseToAnyPublisher()
                                 }
 
@@ -135,7 +135,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                             beforeEach {
                                 given(favoriteStore.isFavorite(hymnIdentifier: classic1151)) ~> { _ in
                                     Just(false).mapError({ _ -> ErrorType in
-                                        .data(description: "This will never get called")
+                                        // This will never be triggered.
                                     }).eraseToAnyPublisher()
                                 }
                                 target.fetchHymn()
@@ -195,7 +195,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                                 }
                                 given(favoriteStore.isFavorite(hymnIdentifier: newSong145)) ~> { _ in
                                     Just(false).mapError({ _ -> ErrorType in
-                                        .data(description: "This will never get called")
+                                        // This will never be triggered.
                                     }).eraseToAnyPublisher()
                                 }
 
@@ -256,7 +256,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                                 }
                                 given(favoriteStore.isFavorite(hymnIdentifier: newSong145)) ~> { _ in
                                     Just(false).mapError({ _ -> ErrorType in
-                                        .data(description: "This will never get called")
+                                        // This will never be triggered.
                                     }).eraseToAnyPublisher()
                                 }
                                 target.fetchHymn()
@@ -285,7 +285,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                                 }
                                 given(favoriteStore.isFavorite(hymnIdentifier: newSong145)) ~> { _ in
                                     Just(false).mapError({ _ -> ErrorType in
-                                        .data(description: "This will never get called")
+                                        // This will never be triggered.
                                     }).eraseToAnyPublisher()
                                 }
 

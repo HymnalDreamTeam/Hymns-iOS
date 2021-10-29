@@ -44,7 +44,7 @@ class FavoritesViewModelSpec: QuickSpec {
                 beforeEach {
                     given(favoriteStore.favorites()) ~> {
                         Just([FavoriteEntity]()).mapError({ _ -> ErrorType in
-                            .data(description: "This will never get called")
+                            // This will never be triggered.
                         }).eraseToAnyPublisher()
                     }
                     target.fetchFavorites()
@@ -60,7 +60,7 @@ class FavoritesViewModelSpec: QuickSpec {
                 beforeEach {
                     given(favoriteStore.favorites()) ~> {
                         Just(favoriteEntities).mapError({ _ -> ErrorType in
-                            .data(description: "This will never get called")
+                            // This will never be triggered.
                         }).eraseToAnyPublisher()
                     }
                     target.fetchFavorites()
