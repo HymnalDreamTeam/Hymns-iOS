@@ -15,11 +15,15 @@ class BrowseCategoriesSnapshots: XCTestCase {
 
     func test_error() {
         viewModel.categories = nil
-        assertVersionedSnapshot(matching: BrowseCategoriesView(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: BrowseCategoriesView(viewModel: viewModel).ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 
     func test_loading() {
-        assertVersionedSnapshot(matching: BrowseCategoriesView(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: BrowseCategoriesView(viewModel: viewModel).ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 
     func test_categories() {
@@ -33,10 +37,14 @@ class BrowseCategoriesSnapshots: XCTestCase {
                                  hymnType: .german,
                                  subcategories: [SubcategoryViewModel(subcategory: "Subcategory 2", count: 12),
                                                  SubcategoryViewModel(subcategory: "Subcategory 3", count: 1)])]
-        assertVersionedSnapshot(matching: BrowseCategoriesView(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: BrowseCategoriesView(viewModel: viewModel),
+            as: .swiftUiImage())
     }
 
     func test_browseView() {
-        assertVersionedSnapshot(matching: BrowseView(), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: BrowseView().ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 }

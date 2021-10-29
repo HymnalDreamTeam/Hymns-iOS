@@ -11,18 +11,24 @@ class BottomSheetSnapshots: XCTestCase {
     }
 
     func test_shareSheet() {
-        assertVersionedSnapshot(matching: ShareSheet(activityItems: ["share text"]), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: ShareSheet(activityItems: ["share text"]),
+            as: .swiftUiImage())
     }
 
     func test_tagSheet_noTags() {
         let viewModel = TagSheetViewModel(hymnToDisplay: cupOfChrist_identifier)
-        assertVersionedSnapshot(matching: TagSheetView(viewModel: viewModel, sheet: .constant(.tags)), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: TagSheetView(viewModel: viewModel, sheet: .constant(.tags)).ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 
     func test_tagSheet_oneTags() {
         let viewModel = TagSheetViewModel(hymnToDisplay: cupOfChrist_identifier)
         viewModel.tags = [UiTag(title: "Lord's table", color: .green)]
-        assertVersionedSnapshot(matching: TagSheetView(viewModel: viewModel, sheet: .constant(.tags)), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: TagSheetView(viewModel: viewModel, sheet: .constant(.tags)).ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 
     func test_tagSheet_manyTags() {
@@ -33,12 +39,16 @@ class BottomSheetSnapshots: XCTestCase {
                           UiTag(title: "Tag 1", color: .yellow),
                           UiTag(title: "Tag 2", color: .blue),
                           UiTag(title: "Tag 3", color: .blue)]
-        assertVersionedSnapshot(matching: TagSheetView(viewModel: viewModel, sheet: .constant(.tags)), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: TagSheetView(viewModel: viewModel, sheet: .constant(.tags)).ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 
     func test_songInfo_empty() {
         let viewModel = SongInfoDialogViewModel(hymnToDisplay: cupOfChrist_identifier)
-        assertVersionedSnapshot(matching: SongInfoSheetView(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: SongInfoSheetView(viewModel: viewModel),
+            as: .image(layout: .fixed(width: 250, height: 300)))
     }
 
     func test_songInfo_regularValues() {
@@ -46,7 +56,9 @@ class BottomSheetSnapshots: XCTestCase {
         viewModel.songInfo = [SongInfoViewModel(label: "Category", values: ["Worship of the Father"]),
                               SongInfoViewModel(label: "Subcategory", values: ["As the Source of Life"]),
                               SongInfoViewModel(label: "Author", values: ["Will Jeng", "Titus Ting"])]
-        assertVersionedSnapshot(matching: SongInfoSheetView(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: SongInfoSheetView(viewModel: viewModel).ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 
     func test_songInfo_longValues() {
@@ -54,6 +66,8 @@ class BottomSheetSnapshots: XCTestCase {
         viewModel.songInfo = [SongInfoViewModel(label: "CategoryCategoryCategory", values: ["Worship Worship Worship of of of the the the Father Father Father"]),
                               SongInfoViewModel(label: "SubcategorySubcategorySubcategory", values: ["As As As the the the Source Source Source of of of Life Life Life"]),
                               SongInfoViewModel(label: "AuthorAuthorAuthor", values: ["Will Will Will Jeng Jeng Jeng", "Titus Titus Titus Ting Ting Ting"])]
-        assertVersionedSnapshot(matching: SongInfoSheetView(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: SongInfoSheetView(viewModel: viewModel).ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 }

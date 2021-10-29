@@ -17,24 +17,32 @@ class AudioPlayerSnapshots: XCTestCase {
         viewModel.playbackState = .playing
         viewModel.songDuration = 100
         viewModel.currentTime = 50
-        assertVersionedSnapshot(matching: AudioPlayer(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: AudioPlayer(viewModel: viewModel).ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 
     func test_stopped() {
         viewModel.playbackState = .stopped
         viewModel.songDuration = 500
         viewModel.shouldRepeat = true
-        assertVersionedSnapshot(matching: AudioPlayer(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: AudioPlayer(viewModel: viewModel).ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 
     func test_buffering() {
         viewModel.playbackState = .buffering
         viewModel.songDuration = 20
-        assertVersionedSnapshot(matching: AudioPlayer(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: AudioPlayer(viewModel: viewModel).ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 
     func test_no_speed_adjuster() {
         viewModel.showSpeedAdjuster = false
-        assertVersionedSnapshot(matching: AudioPlayer(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: AudioPlayer(viewModel: viewModel).ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 }

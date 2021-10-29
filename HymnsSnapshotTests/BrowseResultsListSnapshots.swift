@@ -14,13 +14,17 @@ class BrowseResultsListSnapshots: XCTestCase {
 
     func test_loading() {
         viewModel = BrowseResultsListViewModel(tag: UiTag(title: "Best songs", color: .none))
-        assertVersionedSnapshot(matching: BrowseResultsListView(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: BrowseResultsListView(viewModel: viewModel).ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 
     func test_empty() {
         viewModel = BrowseResultsListViewModel(tag: UiTag(title: "Best songs", color: .none))
         viewModel.songResults = [SongResultViewModel]()
-        assertVersionedSnapshot(matching: BrowseResultsListView(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: BrowseResultsListView(viewModel: viewModel).ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 
     func test_results() {
@@ -29,6 +33,8 @@ class BrowseResultsListSnapshots: XCTestCase {
                        SongResultViewModel(title: "Avengers - Endgame", destinationView: EmptyView().eraseToAnyView())]
         viewModel = BrowseResultsListViewModel(category: "Experience of Christ")
         viewModel.songResults = results
-        assertVersionedSnapshot(matching: BrowseResultsListView(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: BrowseResultsListView(viewModel: viewModel).ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 }

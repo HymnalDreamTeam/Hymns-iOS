@@ -11,11 +11,15 @@ class ToolTipSnapshots: XCTestCase {
     }
 
     func test_toolTipShape_filled() {
-        assertVersionedSnapshot(matching: ToolTipShape(cornerRadius: 15, toolTipMidX: 300).fill(), as: .image())
+        assertVersionedSnapshot(
+            matching: ToolTipShape(cornerRadius: 15, toolTipMidX: 300).fill().ignoresSafeArea(),
+            as: .image())
     }
 
     func test_toolTipShape_oulined() {
-        assertVersionedSnapshot(matching: ToolTipShape(cornerRadius: 15, toolTipMidX: 300).stroke(), as: .image())
+        assertVersionedSnapshot(
+            matching: ToolTipShape(cornerRadius: 15, toolTipMidX: 300).stroke().ignoresSafeArea(),
+            as: .image())
     }
 
     func test_toolTipView_offset() {
@@ -24,7 +28,7 @@ class ToolTipSnapshots: XCTestCase {
         }, configuration:
             ToolTipConfiguration(cornerRadius: 10,
                                  arrowPosition: ToolTipConfiguration.ArrowPosition(midX: 30, alignmentType: .offset),
-                                 arrowHeight: 7))
+                                 arrowHeight: 7)).ignoresSafeArea()
         assertVersionedSnapshot(matching: toolTip, as: .image(layout: .fixed(width: 250, height: 100)))
     }
 
@@ -34,7 +38,7 @@ class ToolTipSnapshots: XCTestCase {
         }, configuration:
             ToolTipConfiguration(cornerRadius: 10,
                                  arrowPosition: ToolTipConfiguration.ArrowPosition(midX: 0.7, alignmentType: .percentage),
-                                 arrowHeight: 7))
+                                 arrowHeight: 7)).ignoresSafeArea()
         assertVersionedSnapshot(matching: toolTip, as: .image(layout: .fixed(width: 250, height: 100)))
     }
 }
