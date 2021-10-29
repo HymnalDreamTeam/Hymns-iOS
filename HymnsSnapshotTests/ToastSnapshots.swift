@@ -17,7 +17,7 @@ class ToastSnapshots: XCTestCase {
                 .toast(item: .constant(TagColor.blue), options: ToastOptions(alignment: .top)) { _ -> AnyView in
                     Text("Toast text").padding()
                         .eraseToAnyView()
-        }
+        }.ignoresSafeArea()
         assertVersionedSnapshot(matching: toast, as: .swiftUiImage())
     }
 
@@ -31,7 +31,7 @@ class ToastSnapshots: XCTestCase {
                         Text("Toast line 2")
                     }.padding()
                         .eraseToAnyView()
-        }
+        }.ignoresSafeArea()
         assertVersionedSnapshot(matching: toast, as: .swiftUiImage())
     }
 
@@ -45,7 +45,7 @@ class ToastSnapshots: XCTestCase {
                         Text("Toast text").padding(.trailing)
                     }
                     .eraseToAnyView()
-        }
+        }.ignoresSafeArea()
         assertVersionedSnapshot(matching: toast, as: .swiftUiImage())
     }
 
@@ -59,7 +59,7 @@ class ToastSnapshots: XCTestCase {
                         Text("Toast text").padding(.trailing)
                     }
                     .eraseToAnyView()
-        }
+        }.ignoresSafeArea()
         assertVersionedSnapshot(matching: toast, as: .swiftUiImage())
     }
 
@@ -73,7 +73,7 @@ class ToastSnapshots: XCTestCase {
                         Text("Toast text").padding(.trailing)
                     }
                     .eraseToAnyView()
-        }.background(Color(.systemBackground)).environment(\.colorScheme, .dark)
+        }.ignoresSafeArea().background(Color(.systemBackground)).environment(\.colorScheme, .dark)
         assertVersionedSnapshot(matching: toast, as: .swiftUiImage())
     }
 
@@ -87,7 +87,7 @@ class ToastSnapshots: XCTestCase {
                         Text("Toast text").padding(.trailing)
                     }
                     .eraseToAnyView()
-            }.background(Color(.systemBackground)).environment(\.colorScheme, .dark)
+            }.ignoresSafeArea().background(Color(.systemBackground)).environment(\.colorScheme, .dark)
         assertVersionedSnapshot(matching: toast, as: .swiftUiImage())
     }
 }

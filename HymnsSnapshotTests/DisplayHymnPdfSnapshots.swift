@@ -29,7 +29,7 @@ class DisplayHymnPdfSnapshots: XCTestCase {
             .piano(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=ppdf")!).eraseToAnyView())]
         viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1151_identifier)
         sleep(2)
-        assertVersionedSnapshot(matching: DisplayHymnView(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(matching: DisplayHymnView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
     }
 
     func test_classic1151_guitar() {
@@ -45,7 +45,7 @@ class DisplayHymnPdfSnapshots: XCTestCase {
             .piano(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=ppdf")!).eraseToAnyView())]
         viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1151_identifier)
         sleep(2)
-        assertVersionedSnapshot(matching: DisplayHymnView(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(matching: DisplayHymnView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
     }
 
     func test_classic1151_piano() {
@@ -61,6 +61,6 @@ class DisplayHymnPdfSnapshots: XCTestCase {
             viewModel.currentTab]
         viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1151_identifier)
         sleep(2)
-        assertVersionedSnapshot(matching: DisplayHymnView(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(matching: DisplayHymnView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
     }
 }

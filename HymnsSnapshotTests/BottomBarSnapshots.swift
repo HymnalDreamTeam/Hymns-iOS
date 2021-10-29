@@ -18,7 +18,7 @@ class BottomBarSnapshots: XCTestCase {
     func test_noButtons() {
         let bottomBar = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
             get: {self.dialog},
-            set: {self.dialog = $0}), viewModel: viewModel).padding()
+            set: {self.dialog = $0}), viewModel: viewModel).padding().ignoresSafeArea()
         assertVersionedSnapshot(matching: bottomBar, as: .swiftUiImage())
     }
 
@@ -27,7 +27,7 @@ class BottomBarSnapshots: XCTestCase {
 
         let bottomBar = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
             get: {self.dialog},
-            set: {self.dialog = $0}), viewModel: viewModel).padding()
+            set: {self.dialog = $0}), viewModel: viewModel).padding().ignoresSafeArea()
         assertVersionedSnapshot(matching: bottomBar, as: .image())
     }
 
@@ -36,7 +36,7 @@ class BottomBarSnapshots: XCTestCase {
 
         let bottomBar = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
             get: {self.dialog},
-            set: {self.dialog = $0}), viewModel: viewModel).padding()
+            set: {self.dialog = $0}), viewModel: viewModel).padding().ignoresSafeArea()
         assertVersionedSnapshot(matching: bottomBar, as: .image())
     }
 
@@ -53,7 +53,7 @@ class BottomBarSnapshots: XCTestCase {
 
         let bottomBar = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
             get: {self.dialog},
-            set: {self.dialog = $0}), viewModel: viewModel).padding()
+            set: {self.dialog = $0}), viewModel: viewModel).padding().ignoresSafeArea()
         assertVersionedSnapshot(matching: bottomBar, as: .image(precision: 0.99))
     }
 
@@ -74,7 +74,7 @@ class BottomBarSnapshots: XCTestCase {
 
         let bottomBar = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
             get: {self.dialog},
-            set: {self.dialog = $0}), viewModel: viewModel).padding()
+            set: {self.dialog = $0}), viewModel: viewModel).padding().ignoresSafeArea()
         assertVersionedSnapshot(matching: bottomBar, as: .image())
     }
 }

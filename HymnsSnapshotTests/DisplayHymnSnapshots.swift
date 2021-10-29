@@ -14,7 +14,9 @@ class DisplayHymnSnapshots: XCTestCase {
 
     func test_loading() {
         viewModel = DisplayHymnViewModel(hymnToDisplay: hymn40_identifier)
-        assertVersionedSnapshot(matching: DisplayHymnView(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: DisplayHymnView(viewModel: viewModel).ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 
     func test_classic40() {
@@ -37,7 +39,9 @@ class DisplayHymnSnapshots: XCTestCase {
             .piano(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/40/f=ppdf")!).eraseToAnyView())]
         viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn40_identifier)
         viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize, .tags]
-        assertVersionedSnapshot(matching: DisplayHymnView(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: DisplayHymnView(viewModel: viewModel).ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 
     func test_classic1334() {
@@ -57,7 +61,9 @@ class DisplayHymnSnapshots: XCTestCase {
             .piano(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/1334/f=ppdf")!).eraseToAnyView())]
         viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1334_identifier)
         viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize, .tags]
-        assertVersionedSnapshot(matching: DisplayHymnView(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: DisplayHymnView(viewModel: viewModel).ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 
     func test_classic1151_noTabs() {
@@ -75,7 +81,9 @@ class DisplayHymnSnapshots: XCTestCase {
         viewModel.tabItems = [HymnLyricsTab]()
         viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1151_identifier)
         viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize, .tags]
-        assertVersionedSnapshot(matching: DisplayHymnView(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: DisplayHymnView(viewModel: viewModel).ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 
     func test_classic1151_oneTab() {
@@ -93,7 +101,9 @@ class DisplayHymnSnapshots: XCTestCase {
         viewModel.tabItems = [viewModel.currentTab]
         viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1151_identifier)
         viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize, .tags]
-        assertVersionedSnapshot(matching: DisplayHymnView(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: DisplayHymnView(viewModel: viewModel).ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 
     func test_classic1151_twoTabs() {
@@ -113,7 +123,9 @@ class DisplayHymnSnapshots: XCTestCase {
             .chords(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=gtpdf")!).eraseToAnyView())]
         viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1151_identifier)
         viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize, .tags]
-        assertVersionedSnapshot(matching: DisplayHymnView(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: DisplayHymnView(viewModel: viewModel).ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 
     func test_classic1151_threeTabs() {
@@ -141,7 +153,9 @@ class DisplayHymnSnapshots: XCTestCase {
             .musicPlayback(AudioPlayerViewModel(url: URL(string: "https://www.hymnal.net/Hymns/NewSongs/mp3/ns0767.mp3")!))
         ]
         viewModel.bottomBar = bottomBarViewModel
-        assertVersionedSnapshot(matching: DisplayHymnView(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: DisplayHymnView(viewModel: viewModel).ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 
     func test_classic1151_fourTabs() {
@@ -172,6 +186,8 @@ class DisplayHymnSnapshots: XCTestCase {
             .songInfo(SongInfoDialogViewModel(hymnToDisplay: hymn1151_identifier))
         ]
         viewModel.bottomBar = bottomBarViewModel
-        assertVersionedSnapshot(matching: DisplayHymnView(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: DisplayHymnView(viewModel: viewModel).ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 }

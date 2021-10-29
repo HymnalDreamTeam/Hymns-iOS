@@ -15,11 +15,15 @@ class BrowseScripturesSnapshots: XCTestCase {
 
     func test_error() {
         viewModel.scriptures = nil
-        assertVersionedSnapshot(matching: BrowseScripturesView(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: BrowseScripturesView(viewModel: viewModel).ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 
     func test_loading() {
-        assertVersionedSnapshot(matching: BrowseScripturesView(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: BrowseScripturesView(viewModel: viewModel).ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 
     func test_scriptures() {
@@ -29,15 +33,33 @@ class BrowseScripturesSnapshots: XCTestCase {
                                                    ScriptureSongViewModel(reference: "1:26", title: "God created man", hymnIdentifier: hymn1151_identifier)]),
                ScriptureViewModel(book: .revelation,
                                   scriptureSongs: [ScriptureSongViewModel(reference: "13:5", title: "White horse?", hymnIdentifier: hymn40_identifier)])]
-        assertVersionedSnapshot(matching: BrowseScripturesView(viewModel: viewModel), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: BrowseScripturesView(viewModel: viewModel).ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 
     func test_scripture_song() {
         let viewModel = ScriptureSongViewModel(reference: "1:19", title: "And we have the prophetic word",
                                                hymnIdentifier: PreviewHymnIdentifiers.cupOfChrist)
-        assertVersionedSnapshot(matching: ScriptureSongView(viewModel: viewModel).environment(\.sizeCategory, .medium), as: .swiftUiImage())
-        assertVersionedSnapshot(matching: ScriptureSongView(viewModel: viewModel).environment(\.sizeCategory, .extraExtraExtraLarge), as: .swiftUiImage())
-        assertVersionedSnapshot(matching: ScriptureSongView(viewModel: viewModel).environment(\.sizeCategory, .accessibilityMedium), as: .swiftUiImage())
-        assertVersionedSnapshot(matching: ScriptureSongView(viewModel: viewModel).environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: ScriptureSongView(viewModel: viewModel)
+                .environment(\.sizeCategory, .medium)
+                .ignoresSafeArea(),
+            as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: ScriptureSongView(viewModel: viewModel)
+                .environment(\.sizeCategory, .extraExtraExtraLarge)
+                .ignoresSafeArea(),
+            as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: ScriptureSongView(viewModel: viewModel)
+                .environment(\.sizeCategory, .accessibilityMedium)
+                .ignoresSafeArea(),
+            as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: ScriptureSongView(viewModel: viewModel)
+                .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
+                .ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 }

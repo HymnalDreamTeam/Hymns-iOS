@@ -11,6 +11,8 @@ class AboutUsDialogSnapshots: XCTestCase {
     }
 
     func test_dialog() {
-        assertVersionedSnapshot(matching: AboutUsDialogView(), as: .swiftUiImage())
+        assertVersionedSnapshot(
+            matching: AboutUsDialogView().ignoresSafeArea(),
+            as: .swiftUiImage())
     }
 }
