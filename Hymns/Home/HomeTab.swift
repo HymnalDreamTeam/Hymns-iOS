@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-enum HomeTab {
+enum HomeTab: CaseIterable {
     case none
     case home
     case browse
