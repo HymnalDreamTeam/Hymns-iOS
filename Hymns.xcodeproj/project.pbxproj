@@ -110,8 +110,6 @@
 		3B6DA64724A88CAA00A9277F /* BrowseResultsViewCan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B6DA64624A88CAA00A9277F /* BrowseResultsViewCan.swift */; };
 		3B6DA64924A9287300A9277F /* TagStoreTestImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B6DA64824A9287300A9277F /* TagStoreTestImpl.swift */; };
 		3B6DA64B24A9637C00A9277F /* ContentSizeCategory+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B6DA64A24A9637C00A9277F /* ContentSizeCategory+Extensions.swift */; };
-		3B6DA64D24A9670300A9277F /* SongInfoSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B6DA64C24A9670300A9277F /* SongInfoSheetView.swift */; };
-		3B6DA64F24A96A4F00A9277F /* SongInfoSheetSnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B6DA64E24A96A4F00A9277F /* SongInfoSheetSnapshots.swift */; };
 		3B73973324A0057200A2A63F /* BaseViewCan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B73973224A0057200A2A63F /* BaseViewCan.swift */; };
 		3B7451C7249535E1008B80BC /* WrappedHStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7451C6249535E1008B80BC /* WrappedHStack.swift */; };
 		3B7555C82437C24F00DA17F6 /* HymnLyricsViewModelSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7555C72437C24F00DA17F6 /* HymnLyricsViewModelSpec.swift */; };
@@ -403,8 +401,6 @@
 		3B6DA64624A88CAA00A9277F /* BrowseResultsViewCan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseResultsViewCan.swift; sourceTree = "<group>"; };
 		3B6DA64824A9287300A9277F /* TagStoreTestImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagStoreTestImpl.swift; sourceTree = "<group>"; };
 		3B6DA64A24A9637C00A9277F /* ContentSizeCategory+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContentSizeCategory+Extensions.swift"; sourceTree = "<group>"; };
-		3B6DA64C24A9670300A9277F /* SongInfoSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongInfoSheetView.swift; sourceTree = "<group>"; };
-		3B6DA64E24A96A4F00A9277F /* SongInfoSheetSnapshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongInfoSheetSnapshots.swift; sourceTree = "<group>"; };
 		3B73973224A0057200A2A63F /* BaseViewCan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewCan.swift; sourceTree = "<group>"; };
 		3B7451C6249535E1008B80BC /* WrappedHStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrappedHStack.swift; sourceTree = "<group>"; };
 		3B7555C72437C24F00DA17F6 /* HymnLyricsViewModelSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HymnLyricsViewModelSpec.swift; sourceTree = "<group>"; };
@@ -1040,7 +1036,6 @@
 			children = (
 				3BA4612424771C460068F269 /* SongInfoViewModel.swift */,
 				3BA4612A24772B250068F269 /* SongInfoDialogView.swift */,
-				3B6DA64C24A9670300A9277F /* SongInfoSheetView.swift */,
 				3BA4612C24772B6B0068F269 /* SongInfoDialogViewModel.swift */,
 				3BA4612624771EAD0068F269 /* SongInfoView.swift */,
 			);
@@ -1180,7 +1175,6 @@
 				3BE7C91B249CAB2700B04A1F /* HomeSnapshots.swift */,
 				3BE31A3E24A468E400B1A038 /* SettingsSnapshots.swift */,
 				3BB1928224A3EDB600E5F9FA /* SongInfoDialogSnapshots.swift */,
-				3B6DA64E24A96A4F00A9277F /* SongInfoSheetSnapshots.swift */,
 				3BBCC21224DFDF6400977961 /* SoundCloudSnapshots.swift */,
 				3B3DF63824A1CBAF00E60ED9 /* TagSheetSnapshots.swift */,
 				3BCC54CA24C80B2100F0D6FC /* ToastSnapshots.swift */,
@@ -1881,7 +1875,6 @@
 				B5A77A57247DA0D900447008 /* AudioPlayerViewModel.swift in Sources */,
 				3B6DA64924A9287300A9277F /* TagStoreTestImpl.swift in Sources */,
 				3BB7DE4824FCA9D600D4E6FB /* DisplayHymnPdfView.swift in Sources */,
-				3B6DA64D24A9670300A9277F /* SongInfoSheetView.swift in Sources */,
 				3BB931AB24E3B46400E0C873 /* PrivacyPolicyView.swift in Sources */,
 				3B45B904243BEC8400D38BEF /* SongResultView.swift in Sources */,
 				B5809DFA244F60FD00EF0C63 /* FavoriteEntity.swift in Sources */,
@@ -1997,7 +1990,6 @@
 				3B3DF63924A1CBAF00E60ED9 /* TagSheetSnapshots.swift in Sources */,
 				3BE31A3F24A468E400B1A038 /* SettingsSnapshots.swift in Sources */,
 				3BDD8708249DBD33006288C8 /* FavoritesSnapshots.swift in Sources */,
-				3B6DA64F24A96A4F00A9277F /* SongInfoSheetSnapshots.swift in Sources */,
 				3B52698E24A01E7E006E72E1 /* DisplayHymnPdfSnapshots.swift in Sources */,
 				3BBA15E824CC99850010EEC8 /* AudioPlayerSnapshots.swift in Sources */,
 				3BBA15EA24CCBCD00010EEC8 /* BottomBarSnapshots.swift in Sources */,
