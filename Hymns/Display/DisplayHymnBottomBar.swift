@@ -127,8 +127,6 @@ struct DisplayHymnBottomBar: View {
                 return ShareSheet(activityItems: [lyrics]).eraseToAnyView()
             case .tags:
                 return TagSheetView(viewModel: TagSheetViewModel(hymnToDisplay: self.viewModel.identifier), sheet: self.$sheet).eraseToAnyView()
-            case .songInfo(let viewModel): // Case only used for large accesability
-                return SongInfoSheetView(viewModel: viewModel).eraseToAnyView()
             }
         }.background(Color(.systemBackground))
     }
@@ -193,7 +191,6 @@ extension ActionSheetItem: Identifiable {
 enum DisplayHymnSheet {
     case share(String)
     case tags
-    case songInfo(SongInfoDialogViewModel)
 }
 
 extension DisplayHymnSheet: Identifiable {
@@ -203,8 +200,6 @@ extension DisplayHymnSheet: Identifiable {
             return 0
         case .tags:
             return 1
-        case .songInfo:
-            return 2
         }
     }
 }

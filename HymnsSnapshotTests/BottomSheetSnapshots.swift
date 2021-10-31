@@ -47,7 +47,7 @@ class BottomSheetSnapshots: XCTestCase {
     func test_songInfo_empty() {
         let viewModel = SongInfoDialogViewModel(hymnToDisplay: cupOfChrist_identifier)
         assertVersionedSnapshot(
-            matching: SongInfoSheetView(viewModel: viewModel),
+            matching: SongInfoDialogView(viewModel: viewModel),
             as: .image(layout: .fixed(width: 250, height: 300)))
     }
 
@@ -57,7 +57,7 @@ class BottomSheetSnapshots: XCTestCase {
                               SongInfoViewModel(label: "Subcategory", values: ["As the Source of Life"]),
                               SongInfoViewModel(label: "Author", values: ["Will Jeng", "Titus Ting"])]
         assertVersionedSnapshot(
-            matching: SongInfoSheetView(viewModel: viewModel).ignoresSafeArea(),
+            matching: SongInfoDialogView(viewModel: viewModel).ignoresSafeArea(),
             as: .swiftUiImage())
     }
 
@@ -67,7 +67,7 @@ class BottomSheetSnapshots: XCTestCase {
                               SongInfoViewModel(label: "SubcategorySubcategorySubcategory", values: ["As As As the the the Source Source Source of of of Life Life Life"]),
                               SongInfoViewModel(label: "AuthorAuthorAuthor", values: ["Will Will Will Jeng Jeng Jeng", "Titus Titus Titus Ting Ting Ting"])]
         assertVersionedSnapshot(
-            matching: SongInfoSheetView(viewModel: viewModel).ignoresSafeArea(),
+            matching: SongInfoDialogView(viewModel: viewModel).ignoresSafeArea(),
             as: .swiftUiImage())
     }
 }
