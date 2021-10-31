@@ -37,9 +37,9 @@ struct HomeContainerView: View {
                 }
                 UITabBar.appearance().unselectedItemTintColor = .label
 
-                // Need to hide iOS 15 methods from iOS 14 builder so build doesn't fail
-                // https://stackoverflow.com/questions/68798163/is-it-possible-to-hide-code-based-on-sdk-version
-                #if __IPHONE_15_0
+                // TODO This was added beceause the build kept failing on Github CI. So we disable this so it won't disrupt the CI running. However,
+                //   we should remove this as soon as possible.
+                #if !DEBUG
                 if #available(iOS 15.0, *) {
                     // Need to set the tab bar appearance to avoid the default transparent appearance
                     // https://stackoverflow.com/a/69296019/1907538
