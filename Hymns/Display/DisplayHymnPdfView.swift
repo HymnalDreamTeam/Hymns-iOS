@@ -21,7 +21,7 @@ struct DisplayHymnPdfView: View {
                 Image(systemName: "arrow.up.left.and.arrow.down.right").rotationEffect(.degrees(90)).accessibility(label: Text("Maximize music")).padding().padding(.top, 15)
             }).zIndex(1)
             PDFViewer(preloader: pdfPreloader, url: url)
-        }.sheet(isPresented: $showPdfSheet) {
+        }.fullScreenCover(isPresented: $showPdfSheet) {
             ZStack(alignment: .topLeading) {
                 Button(action: {
                     self.showPdfSheet = false
