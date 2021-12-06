@@ -11,42 +11,29 @@ struct HomeContainerView: View {
 
     var body: some View {
         NavigationView {
-            TabView(selection: $selectedTab) {
-                HomeView()
-                    .tabItem {HomeTab.home.getImage(selectedTab == HomeTab.home).font(.system(size: buttonSize))}
-                    .tag(HomeTab.home)
-                    .hideNavigationBar()
-
-                browseView
-                    .tabItem { HomeTab.browse.getImage(selectedTab == HomeTab.browse).font(.system(size: buttonSize))}
-                    .tag(HomeTab.browse)
-                    .hideNavigationBar()
-
-                favoritesView
-                    .tabItem {HomeTab.favorites.getImage(selectedTab == HomeTab.favorites).font(.system(size: buttonSize))}
-                    .tag(HomeTab.favorites)
-                    .hideNavigationBar()
-
-                settingsView
-                    .tabItem {HomeTab.settings.getImage(selectedTab == HomeTab.settings).font(.system(size: buttonSize))}
-                    .tag(HomeTab.settings)
-                    .hideNavigationBar()
-            }.onAppear {
-                if self.selectedTab == .none {
-                    self.selectedTab = .home
+            VStack {
+                ZStack {
+                    if selectedTab == .home {
+                        HomeView()
+                    } else if selectedTab == .browse {
+                        browseView
+                    } else if selectedTab == .favorites {
+                        favoritesView
+                    } else if selectedTab == .settings {
+                        settingsView
+                    }
                 }
-                UITabBar.appearance().unselectedItemTintColor = .label
-
-                // TODO: This was added beceause the build kept failing on Github CI. So we disable this so it won't
-                //   disrupt the CI running. However, we should remove this as soon as possible.
-                #if !DEBUG
-                if #available(iOS 15.0, *) {
-                    // Need to set the tab bar appearance to avoid the default transparent appearance
-                    // https://stackoverflow.com/a/69296019/1907538
-                    UITabBar.appearance().scrollEdgeAppearance = UITabBarAppearance()
-                }
-                #endif
-            }.hideNavigationBar().background(Color(.yellow))
+                Spacer()
+                HomeTabView(selectedTab: $selectedTab)
+                    .padding([.horizontal, .bottom])
+                    .frame(width: .none, height: 80, alignment: .top)
+                    .background(Color(red: 0.7, green: 0.7, blue: 0.7).opacity(0.1))
+            }.hideNavigationBar().edgesIgnoringSafeArea(.bottom)
+        }.onAppear {
+            // App crashes on startup without this
+            if self.selectedTab == .none {
+                self.selectedTab = .home
+            }
         }.navigationViewStyle(StackNavigationViewStyle())
     }
 }
@@ -65,13 +52,14 @@ struct HomeContainerView_Previews: PreviewProvider {
             HomeContainerView().environment(\.locale, .init(identifier: "es")).previewDisplayName("Spanish")
             // preview different sizes
             HomeContainerView()
-                .previewDevice(PreviewDevice(rawValue: "iPhone SE"))
-                .previewDisplayName("iPhone SE")
+                .previewDevice("iPhone 13")
+                .previewDisplayName("iPhone 13")
             HomeContainerView()
-                .previewDevice(PreviewDevice(rawValue: "iPhone XS Max"))
+                .previewDevice("iPhone XS Max")
                 .previewDisplayName("iPhone XS Max")
             HomeContainerView()
-                .previewDevice(PreviewDevice(rawValue: "iPad Air 2"))
+                .previewLayout(.device)
+                .previewDevice("iPad Air 2")
                 .previewDisplayName("iPad Air 2")
             // preview dark mode
             HomeContainerView().environment(\.colorScheme, .dark).previewDisplayName("Dark mode")
