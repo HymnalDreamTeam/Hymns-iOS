@@ -80,7 +80,7 @@ public class HomeViewCan: BaseViewCan {
     }
 
     public func tapHome() -> HomeViewCan {
-        app.tabBars.children(matching: .button).element(boundBy: 0).tap()
+        app.buttons["Home tab"].tap()
         return self
     }
 
@@ -90,7 +90,7 @@ public class HomeViewCan: BaseViewCan {
     }
 
     public func tapBrowse() -> HomeViewCan {
-        app.tabBars.children(matching: .button).element(boundBy: 1).tap()
+        app.buttons["Browse tab"].tap()
         return self
     }
 
@@ -105,7 +105,7 @@ public class HomeViewCan: BaseViewCan {
     }
 
     public func tapFavorites() -> HomeViewCan {
-        app.tabBars.children(matching: .button).element(boundBy: 2).tap()
+        app.buttons["Favorites tab"].tap()
         return self
     }
 
@@ -120,7 +120,7 @@ public class HomeViewCan: BaseViewCan {
     }
 
     public func tapSettings() -> HomeViewCan {
-        app.tabBars.children(matching: .button).element(boundBy: 3).tap()
+        app.buttons["Settings tab"].tap()
         return self
     }
 
