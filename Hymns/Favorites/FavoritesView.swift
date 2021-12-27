@@ -27,7 +27,7 @@ struct FavoritesView: View {
                     NavigationLink(destination: favorite.destinationView) {
                         SongResultView(viewModel: favorite)
                     }
-                }.id(viewModel.favorites).resignKeyboardOnDragGesture().eraseToAnyView()
+                }.listStyle(.plain).id(viewModel.favorites).resignKeyboardOnDragGesture().eraseToAnyView()
             }
         }.onAppear {
             let params: [String: Any] = [

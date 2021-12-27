@@ -22,7 +22,7 @@ struct CategoryView: View {
                             SubcategoryView(viewModel: subcategory)
                         }
                     }
-                }.frame(height: CGFloat(viewModel.subcategories.count * 45))
+                }.frame(height: CGFloat(viewModel.subcategories.count * 45)).listStyle(.plain)
             }
         }
     }

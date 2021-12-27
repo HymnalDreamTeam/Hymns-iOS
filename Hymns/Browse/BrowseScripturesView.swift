@@ -23,7 +23,7 @@ struct BrowseScripturesView: View {
 
             return List(scriptures) { scriptureViewModel in
                 ScriptureView(viewModel: scriptureViewModel)
-            }.eraseToAnyView()
+            }.listStyle(.plain).eraseToAnyView()
         }.background(Color(.systemBackground))
     }
 }

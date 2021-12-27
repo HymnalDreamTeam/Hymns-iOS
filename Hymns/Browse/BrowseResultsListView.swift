@@ -34,7 +34,7 @@ struct BrowseResultsListView: View {
                     NavigationLink(destination: songResult.destinationView) {
                         SongResultView(viewModel: songResult)
                     }
-                }.resignKeyboardOnDragGesture().eraseToAnyView()
+                }.listStyle(.plain).resignKeyboardOnDragGesture().eraseToAnyView()
             }
         }.onAppear {
             self.viewModel.fetchResults()

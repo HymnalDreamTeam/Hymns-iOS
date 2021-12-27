@@ -14,7 +14,7 @@ struct AllSongsView: View {
             NavigationLink(destination: BrowseResultsListView(viewModel: BrowseResultsListViewModel(hymnType: hymnType))) {
                 Text(hymnType.displayTitle)
             }
-        }.padding(.top).background(Color(.systemBackground))
+        }.padding(.top).background(Color(.systemBackground)).listStyle(.plain)
     }
 }
 

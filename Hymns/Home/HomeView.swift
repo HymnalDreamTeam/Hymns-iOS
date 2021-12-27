@@ -68,9 +68,12 @@ struct HomeView: View {
                         NavigationLink(destination: songResult.destinationView) {
                             SongResultView(viewModel: songResult)
                         }.onAppear {
+                            
                             self.viewModel.loadMore(at: songResult)
                         }
-                    }.resignKeyboardOnDragGesture()
+                    }.listStyle(.plain).resignKeyboardOnDragGesture().onAppear {
+                        UITableView.appearance().separatorStyle = .none
+                    }
                 }
             }
         }.onAppear {
