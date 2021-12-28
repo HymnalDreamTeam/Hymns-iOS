@@ -20,7 +20,7 @@ struct ScriptureView: View {
                     NavigationLink(destination: DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: scriptureSong.hymnIdentifier))) {
                         ScriptureSongView(viewModel: scriptureSong)
                     }
-                }.frame(height: CGFloat(viewModel.scriptureSongs.count * 45))
+                }.listStyle(PlainListStyle()).frame(height: CGFloat(viewModel.scriptureSongs.count * 45))
             }
         }
     }

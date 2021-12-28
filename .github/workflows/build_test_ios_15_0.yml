@@ -1,4 +1,4 @@
-name: Build and Test - iOS Latest
+name: Build and Test - iOS 15.0
 
 on:
   push:

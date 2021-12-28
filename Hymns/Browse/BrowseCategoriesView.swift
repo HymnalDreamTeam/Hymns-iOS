@@ -16,7 +16,7 @@ struct BrowseCategoriesView: View {
 
             return List(categories) { category in
                 CategoryView(viewModel: category)
-            }.id(viewModel.categories).eraseToAnyView() // https://stackoverflow.com/questions/56533511/how-update-a-swiftui-list-without-animation
+            }.listStyle(PlainListStyle()).id(viewModel.categories).eraseToAnyView() // https://stackoverflow.com/questions/56533511/how-update-a-swiftui-list-without-animation
         }.onAppear {
             self.viewModel.fetchCategories()
         }.background(Color(.systemBackground))
