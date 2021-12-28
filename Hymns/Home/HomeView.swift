@@ -70,7 +70,7 @@ struct HomeView: View {
                         }.onAppear {
                             self.viewModel.loadMore(at: songResult)
                         }
-                    }.resignKeyboardOnDragGesture()
+                    }.listStyle(PlainListStyle()).resignKeyboardOnDragGesture()
                 }
             }
         }.onAppear {
