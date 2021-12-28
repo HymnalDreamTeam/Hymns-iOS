@@ -260,9 +260,9 @@ struct DisplayHymnBottomBar_Previews: PreviewProvider {
         return Group {
             noButtons.previewDisplayName("0 buttons").previewLayout(.sizeThatFits)
             oneButton.previewDisplayName("one button").previewLayout(.sizeThatFits)
-            twoButtons.previewDisplayName("two buttons").previewLayout(.sizeThatFits)
+            twoButtons.previewDisplayName("two buttons").previewLayout(.fixed(width: 120, height: 50))
             maximum.previewDisplayName("maximum number of buttons").previewLayout(.sizeThatFits)
-            overflow.previewDisplayName("overflow menu").previewLayout(.sizeThatFits)
+            overflow.previewDisplayName("overflow menu").previewLayout(.fixed(width: 600, height: 50))
         }
     }
 }

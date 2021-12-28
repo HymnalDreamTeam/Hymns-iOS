@@ -19,7 +19,7 @@ class AudioPlayerSnapshots: XCTestCase {
         viewModel.currentTime = 50
         assertVersionedSnapshot(
             matching: AudioPlayer(viewModel: viewModel).padding(),
-            as: .image)
+            as: .swiftUiImage())
     }
 
     func test_stopped() {
@@ -28,7 +28,7 @@ class AudioPlayerSnapshots: XCTestCase {
         viewModel.shouldRepeat = true
         assertVersionedSnapshot(
             matching: AudioPlayer(viewModel: viewModel).padding(),
-            as: .image)
+            as: .swiftUiImage())
     }
 
     func test_buffering() {
@@ -43,6 +43,6 @@ class AudioPlayerSnapshots: XCTestCase {
         viewModel.showSpeedAdjuster = false
         assertVersionedSnapshot(
             matching: AudioPlayer(viewModel: viewModel).padding(),
-            as: .image)
+            as: .swiftUiImage())
     }
 }

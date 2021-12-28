@@ -60,3 +60,9 @@ public func assertVersionedSnapshot<Value, Format>(
     guard let message = failure else { return }
     XCTFail(message, file: file, line: line)
 }
+
+extension SwiftUI.View {
+    func referenceFrame(width: CGFloat, height: CGFloat) -> some View {
+        self.frame(width: width, height: height)
+    }
+}
