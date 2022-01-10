@@ -42,6 +42,7 @@ struct BrowseResultsListView: View {
     }
 }
 
+#if DEBUG
 struct BrowseResultsListView_Previews: PreviewProvider {
     static var previews: some View {
         let emptyViewModel = BrowseResultsListViewModel(tag: UiTag(title: "Best songs", color: .none))
@@ -60,3 +61,4 @@ struct BrowseResultsListView_Previews: PreviewProvider {
         }
     }
 }
+#endif
