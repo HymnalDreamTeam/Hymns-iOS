@@ -30,6 +30,10 @@ extension View {
     func maxWidth(alignment: Alignment = .center) -> some View {
         self.frame(minWidth: .zero, idealWidth: .infinity, maxWidth: .infinity, alignment: alignment)
     }
+    
+    func maxHeight(alignment: Alignment = .center) -> some View {
+        self.frame(minHeight: .zero, idealHeight: .infinity, maxHeight: .infinity, alignment: alignment)
+    }
 }
 
 /**
