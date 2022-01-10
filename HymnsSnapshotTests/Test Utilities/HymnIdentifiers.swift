@@ -1,6 +1,6 @@
 @testable import Hymns
 
-//swiftlint:disable identifier_name
+// swiftlint:disable identifier_name
 
 struct HymnIdentifiers {}
 
