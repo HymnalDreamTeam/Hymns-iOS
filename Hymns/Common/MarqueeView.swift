@@ -23,7 +23,7 @@ struct MarqueeText: View {
                         .animation(Animation.linear(duration: 10).repeatForever(autoreverses: self.autoReverse))
                         .anchorPreference(key: MarqueeWidthPreferenceKey.self, value: .bounds) { anchor in
                             return geometry[anchor].width
-                    }
+                        }.maxHeight()
                 }.onPreferenceChange(MarqueeWidthPreferenceKey.self) { width in
                     self.scrollTextNegativeOffset = -width
                 }
