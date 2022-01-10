@@ -1,7 +1,7 @@
 import Foundation
 @testable import Hymns
 
-//swiftlint:disable force_try identifier_name
+// swiftlint:disable force_try identifier_name
 class Hymns {}
 
 let hymn1151_hymn = getHymnFromJson(fileName: "classic_1151")

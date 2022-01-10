@@ -16,7 +16,7 @@ class SoundCloudViewModel: ObservableObject {
 
     var titleObservation: NSKeyValueObservation?
 
-    var titleObserver: ((WKWebView, NSKeyValueObservedChange<String?>) -> Void) { { (webView, change) in
+    var titleObserver: ((WKWebView, NSKeyValueObservedChange<String?>) -> Void) { { (_, change) in
         guard let title = change.newValue else {
             return
         }

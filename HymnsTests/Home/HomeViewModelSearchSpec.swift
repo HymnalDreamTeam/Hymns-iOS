@@ -141,7 +141,7 @@ class HomeViewModelSearchSpec: QuickSpec {
                     let classic594 = UiSongResult(name: "classic594", identifier: HymnIdentifier(hymnType: .classic, hymnNumber: "594", queryParams: ["gb": "1", "query": "3"]))
                     let newTune7 = UiSongResult(name: "newTune7", identifier: HymnIdentifier(hymnType: .newTune, hymnNumber: "7"))
                     beforeEach {
-                        given(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 1)) ~> { searchInput, pageNumber in
+                        given(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 1)) ~> { _, _ in
                             expect(target.state).to(equal(HomeResultState.loading))
                             let page = UiSongResultsPage(results: [classic594, newTune7], hasMorePages: false)
                             return Just(page).mapError({ _ -> ErrorType in
@@ -266,14 +266,14 @@ class HomeViewModelSearchSpec: QuickSpec {
                            UiSongResult(name: "classic2", identifier: HymnIdentifier(hymnType: .classic, hymnNumber: "1"))]
                     context("first page complete successfully") {
                         beforeEach {
-                            given(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 1)) ~> { searchInput, pageNumber in
+                            given(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 1)) ~> { _, _ in
                                 expect(target.state).to(equal(HomeResultState.loading))
                                 let page = UiSongResultsPage(results: page1, hasMorePages: true)
                                 return Just(page).mapError({ _ -> ErrorType in
                                     // This will never be triggered.
                                 }).eraseToAnyPublisher()
                             }
-                            given(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 2)) ~> { searchInput, pageNumber in
+                            given(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 2)) ~> { _, _ in
                                 expect(target.state).to(equal(HomeResultState.results))
                                 let page = UiSongResultsPage(results: page2, hasMorePages: false)
                                 return Just(page).mapError({ _ -> ErrorType in
@@ -343,7 +343,7 @@ class HomeViewModelSearchSpec: QuickSpec {
                     context("first page incomplete") {
                         var response: CurrentValueSubject<UiSongResultsPage, ErrorType>!
                         beforeEach {
-                            given(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 1)) ~> { searchInput, pageNumber in
+                            given(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 1)) ~> { _, _ in
                                 expect(target.state).to(equal(HomeResultState.loading))
                                 return response.eraseToAnyPublisher()
                             }

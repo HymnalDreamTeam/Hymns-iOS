@@ -63,7 +63,7 @@ class HomeViewModelSearchSpec: QuickSpec {
                     let noHymnNumber = SongResult(name: "noHymnNumber", path: "/en/hymn/h/a")
                     let songResultsPage = SongResultsPage(results: [classic594, noHymnType, newTune7, noHymnNumber], hasMorePages: true)
                     beforeEach {
-                        given(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 1)) ~> { searchInput, pageNumber in
+                        given(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 1)) ~> { _, _ in
                             expect(target.state).to(equal(HomeResultState.loading))
                             return Just(songResultsPage).eraseToAnyPublisher()
                         }
