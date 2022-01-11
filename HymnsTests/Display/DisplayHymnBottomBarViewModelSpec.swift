@@ -114,7 +114,7 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                 it("should have 5 buttons in the buttons list and the rest in the overflow") {
                     expect(target.buttons).to(haveCount(5))
                     expect(target.buttons[0]).to(equal(.share("Drink! a river pure and clear that's flowing from the throne;\nEat! the tree of life with fruits abundant, richly grown\n\nDo come, oh, do come,\nSays Spirit and the Bride:\n\n")))
-                    expect(target.buttons[1]).to(equal(.fontSize))
+                    expect(target.buttons[1]).to(equal(.fontSize(FontPickerViewModel())))
                     expect(target.buttons[2]).to(equal(.languages([
                         SongResultViewModel(title: "Tagalog", destinationView: EmptyView().eraseToAnyView()),
                         SongResultViewModel(title: "诗歌(简)", destinationView: EmptyView().eraseToAnyView())])))
@@ -139,7 +139,7 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                     it("should not contain the buttons that require network connectivity") {
                         expect(target.buttons).to(haveCount(6))
                         expect(target.buttons[0]).to(equal(.share("Drink! a river pure and clear that's flowing from the throne;\nEat! the tree of life with fruits abundant, richly grown\n\nDo come, oh, do come,\nSays Spirit and the Bride:\n\n")))
-                        expect(target.buttons[1]).to(equal(.fontSize))
+                        expect(target.buttons[1]).to(equal(.fontSize(FontPickerViewModel())))
                         expect(target.buttons[2]).to(equal(.languages([
                             SongResultViewModel(title: "Tagalog", destinationView: EmptyView().eraseToAnyView()),
                             SongResultViewModel(title: "诗歌(简)", destinationView: EmptyView().eraseToAnyView())])))
@@ -175,7 +175,7 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                 it("should have all the buttons in the buttons list and nothing in the overflow") {
                     expect(target.buttons).to(haveCount(5))
                     expect(target.buttons[0]).to(equal(.share("Drink! a river pure and clear that's flowing from the throne;\nEat! the tree of life with fruits abundant, richly grown\n\nDo come, oh, do come,\nSays Spirit and the Bride:\n\n")))
-                    expect(target.buttons[1]).to(equal(.fontSize))
+                    expect(target.buttons[1]).to(equal(.fontSize(FontPickerViewModel())))
                     expect(target.buttons[2]).to(equal(.tags))
                     expect(target.buttons[3]).to(equal(.soundCloud(SoundCloudViewModel(url: URL(string: "https://soundcloud.com/search/results?q=title")!))))
                     expect(target.buttons[4]).to(equal(.youTube(URL(string: "https://www.youtube.com/results?search_query=title")!)))

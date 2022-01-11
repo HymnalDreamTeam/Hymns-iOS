@@ -13,6 +13,7 @@ struct DisplayHymnBottomBar: View {
 
     @State var audioPlayer: AudioPlayerViewModel?
     @State var soundCloudPlayer: SoundCloudPlayerViewModel?
+    @State var fontPicker: FontPickerViewModel?
 
     @ObservedObject var viewModel: DisplayHymnBottomBarViewModel
     @Environment(\.sizeCategory) var sizeCategory: ContentSizeCategory
@@ -31,6 +32,11 @@ struct DisplayHymnBottomBar: View {
             audioPlayer.map { audioPlayer in
                 AudioPlayer(viewModel: audioPlayer).padding()
             }
+
+            fontPicker.map { fontPicker in
+                FontPicker(viewModel: fontPicker).padding()
+            }
+
             HStack(spacing: 0) {
                 ForEach(viewModel.buttons, id: \.self) { button in
                     Spacer()
@@ -38,6 +44,10 @@ struct DisplayHymnBottomBar: View {
                         self.performAction(button: button)
                     }, label: {
                         switch button {
+                        case .fontSize:
+                            return self.fontPicker == nil ?
+                                button.unselectedLabel.eraseToAnyView() :
+                                button.selectedLabel.eraseToAnyView()
                         case .musicPlayback:
                             return self.audioPlayer == nil ?
                                 button.unselectedLabel.eraseToAnyView() :
@@ -67,26 +77,6 @@ struct DisplayHymnBottomBar: View {
             self.viewModel.fetchHymn()
         }.actionSheet(item: $actionSheet) { item -> ActionSheet in
             switch item {
-            case .fontSize:
-                return
-                    ActionSheet(
-                        title: Text(NSLocalizedString("Lyrics font size",
-                                                      comment: "Title for the lyrics font size action sheet")),
-                        message: Text(NSLocalizedString("Change the song lyrics font size",
-                                                        comment: "Message for the lyrics font size action sheet")),
-                        buttons: [
-                            .default(Text(FontSize.normal.rawValue),
-                                     action: {
-                                        self.userDefaultsManager.fontSize = .normal
-                            }),
-                            .default(Text(FontSize.large.rawValue),
-                                     action: {
-                                        self.userDefaultsManager.fontSize = .large
-                            }),
-                            .default(Text(FontSize.xlarge.rawValue),
-                                     action: {
-                                        self.userDefaultsManager.fontSize = .xlarge
-                            }), .cancel()])
             case .languages(let viewModels):
                 return
                     ActionSheet(
@@ -131,12 +121,17 @@ struct DisplayHymnBottomBar: View {
         }.background(Color(.systemBackground))
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     private func performAction(button: BottomBarButton) {
         switch button {
         case .share(let lyrics):
             self.sheet = .share(lyrics)
-        case .fontSize:
-            self.actionSheet = .fontSize
+        case .fontSize(let fontPicker):
+            if self.fontPicker == nil {
+                self.fontPicker = fontPicker
+            } else {
+                self.fontPicker = nil
+            }
         case .languages(let viewModels):
             self.actionSheet = .languages(viewModels)
         case .musicPlayback(let audioPlayer):
@@ -167,7 +162,6 @@ struct DisplayHymnBottomBar: View {
 }
 
 private enum ActionSheetItem {
-    case fontSize
     case languages([SongResultViewModel])
     case relevant([SongResultViewModel])
     case overflow([BottomBarButton])
@@ -176,14 +170,12 @@ private enum ActionSheetItem {
 extension ActionSheetItem: Identifiable {
     var id: Int {
         switch self {
-        case .fontSize:
-            return 0
         case .languages:
-            return 1
+            return 0
         case .relevant:
-            return 2
+            return 1
         case .overflow:
-            return 3
+            return 2
         }
     }
 }
@@ -221,7 +213,7 @@ struct DisplayHymnBottomBar_Previews: PreviewProvider {
             set: {dialogModel = $0}), viewModel: oneButtonViewModel)
 
         let twoButtonsViewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)
-        twoButtonsViewModel.buttons = [.tags, .fontSize]
+        twoButtonsViewModel.buttons = [.tags, .fontSize(FontPickerViewModel())]
         let twoButtons = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
             get: {dialogModel},
             set: {dialogModel = $0}), viewModel: twoButtonsViewModel)
@@ -242,7 +234,7 @@ struct DisplayHymnBottomBar_Previews: PreviewProvider {
         let overflowViewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)
         overflowViewModel.buttons = [
             .share("lyrics"),
-            .fontSize,
+            .fontSize(FontPickerViewModel()),
             .languages([SongResultViewModel(title: "language", destinationView: EmptyView().eraseToAnyView())]),
             .musicPlayback(AudioPlayerViewModel(url: URL(string: "https://www.hymnal.net/Hymns/NewSongs/mp3/ns0767.mp3")!)),
             .relevant([SongResultViewModel(title: "relevant", destinationView: EmptyView().eraseToAnyView())]),

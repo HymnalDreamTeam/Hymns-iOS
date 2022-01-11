@@ -38,7 +38,7 @@ class DisplayHymnSnapshots: XCTestCase {
             .guitar(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/40/f=pdf")!).eraseToAnyView()),
             .piano(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/40/f=ppdf")!).eraseToAnyView())]
         viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn40_identifier)
-        viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize, .tags]
+        viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize(FontPickerViewModel()), .tags]
         assertVersionedSnapshot(
             matching: DisplayHymnView(viewModel: viewModel).ignoresSafeArea(),
             as: .swiftUiImage())
@@ -60,7 +60,7 @@ class DisplayHymnSnapshots: XCTestCase {
             .guitar(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/1334/f=pdf")!).eraseToAnyView()),
             .piano(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/1334/f=ppdf")!).eraseToAnyView())]
         viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1334_identifier)
-        viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize, .tags]
+        viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize(FontPickerViewModel()), .tags]
         assertVersionedSnapshot(
             matching: DisplayHymnView(viewModel: viewModel).ignoresSafeArea(),
             as: .swiftUiImage())
@@ -80,7 +80,7 @@ class DisplayHymnSnapshots: XCTestCase {
         viewModel.currentTab = .lyrics(HymnLyricsView(viewModel: lyricsViewModel).maxSize().eraseToAnyView())
         viewModel.tabItems = [HymnLyricsTab]()
         viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1151_identifier)
-        viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize, .tags]
+        viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize(FontPickerViewModel()), .tags]
         assertVersionedSnapshot(
             matching: DisplayHymnView(viewModel: viewModel).ignoresSafeArea(),
             as: .swiftUiImage())
@@ -100,7 +100,7 @@ class DisplayHymnSnapshots: XCTestCase {
         viewModel.currentTab = .lyrics(HymnLyricsView(viewModel: lyricsViewModel).maxSize().eraseToAnyView())
         viewModel.tabItems = [viewModel.currentTab]
         viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1151_identifier)
-        viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize, .tags]
+        viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize(FontPickerViewModel()), .tags]
         assertVersionedSnapshot(
             matching: DisplayHymnView(viewModel: viewModel).ignoresSafeArea(),
             as: .swiftUiImage())
@@ -122,7 +122,7 @@ class DisplayHymnSnapshots: XCTestCase {
             viewModel.currentTab,
             .chords(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=gtpdf")!).eraseToAnyView())]
         viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1151_identifier)
-        viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize, .tags]
+        viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize(FontPickerViewModel()), .tags]
         assertVersionedSnapshot(
             matching: DisplayHymnView(viewModel: viewModel).ignoresSafeArea(),
             as: .swiftUiImage())
@@ -147,7 +147,7 @@ class DisplayHymnSnapshots: XCTestCase {
         let bottomBarViewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1151_identifier)
         bottomBarViewModel.buttons = [
             .share("Shareable lyrics"),
-            .fontSize,
+            .fontSize(FontPickerViewModel()),
             .languages([cupOfChrist_songResult]),
             .tags,
             .musicPlayback(AudioPlayerViewModel(url: URL(string: "https://www.hymnal.net/Hymns/NewSongs/mp3/ns0767.mp3")!))
@@ -178,7 +178,7 @@ class DisplayHymnSnapshots: XCTestCase {
         let bottomBarViewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1151_identifier)
         bottomBarViewModel.buttons = [
             .share("Shareable lyrics"),
-            .fontSize,
+            .fontSize(FontPickerViewModel()),
             .languages([cupOfChrist_songResult]),
             .tags,
             .relevant([hymn480_songResult]),

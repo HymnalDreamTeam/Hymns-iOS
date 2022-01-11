@@ -57,7 +57,7 @@ class DisplayHymnBottomBarViewModel: ObservableObject {
 
                     buttons.append(.share(self.convertToOneString(verses: hymn.lyrics)))
 
-                    buttons.append(.fontSize)
+                    buttons.append(.fontSize(FontPickerViewModel()))
 
                     let languages = self.convertToSongResults(hymn.languages)
                     if !languages.isEmpty {

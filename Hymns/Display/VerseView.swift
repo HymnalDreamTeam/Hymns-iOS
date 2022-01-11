@@ -8,14 +8,14 @@ struct VerseLineView: View {
 
     var body: some View {
         HStack(alignment: .top) {
-            Text(viewModel.verseNumber ?? "").font(viewModel.fontSize.font).frame(minWidth: viewModel.fontSize.minWidth)
+            Text(viewModel.verseNumber ?? "").font(.system(size: CGFloat(viewModel.fontSize)))
             VStack(alignment: .leading) {
                 if transliterate {
                     viewModel.transliteration.map { transliteration in
-                        Text(transliteration).font(viewModel.fontSize.font)
+                        Text(transliteration).font(.system(size: CGFloat(viewModel.fontSize)))
                     }
                 }
-                Text(viewModel.verseText).font(viewModel.fontSize.font)
+                Text(viewModel.verseText).font(.system(size: CGFloat(viewModel.fontSize)))
             }.fixedSize(horizontal: false, vertical: true).padding(.bottom, 5).lineSpacing(5)
         }
     }
@@ -37,9 +37,9 @@ struct VerseLineView_Previews: PreviewProvider {
         }
 
         let largeTextViewModels = [VerseLineViewModel(verseNumber: "1", verseText: "Drink! A river pure and clear that's flowing from the throne"),
-                                      VerseLineViewModel(verseText: "Eat! The tree of life with fruits abundant, richly grown")]
-        largeTextViewModels[0].fontSize = .large
-        largeTextViewModels[1].fontSize = .large
+                                   VerseLineViewModel(verseText: "Eat! The tree of life with fruits abundant, richly grown")]
+        largeTextViewModels[0].fontSize = 18.0
+        largeTextViewModels[1].fontSize = 18.0
         let largeText = VStack(alignment: .leading) {
             VerseLineView(viewModel: largeTextViewModels[0], transliterate: doNotTransliterateBinding)
             VerseLineView(viewModel: largeTextViewModels[1], transliterate: doNotTransliterateBinding)
@@ -47,8 +47,8 @@ struct VerseLineView_Previews: PreviewProvider {
 
         let extraLargeTextViewModels = [VerseLineViewModel(verseNumber: "1", verseText: "Drink! A river pure and clear that's flowing from the throne"),
                                       VerseLineViewModel(verseText: "Eat! The tree of life with fruits abundant, richly grown")]
-        extraLargeTextViewModels[0].fontSize = .xlarge
-        extraLargeTextViewModels[1].fontSize = .xlarge
+        largeTextViewModels[0].fontSize = 24.0
+        largeTextViewModels[1].fontSize = 24.0
         let extraLargeText = VStack(alignment: .leading) {
             VerseLineView(viewModel: extraLargeTextViewModels[0], transliterate: doNotTransliterateBinding)
             VerseLineView(viewModel: extraLargeTextViewModels[1], transliterate: doNotTransliterateBinding)

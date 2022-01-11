@@ -7,12 +7,12 @@ import SwiftUI
  */
 class UserDefaultsManager {
 
-    let fontSizeSubject: CurrentValueSubject<FontSize, Never>
+    let fontSizeSubject: CurrentValueSubject<Float, Never>
 
-    var fontSize: FontSize {
-        willSet {
-            fontSizeSubject.send(newValue)
-            UserDefaults.standard.set(newValue.rawValue, forKey: "fontSize")
+    var fontSize: Float {
+        didSet {
+            fontSizeSubject.send(fontSize)
+            UserDefaults.standard.set(fontSize, forKey: "fontSize")
         }
     }
 
@@ -20,9 +20,27 @@ class UserDefaultsManager {
     @UserDefault("repeat_chorus", defaultValue: false) var shouldRepeatChorus: Bool
 
     init() {
-        let initialFontSize = FontSize(rawValue: UserDefaults.standard.string(forKey: "fontSize") ?? FontSize.normal.rawValue) ?? .normal
+        // Migrate font size to be a float instead of a string
+        let initialFontSize: Float
+        switch UserDefaults.standard.string(forKey: "fontSize") {
+        case "Normal":
+            initialFontSize = 17.0
+        case "Large":
+            initialFontSize = 20.0
+        case "Extra Large":
+            initialFontSize = 24.0
+        default:
+            // "Normal" falls into this case.
+            if UserDefaults.standard.float(forKey: "fontSize") != 0.0 {
+                initialFontSize = UserDefaults.standard.float(forKey: "fontSize")
+            } else {
+                initialFontSize = 15.0
+            }
+        }
+        UserDefaults.standard.set(initialFontSize, forKey: "fontSize")
+
         self.fontSize = initialFontSize
-        self.fontSizeSubject = CurrentValueSubject<FontSize, Never>(initialFontSize)
+        self.fontSizeSubject = CurrentValueSubject<Float, Never>(initialFontSize)
     }
 }
 
@@ -42,43 +60,6 @@ struct UserDefault<T> {
         }
         set {
             UserDefaults.standard.set(newValue, forKey: key)
-        }
-    }
-}
-
-/**
- * Possible font sizes for the song lyrics.
- */
-public enum FontSize: String {
-    case normal = "Normal"
-    case large = "Large"
-    case xlarge = "Extra Large"
-
-    /**
-     * SwiftUI font corresponding to the `FontSize`.
-     */
-    var font: Font {
-        switch self {
-        case .normal:
-            return .subheadline
-        case .large:
-            return .body
-        case .xlarge:
-            return .title
-        }
-    }
-
-    /**
-     * SwiftUI font corresponding to the `FontSize`.
-     */
-    var minWidth: CGFloat {
-        switch self {
-        case .normal:
-            return 10
-        case .large:
-            return 12
-        case .xlarge:
-            return 30
         }
     }
 }
