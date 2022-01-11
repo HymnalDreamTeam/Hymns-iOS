@@ -58,8 +58,29 @@ public class BaseViewCan {
         return self
     }
 
+    public func waitForSliders(_ strings: String...) -> Self {
+        for string in strings {
+            XCTAssertTrue(app.sliders[string].waitForExistence(timeout: 1))
+        }
+        return self
+    }
+
     public func checkStaticTextCount(_ string: String, _ count: Int) -> Self {
         XCTAssertEqual(app.staticTexts.matching(identifier: "classic hymn 2 chorus").count, count)
+        return self
+    }
+
+    public func verifySlidersExist(_ strings: String...) -> Self {
+        for string in strings {
+            XCTAssertTrue(app.sliders[string].exists)
+        }
+        return self
+    }
+
+    public func verifySlidersNotExist(_ strings: String...) -> Self {
+        for string in strings {
+            XCTAssertFalse(app.sliders[string].exists)
+        }
         return self
     }
 
