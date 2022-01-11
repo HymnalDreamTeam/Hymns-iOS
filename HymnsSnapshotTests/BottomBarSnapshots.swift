@@ -32,7 +32,7 @@ class BottomBarSnapshots: XCTestCase {
     }
 
     func test_twoButtons() {
-        viewModel.buttons = [.tags, .fontSize]
+        viewModel.buttons = [.tags, .fontSize(FontPickerViewModel())]
 
         let bottomBar = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
             get: {self.dialog},
@@ -60,7 +60,7 @@ class BottomBarSnapshots: XCTestCase {
     func test_overflowMenu() {
         viewModel.buttons = [
             .share("lyrics"),
-            .fontSize,
+            .fontSize(FontPickerViewModel()),
             .languages([SongResultViewModel(title: "language", destinationView: EmptyView().eraseToAnyView())]),
             .musicPlayback(AudioPlayerViewModel(url: URL(string: "https://www.hymnal.net/Hymns/NewSongs/mp3/ns0767.mp3")!)),
             .relevant([SongResultViewModel(title: "relevant", destinationView: EmptyView().eraseToAnyView())]),

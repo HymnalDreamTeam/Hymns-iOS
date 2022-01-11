@@ -3,7 +3,7 @@ import SwiftUI
 
 enum BottomBarButton {
     case share(String)
-    case fontSize
+    case fontSize(FontPickerViewModel)
     case languages([SongResultViewModel])
     case musicPlayback(AudioPlayerViewModel)
     case relevant([SongResultViewModel])
@@ -43,7 +43,7 @@ extension BottomBarButton {
         case .share:
             return BottomBarLabel(image: Image(systemName: "square.and.arrow.up"), a11yLabel: label).foregroundColor(.primary)
         case .fontSize:
-            return BottomBarLabel(image: Image(systemName: "textformat.size"), a11yLabel: label).foregroundColor(.primary)
+            return BottomBarLabel(image: Image(systemName: "textformat.size"), a11yLabel: label).foregroundColor(.accentColor)
         case .languages:
             return BottomBarLabel(image: Image(systemName: "globe"), a11yLabel: label).foregroundColor(.primary)
         case .musicPlayback:

@@ -5,7 +5,7 @@ import SwiftUI
 
 class VerseLineViewModel: Hashable, ObservableObject {
 
-    @Published var fontSize: FontSize
+    @Published var fontSize: Float
 
     let verseNumber: String?
     let verseText: String
