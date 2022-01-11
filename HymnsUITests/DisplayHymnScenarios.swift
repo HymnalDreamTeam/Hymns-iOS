@@ -64,12 +64,16 @@ class DisplayHymnScenarios: BaseTestCase {
             .waitForButtons("classic1151", "classic40", "classic2", "classic3")
             .tapResult("classic1151")
             .waitForStaticTexts("verse 1 line 1")
-            .openFontPicker()
-            .waitForStaticTexts("Lyrics font size", "Change the song lyrics font size")
-            .waitForButtons("Normal", "Large", "Extra Large")
-            .pressCancel()
-            .waitForStaticTexts("verse 1 line 1")
-            .verifyStaticTextsNotExists("Lyrics font size", "Change the song lyrics font size")
+            .tapFontPicker()
+            .waitForFontPicker()
+            .verifyFontPickerExists()
+            .assertDefaultFontPickerValue()
+            .adjustFontPickerToSmallest()
+            .assertSmallestFontPickerValue()
+            .adjustFontPickerToLargest()
+            .assertLargestFontPickerValue()
+            .tapFontPicker()
+            .verifyFontPickerNotExists()
     }
 
     func test_languages() {

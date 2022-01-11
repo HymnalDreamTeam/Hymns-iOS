@@ -15,7 +15,7 @@ struct FontPicker: View {
             Slider(
                 value: $viewModel.fontSize,
                 in: 13...24,
-                step: 1)
+                step: 1).accessibilityLabel(Text("Font picker slider"))
             Image(systemName: "textformat.size.larger")
         }.onAppear {
             // Font picker is up, so disable song swiping

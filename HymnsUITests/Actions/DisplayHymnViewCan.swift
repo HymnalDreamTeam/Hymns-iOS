@@ -38,8 +38,60 @@ public class DisplayHymnViewCan: BaseViewCan {
         return pressButton("Share lyrics")
     }
 
-    public func openFontPicker() -> DisplayHymnViewCan {
+    public func tapFontPicker() -> DisplayHymnViewCan {
         return pressButton("Change lyrics font size")
+    }
+
+    public func waitForFontPicker() -> DisplayHymnViewCan {
+        return waitForSliders("Font picker slider")
+    }
+
+    public func verifyFontPickerExists() -> DisplayHymnViewCan {
+        return verifySlidersExist("Font picker slider")
+    }
+
+    public func verifyFontPickerNotExists() -> DisplayHymnViewCan {
+        return verifySlidersNotExist("Font picker slider")
+    }
+
+    private func assertFontPickerValue(_ value: String) -> DisplayHymnViewCan {
+        // swiftlint:disable:next force_cast
+        XCTAssertEqual(app.sliders["Font picker slider"].value as! String, value)
+        return self
+    }
+
+    public func assertDefaultFontPickerValue() -> DisplayHymnViewCan {
+        if #available(iOS 15.0, *) {
+            return assertFontPickerValue("15")
+        } else {
+            return assertFontPickerValue("0.182")
+        }
+    }
+
+    public func adjustFontPickerToSmallest() -> DisplayHymnViewCan {
+        app.sliders["Font picker slider"].adjust(toNormalizedSliderPosition: 0)
+        return self
+    }
+
+    public func assertSmallestFontPickerValue() -> DisplayHymnViewCan {
+        if #available(iOS 15.0, *) {
+            return assertFontPickerValue("13")
+        } else {
+            return assertFontPickerValue("0")
+        }
+    }
+
+    public func adjustFontPickerToLargest() -> DisplayHymnViewCan {
+        app.sliders["Font picker slider"].adjust(toNormalizedSliderPosition: 1)
+        return self
+    }
+
+    public func assertLargestFontPickerValue() -> DisplayHymnViewCan {
+        if #available(iOS 15.0, *) {
+            return assertFontPickerValue("24")
+        } else {
+            return assertFontPickerValue("1")
+        }
     }
 
     public func openLanguages() -> DisplayHymnViewCan {
