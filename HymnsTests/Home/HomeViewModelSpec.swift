@@ -31,8 +31,9 @@ class HomeViewModelSpec: QuickSpec {
             let recentHymns = "Recent hymns"
             context("initial state") {
                 beforeEach {
-                    target = HomeViewModel(backgroundQueue: testQueue, historyStore: historyStore,
-                                           hymnsRepository: hymnsRepository, mainQueue: testQueue,
+                    let initiallyInactiveQueue = DispatchQueue(label: "test_queue", attributes: .initiallyInactive)
+                    target = HomeViewModel(backgroundQueue: initiallyInactiveQueue, historyStore: historyStore,
+                                           hymnsRepository: hymnsRepository, mainQueue: initiallyInactiveQueue,
                                            repository: songResultsRepository)
                 }
                 it("searchActive should be false") {
