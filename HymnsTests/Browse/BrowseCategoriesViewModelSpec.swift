@@ -18,7 +18,6 @@ class BrowseCategoriesViewModelSpec: QuickSpec {
                 categoriesRepository = mock(CategoriesRepository.self)
                 target = BrowseCategoriesViewModel(hymnType: .dutch, backgroundQueue: testQueue, categoriesRepository: categoriesRepository, mainQueue: testQueue)
             }
-
             context("with results") {
                 let categories = [CategoryEntity(category: "Category 1", subcategory: "Subcategory 1", count: 5),
                                   CategoryEntity(category: "Category 2", subcategory: "Subcategory 1", count: 6),
