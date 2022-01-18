@@ -1,35 +1,29 @@
-//
-//  ValueProvider.swift
-//  MockingbirdFramework
-//
-//  Created by Andrew Chang on 4/11/20.
-//
-
 import Foundation
-import CoreGraphics
 
 /// A type that can provide concrete instances of itself.
 ///
 /// Provide wildcard instances for generic types by conforming the base type to `Providable` and
 /// registering the type. Non-wildcard instances have precedence over wildcard instances.
 ///
-///     extension Array: Providable {
-///       public static func createInstance() -> Self? {
-///         return Array()
-///       }
-///     }
+/// ```swift
+/// extension Array: Providable {
+///   public static func createInstance() -> Self? {
+///     return Array()
+///   }
+/// }
 ///
-///     var valueProvider = ValueProvider()
-///     valueProvider.registerType(Array<Any>.self)
+/// var valueProvider = ValueProvider()
+/// valueProvider.registerType(Array<Any>.self)
 ///
-///     // All specializations of `Array` return an empty array
-///     print(valueProvider.provideValue(for: Array<String>.self))  // Prints []
-///     print(valueProvider.provideValue(for: Array<Data>.self))    // Prints []
+/// // All specializations of `Array` return an empty array
+/// print(valueProvider.provideValue(for: Array<String>.self))  // Prints []
+/// print(valueProvider.provideValue(for: Array<Data>.self))    // Prints []
 ///
-///     // Register a non-wildcard instance of `Array<String>`
-///     valueProvider.register(["A", "B"], for: Array<String>.self)
-///     print(valueProvider.provideValue(for: Array<String>.self))  // Prints ["A", "B"]
-///     print(valueProvider.provideValue(for: Array<Data>.self))    // Prints []
+/// // Register a non-wildcard instance of `Array<String>`
+/// valueProvider.register(["A", "B"], for: Array<String>.self)
+/// print(valueProvider.provideValue(for: Array<String>.self))  // Prints ["A", "B"]
+/// print(valueProvider.provideValue(for: Array<Data>.self))    // Prints []
+/// ```
 ///
 /// - Note: This can only be used for Swift types due to limitations with Objective-C generics in
 /// Swift extensions.
@@ -45,6 +39,10 @@ extension Providable {
   static var providableIdentifier: String {
     return String(reflecting: self).removingGenericTyping()
   }
+  
+  func metatype() -> Self.Type {
+    return type(of: self)
+  }
 }
 
 /// Provides concrete instances of types.
@@ -53,20 +51,27 @@ extension Providable {
 /// Mockingbird provides preset value providers which are guaranteed to be backwards compatible,
 /// such as `.standardProvider`.
 ///
-///     let bird = mock(Bird.self)
-///     bird.useDefaultValues(from: .standardProvider)
-///     print(bird.name)  // Prints ""
+/// ```swift
+/// let bird = mock(Bird.self)
+/// bird.useDefaultValues(from: .standardProvider)
+/// print(bird.name)  // Prints ""
+/// ```
 ///
 /// You can create custom value providers by registering values for types.
 ///
-///     var valueProvider = ValueProvider()
-///     valueProvider.register("Ryan", for: String.self)
-///     
-///     bird.useDefaultValues(from: valueProvider)
-///     print(bird.name)  // Prints "Ryan"
+/// ```swift
+/// var valueProvider = ValueProvider()
+/// valueProvider.register("Ryan", for: String.self)
+///
+/// bird.useDefaultValues(from: valueProvider)
+/// print(bird.name)  // Prints "Ryan"
+/// ```
 public struct ValueProvider {
   var storedValues = [ObjectIdentifier: Any]()
   var enabledIdentifiers = Set<String>()
+  
+  /// Enables all mocks to handle methods that return `Void`.
+  static let baseValues: [ObjectIdentifier: Any] = [ObjectIdentifier(Void.self): ()]
   
   init(values: [ObjectIdentifier: Any] = [:], identifiers: Set<String> = []) {
     self.storedValues = values
@@ -75,7 +80,7 @@ public struct ValueProvider {
   
   /// Create an empty value provider.
   public init() {
-    self.init(values: [:], identifiers: [])
+    self.init(values: Self.baseValues, identifiers: [])
   }
   
   
@@ -86,9 +91,11 @@ public struct ValueProvider {
   /// Value providers can be composed by adding values from another provider. Values in the other
   /// provider have precedence and will overwrite existing values in this provider.
   ///
-  ///     var valueProvider = ValueProvider()
-  ///     valueProvider.add(.standardProvider)
-  ///     print(valueProvider.provideValue(for: String.self))  // Prints ""
+  /// ```swift
+  /// var valueProvider = ValueProvider()
+  /// valueProvider.add(.standardProvider)
+  /// print(valueProvider.provideValue(for: String.self))  // Prints ""
+  /// ```
   ///
   /// - Parameter other: A value provider to combine.
   mutating public func add(_ other: Self) {
@@ -101,9 +108,11 @@ public struct ValueProvider {
   /// Value providers can be composed by adding values from another provider. Values in the added
   /// provider have precendence over those in base provider.
   ///
-  ///     let valueProvider = ValueProvider.collectionsProvider.adding(.primitivesProvider)
-  ///     print(valueProvider.provideValue(for: [Bool].self))  // Prints []
-  ///     print(valueProvider.provideValue(for: Int.self))     // Prints 0
+  /// ```swift
+  /// let valueProvider = ValueProvider.collectionsProvider.adding(.primitivesProvider)
+  /// print(valueProvider.provideValue(for: [Bool].self))  // Prints []
+  /// print(valueProvider.provideValue(for: Int.self))     // Prints 0
+  /// ```
   ///
   /// - Parameter other: A value provider to combine.
   /// - Returns: A new value provider with the values of `lhs` and `rhs`.
@@ -118,9 +127,11 @@ public struct ValueProvider {
   /// Value providers can be composed by adding values from other providers. Values in the second
   /// provider have precendence over those in first provider.
   ///
-  ///     let valueProvider = .collectionsProvider + .primitivesProvider
-  ///     print(valueProvider.provideValue(for: [Bool].self))  // Prints []
-  ///     print(valueProvider.provideValue(for: Int.self))     // Prints 0
+  /// ```swift
+  /// let valueProvider = .collectionsProvider + .primitivesProvider
+  /// print(valueProvider.provideValue(for: [Bool].self))  // Prints []
+  /// print(valueProvider.provideValue(for: Int.self))     // Prints 0
+  /// ```
   ///
   /// - Parameters:
   ///   - lhs: A value provider.
@@ -136,9 +147,11 @@ public struct ValueProvider {
   ///
   /// Create custom value providers by registering values for types.
   ///
-  ///     var valueProvider = ValueProvider()
-  ///     valueProvider.register("Ryan", for: String.self)
-  ///     print(valueProvider.provideValue(for: String.self))  // Prints "Ryan"
+  /// ```swift
+  /// var valueProvider = ValueProvider()
+  /// valueProvider.register("Ryan", for: String.self)
+  /// print(valueProvider.provideValue(for: String.self))  // Prints "Ryan"
+  /// ```
   ///
   /// - Parameters:
   ///   - value: The value to register.
@@ -153,23 +166,25 @@ public struct ValueProvider {
   /// Provide wildcard instances for generic types by conforming the base type to `Providable` and
   /// registering the type. Non-wildcard instances have precedence over wildcard instances.
   ///
-  ///     extension Array: Providable {
-  ///       public static func createInstance() -> Self? {
-  ///         return Array()
-  ///       }
-  ///     }
+  /// ```swift
+  /// extension Array: Providable {
+  ///   public static func createInstance() -> Self? {
+  ///     return Array()
+  ///   }
+  /// }
   ///
-  ///     var valueProvider = ValueProvider()
-  ///     valueProvider.registerType(Array<Any>.self)
+  /// var valueProvider = ValueProvider()
+  /// valueProvider.registerType(Array<Any>.self)
   ///
-  ///     // All specializations of `Array` return an empty array
-  ///     print(valueProvider.provideValue(for: Array<String>.self))  // Prints []
-  ///     print(valueProvider.provideValue(for: Array<Data>.self))    // Prints []
+  /// // All specializations of `Array` return an empty array
+  /// print(valueProvider.provideValue(for: Array<String>.self))  // Prints []
+  /// print(valueProvider.provideValue(for: Array<Data>.self))    // Prints []
   ///
-  ///     // Register a non-wildcard instance of `Array<String>`
-  ///     valueProvider.register(["A", "B"], for: Array<String>.self)
-  ///     print(valueProvider.provideValue(for: Array<String>.self))  // Prints ["A", "B"]
-  ///     print(valueProvider.provideValue(for: Array<Data>.self))    // Prints []
+  /// // Register a non-wildcard instance of `Array<String>`
+  /// valueProvider.register(["A", "B"], for: Array<String>.self)
+  /// print(valueProvider.provideValue(for: Array<String>.self))  // Prints ["A", "B"]
+  /// print(valueProvider.provideValue(for: Array<Data>.self))    // Prints []
+  /// ```
   ///
   /// - Parameter type: A `Providable` type to register.
   mutating public func registerType<T: Providable>(_ type: T.Type = T.self) {
@@ -181,16 +196,18 @@ public struct ValueProvider {
   /// Previously registered values can be removed from the top-level value provider. This does not
   /// affect values provided by subproviders.
   ///
-  ///     var valueProvider = ValueProvider(from: .standardProvider)
-  ///     print(valueProvider.provideValue(for: String.self))  // Prints ""
+  /// ```swift
+  /// var valueProvider = ValueProvider(from: .standardProvider)
+  /// print(valueProvider.provideValue(for: String.self))  // Prints ""
   ///
-  ///     // Override the subprovider value
-  ///     valueProvider.register("Ryan", for: String.self)
-  ///     print(valueProvider.provideValue(for: String.self))  // Prints "Ryan"
+  /// // Override the subprovider value
+  /// valueProvider.register("Ryan", for: String.self)
+  /// print(valueProvider.provideValue(for: String.self))  // Prints "Ryan"
   ///
-  ///     // Remove the registered value
-  ///     valueProvider.remove(String.self)
-  ///     print(valueProvider.provideValue(for: String.self))  // Prints ""
+  /// // Remove the registered value
+  /// valueProvider.remove(String.self)
+  /// print(valueProvider.provideValue(for: String.self))  // Prints ""
+  /// ```
   ///
   /// - Parameter type: The type to remove a previously registered value for.
   mutating public func remove<T>(_ type: T.Type) {
@@ -202,13 +219,15 @@ public struct ValueProvider {
   /// Previously registered wildcard instances for generic types can be removed from the top-level
   /// value provider.
   ///
-  ///     var valueProvider = ValueProvider()
+  /// ```swift
+  /// var valueProvider = ValueProvider()
   ///
-  ///     valueProvider.registerType(Array<Any>.self)
-  ///     print(valueProvider.provideValue(for: Array<String>.self))  // Prints []
+  /// valueProvider.registerType(Array<Any>.self)
+  /// print(valueProvider.provideValue(for: Array<String>.self))  // Prints []
   ///
-  ///     valueProvider.remove(Array<Any>.self)
-  ///     print(valueProvider.provideValue(for: Array<String>.self))  // Prints nil
+  /// valueProvider.remove(Array<Any>.self)
+  /// print(valueProvider.provideValue(for: Array<String>.self))  // Prints nil
+  /// ```
   ///
   /// - Parameter type: A `Providable` type to remove.
   mutating public func remove<T: Providable>(_ type: T.Type = T.self) {
@@ -217,7 +236,7 @@ public struct ValueProvider {
   
   /// Remove all stored values, subproviders, and enabled identifiers.
   mutating func reset() {
-    storedValues.removeAll()
+    storedValues = Self.baseValues
     enabledIdentifiers.removeAll()
   }
   
@@ -237,15 +256,20 @@ public struct ValueProvider {
   /// - Parameter type: A type to provide a value for.
   /// - Returns: A concrete instance of the given type, or `nil` if no value could be provided.
   public func provideValue<T>(for type: T.Type = T.self) -> T? {
-    return storedValues[ObjectIdentifier(type)] as? T
+    if let value = storedValues[ObjectIdentifier(type)] as? T {
+      return value
+    }
+    
+    // Handle providable generic types.
+    guard let providableType = type as? Providable.Type,
+          enabledIdentifiers.contains(providableType.providableIdentifier) else {
+      return nil
+    }
+    return providableType.createInstance() as? T
   }
   
-  /// Provide a value a given `Providable` type.
-  ///
-  /// - Parameter type: A `Providable` type to provide a value for.
-  /// - Returns: A concrete instance of the given type, or `nil` if no value could be provided.
-  public func provideValue<T: Providable>(for type: T.Type = T.self) -> T? {
-    return storedValues[ObjectIdentifier(type)] as? T ??
-      (enabledIdentifiers.contains(T.providableIdentifier) ? T.createInstance() : nil)
+  func provideValue(for objcType: String) -> Any? {
+    guard let objectIdentifier = objCTypeEncodings[objcType] else { return nil }
+    return storedValues[objectIdentifier]
   }
 }

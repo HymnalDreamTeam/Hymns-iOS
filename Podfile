@@ -43,7 +43,7 @@ target 'Hymns' do
     
     # Mocking framework
     # https://github.com/birdrides/mockingbird
-    pod 'MockingbirdFramework', '~> 0.17.0'
+    pod 'MockingbirdFramework'
 
     # Quick & Nimble
     # https://github.com/Quick/Quick

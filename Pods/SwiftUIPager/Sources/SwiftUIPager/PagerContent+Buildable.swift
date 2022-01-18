@@ -52,6 +52,7 @@ extension Pager.PagerContent: Buildable {
                 data.map { PageWrapper(batchId: it, keyPath: id, element: $0.element) }
             }.flatMap { $0 }
         }
+        self.pagerModel.isInfinite = value
         return mutating(keyPath: \.isInifinitePager, value: value)
             .mutating(keyPath: \.data, value: newData)
     }
@@ -154,6 +155,17 @@ extension Pager.PagerContent: Buildable {
     /// - Parameter callback: block to be called when  dragging ends. 
     func onDraggingEnded(_ callback: (() -> Void)?) -> Self {
         mutating(keyPath: \.onDraggingEnded, value: callback)
+    }
+  
+    #else
+
+    /// Sets the explicit animation to be used. Defaults to `.standard`
+    ///
+    /// - Parameter value: animation to use while dragging and to page
+    ///
+    /// - Warning: `spring` animations don't work well. Avoid high responses while dragging as the animation should be short
+    public func draggingAnimation(_ value: DraggingAnimation) -> Self {
+        mutating(keyPath: \.draggingAnimation, value: value)
     }
 
     #endif
