@@ -1,10 +1,3 @@
-//
-//  OrderedVerification.swift
-//  MockingbirdFramework
-//
-//  Created by Andrew Chang on 3/8/20.
-//
-
 import Foundation
 import XCTest
 
@@ -13,38 +6,44 @@ import XCTest
 /// Calls to `verify` within the scope of an `inOrder` verification block are checked relative to
 /// each other.
 ///
-///     // Verify that `fly` was called before `chirp`
-///     inOrder {
-///       verify(bird.fly()).wasCalled()
-///       verify(bird.chirp()).wasCalled()
-///     }
+/// ```swift
+/// // Verify that `canFly` was called before `fly`
+/// inOrder {
+///   verify(bird.canFly).wasCalled()
+///   verify(bird.fly()).wasCalled()
+/// }
+/// ```
 ///
 /// Pass options to `inOrder` verification blocks for stricter checks with additional invariants.
 ///
-///     inOrder(with: .noInvocationsAfter) {
-///       verify(bird.fly()).wasCalled()
-///       verify(bird.chirp()).wasCalled()
-///     }
+/// ```swift
+/// inOrder(with: .noInvocationsAfter) {
+///   verify(bird.canFly).wasCalled()
+///   verify(bird.fly()).wasCalled()
+/// }
+/// ```
 ///
 /// An `inOrder` block is resolved greedily, such that each verification must happen from the oldest
 /// remaining unsatisfied invocations.
 ///
-///     // Given these unsatisfied invocations
-///     bird.fly()
-///     bird.fly()
-///     bird.chirp()
+/// ```swift
+/// // Given these unsatisfied invocations
+/// bird.canFly
+/// bird.canFly
+/// bird.fly()
 ///
-///     // Greedy strategy _must_ start from the first `fly`
-///     inOrder {
-///       verify(bird.fly()).wasCalled(twice)
-///       verify(bird.chirp()).wasCalled()
-///     }
+/// // Greedy strategy _must_ start from the first `canFly`
+/// inOrder {
+///   verify(bird.canFly).wasCalled(twice)
+///   verify(bird.fly()).wasCalled()
+/// }
 ///
-///     // Non-greedy strategy can start from the second `fly`
-///     inOrder {
-///       verify(bird.fly()).wasCalled()
-///       verify(bird.chirp()).wasCalled()
-///     }
+/// // Non-greedy strategy can start from the second `canFly`
+/// inOrder {
+///   verify(bird.canFly).wasCalled()
+///   verify(bird.fly()).wasCalled()
+/// }
+/// ```
 ///
 /// - Parameters:
 ///   - options: Options to use when verifying invocations.
@@ -66,63 +65,69 @@ public struct OrderedVerificationOptions: OptionSet {
   ///
   /// Use this option to disallow invocations prior to those satisfying the first verification.
   ///
-  ///     bird.eat()
-  ///     bird.fly()
-  ///     bird.chirp()
+  /// ```swift
+  /// bird.name
+  /// bird.canFly
+  /// bird.fly()
   ///
-  ///     // Passes _without_ the option
-  ///     inOrder {
-  ///       verify(bird.fly()).wasCalled()
-  ///       verify(bird.chirp()).wasCalled()
-  ///     }
+  /// // Passes _without_ the option
+  /// inOrder {
+  ///   verify(bird.canFly).wasCalled()
+  ///   verify(bird.fly()).wasCalled()
+  /// }
   ///
-  ///     // Fails with the option
-  ///     inOrder(with: .noInvocationsBefore) {
-  ///       verify(bird.fly()).wasCalled()
-  ///       verify(bird.chirp()).wasCalled()
-  ///     }
+  /// // Fails with the option
+  /// inOrder(with: .noInvocationsBefore) {
+  ///   verify(bird.canFly).wasCalled()
+  ///   verify(bird.fly()).wasCalled()
+  /// }
+  /// ```
   public static let noInvocationsBefore = OrderedVerificationOptions(rawValue: 1 << 0)
   
   /// Check that there are no recorded invocations after those explicitly verified in the block.
   ///
   /// Use this option to disallow subsequent invocations to those satisfying the last verification.
   ///
-  ///     bird.fly()
-  ///     bird.chirp()
-  ///     bird.eat()
+  /// ```swift
+  /// bird.name
+  /// bird.canFly
+  /// bird.fly()
   ///
-  ///     // Passes _without_ the option
-  ///     inOrder {
-  ///       verify(bird.fly()).wasCalled()
-  ///       verify(bird.chirp()).wasCalled()
-  ///     }
+  /// // Passes _without_ the option
+  /// inOrder {
+  ///   verify(bird.name).wasCalled()
+  ///   verify(bird.canFly).wasCalled()
+  /// }
   ///
-  ///     // Fails with the option
-  ///     inOrder(with: .noInvocationsAfter) {
-  ///       verify(bird.fly()).wasCalled()
-  ///       verify(bird.chirp()).wasCalled()
-  ///     }
+  /// // Fails with the option
+  /// inOrder(with: .noInvocationsAfter) {
+  ///   verify(bird.name).wasCalled()
+  ///   verify(bird.canFly).wasCalled()
+  /// }
+  /// ```
   public static let noInvocationsAfter = OrderedVerificationOptions(rawValue: 1 << 1)
   
   /// Check that there are no recorded invocations between those explicitly verified in the block.
   ///
   /// Use this option to disallow non-consecutive invocations to each verification.
   ///
-  ///     bird.fly()
-  ///     bird.eat()
-  ///     bird.chirp()
+  /// ```swift
+  /// bird.name
+  /// bird.canFly
+  /// bird.fly()
   ///
-  ///     // Passes _without_ the option
-  ///     inOrder {
-  ///       verify(bird.fly()).wasCalled()
-  ///       verify(bird.chirp()).wasCalled()
-  ///     }
+  /// // Passes _without_ the option
+  /// inOrder {
+  ///   verify(bird.name).wasCalled()
+  ///   verify(bird.fly()).wasCalled()
+  /// }
   ///
-  ///     // Fails with the option
-  ///     inOrder(with: .noInvocationsAfter) {
-  ///       verify(bird.fly()).wasCalled()
-  ///       verify(bird.chirp()).wasCalled()
-  ///     }
+  /// // Fails with the option
+  /// inOrder(with: .onlyConsecutiveInvocations) {
+  ///   verify(bird.name).wasCalled()
+  ///   verify(bird.fly()).wasCalled()
+  /// }
+  /// ```
   public static let onlyConsecutiveInvocations = OrderedVerificationOptions(rawValue: 1 << 2)
 }
 
@@ -132,9 +137,9 @@ private func getAllInvocations(in contexts: [UUID: MockingContext],
     .flatMap({ $0.allInvocations.value })
     .filter({
       guard let baseInvocation = baseInvocation else { return true }
-      return $0 > baseInvocation
+      return $0.uid > baseInvocation.uid
     })
-    .sorted(by: <)
+    .sorted(by: { $0.uid < $1.uid })
 }
 
 private func assertNoInvocationsBefore(_ capturedExpectation: CapturedExpectation,
@@ -143,9 +148,11 @@ private func assertNoInvocationsBefore(_ capturedExpectation: CapturedExpectatio
   let allInvocations = getAllInvocations(in: contexts, after: baseInvocation)
   
   // Failure if the first invocation in all contexts doesn't match the first expectation.
-  if let firstInvocation = allInvocations.first, firstInvocation != capturedExpectation.invocation {
-    let endIndex = allInvocations.firstIndex(where: { $0 == capturedExpectation.invocation })
-      ?? allInvocations.endIndex
+  if let firstInvocation = allInvocations.first,
+     !firstInvocation.isEqual(to: capturedExpectation.invocation) {
+    let endIndex = allInvocations.firstIndex(where: {
+      $0.isEqual(to: capturedExpectation.invocation)
+    }) ?? allInvocations.endIndex
     let unexpectedInvocations = Array(allInvocations[allInvocations.startIndex..<endIndex])
     
     let failure = TestFailure.unexpectedInvocations(
@@ -213,7 +220,7 @@ private func satisfy(_ capturedExpectations: [CapturedExpectation],
       }
       
       // Potential match with the current base invocation, try satisfying the next expectation.
-      let allMatchingInvocations = allInvocations.filter({ $0 == capturedExpectation.invocation })
+      let allMatchingInvocations = allInvocations.filter({ $0.isEqual(to: capturedExpectation.invocation) })
       let result = try satisfy(capturedExpectations,
                                at: index+1,
                                baseInvocation: allMatchingInvocations.first,
@@ -281,16 +288,16 @@ func createOrderedContext(at sourceLocation: SourceLocation,
     }
   }
   
-  let queue = DispatchQueue(label: "co.bird.mockingbird.ordered-verification-scope")
+  let queue = DispatchQueue(label: "co.bird.mockingbird.verify.inOrder")
   queue.setSpecific(key: ExpectationGroup.contextKey, value: group)
   queue.sync { scope() }
   
   do {
     try group.verify()
   } catch let error as ExpectationGroup.Failure {
-    MKBFail(String(describing: error),
-            file: error.sourceLocation.file,
-            line: error.sourceLocation.line)
+    FailTest(String(describing: error),
+             file: error.sourceLocation.file,
+             line: error.sourceLocation.line)
   } catch {
     fatalError("Unexpected error type") // This shouldn't happen.
   }
