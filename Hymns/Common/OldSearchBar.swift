@@ -11,7 +11,7 @@ struct OldSearchBar: View {
     var body: some View {
         HStack {
             HStack {
-                TextField(placeholderText, text: $searchText).foregroundColor(.primary)
+                TextField(placeholderText, text: $searchText).foregroundColor(.primary).padding(.leading, 6)
                 if !self.searchText.isEmpty {
                     Button(action: {
                         self.searchText = ""
