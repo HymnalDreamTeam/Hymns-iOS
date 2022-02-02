@@ -41,6 +41,7 @@ struct SearchBar: View {
                     }).font(.system(size: smallButtonSize)).padding(.leading, 6)
                 }
                 TextField(placeholderText, text: $searchText)
+                    .padding(.leading, searchActive ? 0 : 6)
                     .keyboardType(searchMode == .keyword ? .asciiCapable : .asciiCapableNumberPad)
                     .foregroundColor(.primary)
                     .focused($focused)
