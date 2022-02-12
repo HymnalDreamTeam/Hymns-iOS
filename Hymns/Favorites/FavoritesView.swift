@@ -23,7 +23,7 @@ struct FavoritesView: View {
                         Text("Tap the heart on any hymn to add as a favorite")
                     }.maxSize().offset(y: -25).eraseToAnyView()
                 }
-                return List(favorites) { favorite in
+                return List(favorites, id: \.stableId) { favorite in
                     NavigationLink(destination: favorite.destinationView) {
                         SongResultView(viewModel: favorite)
                     }

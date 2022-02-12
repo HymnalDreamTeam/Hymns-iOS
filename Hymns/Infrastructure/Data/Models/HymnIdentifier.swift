@@ -61,6 +61,12 @@ extension HymnIdentifier: Hashable {
     }
 }
 
+extension HymnIdentifier: CustomStringConvertible {
+    var description: String {
+        "hymnType: \(hymnType), hymnNumber: \(hymnNumber), queryParams: \(queryParamString)"
+    }
+}
+
 enum SerializationError: Error {
     case deserialization
 }

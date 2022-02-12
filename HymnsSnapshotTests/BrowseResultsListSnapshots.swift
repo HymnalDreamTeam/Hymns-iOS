@@ -28,9 +28,9 @@ class BrowseResultsListSnapshots: XCTestCase {
     }
 
     func test_results() {
-        let results = [SongResultViewModel(title: "Hymn 114", destinationView: EmptyView().eraseToAnyView()),
-                       SongResultViewModel(title: "Cup of Christ", destinationView: EmptyView().eraseToAnyView()),
-                       SongResultViewModel(title: "Avengers - Endgame", destinationView: EmptyView().eraseToAnyView())]
+        let results = [SongResultViewModel(stableId: "Hymn 114", title: "Hymn 114", destinationView: EmptyView().eraseToAnyView()),
+                       SongResultViewModel(stableId: "Cup of Christ", title: "Cup of Christ", destinationView: EmptyView().eraseToAnyView()),
+                       SongResultViewModel(stableId: "Avengers - Endgame", title: "Avengers - Endgame", destinationView: EmptyView().eraseToAnyView())]
         viewModel = BrowseResultsListViewModel(category: "Experience of Christ")
         viewModel.songResults = results
         assertVersionedSnapshot(

@@ -44,9 +44,9 @@ class BottomBarSnapshots: XCTestCase {
         viewModel.buttons = [
             .soundCloud(SoundCloudViewModel(url: URL(string: "https://soundcloud.com/search?q=query")!)),
             .youTube(URL(string: "https://www.youtube.com/results?search_query=search")!),
-            .languages([SongResultViewModel(title: "language", destinationView: EmptyView().eraseToAnyView())]),
+            .languages([SongResultViewModel(stableId: "empty language view", title: "language", destinationView: EmptyView().eraseToAnyView())]),
             .musicPlayback(AudioPlayerViewModel(url: URL(string: "https://www.hymnal.net/Hymns/NewSongs/mp3/ns0767.mp3")!)),
-            .relevant([SongResultViewModel(title: "relevant", destinationView: EmptyView().eraseToAnyView())]),
+            .relevant([SongResultViewModel(stableId: "empty relevant view", title: "relevant", destinationView: EmptyView().eraseToAnyView())]),
             .tags,
             .songInfo(SongInfoDialogViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151))
         ]
@@ -61,9 +61,9 @@ class BottomBarSnapshots: XCTestCase {
         viewModel.buttons = [
             .share("lyrics"),
             .fontSize(FontPickerViewModel()),
-            .languages([SongResultViewModel(title: "language", destinationView: EmptyView().eraseToAnyView())]),
+            .languages([SongResultViewModel(stableId: "empty language view", title: "language", destinationView: EmptyView().eraseToAnyView())]),
             .musicPlayback(AudioPlayerViewModel(url: URL(string: "https://www.hymnal.net/Hymns/NewSongs/mp3/ns0767.mp3")!)),
-            .relevant([SongResultViewModel(title: "relevant", destinationView: EmptyView().eraseToAnyView())]),
+            .relevant([SongResultViewModel(stableId: "empty relevant view", title: "relevant", destinationView: EmptyView().eraseToAnyView())]),
             .tags
         ]
         viewModel.overflowButtons = [

@@ -9,8 +9,8 @@ class SettingsScenarios: BaseTestCase {
 
     func test_toggleRepeatChorus() {
         _ = HomeViewCan(app, testCase: self)
-            .waitForButtons("classic2")
-            .tapResult("classic2")
+            .waitForButtons("Hymn 2: Classic 2")
+            .tapResult("Hymn 2: Classic 2")
             .waitForStaticTexts("classic hymn 2 chorus")
             .checkStaticTextCount("classic hymn 2 chorus", 1)
             .goBackToHome()
@@ -18,7 +18,7 @@ class SettingsScenarios: BaseTestCase {
             .toggleRepeatChorus()
             .returnToHome()
             .tapHome()
-            .tapResult("classic2")
+            .tapResult("Hymn 2: Classic 2")
             .waitForStaticTexts("classic hymn 2 chorus")
             .checkStaticTextCount("classic hymn 2 chorus", 2)
     }

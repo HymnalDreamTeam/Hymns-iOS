@@ -116,12 +116,12 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                     expect(target.buttons[0]).to(equal(.share("Drink! a river pure and clear that's flowing from the throne;\nEat! the tree of life with fruits abundant, richly grown\n\nDo come, oh, do come,\nSays Spirit and the Bride:\n\n")))
                     expect(target.buttons[1]).to(equal(.fontSize(FontPickerViewModel())))
                     expect(target.buttons[2]).to(equal(.languages([
-                        SongResultViewModel(title: "Tagalog", destinationView: EmptyView().eraseToAnyView()),
-                        SongResultViewModel(title: "诗歌(简)", destinationView: EmptyView().eraseToAnyView())])))
+                        SongResultViewModel(stableId: "hymnType: ht, hymnNumber: 1151, queryParams: ", title: "Tagalog", destinationView: EmptyView().eraseToAnyView()),
+                        SongResultViewModel(stableId: "hymnType: ts, hymnNumber: 216, queryParams: ?gb=1", title: "诗歌(简)", destinationView: EmptyView().eraseToAnyView())])))
                     expect(target.buttons[3]).to(equal(.musicPlayback(AudioPlayerViewModel(url: mp3Url))))
                     expect(target.buttons[4]).to(equal(.relevant([
-                        SongResultViewModel(title: "New Tune", destinationView: EmptyView().eraseToAnyView()),
-                        SongResultViewModel(title: "Cool other song", destinationView: EmptyView().eraseToAnyView())])))
+                        SongResultViewModel(stableId: "hymnType: nt, hymnNumber: 1151, queryParams: ", title: "New Tune", destinationView: EmptyView().eraseToAnyView()),
+                        SongResultViewModel(stableId: "hymnType: ns, hymnNumber: 216, queryParams: ?gb=1", title: "Cool other song", destinationView: EmptyView().eraseToAnyView())])))
                     expect(target.overflowButtons!).to(haveCount(4))
                     expect(target.overflowButtons![0]).to(equal(.tags))
                     expect(target.overflowButtons![1]).to(equal(.soundCloud(SoundCloudViewModel(url: URL(string: "https://soundcloud.com/search/results?q=title")!))))
@@ -141,11 +141,11 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                         expect(target.buttons[0]).to(equal(.share("Drink! a river pure and clear that's flowing from the throne;\nEat! the tree of life with fruits abundant, richly grown\n\nDo come, oh, do come,\nSays Spirit and the Bride:\n\n")))
                         expect(target.buttons[1]).to(equal(.fontSize(FontPickerViewModel())))
                         expect(target.buttons[2]).to(equal(.languages([
-                            SongResultViewModel(title: "Tagalog", destinationView: EmptyView().eraseToAnyView()),
-                            SongResultViewModel(title: "诗歌(简)", destinationView: EmptyView().eraseToAnyView())])))
+                            SongResultViewModel(stableId: "hymnType: ht, hymnNumber: 1151, queryParams: ", title: "Tagalog", destinationView: EmptyView().eraseToAnyView()),
+                            SongResultViewModel(stableId: "hymnType: ts, hymnNumber: 216, queryParams: ?gb=1", title: "诗歌(简)", destinationView: EmptyView().eraseToAnyView())])))
                         expect(target.buttons[3]).to(equal(.relevant([
-                            SongResultViewModel(title: "New Tune", destinationView: EmptyView().eraseToAnyView()),
-                            SongResultViewModel(title: "Cool other song", destinationView: EmptyView().eraseToAnyView())])))
+                            SongResultViewModel(stableId: "hymnType: nt, hymnNumber: 1151, queryParams: ", title: "New Tune", destinationView: EmptyView().eraseToAnyView()),
+                            SongResultViewModel(stableId: "hymnType: ns, hymnNumber: 216, queryParams: ?gb=1", title: "Cool other song", destinationView: EmptyView().eraseToAnyView())])))
                         expect(target.buttons[4]).to(equal(.tags))
                         expect(target.buttons[5]).to(equal(.songInfo(SongInfoDialogViewModel(hymnToDisplay: classic1151))))
                         expect(target.overflowButtons).to(beNil())
