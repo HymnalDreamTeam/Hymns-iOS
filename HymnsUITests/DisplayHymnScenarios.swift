@@ -18,7 +18,7 @@ class DisplayHymnScenarios: BaseTestCase {
 
     func test_shareLyrics() {
         _ = HomeViewCan(app, testCase: self)
-            .waitForButtons("classic1151", "classic40", "classic2", "classic3")
+            .waitForButtons("classic1151", "classic40", "Hymn 2: Classic 2", "classic3")
             .tapResult("classic1151")
             .waitForStaticTexts("verse 1 line 1")
             .openShareSheet()
@@ -27,7 +27,7 @@ class DisplayHymnScenarios: BaseTestCase {
 
     func test_tagSheet() {
         _ = HomeViewCan(app, testCase: self)
-            .waitForButtons("classic1151", "classic40", "classic2", "classic3")
+            .waitForButtons("classic1151", "classic40", "Hymn 2: Classic 2", "classic3")
             .tapResult("classic1151")
             .waitForStaticTexts("verse 1 line 1")
             .openOverflowMenu()
@@ -37,7 +37,7 @@ class DisplayHymnScenarios: BaseTestCase {
 
     func test_songInfoDialog() {
         _ = HomeViewCan(app, testCase: self)
-            .waitForButtons("classic1151", "classic40", "classic2", "classic3")
+            .waitForButtons("classic1151", "classic40", "Hymn 2: Classic 2", "classic3")
             .tapResult("classic1151")
             .waitForStaticTexts("verse 1 line 1")
             .openOverflowMenu()
@@ -49,7 +49,7 @@ class DisplayHymnScenarios: BaseTestCase {
 
     func test_audioPlayer() {
         _ = HomeViewCan(app, testCase: self)
-            .waitForButtons("classic1151", "classic40", "classic2", "classic3")
+            .waitForButtons("classic1151", "classic40", "Hymn 2: Classic 2", "classic3")
             .tapResult("classic1151")
             .waitForStaticTexts("verse 1 line 1")
             .openAudioPlayer()
@@ -61,7 +61,7 @@ class DisplayHymnScenarios: BaseTestCase {
 
     func test_changeFontSize() {
         _ = HomeViewCan(app, testCase: self)
-            .waitForButtons("classic1151", "classic40", "classic2", "classic3")
+            .waitForButtons("classic1151", "classic40", "Hymn 2: Classic 2", "classic3")
             .tapResult("classic1151")
             .waitForStaticTexts("verse 1 line 1")
             .tapFontPicker()
@@ -78,7 +78,7 @@ class DisplayHymnScenarios: BaseTestCase {
 
     func test_languages() {
         _ = HomeViewCan(app, testCase: self)
-            .waitForButtons("classic1151", "classic40", "classic2", "classic3")
+            .waitForButtons("classic1151", "classic40", "Hymn 2: Classic 2", "classic3")
             .tapResult("classic1151")
             .waitForStaticTexts("verse 1 line 1")
             .openLanguages()
@@ -94,7 +94,7 @@ class DisplayHymnScenarios: BaseTestCase {
 
     func test_relevant() {
         _ = HomeViewCan(app, testCase: self)
-            .waitForButtons("classic1151", "classic40", "classic2", "classic3")
+            .waitForButtons("classic1151", "classic40", "Hymn 2: Classic 2", "classic3")
             .tapResult("classic1151")
             .waitForStaticTexts("verse 1 line 1")
             .openRelevant()

@@ -181,55 +181,33 @@ class HomeViewModelSearchSpec: QuickSpec {
                             testQueue.sync {}
                         }
                         it("\"\(recentHymns)\" label should be showing") {
-                            print("sync 1")
                             testQueue.sync {}
-                            print("sync 1 done")
-                            print("Asserting '\(recentHymns) label should be showing' on \(Thread.current)")
 
                             expect(target.label).toNot(beNil())
                             expect(target.label).to(equal(recentHymns))
-
-                            print("sync 2")
-                            testQueue.sync {}
-                            print("sync 2 done")
                         }
                         it("should not still be loading") {
-                            print("sync 1")
                             testQueue.sync {}
-                            print("sync 1 done")
-                            print("Asserting 'should not still be loading' on \(Thread.current)")
 
                             expect(target.state).to(equal(HomeResultState.results))
 
-                            print("sync 2")
                             testQueue.sync {}
-                            print("sync 2 done")
                         }
                         it("should fetch the recent songs from the history store") {
-                            print("sync 1")
                             testQueue.sync {}
-                            print("sync 1 done")
-                            print("Asserting 'should fetch the recent songs from the history store' on \(Thread.current)")
 
                             verify(historyStore.recentSongs()).wasCalled(exactly(1))
 
-                            print("sync 2")
                             testQueue.sync {}
-                            print("sync 2 done")
                         }
                         it("should display recent songs") {
-                            print("sync 1")
                             testQueue.sync {}
-                            print("sync 1 done")
-                            print("Asserting 'should display recent songs' on \(Thread.current)")
 
                             expect(target.songResults).to(haveCount(2))
                             expect(target.songResults[0].title).to(equal(recentSongs[0].songTitle))
                             expect(target.songResults[1].title).to(equal(recentSongs[1].songTitle))
 
-                            print("sync 2")
                             testQueue.sync {}
-                            print("sync 2 done")
                         }
                     }
                     context("deactivate search") {
@@ -263,7 +241,7 @@ class HomeViewModelSearchSpec: QuickSpec {
                         }
                         // add a few results from page1 to ensure that they are deduped.
                         + [UiSongResult(name: "classic1", identifier: HymnIdentifier(hymnType: .classic, hymnNumber: "1")),
-                           UiSongResult(name: "classic2", identifier: HymnIdentifier(hymnType: .classic, hymnNumber: "1"))]
+                           UiSongResult(name: "classic2", identifier: HymnIdentifier(hymnType: .classic, hymnNumber: "2"))]
                     context("first page complete successfully") {
                         beforeEach {
                             given(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 1)) ~> { _, _ in
@@ -297,7 +275,7 @@ class HomeViewModelSearchSpec: QuickSpec {
                         }
                         describe("load on nonexistent result") {
                             beforeEach {
-                                target.loadMore(at: SongResultViewModel(title: "does not exist", destinationView: EmptyView().eraseToAnyView()))
+                                target.loadMore(at: SongResultViewModel(stableId: "empty does not exist view", title: "does not exist", destinationView: EmptyView().eraseToAnyView()))
                             }
                             it("should not fetch the next page") {
                                 verify(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 2)).wasNeverCalled()
@@ -305,7 +283,7 @@ class HomeViewModelSearchSpec: QuickSpec {
                         }
                         describe("load more does not reach threshold") {
                             beforeEach {
-                                target.loadMore(at: SongResultViewModel(title: "classic6", destinationView: EmptyView().eraseToAnyView()))
+                                target.loadMore(at: SongResultViewModel(stableId: "hymnType: h, hymnNumber: 6, queryParams: ", title: "classic6", destinationView: EmptyView().eraseToAnyView()))
                             }
                             it("should not fetch the next page") {
                                 verify(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 2)).wasNeverCalled()
@@ -313,7 +291,7 @@ class HomeViewModelSearchSpec: QuickSpec {
                         }
                         describe("load more meets threshold") {
                             beforeEach {
-                                target.loadMore(at: SongResultViewModel(title: "classic7", destinationView: EmptyView().eraseToAnyView()))
+                                target.loadMore(at: SongResultViewModel(stableId: "hymnType: h, hymnNumber: 7, queryParams: ", title: "classic7", destinationView: EmptyView().eraseToAnyView()))
                                 testQueue.sync {}
                                 testQueue.sync {}
                                 testQueue.sync {}
@@ -332,7 +310,7 @@ class HomeViewModelSearchSpec: QuickSpec {
                             }
                             describe("no more pages to load") {
                                 beforeEach {
-                                    target.loadMore(at: SongResultViewModel(title: "classic23", destinationView: EmptyView().eraseToAnyView()))
+                                    target.loadMore(at: SongResultViewModel(stableId: "hymnType: h, hymnNumber: 23, queryParams: ", title: "classic23", destinationView: EmptyView().eraseToAnyView()))
                                 }
                                 it("should not fetch the next page") {
                                     verify(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 3)).wasNeverCalled()
@@ -371,7 +349,7 @@ class HomeViewModelSearchSpec: QuickSpec {
                         }
                         describe("try to load more") {
                             beforeEach {
-                                target.loadMore(at: SongResultViewModel(title: "classic7", destinationView: EmptyView().eraseToAnyView()))
+                                target.loadMore(at: SongResultViewModel(stableId: "hymnType: h, hymnNumber: 7, queryParams: ", title: "classic7", destinationView: EmptyView().eraseToAnyView()))
                                 testQueue.sync {}
                             }
                             it("not fetch the next page since previous call is still loading") {
@@ -392,7 +370,7 @@ class HomeViewModelSearchSpec: QuickSpec {
                             }
                             describe("loading more") {
                                 beforeEach {
-                                    target.loadMore(at: SongResultViewModel(title: "classic7", destinationView: EmptyView().eraseToAnyView()))
+                                    target.loadMore(at: SongResultViewModel(stableId: "hymnType: h, hymnNumber: 7, queryParams: ", title: "classic7", destinationView: EmptyView().eraseToAnyView()))
                                     testQueue.sync {}
                                     testQueue.sync {}
                                     testQueue.sync {}

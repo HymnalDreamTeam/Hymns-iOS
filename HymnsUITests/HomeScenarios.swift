@@ -9,7 +9,7 @@ class HomeScenarios: BaseTestCase {
 
     func test_goToSongFromRecentSongs() {
         _ = HomeViewCan(app, testCase: self)
-            .waitForButtons("classic1151", "classic40", "classic2", "classic3")
+            .waitForButtons("classic1151", "classic40", "Hymn 2: Classic 2", "classic3")
             .tapResult("classic1151")
             .waitForStaticTexts("Hymn 1151", "verse 1 line 1")
     }

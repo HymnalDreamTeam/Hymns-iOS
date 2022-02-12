@@ -30,7 +30,7 @@ struct BrowseResultsListView: View {
                 guard !songResults.isEmpty else {
                     return ErrorView().maxSize().eraseToAnyView()
                 }
-                return List(songResults, id: \.title) { songResult in
+                return List(songResults, id: \.stableId) { songResult in
                     NavigationLink(destination: songResult.destinationView) {
                         SongResultView(viewModel: songResult)
                     }
@@ -48,9 +48,9 @@ struct BrowseResultsListView_Previews: PreviewProvider {
         let emptyViewModel = BrowseResultsListViewModel(tag: UiTag(title: "Best songs", color: .none))
         let empty = BrowseResultsListView(viewModel: emptyViewModel)
 
-        let resultObjects = [SongResultViewModel(title: "Hymn 114", destinationView: EmptyView().eraseToAnyView()),
-                             SongResultViewModel(title: "Cup of Christ", destinationView: EmptyView().eraseToAnyView()),
-                             SongResultViewModel(title: "Avengers - Endgame", destinationView: EmptyView().eraseToAnyView())]
+        let resultObjects = [SongResultViewModel(stableId: "Hymn 114", title: "Hymn 114", destinationView: EmptyView().eraseToAnyView()),
+                             SongResultViewModel(stableId: "Cup of Christ", title: "Cup of Christ", destinationView: EmptyView().eraseToAnyView()),
+                             SongResultViewModel(stableId: "Avengers - Endgame", title: "Avengers - Endgame", destinationView: EmptyView().eraseToAnyView())]
         let resultsViewModel = BrowseResultsListViewModel(category: "Experience of Christ")
         resultsViewModel.songResults = resultObjects
         let results = BrowseResultsListView(viewModel: resultsViewModel)

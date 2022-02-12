@@ -133,6 +133,7 @@ class DisplayHymnViewModel: ObservableObject {
                 self.isFavorited = isFavorited
             }).store(in: &disposables)
     }
+
     func toggleFavorited() {
         isFavorited.map { isFavorited in
             if isFavorited {

@@ -118,8 +118,8 @@ class DisplayHymnBottomBarViewModel: ObservableObject {
                 let queryParams = RegexUtil.getQueryParams(path: datum.path)
                 let title = datum.value
                 let hymnIdentifier = HymnIdentifier(hymnType: hymnType, hymnNumber: hymnNumber, queryParams: queryParams)
-                return SongResultViewModel(title: title,
-                                           destinationView: DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: hymnIdentifier)).eraseToAnyView())
+                let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: hymnIdentifier)).eraseToAnyView()
+                return SongResultViewModel(stableId: String(describing: hymnIdentifier), title: title, destinationView: destination)
             }
         }  ?? [SongResultViewModel]()
     }

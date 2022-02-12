@@ -126,8 +126,8 @@ struct DisplayHymnView_Previews: PreviewProvider {
         classic1334SongInfoDialogViewModel.songInfo = [SongInfoViewModel(label: "label", values: ["value1", "value2"])]
         classic1334BottomBarViewModel.buttons = [
             .share("Shareable lyrics"),
-            .languages([SongResultViewModel(title: "language", destinationView: EmptyView().eraseToAnyView())]),
-            .relevant([SongResultViewModel(title: "relevant", destinationView: EmptyView().eraseToAnyView())]),
+            .languages([SongResultViewModel(stableId: "Empty title view", title: "language", destinationView: EmptyView().eraseToAnyView())]),
+            .relevant([SongResultViewModel(stableId: "Empty relevant view", title: "relevant", destinationView: EmptyView().eraseToAnyView())]),
             .musicPlayback(AudioPlayerViewModel(url: URL(string: "https://www.hymnal.net/Hymns/NewSongs/mp3/ns0767.mp3")!)),
             .songInfo(classic1334SongInfoDialogViewModel)
         ]
