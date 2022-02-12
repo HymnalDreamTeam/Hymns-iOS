@@ -14,6 +14,7 @@ struct HomeContainerView: View {
             VStack {
                 ZStack {
                     if selectedTab == .home {
+                        // HomeView should still be recreated or else the label doesn't get removed when you clear history
                         HomeView()
                     } else if selectedTab == .browse {
                         browseView
