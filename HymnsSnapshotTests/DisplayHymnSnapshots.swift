@@ -34,9 +34,9 @@ class DisplayHymnSnapshots: XCTestCase {
         viewModel.currentTab = .lyrics(HymnLyricsView(viewModel: lyricsViewModel).maxSize().eraseToAnyView())
         viewModel.tabItems = [
             viewModel.currentTab,
-            .chords(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/40/f=gtpdf")!).eraseToAnyView()),
-            .guitar(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/40/f=pdf")!).eraseToAnyView()),
-            .piano(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/40/f=ppdf")!).eraseToAnyView())]
+            .chords(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/40/f=gtpdf")!)).eraseToAnyView()),
+            .guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/40/f=pdf")!)).eraseToAnyView()),
+            .piano(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/40/f=ppdf")!)).eraseToAnyView())]
         viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn40_identifier)
         viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize(FontPickerViewModel()), .tags]
         assertVersionedSnapshot(
@@ -56,9 +56,9 @@ class DisplayHymnSnapshots: XCTestCase {
         viewModel.currentTab = .lyrics(HymnLyricsView(viewModel: lyricsViewModel).maxSize().eraseToAnyView())
         viewModel.tabItems = [
             viewModel.currentTab,
-            .chords(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/1334/f=gtpdf")!).eraseToAnyView()),
-            .guitar(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/1334/f=pdf")!).eraseToAnyView()),
-            .piano(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/1334/f=ppdf")!).eraseToAnyView())]
+            .chords(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1334/f=gtpdf")!)).eraseToAnyView()),
+            .guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1334/f=pdf")!)).eraseToAnyView()),
+            .piano(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1334/f=ppdf")!)).eraseToAnyView())]
         viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1334_identifier)
         viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize(FontPickerViewModel()), .tags]
         assertVersionedSnapshot(
@@ -120,7 +120,7 @@ class DisplayHymnSnapshots: XCTestCase {
         viewModel.currentTab = .lyrics(HymnLyricsView(viewModel: lyricsViewModel).maxSize().eraseToAnyView())
         viewModel.tabItems = [
             viewModel.currentTab,
-            .chords(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=gtpdf")!).eraseToAnyView())]
+            .chords(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=gtpdf")!)).eraseToAnyView())]
         viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1151_identifier)
         viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize(FontPickerViewModel()), .tags]
         assertVersionedSnapshot(
@@ -142,8 +142,8 @@ class DisplayHymnSnapshots: XCTestCase {
         viewModel.currentTab = .lyrics(HymnLyricsView(viewModel: lyricsViewModel).maxSize().eraseToAnyView())
         viewModel.tabItems = [
             viewModel.currentTab,
-            .chords(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=gtpdf")!).eraseToAnyView()),
-            .piano(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=ppdf")!).eraseToAnyView())]
+            .chords(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=gtpdf")!)).eraseToAnyView()),
+            .piano(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=ppdf")!)).eraseToAnyView())]
         let bottomBarViewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1151_identifier)
         bottomBarViewModel.buttons = [
             .share("Shareable lyrics"),
@@ -172,9 +172,9 @@ class DisplayHymnSnapshots: XCTestCase {
         viewModel.currentTab = .lyrics(HymnLyricsView(viewModel: lyricsViewModel).maxSize().eraseToAnyView())
         viewModel.tabItems = [
             viewModel.currentTab,
-            .chords(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=gtpdf")!).eraseToAnyView()),
-            .guitar(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=pdf")!).eraseToAnyView()),
-            .piano(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=ppdf")!).eraseToAnyView())]
+            .chords(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=gtpdf")!)).eraseToAnyView()),
+            .guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=pdf")!)).eraseToAnyView()),
+            .piano(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=ppdf")!)).eraseToAnyView())]
         let bottomBarViewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1151_identifier)
         bottomBarViewModel.buttons = [
             .share("Shareable lyrics"),

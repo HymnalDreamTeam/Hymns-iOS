@@ -3,24 +3,27 @@ import SwiftUI
 
 struct DisplayHymnPdfView: View {
 
-    let url: URL
-    let pdfPreloader: PDFLoader
+    @State private var showPdfSheet = false
+    @ObservedObject private var viewModel: DisplayHymnPdfViewModel
 
-    init(url: URL, pdfPreloader: PDFLoader = Resolver.resolve()) {
-        self.url = url
-        self.pdfPreloader = pdfPreloader
+    init(viewModel: DisplayHymnPdfViewModel) {
+        self.viewModel = viewModel
     }
 
-    @State private var showPdfSheet = false
-
     var body: some View {
-        ZStack(alignment: .topTrailing) {
+        guard let pdfDocument = viewModel.pdfDocument else {
+            return ActivityIndicator().maxSize().onAppear {
+                viewModel.loadPdf()
+            }.eraseToAnyView()
+        }
+
+        return ZStack(alignment: .topTrailing) {
             Button(action: {
                 self.showPdfSheet = true
             }, label: {
                 Image(systemName: "arrow.up.left.and.arrow.down.right").rotationEffect(.degrees(90)).accessibility(label: Text("Maximize music")).padding().padding(.top, 15)
             }).zIndex(1)
-            PDFViewer(preloader: pdfPreloader, url: url)
+            PDFViewer(pdfDocument)
         }.fullScreenCover(isPresented: $showPdfSheet) {
             ZStack(alignment: .topLeading) {
                 Button(action: {
@@ -28,21 +31,24 @@ struct DisplayHymnPdfView: View {
                 }, label: {
                     Text("Close").padding()
                 }).zIndex(1)
-                PDFViewer(url: self.url)
+                PDFViewer(pdfDocument)
             }
-        }
+        }.eraseToAnyView()
     }
 }
 
 #if DEBUG
 struct DisplayHymnPdfView_Previews: PreviewProvider {
     static var previews: some View {
-        let pdfView = DisplayHymnPdfView(url: URL(string: "http://www.hymnal.net/en/hymn/h/40/f=gtpdf")!)
-
+        // Try to load a real url, so its initial state should be "loading".
+        let loading = DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/40/f=gtpdf")!))
+        // Seed the preloader with a dummy pdf so the initial state should be the pdf, since no loading is required.
+        let loaded = DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(preloader: PdfLoaderTestImpl(), url: URL(string: "http://www.dummypdf.com")!))
         return Group {
-            pdfView
-            pdfView.background(Color(.systemBackground)).environment(\.colorScheme, .dark).previewDisplayName("Dark Mode")
-            pdfView
+            loading
+            loaded
+            loaded.background(Color(.systemBackground)).environment(\.colorScheme, .dark).previewDisplayName("Dark Mode")
+            loaded
                 .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
                 .previewDisplayName("a11y extra extra large")
         }
