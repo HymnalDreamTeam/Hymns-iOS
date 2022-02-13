@@ -27,10 +27,10 @@ struct DisplayHymnToolbar: View {
                 }, label: {
                     isFavorited ?
                         Image(systemName: "heart.fill")
-                            .accessibility(label: Text("Mark as favorite")).accentColor(.accentColor).padding() :
+                            .accessibility(label: Text("Mark as favorite")).accentColor(.accentColor) :
                         Image(systemName: "heart")
-                            .accessibility(label: Text("Unmark as favorite")).accentColor(.primary).padding()
-                })
+                            .accessibility(label: Text("Unmark as favorite")).accentColor(.primary)
+                }).padding()
             }
         }
     }

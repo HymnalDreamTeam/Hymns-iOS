@@ -43,10 +43,34 @@ class AnalyticsLogger {
         }
     }
 
-    func logDisplayMusicPDF(url: URL) {
+    func logPreloadMusicPdf(url: URL) {
         backgroundThread.async {
-            Analytics.logEvent(DisplayMusicPDF.name, parameters: [
-                DisplayMusicPDF.Params.pdf_url.rawValue: url.absoluteString
+            Analytics.logEvent(PreloadMusicPdf.name, parameters: [
+                PreloadMusicPdf.Params.pdf_url.rawValue: url.absoluteString
+            ])
+        }
+    }
+
+    func logLoadMusicPdf(url: URL) {
+        backgroundThread.async {
+            Analytics.logEvent(LoadMusicPdf.name, parameters: [
+                LoadMusicPdf.Params.pdf_url.rawValue: url.absoluteString
+            ])
+        }
+    }
+
+    func logDisplayMusicPdfSuccess(url: URL) {
+        backgroundThread.async {
+            Analytics.logEvent(DisplayMusicPdfSuccess.name, parameters: [
+                DisplayMusicPdfSuccess.Params.pdf_url.rawValue: url.absoluteString
+            ])
+        }
+    }
+
+    func logDisplayMusicPdfFailed(url: URL) {
+        backgroundThread.async {
+            Analytics.logEvent(DisplayMusicPdfFailed.name, parameters: [
+                DisplayMusicPdfFailed.Params.pdf_url.rawValue: url.absoluteString
             ])
         }
     }

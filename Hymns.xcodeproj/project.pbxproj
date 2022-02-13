@@ -135,6 +135,8 @@
 		3B90969B245F7F14000229A2 /* HymnEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B90969A245F7F14000229A2 /* HymnEntity.swift */; };
 		3B9ED1BE2486272600BD004E /* BrowseResultsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B9ED1BD2486272600BD004E /* BrowseResultsListView.swift */; };
 		3B9ED1C02486296000BD004E /* BrowseResultsListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B9ED1BF2486296000BD004E /* BrowseResultsListViewModel.swift */; };
+		3BA1F8A727B894BC004410D0 /* DisplayHymnPdfViewModelSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA1F8A627B894BC004410D0 /* DisplayHymnPdfViewModelSpec.swift */; };
+		3BA1F8A927B894D4004410D0 /* DisplayHymnPdfViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA1F8A827B894D4004410D0 /* DisplayHymnPdfViewModel.swift */; };
 		3BA2F29D24BC3D7C00173B44 /* classic_40.json in Resources */ = {isa = PBXBuildFile; fileRef = 3BA2F29C24BC3D7C00173B44 /* classic_40.json */; };
 		3BA30A58278D00ED00A88807 /* FontPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA30A57278D00ED00A88807 /* FontPicker.swift */; };
 		3BA30A5A278D010200A88807 /* FontPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA30A59278D010200A88807 /* FontPickerViewModel.swift */; };
@@ -431,6 +433,8 @@
 		3B9AE08D245902920027C571 /* classic40.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = classic40.json; sourceTree = "<group>"; };
 		3B9ED1BD2486272600BD004E /* BrowseResultsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseResultsListView.swift; sourceTree = "<group>"; };
 		3B9ED1BF2486296000BD004E /* BrowseResultsListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseResultsListViewModel.swift; sourceTree = "<group>"; };
+		3BA1F8A627B894BC004410D0 /* DisplayHymnPdfViewModelSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayHymnPdfViewModelSpec.swift; sourceTree = "<group>"; };
+		3BA1F8A827B894D4004410D0 /* DisplayHymnPdfViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayHymnPdfViewModel.swift; sourceTree = "<group>"; };
 		3BA2F29C24BC3D7C00173B44 /* classic_40.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = classic_40.json; sourceTree = "<group>"; };
 		3BA30A57278D00ED00A88807 /* FontPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontPicker.swift; sourceTree = "<group>"; };
 		3BA30A59278D010200A88807 /* FontPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontPickerViewModel.swift; sourceTree = "<group>"; };
@@ -899,6 +903,7 @@
 				5C45E09824512E9000872369 /* VerseViewModel.swift */,
 				B595A4A724438CC2005F7A14 /* DisplayHymnViewModel.swift */,
 				3BB7DE4724FCA9D600D4E6FB /* DisplayHymnPdfView.swift */,
+				3BA1F8A827B894D4004410D0 /* DisplayHymnPdfViewModel.swift */,
 				B51BA5C82430075300CA52F7 /* DisplayHymnView.swift */,
 				3B020E7E251DCD0C007B7EBB /* DisplayHymnContainerView.swift */,
 				3B020E84251DCD32007B7EBB /* DisplayHymnContainerViewModel.swift */,
@@ -1006,6 +1011,7 @@
 			children = (
 				3BA46130247752170068F269 /* Song Info */,
 				3BFF25AD24480CC500DD91F6 /* DisplayHymnViewModelSpec.swift */,
+				3BA1F8A627B894BC004410D0 /* DisplayHymnPdfViewModelSpec.swift */,
 				3B75C57825A981B2002AC724 /* DisplayHymnContainerViewModelSpec.swift */,
 				3BA461312477522E0068F269 /* DisplayHymnBottomBarViewModelSpec.swift */,
 				3B7555C72437C24F00DA17F6 /* HymnLyricsViewModelSpec.swift */,
@@ -1833,6 +1839,7 @@
 				3B203690248C131B00D90DF5 /* NonFatal.swift in Sources */,
 				3B11E2A42464AA3400F27E73 /* HymnalNetService.swift in Sources */,
 				B56305B9244223D7003BC132 /* FontViewModifier.swift in Sources */,
+				3BA1F8A927B894D4004410D0 /* DisplayHymnPdfViewModel.swift in Sources */,
 				3BE4436B248AC21300763B3C /* ScriptureView.swift in Sources */,
 				3BA4612F24773A040068F269 /* DisplayHymnBottomBarViewModel.swift in Sources */,
 				3B58D2102480D0EA00C66445 /* BrowseCategoriesView.swift in Sources */,
@@ -1957,6 +1964,7 @@
 				3B7555C82437C24F00DA17F6 /* HymnLyricsViewModelSpec.swift in Sources */,
 				3B87B831244988B100AEC7E9 /* SettingsViewModelSpec.swift in Sources */,
 				3BF3BDC42467B9F40046228C /* HymnsRepositoryImpl_dbUninitializedTests.swift in Sources */,
+				3BA1F8A727B894BC004410D0 /* DisplayHymnPdfViewModelSpec.swift in Sources */,
 				3BC53646243EDB8100DA728F /* TestConstants.swift in Sources */,
 				3B11E29E24623D7900F27E73 /* ConverterSpec.swift in Sources */,
 				EF9D228545974074AF495E83 /* HymnsMocks.generated.swift in Sources */,

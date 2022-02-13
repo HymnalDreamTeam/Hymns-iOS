@@ -13,14 +13,17 @@ protocol PDFLoader {
 
 class PDFLoaderImpl: PDFLoader {
 
+    private let analytics: AnalyticsLogger
     private let backgroundQueue: DispatchQueue
     private let mainQueue: DispatchQueue
     private let session: URLSession
     private var cache = [URL: PDFDocument]()
 
-    init(backgroundQueue: DispatchQueue = Resolver.resolve(name: "background"),
+    init(analytics: AnalyticsLogger = Resolver.resolve(),
+         backgroundQueue: DispatchQueue = Resolver.resolve(name: "background"),
          mainQueue: DispatchQueue = Resolver.resolve(name: "main"),
          session: URLSession = Resolver.resolve()) {
+        self.analytics = analytics
         self.backgroundQueue = backgroundQueue
         self.mainQueue = mainQueue
         self.session = session
@@ -31,6 +34,7 @@ class PDFLoaderImpl: PDFLoader {
      */
     func load(url: URL) {
         backgroundQueue.async {
+            self.analytics.logPreloadMusicPdf(url: url)
             if let document = PDFDocument(url: url) {
                 self.mainQueue.async {
                     self.cache[url] = document
