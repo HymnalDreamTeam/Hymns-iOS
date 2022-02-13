@@ -60,9 +60,9 @@ struct DisplayHymnView_Previews: PreviewProvider {
                                            VerseViewModel(verseNumber: "4", verseLines: classic40_preview.lyrics[4].verseContent)]
         classic40ViewModel.currentTab = .lyrics(HymnLyricsView(viewModel: classic40LyricsViewModel).eraseToAnyView())
         classic40ViewModel.tabItems = [classic40ViewModel.currentTab,
-                                       .chords(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/40/f=gtpdf")!).eraseToAnyView()),
-                                       .guitar(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/40/f=pdf")!).eraseToAnyView()),
-                                       .piano(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/40/f=ppdf")!).eraseToAnyView())]
+                                       .chords(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/40/f=gtpdf")!)).eraseToAnyView()),
+                                       .guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/40/f=pdf")!)).eraseToAnyView()),
+                                       .piano(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/40/f=ppdf")!)).eraseToAnyView())]
         classic40ViewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn40)
         let classic40 = DisplayHymnView(viewModel: classic40ViewModel)
 
@@ -79,9 +79,9 @@ struct DisplayHymnView_Previews: PreviewProvider {
         classic1151ViewModel.currentTab = .lyrics(HymnLyricsView(viewModel: classic1151LyricsViewModel).maxSize().eraseToAnyView())
         classic1151ViewModel.tabItems = [
             classic1151ViewModel.currentTab,
-            .chords(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=gtpdf")!).eraseToAnyView()),
-            .guitar(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=pdf")!).eraseToAnyView()),
-            .piano(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=ppdf")!).eraseToAnyView())]
+            .chords(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=gtpdf")!)).eraseToAnyView()),
+            .guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=pdf")!)).eraseToAnyView()),
+            .piano(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=ppdf")!)).eraseToAnyView())]
         classic1151ViewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)
         let classic1151 = DisplayHymnView(viewModel: classic1151ViewModel)
 
@@ -89,12 +89,12 @@ struct DisplayHymnView_Previews: PreviewProvider {
         classic1151ChordsViewModel.isLoaded = true
         classic1151ChordsViewModel.title = "Hymn 1151"
         classic1151ChordsViewModel.isFavorited = false
-        classic1151ChordsViewModel.currentTab = .chords(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=gtpdf")!).eraseToAnyView())
+        classic1151ChordsViewModel.currentTab = .chords(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=gtpdf")!)).eraseToAnyView())
         classic1151ChordsViewModel.tabItems = [
             .lyrics(HymnLyricsView(viewModel: HymnLyricsViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)).maxSize().eraseToAnyView()),
             classic1151ChordsViewModel.currentTab,
-            .guitar(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=pdf")!).eraseToAnyView()),
-            .piano(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=ppdf")!).eraseToAnyView())]
+            .guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=pdf")!)).eraseToAnyView()),
+            .piano(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=ppdf")!)).eraseToAnyView())]
         classic1151ChordsViewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)
         let classic1151Chords = DisplayHymnView(viewModel: classic1151ChordsViewModel)
 
@@ -102,11 +102,11 @@ struct DisplayHymnView_Previews: PreviewProvider {
         classic1151ChordsViewModel.isLoaded = true
         classic1151PianoViewModel.title = "Hymn 1151"
         classic1151PianoViewModel.isFavorited = false
-        classic1151PianoViewModel.currentTab = .piano(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=ppdf")!).eraseToAnyView())
+        classic1151PianoViewModel.currentTab = .piano(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=ppdf")!)).eraseToAnyView())
         classic1151PianoViewModel.tabItems = [
             .lyrics(HymnLyricsView(viewModel: HymnLyricsViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)).maxSize().eraseToAnyView()),
-            .chords(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=gtpdf")!).eraseToAnyView()),
-            .guitar(PDFViewer(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=pdf")!).eraseToAnyView()),
+            .chords(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=gtpdf")!)).eraseToAnyView()),
+            .guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=pdf")!)).eraseToAnyView()),
             classic1151PianoViewModel.currentTab]
         classic1151PianoViewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)
         let classic1151Piano = DisplayHymnView(viewModel: classic1151PianoViewModel)

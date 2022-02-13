@@ -42,9 +42,45 @@ struct DisplaySong: AnalyticsEvent {
     // swiftlint:enable identifier_name
 }
 
-struct DisplayMusicPDF: AnalyticsEvent {
+struct PreloadMusicPdf: AnalyticsEvent {
 
-    static let name = "display_music_pdf"
+    static let name = "display_music_pdf_preloading"
+
+    // Allow non-alphanumeric characters for logging params
+    // swiftlint:disable identifier_name
+    enum Params: String {
+        case pdf_url
+    }
+    // swiftlint:enable identifier_name
+}
+
+struct LoadMusicPdf: AnalyticsEvent {
+
+    static let name = "display_music_pdf_loading"
+
+    // Allow non-alphanumeric characters for logging params
+    // swiftlint:disable identifier_name
+    enum Params: String {
+        case pdf_url
+    }
+    // swiftlint:enable identifier_name
+}
+
+struct DisplayMusicPdfSuccess: AnalyticsEvent {
+
+    static let name = "display_music_pdf_success"
+
+    // Allow non-alphanumeric characters for logging params
+    // swiftlint:disable identifier_name
+    enum Params: String {
+        case pdf_url
+    }
+    // swiftlint:enable identifier_name
+}
+
+struct DisplayMusicPdfFailed: AnalyticsEvent {
+
+    static let name = "display_music_pdf_failed"
 
     // Allow non-alphanumeric characters for logging params
     // swiftlint:disable identifier_name
