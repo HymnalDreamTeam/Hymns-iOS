@@ -21,7 +21,7 @@ struct DisplayHymnPdfView: View {
             Button(action: {
                 self.showPdfSheet = true
             }, label: {
-                Image(systemName: "arrow.up.left.and.arrow.down.right").rotationEffect(.degrees(90)).accessibility(label: Text("Maximize music")).padding().padding(.top, 15)
+                Image(systemName: "arrow.up.left.and.arrow.down.right").rotationEffect(.degrees(90)).accessibility(label: Text("Maximize music", comment: "A11y label for maximizing the sheet music.")).padding().padding(.top, 15)
             }).zIndex(1)
             PDFViewer(pdfDocument)
         }.fullScreenCover(isPresented: $showPdfSheet) {
@@ -29,7 +29,7 @@ struct DisplayHymnPdfView: View {
                 Button(action: {
                     self.showPdfSheet = false
                 }, label: {
-                    Text("Close").padding()
+                    Text("Close", comment: "Close the full scree PDF view.").padding()
                 }).zIndex(1)
                 PDFViewer(pdfDocument)
             }

@@ -83,7 +83,7 @@ struct AudioPlayer: View {
                     }, label: {
                         Image(systemName: "minus").font(.system(size: smallButtonSize)).foregroundColor(.accentColor)
                     })
-                    Text("Speed: \(self.viewModel.currentSpeed, specifier: "%.1f")x")
+                    Text("Speed: \(self.viewModel.currentSpeed, specifier: "%.1f")x", comment: "Label for speed of currently playing song.")
                     Button(action: {
                         self.viewModel.increaseSpeed()
                     }, label: {

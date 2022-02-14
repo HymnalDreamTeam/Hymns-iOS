@@ -36,7 +36,7 @@ struct HomeView: View {
                         }, label: {
                             HStack(alignment: .center, spacing: CGFloat.zero) {
                                 Image(systemName: "xmark").padding()
-                                Text("Try searching by hymn type (e.g. ns151, ch1, s3)").font(.caption).padding(.trailing)
+                                Text("Try searching by hymn type (e.g. ns151, ch1, s3)", comment: "Tooltip showing the user how to best utilize search.").font(.caption).padding(.trailing)
                             }
                         }, configuration:
                             ToolTipConfiguration(cornerRadius: 10,
@@ -82,7 +82,7 @@ struct HomeView: View {
             if viewModel.state == .loading {
                 ActivityIndicator().maxSize()
             } else if viewModel.state == .empty {
-                Text("Did not find any songs matching:\n\"\(viewModel.searchParameter)\".\nPlease try a different request")
+                Text("Did not find any songs matching:\n\"\(viewModel.searchParameter)\".\nPlease try a different request", comment: "Empty state for the search screen.")
                     .padding().multilineTextAlignment(.center).maxSize(alignment: .center)
             } else {
                 if viewModel.songResults.isEmpty {

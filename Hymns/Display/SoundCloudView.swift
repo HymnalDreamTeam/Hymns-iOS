@@ -23,7 +23,7 @@ struct SoundCloudView: View {
                     Button(action: {
                         self.dialogModel = nil
                     }, label: {
-                        Text("Close").padding()
+                        Text("Exit", comment: "Exit the SoundCloud player.").padding()
                     })
                     Spacer()
                     if self.viewModel.showMinimizeCaret {
@@ -31,7 +31,7 @@ struct SoundCloudView: View {
                             self.soundCloudPlayer = SoundCloudPlayerViewModel(dialogModel: self.$dialogModel, title: self.viewModel.$title)
                             self.dialogModel?.opacity = 0
                         }, label: {
-                            Image(systemName: "chevron.down").accessibility(label: Text("Minimize SoundCloud")).padding(.horizontal)
+                            Image(systemName: "chevron.down").accessibility(label: Text("Minimize SoundCloud", comment: "A11y label for minimzing SoundCloud.")).padding(.horizontal)
                         }).transformAnchorPreference(key: ToolTipPreferenceKey.self,
                                                      value: .bounds,
                                                      transform: { (value: inout ToolTipPreferenceData, anchor: Anchor<CGRect>) in
@@ -44,7 +44,7 @@ struct SoundCloudView: View {
             ToolTipView(tapAction: {}, label: {
                 HStack(alignment: .center, spacing: CGFloat.zero) {
                     Image(systemName: "xmark").padding()
-                    Text("Tap to keep playing song in background").font(.caption).padding(.trailing)
+                    Text("DO_NOT_TRANSLATE: Invisible tool tip used for calculating tool tip size. Not actually used.").font(.caption).padding(.trailing)
                 }
             }, configuration: ToolTipConfiguration(cornerRadius: 10, arrowPosition: ToolTipConfiguration.ArrowPosition(midX: 0.5, alignmentType: .percentage), arrowHeight: 7))
                 .transformAnchorPreference(key: ToolTipPreferenceKey.self,
@@ -81,7 +81,7 @@ struct SoundCloudView: View {
             }, label: {
                 HStack(alignment: .center, spacing: CGFloat.zero) {
                     Image(systemName: "xmark").padding()
-                    Text("Tap to keep playing song in background").font(.caption).padding(.trailing)
+                    Text("Tap to keep playing song in background", comment: "Tooltip text for minimizing SoundCloud and to keep the song playing.").font(.caption).padding(.trailing)
                 }
             }, configuration: ToolTipConfiguration(
                 cornerRadius: 10,

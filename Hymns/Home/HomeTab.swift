@@ -41,7 +41,7 @@ extension HomeTab: TabItem {
         case .none:
             return Text("")
         case .home:
-            return Text("Search")
+            return Text("Search", comment: "A11y label for the search tab.")
         case .browse:
             return Text("Favorites")
         case .favorites:

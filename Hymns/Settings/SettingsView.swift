@@ -45,22 +45,22 @@ struct SettingsView: View {
                     case .sent:
                         return HStack {
                             Image(systemName: "checkmark").foregroundColor(.green).padding()
-                            Text("Feedback sent").padding(.trailing)
+                            Text("Feedback sent", comment: "Toast message for when feedback was succesfully sent.").padding(.trailing)
                         }.eraseToAnyView()
                     case .saved:
-                        return Text("Feedback not sent but was saved to drafts").padding().eraseToAnyView()
+                        return Text("Feedback not sent but was saved to drafts", comment: "Toast message for when feedback was saved to drafts by the user.").padding().eraseToAnyView()
                     case .cancelled:
-                        return Text("Feedback not sent").padding().eraseToAnyView()
+                        return Text("Feedback not sent", comment: "Toast message for when feedback was cancelled by the user.").padding().eraseToAnyView()
                     case .failed:
-                        return Text("Feedback failed to send").padding().eraseToAnyView()
+                        return Text("Feedback failed to send", comment: "Toast message for when feedback failed to send.").padding().eraseToAnyView()
                     @unknown default:
                         return Text("Feedback failed to send").padding().eraseToAnyView()
                     }
                 case .clearHistory:
-                    return Text("Recent songs cleared").padding().eraseToAnyView()
+                    return Text("Recent songs cleared", comment: "Toast message for when recent songs are cleared.").padding().eraseToAnyView()
                 }
             case .failure:
-                return Text("Oops! Something went wrong. Please try again").padding().eraseToAnyView()
+                return Text("Oops! Something went wrong. Please try again", comment: "Generic error toast.").padding().eraseToAnyView()
             }
         }
     }

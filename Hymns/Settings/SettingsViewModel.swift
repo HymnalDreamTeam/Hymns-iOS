@@ -12,7 +12,7 @@ class SettingsViewModel: ObservableObject {
 
     func populateSettings(result: Binding<Result<SettingsToastItem, Error>?>) {
         let repeatChorusViewModel = RepeatChorusViewModel()
-        let clearHistoryViewModel = SimpleSettingViewModel(title: NSLocalizedString("Clear recent songs", comment: ""), action: {
+        let clearHistoryViewModel = SimpleSettingViewModel(title: NSLocalizedString("Clear recent songs", comment: "Clear the 'recent songs' list."), action: {
             do {
                 try self.historyStore.clearHistory()
                 result.wrappedValue = .success(.clearHistory)

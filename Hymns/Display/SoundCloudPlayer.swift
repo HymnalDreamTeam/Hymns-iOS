@@ -25,7 +25,7 @@ struct SoundCloudPlayer: View {
                 Button(action: {
                     self.viewModel.dismissPlayer()
                 }, label: {
-                    Image(systemName: "xmark").accessibility(label: Text("Close")).foregroundColor(.primary).padding()
+                    Image(systemName: "xmark").accessibility(label: Text("Close", comment: "Close the SoundCloud mini player.")).foregroundColor(.primary).padding()
                 })
             }.transition(.opacity).animation(.easeOut).eraseToAnyView()
         } else {

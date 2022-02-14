@@ -17,7 +17,7 @@ struct ClearUserDefaultsView: View {
                 exit(0)
             }
         }, label: {
-            Text("Clear user defaults").font(.callout)
+            Text("Clear user defaults", comment: "Debug feature, does not need translation.").font(.callout)
         }).padding().foregroundColor(.primary)
     }
 }
