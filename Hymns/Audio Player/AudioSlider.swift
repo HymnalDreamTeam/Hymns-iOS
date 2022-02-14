@@ -13,11 +13,11 @@ struct AudioSlider: View {
             Slider(value: Binding(
                 get: {
                     self.viewModel.currentTime
-            }, set: {
-                self.viewModel.currentTime = $0
-            }), in: 0...(viewModel.songDuration ?? 0),
-                onEditingChanged: sliderEditingChanged,
-                label: {Text("Song progress slider")})
+                }, set: {
+                    self.viewModel.currentTime = $0
+                }), in: 0...(viewModel.songDuration ?? 0),
+                   onEditingChanged: sliderEditingChanged,
+                   label: {Text("Song progress slider", comment: "A11y label for the song progress slider.")})
             HStack {
                 Text("\(formatSecondsToHMS(viewModel.currentTime))").font(.subheadline).foregroundColor(.accentColor)
                 Spacer()

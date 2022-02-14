@@ -16,7 +16,7 @@ struct BrowseResultsListView: View {
                     self.presentationMode.wrappedValue.dismiss()
                 }, label: {
                     Image(systemName: "chevron.left")
-                        .accessibility(label: Text("Go back"))
+                        .accessibility(label: Text("Go back", comment: "A11y label for going back."))
                         .accentColor(.primary).padding()
                 })
                 Text(viewModel.title).font(.body).fontWeight(.bold)

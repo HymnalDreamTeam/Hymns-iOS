@@ -15,7 +15,7 @@ struct DisplayHymnToolbar: View {
                 self.presentationMode.wrappedValue.dismiss()
             }, label: {
                 Image(systemName: "chevron.left")
-                    .accessibility(label: Text("Go back"))
+                    .accessibility(label: Text("Go back", comment: "A11y label for going back."))
                     .accentColor(.primary).padding()
             })
             Spacer()
@@ -27,9 +27,9 @@ struct DisplayHymnToolbar: View {
                 }, label: {
                     isFavorited ?
                         Image(systemName: "heart.fill")
-                            .accessibility(label: Text("Mark as favorite")).accentColor(.accentColor) :
+                            .accessibility(label: Text("Mark as favorite", comment: "A11y label for marking a song as favorite.")).accentColor(.accentColor) :
                         Image(systemName: "heart")
-                            .accessibility(label: Text("Unmark as favorite")).accentColor(.primary)
+                        .accessibility(label: Text("Unmark as favorite", comment: "A11y label for unmaking a song as favorite.")).accentColor(.primary)
                 }).padding()
             }
         }

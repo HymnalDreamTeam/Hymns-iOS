@@ -7,7 +7,7 @@ struct PrivacyPolicySettingView: View {
 
     var body: some View {
         Button(action: {self.showPrivacyPolicy.toggle()}, label: {
-            Text("Privacy policy").font(.callout)
+            Text("Privacy policy", comment: "Show the privacy policy.").font(.callout)
         }).padding().foregroundColor(.primary)
             .sheet(isPresented: self.$showPrivacyPolicy, content: {
                 PrivacyPolicyView(showPrivacyPolicy: self.$showPrivacyPolicy)

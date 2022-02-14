@@ -25,8 +25,7 @@ struct TagSheetView: View {
                 })
             }
             Image("empty tag illustration").maxWidth()
-            Text("Name your tag").font(.body).fontWeight(.bold)
-            TextField("Label it however you like", text: self.$tagName)
+            TextField(NSLocalizedString("Name your tag", comment: "Hint text for the tag name."), text: self.$tagName)
             Divider()
             ColorSelectorView(tagColor: self.$tagColor).padding(.vertical)
             if !self.viewModel.tags.isEmpty {
@@ -51,7 +50,7 @@ struct TagSheetView: View {
                             Button(action: {
                                 self.sheet.wrappedValue = nil
                             }, label: {
-                                Text("Close").foregroundColor(.primary).fontWeight(.light)
+                                Text("Close", comment: "Close the tag sheet.").foregroundColor(.primary).fontWeight(.light)
                             })
                             Button("Add") {
                                 self.viewModel.addTag(tagTitle: self.tagName, tagColor: self.tagColor)

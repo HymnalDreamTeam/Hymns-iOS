@@ -13,7 +13,7 @@ public struct HymnLyricsView: View {
     public var body: some View {
         Group { () -> AnyView in
             guard let lyrics = viewModel.lyrics else {
-                return Text("Lyrics are not available for this song").maxSize().eraseToAnyView()
+                return Text("Lyrics are not available for this song", comment: "Empty state for hymn lyrics.").maxSize().eraseToAnyView()
             }
 
             guard !lyrics.isEmpty else {
@@ -56,7 +56,7 @@ public struct HymnLyricsView: View {
             case .verseCopied:
                 return HStack {
                     Image(systemName: "checkmark").foregroundColor(.green).padding()
-                    Text("Verse copied to clipboard").padding(.trailing)
+                    Text("Verse copied to clipboard", comment: "Toast message when a verse has been copied to the clipboard.").padding(.trailing)
                 }.eraseToAnyView()
             }
         }.background(Color(.systemBackground))

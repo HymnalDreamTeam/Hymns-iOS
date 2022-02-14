@@ -14,8 +14,8 @@ struct RepeatChorusView: View {
     var body: some View {
         Toggle(isOn: $isToggleOn) {
             VStack(alignment: .leading, spacing: 5) {
-                Text("Repeat chorus")
-                Text("For songs with only one chorus, repeat the chorus after every verse")
+                Text("Repeat chorus", comment: "Title for settings item to repeat the chorus.")
+                Text("For songs with only one chorus, repeat the chorus after every verse", comment: "Subtitle for settings item to repeat the chorus.")
                     .font(.caption)
             }
         }.padding()

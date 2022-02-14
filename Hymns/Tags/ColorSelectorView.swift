@@ -6,7 +6,7 @@ struct ColorSelectorView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Select a color").font(.body).fontWeight(.bold)
+            Text("Select a color", comment: "Color selector for the tags.").font(.body).fontWeight(.bold)
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
                     ForEach(TagColor.allColors, id: \.self) { tagColor in

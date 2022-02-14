@@ -15,7 +15,7 @@ struct PrivacyPolicyView: View {
             Button(action: {
                 self.showPrivacyPolicy = false
             }, label: {
-                Text("Close").padding([.top, .horizontal])
+                Text("Close", comment: "Close the Privacy Policy.").padding([.top, .horizontal])
             })
             WebView(url: url)
         }.eraseToAnyView()
