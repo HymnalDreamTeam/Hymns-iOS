@@ -13,7 +13,7 @@ public struct HymnLyricsView: View {
     public var body: some View {
         Group { () -> AnyView in
             guard let lyrics = viewModel.lyrics else {
-                return Text("Lyrics are not available for this song", comment: "Empty state for hymn lyrics.").maxSize().eraseToAnyView()
+                return Text("This hymn does not exist. Please try a different one.", comment: "Empty state for hymn lyrics.").maxSize().eraseToAnyView()
             }
 
             guard !lyrics.isEmpty else {
@@ -30,8 +30,8 @@ public struct HymnLyricsView: View {
                                     self.transliterate.toggle()
                                 }, label: {
                                     self.transliterate ?
-                                        Image(systemName: "a.square.fill").accentColor(.accentColor) :
-                                        Image(systemName: "a.square").accentColor(.primary)
+                                        Image(systemName: "a.square.fill").accessibilityLabel(Text("Transliteration on. Click to toggle.", comment: "A11y label for button toggling transliteration off.")).accentColor(.accentColor) :
+                                        Image(systemName: "a.square").accessibilityLabel(Text("Transliteration off. Click to toggle.", comment: "A11y label for button toggling transliteration on.")).accentColor(.primary)
                                 }).frame(width: 25, height: 25)
                             }
                         }

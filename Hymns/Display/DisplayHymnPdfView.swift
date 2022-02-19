@@ -11,10 +11,14 @@ struct DisplayHymnPdfView: View {
     }
 
     var body: some View {
-        guard let pdfDocument = viewModel.pdfDocument else {
+        if viewModel.isLoading {
             return ActivityIndicator().maxSize().onAppear {
                 viewModel.loadPdf()
             }.eraseToAnyView()
+        }
+
+        guard let pdfDocument = viewModel.pdfDocument else {
+            return ErrorView().maxSize().eraseToAnyView()
         }
 
         return ZStack(alignment: .topTrailing) {
@@ -29,7 +33,7 @@ struct DisplayHymnPdfView: View {
                 Button(action: {
                     self.showPdfSheet = false
                 }, label: {
-                    Text("Close", comment: "Close the full scree PDF view.").padding()
+                    Text("Close", comment: "Close the full screen PDF view.").padding()
                 }).zIndex(1)
                 PDFViewer(pdfDocument)
             }
@@ -40,13 +44,19 @@ struct DisplayHymnPdfView: View {
 #if DEBUG
 struct DisplayHymnPdfView_Previews: PreviewProvider {
     static var previews: some View {
-        // Try to load a real url, so its initial state should be "loading".
-        let loading = DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/40/f=gtpdf")!))
+        let loadingViewModel = DisplayHymnPdfViewModel(url: URL(string: "http://www.dummylink.com")!)
+        let loading = DisplayHymnPdfView(viewModel: loadingViewModel)
+
+        let errorViewModel = DisplayHymnPdfViewModel(url: URL(string: "http://www.dummylink.com")!)
+        errorViewModel.isLoading = false
+        let error = DisplayHymnPdfView(viewModel: errorViewModel)
+
         // Seed the preloader with a dummy pdf so the initial state should be the pdf, since no loading is required.
         let loaded = DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(preloader: PdfLoaderTestImpl(), url: URL(string: "http://www.dummypdf.com")!))
         return Group {
-            loading
-            loaded
+            loading.previewDisplayName("Loading")
+            error.previewDisplayName("Error")
+            loaded.previewDisplayName("Loaded")
             loaded.background(Color(.systemBackground)).environment(\.colorScheme, .dark).previewDisplayName("Dark Mode")
             loaded
                 .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)

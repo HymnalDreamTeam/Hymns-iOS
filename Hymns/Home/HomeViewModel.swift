@@ -136,7 +136,7 @@ class HomeViewModel: ObservableObject {
                 self.state = .results
                 self.songResults = songResults
                 if !self.songResults.isEmpty {
-                    self.label = NSLocalizedString("Recent hymns", comment: "Recent hymns label")
+                    self.label = NSLocalizedString("Recent hymns", comment: "Recent hymns label on the Home/Search screen.")
                 }
             }).store(in: &disposables)
     }

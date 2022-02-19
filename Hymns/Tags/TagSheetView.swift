@@ -41,7 +41,7 @@ struct TagSheetView: View {
                                 HStack {
                                     Text(tag.title).font(.body).fontWeight(.bold)
                                     Image(systemName: "xmark.circle")
-                                }
+                                }.accessibilityLabel(Text("Delete tag: \(tag.title)", comment: "A11y label for button to delete a tag."))
                                 .tagPill(backgroundColor: tag.color.background, foregroundColor: tag.color.foreground)
                             }).padding(2)
                         }
@@ -52,7 +52,7 @@ struct TagSheetView: View {
                             }, label: {
                                 Text("Close", comment: "Close the tag sheet.").foregroundColor(.primary).fontWeight(.light)
                             })
-                            Button("Add") {
+                            Button(NSLocalizedString("Add", comment: "Button to save the inputted tag.")) {
                                 self.viewModel.addTag(tagTitle: self.tagName, tagColor: self.tagColor)
                             }.padding(.horizontal).disabled(self.tagName.isEmpty)
                         }.padding(.top)

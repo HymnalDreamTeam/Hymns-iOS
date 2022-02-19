@@ -139,78 +139,78 @@ extension HymnType {
     var displayTitle: String {
         switch self {
         case .classic:
-            return NSLocalizedString("Classic Hymns", comment: "Display name of 'Classic hymns', usually appears just by itself (i.e. as a title)")
+            return NSLocalizedString("Classic Hymns", comment: "Display name of 'Classic hymns'. Usually appears just by itself (i.e. as a title).")
         case .newTune:
-            return NSLocalizedString("New Tunes", comment: "Display name of 'New Tunes'. Usually appears just by itself (i.e. as a title)")
+            return NSLocalizedString("New Tunes", comment: "Display name of 'New Tunes'. Usually appears just by itself (i.e. as a title).")
         case .newSong:
-            return NSLocalizedString("New Songs", comment: "Display name of 'New Songs'. Usually appears just by itself (i.e. as a title)")
+            return NSLocalizedString("New Songs", comment: "Display name of 'New Songs'. Usually appears just by itself (i.e. as a title).")
         case .children:
-            return NSLocalizedString("Children's Songs", comment: "Display name of 'Children's Songs'. Usually appears just by itself (i.e. as a title)")
+            return NSLocalizedString("Children's Songs", comment: "Display name of 'Children's Songs'. Usually appears just by itself (i.e. as a title).")
         case .howardHigashi:
-            return NSLocalizedString("Howard Higashi Songs", comment: "Display name of 'Howard Higashi Songs'. Usually appears just by itself (i.e. as a title)")
+            return NSLocalizedString("Howard Higashi Songs", comment: "Display name of 'Howard Higashi Songs'. Usually appears just by itself (i.e. as a title).")
         case .dutch:
-            return NSLocalizedString("Dutch Hymns", comment: "Display name of 'Dutch Hymns'. Usually appears just by itself (i.e. as a title)")
+            return NSLocalizedString("Dutch Songs", comment: "Display name of 'Dutch Songs'. Usually appears just by itself (i.e. as a title).")
         case .german:
-            return NSLocalizedString("German Hymns", comment: "Display name of 'German Hymns'. Usually appears just by itself (i.e. as a title)")
+            return NSLocalizedString("German Songs", comment: "Display name of 'German Songs'. Usually appears just by itself (i.e. as a title).")
         case .chinese:
-            return NSLocalizedString("Chinese Hymns", comment: "Display name of 'Chinese Hymns'. Usually appears just by itself (i.e. as a title)")
+            return NSLocalizedString("Chinese Songs", comment: "Display name of 'Chinese Songs'. Usually appears just by itself (i.e. as a title).")
         case .chineseSupplement:
-            return NSLocalizedString("Chinese supplemental Hymns", comment: "Display name of 'Chinese supplemental Hymns'. Usually appears just by itself (i.e. as a title)")
+            return NSLocalizedString("Chinese Supplemental Songs", comment: "Display name of 'Chinese Supplemental Songs'. Usually appears just by itself (i.e. as a title).")
         case .cebuano:
-            return NSLocalizedString("Cebuano Hymns", comment: "Display name of 'Cebuano Hymns'. Usually appears just by itself (i.e. as a title)")
+            return NSLocalizedString("Cebuano Songs", comment: "Display name of 'Cebuano Songs'. Usually appears just by itself (i.e. as a title).")
         case .tagalog:
-            return NSLocalizedString("Tagalog Hymns", comment: "Display name of 'Tagalog Hymns'. Usually appears just by itself (i.e. as a title)")
+            return NSLocalizedString("Tagalog Songs", comment: "Display name of 'Tagalog Songs'. Usually appears just by itself (i.e. as a title).")
         case .french:
-            return NSLocalizedString("French Hymns", comment: "Display name of 'French Hymns'. Usually appears just by itself (i.e. as a title)")
+            return NSLocalizedString("French Songs", comment: "Display name of 'French Songs'. Usually appears just by itself (i.e. as a title).")
         case .spanish:
-            return NSLocalizedString("Spanish Hymns", comment: "Display name of 'Spanish Hymns'. Usually appears just by itself (i.e. as a title)")
+            return NSLocalizedString("Spanish Songs", comment: "Display name of 'Spanish Songs'. Usually appears just by itself (i.e. as a title).")
         case .korean:
-            return NSLocalizedString("Korean Hymns", comment: "Display name of 'Korean Hymns'. Usually appears just by itself (i.e. as a title)")
+            return NSLocalizedString("Korean Songs", comment: "Display name of 'Korean Songs'. Usually appears just by itself (i.e. as a title).")
         case .japanese:
-            return NSLocalizedString("Japanese Hymns", comment: "Display name of 'Japanese Hymns'. Usually appears just by itself (i.e. as a title)")
+            return NSLocalizedString("Japanese Songs", comment: "Display name of 'Japanese Songs'. Usually appears just by itself (i.e. as a title).")
         case .indonesian:
-            return NSLocalizedString("Indonesian Hymns", comment: "Display name of 'Indonesian Hymns'. Usually appears just by itself (i.e. as a title)")
+            return NSLocalizedString("Indonesian Songs", comment: "Display name of 'Indonesian Songs'. Usually appears just by itself (i.e. as a title).")
         case .farsi:
-            return NSLocalizedString("Farsi Hymns", comment: "Display name of 'Farsi Hymns'. Usually appears just by itself (i.e. as a title)")
+            return NSLocalizedString("Farsi Songs", comment: "Display name of 'Farsi Songs'. Usually appears just by itself (i.e. as a title).")
         }
     }
 
     var displayLabel: String {
         switch self {
         case .classic:
-            return NSLocalizedString("Hymn", comment: "Will appear in conjunction with something else (e.g. Hymn 55)")
+            return NSLocalizedString("Hymn", comment: "Will appear in conjunction with something else (e.g. Hymn 55).")
         case .newTune:
-            return NSLocalizedString("New tune", comment: "Will appear in conjunction with something else (e.g. New tune 7)")
+            return NSLocalizedString("New tune", comment: "Will appear in conjunction with something else (e.g. New tune 7).")
         case .newSong:
-            return NSLocalizedString("New song", comment: "Will appear in conjunction with something else (e.g. New song 7)")
+            return NSLocalizedString("New song", comment: "Will appear in conjunction with something else (e.g. New song 7).")
         case .children:
-            return NSLocalizedString("Children", comment: "Will appear in conjunction with something else (e.g. Children 7)")
+            return NSLocalizedString("Children", comment: "Will appear in conjunction with something else (e.g. Children 7).")
         case .howardHigashi:
-            return NSLocalizedString("Howard Higashi (LB)", comment: "Will appear in conjunction with something else (e.g. Howard Higashi (LB) 7)")
+            return NSLocalizedString("Howard Higashi (LB)", comment: "Will appear in conjunction with something else (e.g. Howard Higashi (LB) 7).")
         case .dutch:
-            return NSLocalizedString("Dutch", comment: "Will appear in conjunction with something else (e.g. Dutch 7)")
+            return NSLocalizedString("Dutch", comment: "Will appear in conjunction with something else (e.g. Dutch 7).")
         case .german:
-            return NSLocalizedString("German", comment: "Will appear in conjunction with something else (e.g. German 7)")
+            return NSLocalizedString("German", comment: "Will appear in conjunction with something else (e.g. German 7).")
         case .chinese:
-            return NSLocalizedString("Chinese", comment: "Will appear in conjunction with something else (e.g. Chinese 7)")
+            return NSLocalizedString("Chinese", comment: "Will appear in conjunction with something else (e.g. Chinese 7).")
         case .chineseSupplement:
-            return NSLocalizedString("Chinese supplement", comment: "Will appear in conjunction with something else (e.g. Chinese supplement 7)")
+            return NSLocalizedString("Chinese Supplement", comment: "Will appear in conjunction with something else (e.g. Chinese Supplement 7).")
         case .cebuano:
-            return NSLocalizedString("Cebuano", comment: "Will appear in conjunction with something else (e.g. Cebuano 7)")
+            return NSLocalizedString("Cebuano", comment: "Will appear in conjunction with something else (e.g. Cebuano 7).")
         case .tagalog:
-            return NSLocalizedString("Tagalog", comment: "Will appear in conjunction with something else (e.g. Tagalog 7)")
+            return NSLocalizedString("Tagalog", comment: "Will appear in conjunction with something else (e.g. Tagalog 7).")
         case .french:
-            return NSLocalizedString("French", comment: "Will appear in conjunction with something else (e.g. French 7)")
+            return NSLocalizedString("French", comment: "Will appear in conjunction with something else (e.g. French 7).")
         case .spanish:
-            return NSLocalizedString("Spanish", comment: "Will appear in conjunction with something else (e.g. Spanish 7)")
+            return NSLocalizedString("Spanish", comment: "Will appear in conjunction with something else (e.g. Spanish 7).")
         case .korean:
-            return NSLocalizedString("Korean", comment: "Will appear in conjunction with something else (e.g. Korean 7)")
+            return NSLocalizedString("Korean", comment: "Will appear in conjunction with something else (e.g. Korean 7).")
         case .japanese:
-            return NSLocalizedString("Japanese", comment: "Will appear in conjunction with something else (e.g. Japanese 7)")
+            return NSLocalizedString("Japanese", comment: "Will appear in conjunction with something else (e.g. Japanese 7).")
         case .indonesian:
-            return NSLocalizedString("Indonesian", comment: "Will appear in conjunction with something else (e.g. Indonesian 7)")
+            return NSLocalizedString("Indonesian", comment: "Will appear in conjunction with something else (e.g. Indonesian 7).")
         case .farsi:
-            return NSLocalizedString("Farsi", comment: "Will appear in conjunction with something else (e.g. Farsi 7)")
+            return NSLocalizedString("Farsi", comment: "Will appear in conjunction with something else (e.g. Farsi 7).")
         }
     }
 }

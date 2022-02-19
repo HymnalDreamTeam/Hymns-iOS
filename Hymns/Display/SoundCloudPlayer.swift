@@ -20,12 +20,12 @@ struct SoundCloudPlayer: View {
                 Button(action: {
                     self.viewModel.openPlayer()
                 }, label: {
-                    MarqueeText(self.viewModel.title ?? NSLocalizedString("Now playing from SoundCloud", comment: "Indicator that a song from SoundCloud is currently playing"))
+                    MarqueeText(self.viewModel.title ?? NSLocalizedString("Now playing from SoundCloud", comment: "Indicator that a song from SoundCloud is currently playing."))
                 })
                 Button(action: {
                     self.viewModel.dismissPlayer()
                 }, label: {
-                    Image(systemName: "xmark").accessibility(label: Text("Close", comment: "Close the SoundCloud mini player.")).foregroundColor(.primary).padding()
+                    Image(systemName: "xmark").accessibility(label: Text("Stop music and close banner", comment: "Stop music and close banner.")).foregroundColor(.primary).padding()
                 })
             }.transition(.opacity).animation(.easeOut).eraseToAnyView()
         } else {

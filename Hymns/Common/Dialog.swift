@@ -40,7 +40,7 @@ struct Dialog_Previews: PreviewProvider {
 
     static var previews: some View {
         let backgroundText = Text("""
-__PREVIEW__ I'm baby kale chips bushwick whatever irony umami paleo. Selvage selfies art party vinyl distillery fanny pack. Taxidermy farm-to-table snackwave, narwhal copper mug listicle hashtag chambray tofu ethical forage pug chillwave kitsch sriracha. Slow-carb pabst poke listicle coloring book locavore williamsburg.
+%_PREVIEW_% I'm baby kale chips bushwick whatever irony umami paleo. Selvage selfies art party vinyl distillery fanny pack. Taxidermy farm-to-table snackwave, narwhal copper mug listicle hashtag chambray tofu ethical forage pug chillwave kitsch sriracha. Slow-carb pabst poke listicle coloring book locavore williamsburg.
 
 Fam asymmetrical whatever VHS pop-up leggings gastropub af iPhone sartorial chartreuse palo santo man braid. Chartreuse fanny pack organic, vexillologist lomo asymmetrical af. Wolf chia swag live-edge butcher VHS la croix, scenester deep v tote bag lomo. Ugh jianbing pitchfork vegan farm-to-table normcore synth green juice beard distillery hot chicken.
 
@@ -50,7 +50,7 @@ Dummy text? More like dummy thicc text, amirite?
 """)
 
         let viewModel = DialogViewModel(contentBuilder: {
-            Text("__PREVIEW__ Example Dialog").eraseToAnyView()
+            Text("%_PREVIEW_% Example Dialog").eraseToAnyView()
         })
         let dialog = Dialog(viewModel: .constant(viewModel))
         return Group {

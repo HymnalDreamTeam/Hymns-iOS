@@ -25,7 +25,7 @@ struct SettingsView: View {
             return
                 ScrollView {
                     VStack(alignment: .leading) {
-                        CustomTitle(title: NSLocalizedString("Settings", comment: "Settings tab title"))
+                        CustomTitle(title: NSLocalizedString("Settings", comment: "Settings tab title."))
                         ForEach(settings) { setting in
                             setting.view
                         }

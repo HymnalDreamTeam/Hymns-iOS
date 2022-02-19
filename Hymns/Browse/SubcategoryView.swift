@@ -16,14 +16,15 @@ struct SubcategoryView: View {
 
     @Environment(\.sizeCategory) var sizeCategory: ContentSizeCategory
     let viewModel: SubcategoryViewModel
+    let allSubcategories = NSLocalizedString("All subcategories", comment: "Browse all subcategories of this category.")
 
     var body: some View {
         Group {
             if sizeCategory.isAccessibilityCategory() {
-                Text("\(viewModel.subcategory != nil ? viewModel.subcategory! : "All subcategories") (\(viewModel.count))").fixedSize(horizontal: false, vertical: true)
+                Text("\(viewModel.subcategory != nil ? viewModel.subcategory! : allSubcategories) (\(viewModel.count))").fixedSize(horizontal: false, vertical: true)
             } else {
                 HStack {
-                    Text(viewModel.subcategory != nil ? viewModel.subcategory! : "All subcategories")
+                    Text(viewModel.subcategory != nil ? viewModel.subcategory! : allSubcategories)
                     Spacer()
                     Text("\(viewModel.count)")
                 }
@@ -32,6 +33,7 @@ struct SubcategoryView: View {
     }
 }
 
+#if DEBUG
 struct SubcategoryView_Previews: PreviewProvider {
 
     static var previews: some View {
@@ -43,3 +45,4 @@ struct SubcategoryView_Previews: PreviewProvider {
         }
     }
 }
+#endif

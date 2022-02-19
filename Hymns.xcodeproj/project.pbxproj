@@ -264,7 +264,6 @@
 		B5DC935E248EC5F800BF90A5 /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DC935D248EC5F800BF90A5 /* FeedbackView.swift */; };
 		B5E61B34242E613D00EF497D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B5E61B36242E613D00EF497D /* Localizable.strings */; };
 		B5F8C50C249288E900F22ED0 /* TagSheetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F8C50B249288E900F22ED0 /* TagSheetViewModel.swift */; };
-		B5F8C50E2492B12200F22ED0 /* pdfErrorState.pdf in Resources */ = {isa = PBXBuildFile; fileRef = B5F8C50D2492B12200F22ED0 /* pdfErrorState.pdf */; };
 		B5FCEBFC248A89FB000DA2DD /* TagListViewModelSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5FCEBFB248A89FB000DA2DD /* TagListViewModelSpec.swift */; };
 		EF9D228545974074AF495E83 /* HymnsMocks.generated.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD96F2BF8386A9E600A9B55C /* HymnsMocks.generated.swift */; };
 /* End PBXBuildFile section */
@@ -571,10 +570,7 @@
 		B5DC935B248EBD1C00BF90A5 /* MailFeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailFeedbackView.swift; sourceTree = "<group>"; };
 		B5DC935D248EC5F800BF90A5 /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
 		B5E61B35242E613D00EF497D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
-		B5E61B37242E62F600EF497D /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
-		B5E61B38242E630000EF497D /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		B5F8C50B249288E900F22ED0 /* TagSheetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagSheetViewModel.swift; sourceTree = "<group>"; };
-		B5F8C50D2492B12200F22ED0 /* pdfErrorState.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = pdfErrorState.pdf; sourceTree = "<group>"; };
 		B5FCEBFB248A89FB000DA2DD /* TagListViewModelSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagListViewModelSpec.swift; sourceTree = "<group>"; };
 		D4ED026AE8790104F389526E /* Pods_Hymns.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Hymns.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD96F2BF8386A9E600A9B55C /* HymnsMocks.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; name = HymnsMocks.generated.swift; path = MockingbirdMocks/HymnsMocks.generated.swift; sourceTree = "<group>"; };
@@ -1304,7 +1300,6 @@
 				3B1B901B2429CF57009FDCC5 /* Assets.xcassets */,
 				B5915C6324CE900100342D7E /* firstLaunchAnimation.json */,
 				3BB931A824E3801500E0C873 /* soundCloudPlayingAnimation.json */,
-				B5F8C50D2492B12200F22ED0 /* pdfErrorState.pdf */,
 				3B1B90202429CF57009FDCC5 /* LaunchScreen.storyboard */,
 				3B1B90232429CF57009FDCC5 /* Info.plist */,
 				3B1B90162429CF55009FDCC5 /* Hymns.xcdatamodeld */,
@@ -1434,8 +1429,6 @@
 			knownRegions = (
 				en,
 				Base,
-				de,
-				es,
 			);
 			mainGroup = 3B1B90062429CF55009FDCC5;
 			productRefGroup = 3B1B90102429CF55009FDCC5 /* Products */;
@@ -1455,7 +1448,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B5F8C50E2492B12200F22ED0 /* pdfErrorState.pdf in Resources */,
 				3B1B90222429CF57009FDCC5 /* LaunchScreen.storyboard in Resources */,
 				3B1167162726A5F700AA43D4 /* hymnaldb-v16.sqlite in Resources */,
 				3BB931A924E3801500E0C873 /* soundCloudPlayingAnimation.json in Resources */,
@@ -2063,8 +2055,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				B5E61B35242E613D00EF497D /* en */,
-				B5E61B37242E62F600EF497D /* de */,
-				B5E61B38242E630000EF497D /* es */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";

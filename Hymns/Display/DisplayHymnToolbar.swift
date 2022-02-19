@@ -27,9 +27,9 @@ struct DisplayHymnToolbar: View {
                 }, label: {
                     isFavorited ?
                         Image(systemName: "heart.fill")
-                            .accessibility(label: Text("Mark as favorite", comment: "A11y label for marking a song as favorite.")).accentColor(.accentColor) :
+                            .accessibility(label: Text("Mark song as a favorite", comment: "A11y label for marking a song as favorite.")).accentColor(.accentColor) :
                         Image(systemName: "heart")
-                        .accessibility(label: Text("Unmark as favorite", comment: "A11y label for unmaking a song as favorite.")).accentColor(.primary)
+                        .accessibility(label: Text("Unmark song as a favorite", comment: "A11y label for unmarking a song as favorite.")).accentColor(.primary)
                 }).padding()
             }
         }

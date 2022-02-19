@@ -41,13 +41,13 @@ extension HomeTab: TabItem {
         case .none:
             return Text("")
         case .home:
-            return Text("Search", comment: "A11y label for the search tab.")
+            return Text("Search tab", comment: "A11y label for the search tab icon.")
         case .browse:
-            return Text("Favorites")
+            return Text("Favorites tab", comment: "A11y label for the favorites tab icon.")
         case .favorites:
-            return Text("Browse")
+            return Text("Browse tab", comment: "A11y label for the browse tab icon.")
         case .settings:
-            return Text("Settings")
+            return Text("Settings tab", comment: "A11y label for the settings tab icon.")
         }
     }
 

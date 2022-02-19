@@ -136,7 +136,7 @@ struct ToolTipView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             ToolTipView(tapAction: {}, label: {
-                Text("__PREVIEW__ tool tip text").padding()
+                Text("%_PREVIEW_% tool tip text").padding()
             }, configuration:
                 ToolTipConfiguration(cornerRadius: 10,
                                      arrowPosition: ToolTipConfiguration.ArrowPosition(midX: 30, alignmentType: .offset),
@@ -144,7 +144,7 @@ struct ToolTipView_Previews: PreviewProvider {
                 .previewDisplayName("offset arrow positioning")
 
             ToolTipView(tapAction: {}, label: {
-                Text("__PREVIEW__ tool tip text").padding()
+                Text("%_PREVIEW_% tool tip text").padding()
             }, configuration:
                 ToolTipConfiguration(cornerRadius: 10,
                                      arrowPosition: ToolTipConfiguration.ArrowPosition(midX: 0.7, alignmentType: .percentage),

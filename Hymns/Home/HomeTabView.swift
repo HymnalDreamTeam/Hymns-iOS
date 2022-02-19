@@ -13,7 +13,7 @@ struct HomeTabView: View {
                     .padding()
                     .foregroundColor(self.selectedTab == .home ? .accentColor : .secondary)
                     .font(.system(size: buttonSize))
-                    .accessibility(label: Text(NSLocalizedString("Home tab", comment: "Home tab description")))
+                    .accessibility(label: HomeTab.home.a11yLabel)
             })
             Spacer()
             Button(action: {
@@ -23,7 +23,7 @@ struct HomeTabView: View {
                     .padding()
                     .foregroundColor(self.selectedTab == .browse ? .accentColor : .secondary)
                     .font(.system(size: buttonSize))
-                    .accessibility(label: Text(NSLocalizedString("Browse tab", comment: "Browse tab description")))
+                    .accessibility(label: HomeTab.browse.a11yLabel)
             })
             Spacer()
             Button(action: {
@@ -33,7 +33,7 @@ struct HomeTabView: View {
                     .padding()
                     .foregroundColor(self.selectedTab == .favorites ? .accentColor : .secondary)
                     .font(.system(size: buttonSize))
-                    .accessibility(label: Text(NSLocalizedString("Favorites tab", comment: "Favorites tab description")))
+                    .accessibility(label: HomeTab.favorites.a11yLabel)
             })
             Spacer()
             Button(action: {
@@ -43,7 +43,7 @@ struct HomeTabView: View {
                     .padding()
                     .foregroundColor(self.selectedTab == .settings ? .accentColor : .secondary)
                     .font(.system(size: buttonSize))
-                    .accessibility(label: Text(NSLocalizedString("Settings tab", comment: "Settings tab description")))
+                    .accessibility(label: HomeTab.settings.a11yLabel)
             })
         }
     }
