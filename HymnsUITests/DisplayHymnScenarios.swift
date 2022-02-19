@@ -32,7 +32,7 @@ class DisplayHymnScenarios: BaseTestCase {
             .waitForStaticTexts("verse 1 line 1")
             .openOverflowMenu()
             .openTagSheet()
-            .waitForStaticTexts("Name your tag")
+            .verifyTagSheet()
     }
 
     func test_songInfoDialog() {
@@ -89,7 +89,7 @@ class DisplayHymnScenarios: BaseTestCase {
             .verifyStaticTextsNotExists("Languages", "Change to another language")
             .openLanguages()
             .pressButton("诗歌(简)")
-            .waitForStaticTexts("Chinese supplement 216", "chinese verse 1 chinese line 1")
+            .waitForStaticTexts("Chinese Supplement 216", "chinese verse 1 chinese line 1")
     }
 
     func test_relevant() {

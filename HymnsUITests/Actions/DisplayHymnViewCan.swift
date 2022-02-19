@@ -43,20 +43,20 @@ public class DisplayHymnViewCan: BaseViewCan {
     }
 
     public func waitForFontPicker() -> DisplayHymnViewCan {
-        return waitForSliders("Font picker slider")
+        return waitForSliders("Slide to change the font size")
     }
 
     public func verifyFontPickerExists() -> DisplayHymnViewCan {
-        return verifySlidersExist("Font picker slider")
+        return verifySlidersExist("Slide to change the font size")
     }
 
     public func verifyFontPickerNotExists() -> DisplayHymnViewCan {
-        return verifySlidersNotExist("Font picker slider")
+        return verifySlidersNotExist("Slide to change the font size")
     }
 
     private func assertFontPickerValue(_ value: String) -> DisplayHymnViewCan {
         // swiftlint:disable:next force_cast
-        XCTAssertEqual(app.sliders["Font picker slider"].value as! String, value)
+        XCTAssertEqual(app.sliders["Slide to change the font size"].value as! String, value)
         return self
     }
 
@@ -69,7 +69,7 @@ public class DisplayHymnViewCan: BaseViewCan {
     }
 
     public func adjustFontPickerToSmallest() -> DisplayHymnViewCan {
-        app.sliders["Font picker slider"].adjust(toNormalizedSliderPosition: 0)
+        app.sliders["Slide to change the font size"].adjust(toNormalizedSliderPosition: 0)
         return self
     }
 
@@ -82,7 +82,7 @@ public class DisplayHymnViewCan: BaseViewCan {
     }
 
     public func adjustFontPickerToLargest() -> DisplayHymnViewCan {
-        app.sliders["Font picker slider"].adjust(toNormalizedSliderPosition: 1)
+        app.sliders["Slide to change the font size"].adjust(toNormalizedSliderPosition: 1)
         return self
     }
 
@@ -136,6 +136,14 @@ public class DisplayHymnViewCan: BaseViewCan {
 
     public func openTagSheet() -> DisplayHymnViewCan {
         return pressButton("Tags")
+    }
+
+    public func verifyTagSheet() -> DisplayHymnViewCan {
+        if app.textFields.element(matching: NSPredicate(format: "placeholderValue == %@", "Name your tag")).exists {
+            return self
+        }
+        XCTFail("Couldn't find tag sheet")
+        return self
     }
 
     public func openSongInfo() -> DisplayHymnViewCan {

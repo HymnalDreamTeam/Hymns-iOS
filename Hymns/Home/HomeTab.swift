@@ -36,6 +36,7 @@ extension HomeTab: TabItem {
         return getImage(false)
     }
 
+    // TODO refactor home tab to search
     var a11yLabel: Text {
         switch self {
         case .none:
@@ -43,9 +44,9 @@ extension HomeTab: TabItem {
         case .home:
             return Text("Search tab", comment: "A11y label for the search tab icon.")
         case .browse:
-            return Text("Favorites tab", comment: "A11y label for the favorites tab icon.")
-        case .favorites:
             return Text("Browse tab", comment: "A11y label for the browse tab icon.")
+        case .favorites:
+            return Text("Favorites tab", comment: "A11y label for the favorites tab icon.")
         case .settings:
             return Text("Settings tab", comment: "A11y label for the settings tab icon.")
         }
