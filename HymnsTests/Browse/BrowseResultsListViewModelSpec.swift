@@ -115,7 +115,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                         testQueue.sync {}
                     }
                     it("should set the title to the tag") {
-                        expect(target.title).to(equal("FanIntoFlames"))
+                        expect(target.title).to(equal("Songs tagged with \"FanIntoFlames\""))
                     }
                     it("should have no results") {
                         expect(target.songResults).to(beEmpty())
@@ -140,7 +140,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                         testQueue.sync {}
                     }
                     it("should set the title to the tag") {
-                        expect(target.title).to(equal("FanIntoFlames"))
+                        expect(target.title).to(equal("Songs tagged with \"FanIntoFlames\""))
                     }
                     it("should set the correct results") {
                         expect(target.songResults).toNot(beNil())
@@ -170,7 +170,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                         testQueue.sync {}
                     }
                     it("should set the title to the tag") {
-                        expect(target.title).to(equal("FanIntoFlames"))
+                        expect(target.title).to(equal("Songs tagged with \"FanIntoFlames\""))
                     }
                     it("should have no results") {
                         expect(target.songResults).to(beEmpty())

@@ -80,7 +80,7 @@ public class HomeViewCan: BaseViewCan {
     }
 
     public func tapHome() -> HomeViewCan {
-        app.buttons["Home tab"].tap()
+        app.buttons["Search tab"].tap()
         return self
     }
 
