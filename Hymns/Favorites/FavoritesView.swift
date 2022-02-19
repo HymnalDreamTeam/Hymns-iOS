@@ -12,7 +12,7 @@ struct FavoritesView: View {
 
     var body: some View {
         VStack {
-            CustomTitle(title: NSLocalizedString("Favorites", comment: "Favorites tab title"))
+            CustomTitle(title: NSLocalizedString("Favorites", comment: "Favorites tab title."))
             Group { () -> AnyView in
                 guard let favorites = self.viewModel.favorites else {
                     return ActivityIndicator().maxSize().eraseToAnyView()
@@ -20,7 +20,7 @@ struct FavoritesView: View {
                 guard !favorites.isEmpty else {
                     return VStack(spacing: 25) {
                         Image("empty favorites illustration")
-                        Text("Tap the heart on any hymn to add as a favorite", comment: "Empty state for favorited songs.")
+                        Text("Tap the heart on any hymn to add as a favorite.", comment: "Empty state for favorited songs.")
                     }.maxSize().offset(y: -25).eraseToAnyView()
                 }
                 return List(favorites, id: \.stableId) { favorite in

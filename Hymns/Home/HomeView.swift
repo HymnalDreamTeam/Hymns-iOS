@@ -13,7 +13,7 @@ struct HomeView: View {
     var body: some View {
         VStack(alignment: .leading) {
             if !viewModel.searchActive {
-                CustomTitle(title: NSLocalizedString("Look up any hymn", comment: "Home tab title"))
+                CustomTitle(title: NSLocalizedString("Look up any hymn", comment: "Home tab title."))
                     .transition(AnyTransition.move(edge: .top).combined(with: .opacity))
             }
 
@@ -21,7 +21,7 @@ struct HomeView: View {
                 SearchBar(
                     searchText: $viewModel.searchParameter,
                     searchActive: $viewModel.searchActive,
-                    placeholderText: NSLocalizedString("Search by number or keyword", comment: "Search bar hint text"))
+                    placeholderText: NSLocalizedString("Search by number or keyword", comment: "Search bar hint text."))
                     .padding(.horizontal)
                     .padding(.top, viewModel.searchActive ? nil : .zero)
                     .alignmentGuide(.toolTipHorizontalAlignment, computeValue: { dimens -> CGFloat in
@@ -49,7 +49,7 @@ struct HomeView: View {
                 OldSearchBar(
                     searchText: $viewModel.searchParameter,
                     searchActive: $viewModel.searchActive,
-                    placeholderText: NSLocalizedString("Search by number or keyword", comment: "Search bar hint text"))
+                    placeholderText: NSLocalizedString("Search by number or keyword", comment: "Search bar hint text."))
                     .padding(.horizontal)
                     .padding(.top, viewModel.searchActive ? nil : .zero)
                     .alignmentGuide(.toolTipHorizontalAlignment, computeValue: { dimens -> CGFloat in

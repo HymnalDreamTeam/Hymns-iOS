@@ -4,6 +4,7 @@ import Resolver
 
 class DisplayHymnPdfViewModel: ObservableObject {
 
+    @Published var isLoading: Bool = true
     @Published var pdfDocument: PDFDocument?
 
     private let analytics: AnalyticsLogger
@@ -28,18 +29,22 @@ class DisplayHymnPdfViewModel: ObservableObject {
         if let preloadedDoc = preloader.get(url: url) {
             self.analytics.logDisplayMusicPdfSuccess(url: url)
             self.pdfDocument = preloadedDoc
+            self.isLoading = false
         } else {
+            self.isLoading = true
+            self.analytics.logLoadMusicPdf(url: self.url)
             backgroundQueue.async {
-                self.analytics.logLoadMusicPdf(url: self.url)
                 if let document = PDFDocument(url: self.url) {
+                    self.analytics.logDisplayMusicPdfSuccess(url: self.url)
                     self.mainQueue.async {
-                        self.analytics.logDisplayMusicPdfSuccess(url: self.url)
+                        self.isLoading = false
                         self.pdfDocument = document
                     }
-                } else if let fileURL = Bundle.main.url(forResource: "pdfErrorState", withExtension: "pdf") {
+                } else {
+                    self.analytics.logDisplayMusicPdfFailed(url: self.url)
                     self.mainQueue.async {
-                        self.analytics.logDisplayMusicPdfFailed(url: self.url)
-                        self.pdfDocument = PDFDocument(url: fileURL)
+                        self.isLoading = false
+                        self.pdfDocument = nil
                     }
                 }
             }

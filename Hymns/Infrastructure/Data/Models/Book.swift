@@ -1,3 +1,5 @@
+import Foundation
+
 /**
  * Raw value needs to be an Int to preserve the ordering of the books.
  */
@@ -74,72 +76,72 @@ extension Book {
 
     var bookName: String {
         switch self {
-        case .genesis: return "Genesis"
-        case .exodus: return "Exodus"
-        case .leviticus: return "Leviticus"
-        case .numbers: return "Numbers"
-        case .deuteronomy: return "Deuteronomy"
-        case .joshua: return "Joshua"
-        case .judges: return "Judges"
-        case .ruth: return "Ruth"
-        case .firstSamuel: return "1 Samuel"
-        case .secondSamuel: return "2 Samuel"
-        case .firstKings: return "1 Kings"
-        case .secondKings: return "2 Kings"
-        case .firstChronicles: return "1 Chronicles"
-        case .secondChronicles: return "2 Chronicles"
-        case .ezra: return "Ezra"
-        case .nehemiah: return "Nehemiah"
-        case .esther: return "Esther"
-        case .job: return "Job"
-        case .psalms: return "Psalms"
-        case .proverbs: return "Proverbs"
-        case .ecclesiastes: return "Ecclesiastes"
-        case .songOfSongs: return "Song of Songs"
-        case .isaiah: return "Isaiah"
-        case .jeremiah: return "Jeremiah"
-        case .lamentations: return "Lamentations"
-        case .ezekiel: return "Ezekiel"
-        case .daniel: return "Daniel"
-        case .hosea: return "Hosea"
-        case .joel: return "Joel"
-        case .amos: return "Amos"
-        case .obadiah: return "Obadiah"
-        case .jonah: return "Jonah"
-        case .micah: return "Micah"
-        case .nahum: return "Nahum"
-        case .habakkuk: return "Habakkuk"
-        case .zephaniah: return "Zephaniah"
-        case .haggai: return "Haggai"
-        case .zechariah: return "Zechariah"
-        case .malachi: return "Malachi"
-        case .matthew: return "Matthew"
-        case .mark: return "Mark"
-        case .luke: return "Luke"
-        case .john: return "John"
-        case .acts: return "Acts"
-        case .romans: return "Romans"
-        case .firstCorinthians: return "1 Corinthians"
-        case .secondCorinthians: return "2 Corinthians"
-        case .galatians: return "Galatians"
-        case .ephesians: return "Ephesians"
-        case .philippians: return "Philippians"
-        case .colossians: return "Colossians"
-        case .firstThessalonians: return "1 Thessalonians"
-        case .secondThessalonians: return "2 Thessalonians"
-        case .firstTimothy: return "1 Timothy"
-        case .secondTimothy: return "2 Timothy"
-        case .titus: return "Titus"
-        case .philemon: return "Philemon"
-        case .hebrews: return "Hebrews"
-        case .james: return "James"
-        case .firstPeter: return "1 Peter"
-        case .secondPeter: return "2 Peter"
-        case .firstJohn: return "1 John"
-        case .secondJohn: return "2 John"
-        case .thirdJohn: return "3 John"
-        case .jude: return "Jude"
-        case .revelation: return "Revelation"
+        case .genesis: return NSLocalizedString("Genesis", comment: "The Book of Genesis.")
+        case .exodus: return NSLocalizedString("Exodus", comment: "The Book of Exodus.")
+        case .leviticus: return NSLocalizedString("Leviticus", comment: "The Book of Leviticus.")
+        case .numbers: return NSLocalizedString("Numbers", comment: "The Book of Numbers.")
+        case .deuteronomy: return NSLocalizedString("Deuteronomy", comment: "The Book of Deuteronomy.")
+        case .joshua: return NSLocalizedString("Joshua", comment: "The Book of Joshua.")
+        case .judges: return NSLocalizedString("Judges", comment: "The Book of Judges.")
+        case .ruth: return NSLocalizedString("Ruth", comment: "The Book of Ruth.")
+        case .firstSamuel: return NSLocalizedString("1 Samuel", comment: "The Book of 1 Samuel.")
+        case .secondSamuel: return NSLocalizedString("2 Samuel", comment: "The Book of 2 Samuel.")
+        case .firstKings: return NSLocalizedString("1 Kings", comment: "The Book of 1 Kings.")
+        case .secondKings: return NSLocalizedString("2 Kings", comment: "The Book of 2 Kings.")
+        case .firstChronicles: return NSLocalizedString("1 Chronicles", comment: "The Book of 1 Chronicles.")
+        case .secondChronicles: return NSLocalizedString("2 Chronicles", comment: "The Book of 2 Chronicles.")
+        case .ezra: return NSLocalizedString("Ezra", comment: "The Book of Ezra.")
+        case .nehemiah: return NSLocalizedString("Nehemiah", comment: "The Book of Nehemiah.")
+        case .esther: return NSLocalizedString("Esther", comment: "The Book of Esther.")
+        case .job: return NSLocalizedString("Job", comment: "The Book of Job.")
+        case .psalms: return NSLocalizedString("Psalms", comment: "The Book of Psalms.")
+        case .proverbs: return NSLocalizedString("Proverbs", comment: "The Book of Proverbs.")
+        case .ecclesiastes: return NSLocalizedString("Ecclesiastes", comment: "The Book of Ecclesiastes.")
+        case .songOfSongs: return NSLocalizedString("Song of Songs", comment: "The Book of Song of Songs.")
+        case .isaiah: return NSLocalizedString("Isaiah", comment: "The Book of Isaiah.")
+        case .jeremiah: return NSLocalizedString("Jeremiah", comment: "The Book of Jeremiah.")
+        case .lamentations: return NSLocalizedString("Lamentations", comment: "The Book of Lamentations.")
+        case .ezekiel: return NSLocalizedString("Ezekiel", comment: "The Book of Ezekiel.")
+        case .daniel: return NSLocalizedString("Daniel", comment: "The Book of Daniel.")
+        case .hosea: return NSLocalizedString("Hosea", comment: "The Book of Hosea.")
+        case .joel: return NSLocalizedString("Joel", comment: "The Book of Joel.")
+        case .amos: return NSLocalizedString("Amos", comment: "The Book of Amos.")
+        case .obadiah: return NSLocalizedString("Obadiah", comment: "The Book of Obadiah.")
+        case .jonah: return NSLocalizedString("Jonah", comment: "The Book of Jonah.")
+        case .micah: return NSLocalizedString("Micah", comment: "The Book of Micah.")
+        case .nahum: return NSLocalizedString("Nahum", comment: "The Book of Nahum.")
+        case .habakkuk: return NSLocalizedString("Habakkuk", comment: "The Book of Habakkuk.")
+        case .zephaniah: return NSLocalizedString("Zephaniah", comment: "The Book of Zephaniah.")
+        case .haggai: return NSLocalizedString("Haggai", comment: "The Book of Haggai.")
+        case .zechariah: return NSLocalizedString("Zechariah", comment: "The Book of Zechariah.")
+        case .malachi: return NSLocalizedString("Malachi", comment: "The Book of Malachi.")
+        case .matthew: return NSLocalizedString("Matthew", comment: "The Book of Matthew.")
+        case .mark: return NSLocalizedString("Mark", comment: "The Book of Mark.")
+        case .luke: return NSLocalizedString("Luke", comment: "The Book of Luke.")
+        case .john: return NSLocalizedString("John", comment: "The Book of John.")
+        case .acts: return NSLocalizedString("Acts", comment: "The Book of Acts.")
+        case .romans: return NSLocalizedString("Romans", comment: "The Book of Romans.")
+        case .firstCorinthians: return NSLocalizedString("1 Corinthians", comment: "The Book of 1 Corinthians.")
+        case .secondCorinthians: return NSLocalizedString("2 Corinthians", comment: "The Book of 2 Corinthians.")
+        case .galatians: return NSLocalizedString("Galatians", comment: "The Book of Galatians.")
+        case .ephesians: return NSLocalizedString("Ephesians", comment: "The Book of Ephesians.")
+        case .philippians: return NSLocalizedString("Philippians", comment: "The Book of Philippians.")
+        case .colossians: return NSLocalizedString("Colossians", comment: "The Book of Colossians.")
+        case .firstThessalonians: return NSLocalizedString("1 Thessalonians", comment: "The Book of 1 Thessalonians.")
+        case .secondThessalonians: return NSLocalizedString("2 Thessalonians", comment: "The Book of 2 Thessalonians.")
+        case .firstTimothy: return NSLocalizedString("1 Timothy", comment: "The Book of 1 Timothy.")
+        case .secondTimothy: return NSLocalizedString("2 Timothy", comment: "The Book of 2 Timothy.")
+        case .titus: return NSLocalizedString("Titus", comment: "The Book of Titus.")
+        case .philemon: return NSLocalizedString("Philemon", comment: "The Book of Philemon.")
+        case .hebrews: return NSLocalizedString("Hebrews", comment: "The Book of Hebrews.")
+        case .james: return NSLocalizedString("James", comment: "The Book of James.")
+        case .firstPeter: return NSLocalizedString("1 Peter", comment: "The Book of 1 Peter.")
+        case .secondPeter: return NSLocalizedString("2 Peter", comment: "The Book of 2 Peter.")
+        case .firstJohn: return NSLocalizedString("1 John", comment: "The Book of 1 John.")
+        case .secondJohn: return NSLocalizedString("2 John", comment: "The Book of 2 John.")
+        case .thirdJohn: return NSLocalizedString("3 John", comment: "The Book of 3 John.")
+        case .jude: return NSLocalizedString("Jude", comment: "The Book of Jude.")
+        case .revelation: return NSLocalizedString("Revelation", comment: "The Book of Revelation.")
         }
     }
 

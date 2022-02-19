@@ -26,11 +26,11 @@ struct UiHymn: Equatable {
      * Title of song for when it is displayed as a song result in a list of results.
      */
     var resultTitle: String {
-        var title = ""
         if hymnIdentifier.hymnType == .classic {
-            title = "Hymn \(hymnIdentifier.hymnNumber): "
+            return NSLocalizedString("Hymn \(hymnIdentifier.hymnNumber): \(self.title)",
+                                     comment: "Format for displaying a classic hymn in the format: 'Hymn 123: Low in the grave He lay'.")
         }
-        return title + self.title
+        return self.title
     }
 
     init(hymnIdentifier: HymnIdentifier, title: String, lyrics: [Verse], pdfSheet: MetaDatum? = nil,

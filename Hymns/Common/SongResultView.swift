@@ -17,7 +17,7 @@ struct SongResultView: View {
 struct SongResultView_Previews: PreviewProvider {
     static var previews: some View {
         SongResultView(
-            viewModel: SongResultViewModel(stableId: "Hymn 480", title: "Hymn 480", destinationView: Text("__PREVIEW__ Destination").eraseToAnyView()))
+            viewModel: SongResultViewModel(stableId: "Hymn 480", title: "Hymn 480", destinationView: Text("%_PREVIEW_% Destination").eraseToAnyView()))
             .previewLayout(.fixed(width: 200, height: 50))
     }
 }

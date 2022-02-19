@@ -18,23 +18,23 @@ extension BottomBarButton {
     var label: String {
         switch self {
         case .share:
-            return NSLocalizedString("Share lyrics", comment: "Share lyrics externally to another app")
+            return NSLocalizedString("Share lyrics", comment: "Label for sharing lyrics externally to another app.")
         case .fontSize:
-            return NSLocalizedString("Change lyrics font size", comment: "Change the lyrics font size")
+            return NSLocalizedString("Change lyrics font size", comment: "Label for changing the lyrics font size.")
         case .languages:
-            return NSLocalizedString("Show languages", comment: "Show different languages for this song")
+            return NSLocalizedString("Show languages", comment: "Label for showing different languages for this song.")
         case .musicPlayback:
-            return NSLocalizedString("Play music", comment: "Play the tune of the song")
+            return NSLocalizedString("Play music", comment: "Label for playing the tune of the song.")
         case .relevant:
-            return NSLocalizedString("Relevant songs", comment: "Songs relevant to this song (alternate tunes, etc)")
+            return NSLocalizedString("Relevant songs", comment: "Label for going to relevant song (alternate tunes, etc).")
         case .tags:
-            return NSLocalizedString("Tags", comment: "Browse tags")
+            return NSLocalizedString("Tags", comment: "Label for going to the tags of this song.")
         case .songInfo:
-            return NSLocalizedString("Song Info", comment: "See information for this song")
+            return NSLocalizedString("Song Info", comment: "Label for seeing more information about this song.")
         case .soundCloud:
-            return NSLocalizedString("Search in SoundCloud", comment: "Search for this song on SoundCloud")
+            return NSLocalizedString("Search in SoundCloud", comment: "Label for searching this song on SoundCloud.")
         case .youTube:
-            return NSLocalizedString("Search in YouTube", comment: "Search for this song on YouTube")
+            return NSLocalizedString("Search in YouTube", comment: "Label for searching this song on YouTube.")
         }
     }
 

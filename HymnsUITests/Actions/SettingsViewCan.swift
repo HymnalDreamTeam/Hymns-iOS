@@ -9,7 +9,7 @@ public class SettingsHymnViewCan: BaseViewCan {
 
     public func toggleRepeatChorus() -> SettingsHymnViewCan {
         let repeatChorus = app.switches.element(boundBy: 0)
-        XCTAssertEqual(repeatChorus.label, "Repeat chorus, For songs with only one chorus, repeat the chorus after every verse")
+        XCTAssertEqual(repeatChorus.label, "Repeat chorus, For songs with only one chorus, repeat the chorus after every verse.")
         repeatChorus.twoFingerTap()
         return self
     }
@@ -25,7 +25,7 @@ public class SettingsHymnViewCan: BaseViewCan {
     }
 
     public func verifyAboutUsDialogExists() -> SettingsHymnViewCan {
-        XCTAssertTrue(app.staticTexts["Hello There 👋"].exists)
+        XCTAssertTrue(app.staticTexts["Hello there 👋"].exists)
         return self
     }
 
@@ -39,7 +39,7 @@ public class SettingsHymnViewCan: BaseViewCan {
     }
 
     public func verifyAboutUsDialogNotExists() -> SettingsHymnViewCan {
-        XCTAssertFalse(app.staticTexts["Hello There 👋"].exists)
+        XCTAssertFalse(app.staticTexts["Hello there 👋"].exists)
         return self
     }
 

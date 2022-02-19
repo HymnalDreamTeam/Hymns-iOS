@@ -12,7 +12,7 @@ struct BrowseView: View {
 
     var body: some View {
         VStack {
-            CustomTitle(title: NSLocalizedString("Browse", comment: "Browse tab title"))
+            CustomTitle(title: NSLocalizedString("Browse", comment: "Browse tab title."))
             VStack {
                 GeometryReader { geometry in
                     IndicatorTabView(geometry: geometry,

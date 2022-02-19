@@ -84,7 +84,7 @@ class BrowseScripturesViewModel: ObservableObject {
                             reference = chapter
                         }
                     } else {
-                        reference = "General"
+                        reference = NSLocalizedString("General", comment: "When there is only a book reference and no verse reference, put the scripture songs into the 'General' bucket.")
                     }
 
                     let song = ScriptureSongViewModel(reference: reference, title: title, hymnIdentifier: hymnIdentifier)

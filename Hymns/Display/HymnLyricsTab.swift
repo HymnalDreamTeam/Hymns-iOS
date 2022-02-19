@@ -13,13 +13,13 @@ extension HymnLyricsTab {
     var label: String {
         switch self {
         case .lyrics:
-            return NSLocalizedString("Lyrics", comment: "Hymn lyrics tab")
+            return NSLocalizedString("Lyrics", comment: "Hymn lyrics tab.")
         case .chords:
-            return NSLocalizedString("Chords", comment: "Hymn chords tab")
+            return NSLocalizedString("Chords", comment: "Hymn chords tab.")
         case .guitar:
-            return NSLocalizedString("Guitar", comment: "Hymn guitar tab")
+            return NSLocalizedString("Guitar", comment: "Hymn guitar tab.")
         case .piano:
-            return NSLocalizedString("Piano", comment: "Hymn piano tab")
+            return NSLocalizedString("Piano", comment: "Hymn piano tab.")
         }
     }
 }

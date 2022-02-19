@@ -63,7 +63,7 @@ struct DisplayHymnBottomBar: View {
                         self.actionSheet = .overflow(buttons)
                     }, label: {
                         BottomBarLabel(image: Image(systemName: "ellipsis"),
-                                       a11yLabel: NSLocalizedString("More options", comment: "Bottom bar overflow button"))
+                                       a11yLabel: NSLocalizedString("More options", comment: "Bottom bar overflow button."))
                             .foregroundColor(.primary)
                     })
                 }
@@ -80,10 +80,8 @@ struct DisplayHymnBottomBar: View {
             case .languages(let viewModels):
                 return
                     ActionSheet(
-                        title: Text(NSLocalizedString("Languages",
-                                                      comment: "Title for the languages action sheet")),
-                        message: Text(NSLocalizedString("Change to another language",
-                                                        comment: "Message for the languages action sheet")),
+                        title: Text("Languages", comment: "Title for the languages action sheet."),
+                        message: Text("Change to another language", comment: "Message for the languages action sheet."),
                         buttons: viewModels.map({ viewModel -> Alert.Button in
                             .default(Text(viewModel.title), action: {
                                 self.resultToShow = viewModel
@@ -92,9 +90,8 @@ struct DisplayHymnBottomBar: View {
             case .relevant(let viewModels):
                 return
                     ActionSheet(
-                        title: Text("Relevant songs"),
-                        message: Text(NSLocalizedString("Change to a relevant hymn",
-                                                        comment: "Message for the relevant songs action sheet")),
+                        title: Text("Relevant songs", comment: "Title for the relevant songs action sheet."),
+                        message: Text("Change to a relevant hymn", comment: "Message for the relevant songs action sheet."),
                         buttons: viewModels.map({ viewModel -> Alert.Button in
                             .default(Text(viewModel.title), action: {
                                 self.resultToShow = viewModel
@@ -103,8 +100,7 @@ struct DisplayHymnBottomBar: View {
             case .overflow(let buttons):
                 return
                     ActionSheet(
-                        title: Text(NSLocalizedString("Additional options",
-                                                      comment: "Title for the overflow menu action sheet")),
+                        title: Text("Additional options", comment: "Title for the overflow menu action sheet."),
                         buttons: buttons.map({ button -> Alert.Button in
                             .default(Text(button.label), action: {
                                 self.performAction(button: button)

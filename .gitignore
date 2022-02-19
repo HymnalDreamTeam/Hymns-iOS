@@ -93,7 +93,7 @@ fastlane/test_output
 iOSInjectionProject/
 
 # Mockingbird generated code
-**/MockingbirdCache/Hymns.lock
+**/MockingbirdCache/Hymns*.lock
 **/*.generated.swift
 
 # So I have a place to put my commands without having to check them in
@@ -103,3 +103,4 @@ commands.txt
 Pods/Realm/core/realm-monorepo.xcframework/watchos*
 Pods/Realm/core/realm-monorepo.xcframework/tvos*
 Pods/Realm/core/realm-monorepo.xcframework/macos*
+

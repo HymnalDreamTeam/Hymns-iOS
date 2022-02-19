@@ -49,6 +49,7 @@ struct WrappedHStack<Item: Hashable, Content: View>: View {
     }
 }
 
+#if DEBUG
 struct WrappedHStack_Previews: PreviewProvider {
     static var previews: some View {
         return Group {
@@ -72,3 +73,4 @@ struct WrappedHStack_Previews: PreviewProvider {
         }.previewLayout(.sizeThatFits)
     }
 }
+#endif
