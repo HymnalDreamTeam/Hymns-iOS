@@ -312,6 +312,8 @@
 		3B11E29D24623D7900F27E73 /* ConverterSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConverterSpec.swift; sourceTree = "<group>"; };
 		3B11E2A32464AA3400F27E73 /* HymnalNetService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HymnalNetService.swift; sourceTree = "<group>"; };
 		3B11E2A52465211200F27E73 /* DisplayHymnToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayHymnToolbar.swift; sourceTree = "<group>"; };
+		3B12855027C2E94D00DB3921 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		3B12855127C2E95400DB3921 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		3B14B873244E9C760027D7AA /* HomeViewModelSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModelSpec.swift; sourceTree = "<group>"; };
 		3B1AF92A24C38B1D0082C27B /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		3B1B900F2429CF55009FDCC5 /* Hymns.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hymns.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1429,6 +1431,8 @@
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
+				"zh-Hant",
 			);
 			mainGroup = 3B1B90062429CF55009FDCC5;
 			productRefGroup = 3B1B90102429CF55009FDCC5 /* Products */;
@@ -2055,6 +2059,8 @@
 			isa = PBXVariantGroup;
 			children = (
 				B5E61B35242E613D00EF497D /* en */,
+				3B12855027C2E94D00DB3921 /* zh-Hans */,
+				3B12855127C2E95400DB3921 /* zh-Hant */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
