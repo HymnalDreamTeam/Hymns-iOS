@@ -178,7 +178,7 @@ extension HymnType {
     var displayLabel: String {
         switch self {
         case .classic:
-            return NSLocalizedString("Hymn", comment: "Will appear in conjunction with something else (e.g. Hymn 55).")
+            return NSLocalizedString("Hymn", comment: "Will appear in conjunction with something else (e.g. Hymn 7).")
         case .newTune:
             return NSLocalizedString("New tune", comment: "Will appear in conjunction with something else (e.g. New tune 7).")
         case .newSong:

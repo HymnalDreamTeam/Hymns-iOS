@@ -26,7 +26,7 @@ struct SoundCloudPlayer: View {
                     self.viewModel.dismissPlayer()
                 }, label: {
                     Image(systemName: "xmark")
-                        .accessibility(label: Text("Stop music and close banner", comment: "Ally label for dismissing the SoundCloud banner."))
+                        .accessibility(label: Text("Stop music and close banner", comment: "A11y label for button dismissing the SoundCloud banner."))
                         .foregroundColor(.primary).padding()
                 })
             }.transition(.opacity).animation(.easeOut).eraseToAnyView()
