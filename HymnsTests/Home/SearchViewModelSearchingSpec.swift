@@ -7,18 +7,18 @@ import SwiftUI
 
 // swiftlint:disable type_body_length function_body_length
 /**
- * Tests cases where the `HomeViewModel` performs a search request.
+ * Tests cases where the `SearchViewModel` performs a search request.
  */
-class HomeViewModelSearchSpec: QuickSpec {
+class SearchViewModelSearchingSpec: QuickSpec {
 
     override func spec() {
-        describe("home view model searching") {
+        describe("searching") {
             // https://www.vadimbulavin.com/unit-testing-async-code-in-swift/
             let testQueue = DispatchQueue(label: "test_queue")
             var historyStore: HistoryStoreMock!
             var hymnsRepository: HymnsRepositoryMock!
             var songResultsRepository: SongResultsRepositoryMock!
-            var target: HomeViewModel!
+            var target: SearchViewModel!
 
             let recentSongs = [RecentSong(hymnIdentifier: classic1151, songTitle: "Hymn 1151"),
                                RecentSong(hymnIdentifier: cebuano123, songTitle: "Naghigda sa lubong\\u2014")]
@@ -31,8 +31,8 @@ class HomeViewModelSearchSpec: QuickSpec {
                 }
                 hymnsRepository = mock(HymnsRepository.self)
                 songResultsRepository = mock(SongResultsRepository.self)
-                target = HomeViewModel(backgroundQueue: testQueue, historyStore: historyStore,
-                                       mainQueue: testQueue, repository: songResultsRepository)
+                target = SearchViewModel(backgroundQueue: testQueue, historyStore: historyStore,
+                                         mainQueue: testQueue, repository: songResultsRepository)
 
                 target.searchActive = true
                 testQueue.sync {}
@@ -238,10 +238,10 @@ class HomeViewModelSearchSpec: QuickSpec {
                     }
                     let page2 = Array(20...23).map { int -> UiSongResult in
                         return UiSongResult(name: "classic\(int)", identifier: HymnIdentifier(hymnType: .classic, hymnNumber: "\(int)"))
-                        }
-                        // add a few results from page1 to ensure that they are deduped.
-                        + [UiSongResult(name: "classic1", identifier: HymnIdentifier(hymnType: .classic, hymnNumber: "1")),
-                           UiSongResult(name: "classic2", identifier: HymnIdentifier(hymnType: .classic, hymnNumber: "2"))]
+                    }
+                    // add a few results from page1 to ensure that they are deduped.
+                    + [UiSongResult(name: "classic1", identifier: HymnIdentifier(hymnType: .classic, hymnNumber: "1")),
+                       UiSongResult(name: "classic2", identifier: HymnIdentifier(hymnType: .classic, hymnNumber: "2"))]
                     context("first page complete successfully") {
                         beforeEach {
                             given(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 1)) ~> { _, _ in

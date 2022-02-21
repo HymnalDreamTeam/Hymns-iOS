@@ -7,13 +7,13 @@ struct HomeTabView: View {
     var body: some View {
         HStack {
             Button(action: {
-                self.selectedTab = .home
+                self.selectedTab = .search
             }, label: {
-                HomeTab.home.getImage(selectedTab == HomeTab.home)
+                HomeTab.search.getImage(selectedTab == HomeTab.search)
                     .padding()
-                    .foregroundColor(self.selectedTab == .home ? .accentColor : .secondary)
+                    .foregroundColor(self.selectedTab == .search ? .accentColor : .secondary)
                     .font(.system(size: buttonSize))
-                    .accessibility(label: HomeTab.home.a11yLabel)
+                    .accessibility(label: HomeTab.search.a11yLabel)
             })
             Spacer()
             Button(action: {
@@ -53,7 +53,7 @@ struct HomeTabView: View {
 struct HomeTabView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            HomeTabView(selectedTab: .constant(.home))
+            HomeTabView(selectedTab: .constant(.search))
         }
     }
 }

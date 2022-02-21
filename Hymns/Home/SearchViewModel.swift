@@ -4,7 +4,7 @@ import Foundation
 import Resolver
 
 // swiftlint:disable:next type_body_length
-class HomeViewModel: ObservableObject {
+class SearchViewModel: ObservableObject {
 
     @UserDefault("has_seen_search_by_type_tooltip", defaultValue: false) var hasSeenSearchByTypeTooltip: Bool {
         willSet {
@@ -104,7 +104,7 @@ class HomeViewModel: ObservableObject {
         }
 
         if let hymnType = RegexUtil.getHymnType(searchQuery: searchParameter.trim()),
-            let hymnNumber = RegexUtil.getHymnNumber(searchQuery: searchParameter.trim()) {
+           let hymnNumber = RegexUtil.getHymnNumber(searchQuery: searchParameter.trim()) {
             fetchByHymnType(hymnType: hymnType, hymnNumber: hymnNumber, searchParameter: searchParameter)
             return
         }
@@ -153,8 +153,9 @@ class HomeViewModel: ObservableObject {
                 return matchingNumbers.map({ number -> SongResultViewModel in
                     let title = "\(hymnType.displayLabel) \(number)"
                     let identifier = HymnIdentifier(hymnType: hymnType, hymnNumber: number)
-                    let destination =
-                        DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: identifier, storeInHistoryStore: true)).eraseToAnyView()
+                    let destination = DisplayHymnContainerView(viewModel:
+                                                                DisplayHymnContainerViewModel(hymnToDisplay: identifier,
+                                                                                              storeInHistoryStore: true)).eraseToAnyView()
                     return SongResultViewModel(
                         stableId: String(describing: identifier),
                         title: title,
@@ -262,8 +263,9 @@ class HomeViewModel: ObservableObject {
                 let hasMorePages = songResultsPage.hasMorePages ?? false
                 let songResults = songResultsPage.results.map { songResult -> SongResultViewModel in
                     let identifier = songResult.identifier
-                    let destination =
-                        DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: identifier, storeInHistoryStore: true)).eraseToAnyView()
+                    let destination = DisplayHymnContainerView(viewModel:
+                                                                DisplayHymnContainerViewModel(hymnToDisplay: identifier,
+                                                                                              storeInHistoryStore: true)).eraseToAnyView()
                     return SongResultViewModel(stableId: String(describing: identifier),
                                                title: songResult.name,
                                                destinationView: destination)
@@ -338,6 +340,6 @@ enum HomeResultState {
 
 extension Resolver {
     public static func registerHomeViewModel() {
-        register {HomeViewModel()}.scope(.graph)
+        register {SearchViewModel()}.scope(.graph)
     }
 }
