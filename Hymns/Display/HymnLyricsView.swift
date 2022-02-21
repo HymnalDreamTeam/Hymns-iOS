@@ -13,7 +13,14 @@ public struct HymnLyricsView: View {
     public var body: some View {
         Group { () -> AnyView in
             guard let lyrics = viewModel.lyrics else {
-                return Text("This hymn does not exist. Please try a different one.", comment: "Empty state for hymn lyrics.").maxSize().eraseToAnyView()
+                return VStack(alignment: .center) {
+                    Image("error illustration")
+                    Text("This hymn does not exist. Please try a different one.", comment: "Empty state for hymn lyrics.")
+                        .lineLimit(nil)
+                        .multilineTextAlignment(.center)
+                        .font(.callout)
+                        .padding(.horizontal)
+                }.maxSize().eraseToAnyView()
             }
 
             guard !lyrics.isEmpty else {

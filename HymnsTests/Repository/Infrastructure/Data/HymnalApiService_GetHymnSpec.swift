@@ -123,6 +123,6 @@ class HymnalApiService_GetHymnSpec: QuickSpec {
 }
 
 extension HymnalApiService_GetHymnSpec {
-    static let children24URL = URL(string: "http://hymnalnetapi.herokuapp.com/v2/hymn/c/24")!
-    static let children24QueryParamsURL = URL(string: "http://hymnalnetapi.herokuapp.com/v2/hymn/c/24?key1=value1")!
+    static let children24URL = URL(string: "http://hymnalnetapi.herokuapp.com/v2/hymn/c/24?check_exists=true")!
+    static let children24QueryParamsURL = URL(string: "http://hymnalnetapi.herokuapp.com/v2/hymn/c/24?check_exists=true&key1=value1")!
 }

@@ -19,6 +19,20 @@ class DisplayHymnSnapshots: XCTestCase {
             as: .swiftUiImage())
     }
 
+    func test_error() {
+        viewModel = DisplayHymnViewModel(hymnToDisplay: hymn40_identifier)
+        viewModel.isLoaded = true
+        viewModel.title = "Hymn 40"
+        viewModel.isFavorited = false
+        let lyricsViewModel = HymnLyricsViewModel(hymnToDisplay: hymn40_identifier)
+        lyricsViewModel.lyrics = nil
+        viewModel.currentTab = .lyrics(HymnLyricsView(viewModel: lyricsViewModel).maxSize().eraseToAnyView())
+        viewModel.tabItems = [viewModel.currentTab]
+        assertVersionedSnapshot(
+            matching: DisplayHymnView(viewModel: viewModel).ignoresSafeArea(),
+            as: .swiftUiImage())
+    }
+
     func test_classic40() {
         viewModel = DisplayHymnViewModel(hymnToDisplay: hymn40_identifier)
         viewModel.isLoaded = true

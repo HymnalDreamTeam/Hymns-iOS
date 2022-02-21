@@ -83,10 +83,11 @@ private extension HymnalApi {
         components.scheme = Self.scheme
         components.host = Self.host
         components.path = "/v2/hymn/\(hymnType.abbreviatedValue)/\(hymnNumber)"
+        components.queryItems = [URLQueryItem(name: "check_exists", value: "true")]
         if let queryParams = queryParams, !queryParams.isEmpty {
-            components.queryItems = queryParams.compactMap({ (key, value) -> URLQueryItem in
+            components.queryItems?.append(contentsOf: queryParams.compactMap({ (key, value) -> URLQueryItem in
                 return URLQueryItem(name: key, value: value)
-            })
+            }))
         }
         return components.url
     }
