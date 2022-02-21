@@ -5,16 +5,16 @@ import Quick
 @testable import Hymns
 
 // swiftlint:disable type_body_length function_body_length
-class HomeViewModelSpec: QuickSpec {
+class SearchViewModelSpec: QuickSpec {
 
     override func spec() {
-        describe("HomeViewModelSpec") {
+        describe("SearchViewModelSpec") {
             // https://www.vadimbulavin.com/unit-testing-async-code-in-swift/
             let testQueue = DispatchQueue(label: "test_queue")
             var historyStore: HistoryStoreMock!
             var hymnsRepository: HymnsRepositoryMock!
             var songResultsRepository: SongResultsRepositoryMock!
-            var target: HomeViewModel!
+            var target: SearchViewModel!
 
             let recentSongs = [RecentSong(hymnIdentifier: classic1151, songTitle: "Hymn 1151"),
                                RecentSong(hymnIdentifier: cebuano123, songTitle: "Naghigda sa lubong\\u2014")]
@@ -32,9 +32,9 @@ class HomeViewModelSpec: QuickSpec {
             context("initial state") {
                 beforeEach {
                     let initiallyInactiveQueue = DispatchQueue(label: "test_queue", attributes: .initiallyInactive)
-                    target = HomeViewModel(backgroundQueue: initiallyInactiveQueue, historyStore: historyStore,
-                                           hymnsRepository: hymnsRepository, mainQueue: initiallyInactiveQueue,
-                                           repository: songResultsRepository)
+                    target = SearchViewModel(backgroundQueue: initiallyInactiveQueue, historyStore: historyStore,
+                                             hymnsRepository: hymnsRepository, mainQueue: initiallyInactiveQueue,
+                                             repository: songResultsRepository)
                 }
                 it("searchActive should be false") {
                     expect(target.searchActive).to(beFalse())
@@ -45,9 +45,9 @@ class HomeViewModelSpec: QuickSpec {
                 context("search-by-type already seen") {
                     beforeEach {
                         target.hasSeenSearchByTypeTooltip = true
-                        target = HomeViewModel(backgroundQueue: testQueue, historyStore: historyStore,
-                                               hymnsRepository: hymnsRepository, mainQueue: testQueue,
-                                               repository: songResultsRepository)
+                        target = SearchViewModel(backgroundQueue: testQueue, historyStore: historyStore,
+                                                 hymnsRepository: hymnsRepository, mainQueue: testQueue,
+                                                 repository: songResultsRepository)
                     }
                     it("showSearchByTypeToolTip should be false") {
                         expect(target.showSearchByTypeToolTip).to(beFalse())
@@ -56,9 +56,9 @@ class HomeViewModelSpec: QuickSpec {
                 context("search-by-type not seen") {
                     beforeEach {
                         target.hasSeenSearchByTypeTooltip = false
-                        target = HomeViewModel(backgroundQueue: testQueue, historyStore: historyStore,
-                                               hymnsRepository: hymnsRepository, mainQueue: testQueue,
-                                               repository: songResultsRepository)
+                        target = SearchViewModel(backgroundQueue: testQueue, historyStore: historyStore,
+                                                 hymnsRepository: hymnsRepository, mainQueue: testQueue,
+                                                 repository: songResultsRepository)
                     }
                     it("showSearchByTypeToolTip should be true") {
                         expect(target.showSearchByTypeToolTip).to(beTrue())
@@ -88,11 +88,11 @@ class HomeViewModelSpec: QuickSpec {
                             .tryMap({ _ -> [RecentSong] in
                                 throw URLError(.badServerResponse)
                             }).mapError({ _ -> ErrorType in
-                                .data(description: "forced data error")
+                                    .data(description: "forced data error")
                             }).eraseToAnyPublisher()
                     }
-                    target = HomeViewModel(backgroundQueue: testQueue, historyStore: historyStore,
-                                           mainQueue: testQueue, repository: songResultsRepository)
+                    target = SearchViewModel(backgroundQueue: testQueue, historyStore: historyStore,
+                                             mainQueue: testQueue, repository: songResultsRepository)
                     testQueue.sync {}
                     testQueue.sync {}
                 }
@@ -114,9 +114,9 @@ class HomeViewModelSpec: QuickSpec {
                             // This will never be triggered.
                         }).eraseToAnyPublisher()
                     }
-                    target = HomeViewModel(backgroundQueue: testQueue, historyStore: historyStore,
-                                           hymnsRepository: hymnsRepository, mainQueue: testQueue,
-                                           repository: songResultsRepository)
+                    target = SearchViewModel(backgroundQueue: testQueue, historyStore: historyStore,
+                                             hymnsRepository: hymnsRepository, mainQueue: testQueue,
+                                             repository: songResultsRepository)
                     testQueue.sync {}
                     testQueue.sync {}
                 }
@@ -133,9 +133,9 @@ class HomeViewModelSpec: QuickSpec {
             }
             context("recent songs") {
                 beforeEach {
-                    target = HomeViewModel(backgroundQueue: testQueue, historyStore: historyStore,
-                                           hymnsRepository: hymnsRepository, mainQueue: testQueue,
-                                           repository: songResultsRepository)
+                    target = SearchViewModel(backgroundQueue: testQueue, historyStore: historyStore,
+                                             hymnsRepository: hymnsRepository, mainQueue: testQueue,
+                                             repository: songResultsRepository)
                     testQueue.sync {}
                     testQueue.sync {}
                 }
@@ -159,9 +159,9 @@ class HomeViewModelSpec: QuickSpec {
             }
             context("search active") {
                 beforeEach {
-                    target = HomeViewModel(backgroundQueue: testQueue, historyStore: historyStore,
-                                           hymnsRepository: hymnsRepository, mainQueue: testQueue,
-                                           repository: songResultsRepository)
+                    target = SearchViewModel(backgroundQueue: testQueue, historyStore: historyStore,
+                                             hymnsRepository: hymnsRepository, mainQueue: testQueue,
+                                             repository: songResultsRepository)
                     target.searchActive = true
                     testQueue.sync {}
                     testQueue.sync {}

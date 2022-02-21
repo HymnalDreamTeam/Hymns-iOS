@@ -13,9 +13,9 @@ struct HomeContainerView: View {
         NavigationView {
             VStack {
                 ZStack {
-                    if selectedTab == .home {
+                    if selectedTab == .search {
                         // HomeView should still be recreated or else the label doesn't get removed when you clear history
-                        HomeView()
+                        SearchView()
                     } else if selectedTab == .browse {
                         browseView
                     } else if selectedTab == .favorites {
@@ -33,7 +33,7 @@ struct HomeContainerView: View {
         }.onAppear {
             // App crashes on startup without this
             if self.selectedTab == .none {
-                self.selectedTab = .home
+                self.selectedTab = .search
             }
         }.navigationViewStyle(StackNavigationViewStyle())
     }
@@ -44,7 +44,7 @@ struct HomeContainerView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             // preview all tabs
-            HomeContainerView(selectedTab: .home).previewDisplayName("Home tab")
+            HomeContainerView(selectedTab: .search).previewDisplayName("Home tab")
             HomeContainerView(selectedTab: .browse).previewDisplayName("Browse tab")
             HomeContainerView(selectedTab: .favorites).previewDisplayName("Favorites tab")
             HomeContainerView(selectedTab: .settings).previewDisplayName("Settings tab")

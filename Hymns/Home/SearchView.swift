@@ -2,11 +2,11 @@ import FirebaseAnalytics
 import Resolver
 import SwiftUI
 
-struct HomeView: View {
+struct SearchView: View {
 
-    @ObservedObject private var viewModel: HomeViewModel
+    @ObservedObject private var viewModel: SearchViewModel
 
-    init(viewModel: HomeViewModel = Resolver.resolve()) {
+    init(viewModel: SearchViewModel = Resolver.resolve()) {
         self.viewModel = viewModel
     }
 
@@ -39,11 +39,11 @@ struct HomeView: View {
                                 Text("Try searching by hymn type (e.g. ns151, ch1, s3)", comment: "Tooltip showing the user how to best utilize search.").font(.caption).padding(.trailing)
                             }
                         }, configuration:
-                            ToolTipConfiguration(cornerRadius: 10,
-                                                 arrowPosition: ToolTipConfiguration.ArrowPosition(midX: 0.5, alignmentType: .percentage),
-                                                 arrowHeight: 7)).alignmentGuide(.toolTipHorizontalAlignment, computeValue: { dimens -> CGFloat in
-                                                     dimens[HorizontalAlignment.center]
-                                                 }).eraseToAnyView() : EmptyView().eraseToAnyView(),
+                                        ToolTipConfiguration(cornerRadius: 10,
+                                                             arrowPosition: ToolTipConfiguration.ArrowPosition(midX: 0.5, alignmentType: .percentage),
+                                                             arrowHeight: 7)).alignmentGuide(.toolTipHorizontalAlignment, computeValue: { dimens -> CGFloat in
+                                                                 dimens[HorizontalAlignment.center]
+                                                             }).eraseToAnyView() : EmptyView().eraseToAnyView(),
                         alignment: .toolTipAlignment).zIndex(1)
             } else {
                 OldSearchBar(
@@ -67,11 +67,11 @@ struct HomeView: View {
                                 Text("Try searching by hymn type (e.g. ns151, ch1, s3)").font(.caption).padding(.trailing)
                             }
                         }, configuration:
-                            ToolTipConfiguration(cornerRadius: 10,
-                                                 arrowPosition: ToolTipConfiguration.ArrowPosition(midX: 0.5, alignmentType: .percentage),
-                                                 arrowHeight: 7)).alignmentGuide(.toolTipHorizontalAlignment, computeValue: { dimens -> CGFloat in
-                                                     dimens[HorizontalAlignment.center]
-                                                 }).eraseToAnyView() : EmptyView().eraseToAnyView(),
+                                        ToolTipConfiguration(cornerRadius: 10,
+                                                             arrowPosition: ToolTipConfiguration.ArrowPosition(midX: 0.5, alignmentType: .percentage),
+                                                             arrowHeight: 7)).alignmentGuide(.toolTipHorizontalAlignment, computeValue: { dimens -> CGFloat in
+                                                                 dimens[HorizontalAlignment.center]
+                                                             }).eraseToAnyView() : EmptyView().eraseToAnyView(),
                         alignment: .toolTipAlignment).zIndex(1)
             }
 
@@ -112,54 +112,53 @@ struct HomeView: View {
 }
 
 #if DEBUG
-struct HomeView_Previews: PreviewProvider {
+struct SearchView_Previews: PreviewProvider {
     static var previews: some View {
-        let defaultViewModel = HomeViewModel()
+        let defaultViewModel = SearchViewModel()
 
-        let recentSongsViewModel = HomeViewModel()
+        let recentSongsViewModel = SearchViewModel()
         recentSongsViewModel.state = .results
         recentSongsViewModel.label = "Recent hymns"
         recentSongsViewModel.songResults = [PreviewSongResults.cupOfChrist, PreviewSongResults.hymn1151, PreviewSongResults.hymn1334]
 
-        let recentSongsEmptyViewModel = HomeViewModel()
+        let recentSongsEmptyViewModel = SearchViewModel()
         recentSongsEmptyViewModel.state = .results
 
-        let searchActiveViewModel = HomeViewModel()
+        let searchActiveViewModel = SearchViewModel()
         searchActiveViewModel.state = .results
         searchActiveViewModel.searchActive = true
 
-        let loadingViewModel = HomeViewModel()
+        let loadingViewModel = SearchViewModel()
         loadingViewModel.state = .loading
         loadingViewModel.searchActive = true
         loadingViewModel.searchParameter = "She loves me not"
 
-        let searchResults = HomeViewModel()
+        let searchResults = SearchViewModel()
         searchResults.state = .results
         searchResults.searchActive = true
         searchResults.searchParameter = "Do you love me?"
         searchResults.songResults = [PreviewSongResults.hymn480, PreviewSongResults.hymn1334, PreviewSongResults.hymn1151]
 
-        let noResultsViewModel = HomeViewModel()
+        let noResultsViewModel = SearchViewModel()
         noResultsViewModel.state = .empty
         noResultsViewModel.searchActive = true
         noResultsViewModel.searchParameter = "She loves me not"
 
-        return
-            Group {
-                HomeView(viewModel: defaultViewModel)
-                    .previewDisplayName("Default state")
-                HomeView(viewModel: recentSongsViewModel)
-                    .previewDisplayName("Recent songs")
-                HomeView(viewModel: recentSongsEmptyViewModel)
-                    .previewDisplayName("No recent songs")
-                HomeView(viewModel: searchActiveViewModel)
-                    .previewDisplayName("Active search without recent songs")
-                HomeView(viewModel: loadingViewModel)
-                    .previewDisplayName("Active search loading")
-                HomeView(viewModel: searchResults)
-                    .previewDisplayName("Search results")
-                HomeView(viewModel: noResultsViewModel)
-                    .previewDisplayName("No results")
+        return Group {
+            SearchView(viewModel: defaultViewModel)
+                .previewDisplayName("Default state")
+            SearchView(viewModel: recentSongsViewModel)
+                .previewDisplayName("Recent songs")
+            SearchView(viewModel: recentSongsEmptyViewModel)
+                .previewDisplayName("No recent songs")
+            SearchView(viewModel: searchActiveViewModel)
+                .previewDisplayName("Active search without recent songs")
+            SearchView(viewModel: loadingViewModel)
+                .previewDisplayName("Active search loading")
+            SearchView(viewModel: searchResults)
+                .previewDisplayName("Search results")
+            SearchView(viewModel: noResultsViewModel)
+                .previewDisplayName("No results")
         }
     }
 }

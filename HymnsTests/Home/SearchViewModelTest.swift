@@ -4,7 +4,7 @@ import Nimble
 import XCTest
 @testable import Hymns
 
-class HomeViewModelTest: XCTestCase {
+class SearchViewModelTest: XCTestCase {
 
     let recentHymns = "Recent hymns"
     let recentSongs = [RecentSong(hymnIdentifier: classic1151, songTitle: "Hymn 1151"),
@@ -14,7 +14,7 @@ class HomeViewModelTest: XCTestCase {
     let testQueue = DispatchQueue(label: "test_queue")
     var historyStore: HistoryStoreMock!
     var songResultsRepository: SongResultsRepositoryMock!
-    var target: HomeViewModel!
+    var target: SearchViewModel!
 
     override func setUp() {
         super.setUp()
@@ -25,8 +25,8 @@ class HomeViewModelTest: XCTestCase {
             }).eraseToAnyPublisher()
         }
         songResultsRepository = mock(SongResultsRepository.self)
-        target = HomeViewModel(backgroundQueue: testQueue, historyStore: historyStore,
-                               mainQueue: testQueue, repository: songResultsRepository)
+        target = SearchViewModel(backgroundQueue: testQueue, historyStore: historyStore,
+                                 mainQueue: testQueue, repository: songResultsRepository)
     }
 
     func test_defaultState() {
@@ -52,8 +52,8 @@ class HomeViewModelTest: XCTestCase {
                 // This will never be triggered.
             }).eraseToAnyPublisher()
         }
-        target = HomeViewModel(backgroundQueue: testQueue, historyStore: historyStore,
-                               mainQueue: testQueue, repository: songResultsRepository)
+        target = SearchViewModel(backgroundQueue: testQueue, historyStore: historyStore,
+                                 mainQueue: testQueue, repository: songResultsRepository)
         testQueue.sync {}
         testQueue.sync {}
 

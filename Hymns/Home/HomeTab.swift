@@ -3,7 +3,7 @@ import SwiftUI
 
 enum HomeTab {
     case none
-    case home
+    case search
     case browse
     case favorites
     case settings
@@ -16,9 +16,9 @@ extension HomeTab: TabItem {
     var content: some View {
         switch self {
         case .none:
-            return HomeView().eraseToAnyView()
-        case .home:
-            return HomeView().eraseToAnyView()
+            return SearchView().eraseToAnyView()
+        case .search:
+            return SearchView().eraseToAnyView()
         case .browse:
             return BrowseView().eraseToAnyView()
         case .favorites:
@@ -36,12 +36,11 @@ extension HomeTab: TabItem {
         return getImage(false)
     }
 
-    // TODO refactor home tab to search
     var a11yLabel: Text {
         switch self {
         case .none:
             return Text("")
-        case .home:
+        case .search:
             return Text("Search tab", comment: "A11y label for the search tab icon.")
         case .browse:
             return Text("Browse tab", comment: "A11y label for the browse tab icon.")
@@ -56,7 +55,7 @@ extension HomeTab: TabItem {
         switch self {
         case .none:
             return Image(systemName: "magnifyingglass")
-        case .home:
+        case .search:
             return Image(systemName: "magnifyingglass")
         case .browse:
             return isSelected ? Image(systemName: "book.fill") : Image(systemName: "book")

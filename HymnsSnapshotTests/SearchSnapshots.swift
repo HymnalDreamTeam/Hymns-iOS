@@ -4,18 +4,18 @@ import XCTest
 @testable import Hymns
 
 // https://troz.net/post/2020/swiftui_snapshots/
-class HomeSnapshots: XCTestCase {
+class SearchSnapshots: XCTestCase {
 
-    var viewModel: HomeViewModel!
+    var viewModel: SearchViewModel!
 
     override func setUp() {
         super.setUp()
-        viewModel = HomeViewModel()
+        viewModel = SearchViewModel()
     }
 
     func test_default() {
         viewModel.showSearchByTypeToolTip = false
-        assertVersionedSnapshot(matching: HomeView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
+        assertVersionedSnapshot(matching: SearchView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
     }
 
     func test_recentSongs() {
@@ -23,7 +23,7 @@ class HomeSnapshots: XCTestCase {
         viewModel.state = .results
         viewModel.label = "Recent hymns"
         viewModel.songResults = [cupOfChrist_songResult, hymn1151_songResult, hymn1334_songResult]
-        assertVersionedSnapshot(matching: HomeView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
+        assertVersionedSnapshot(matching: SearchView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
     }
 
     func test_recentSongs_withToolTip() {
@@ -31,27 +31,27 @@ class HomeSnapshots: XCTestCase {
         viewModel.state = .results
         viewModel.label = "Recent hymns"
         viewModel.songResults = [cupOfChrist_songResult, hymn1151_songResult, hymn1334_songResult]
-        assertVersionedSnapshot(matching: HomeView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
+        assertVersionedSnapshot(matching: SearchView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
     }
 
     func test_noRecentSongs() {
         viewModel.showSearchByTypeToolTip = false
         viewModel.state = .results
-        assertVersionedSnapshot(matching: HomeView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
+        assertVersionedSnapshot(matching: SearchView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
     }
 
     func test_searchActive() {
         viewModel.showSearchByTypeToolTip = false
         viewModel.state = .results
         viewModel.searchActive = true
-        assertVersionedSnapshot(matching: HomeView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
+        assertVersionedSnapshot(matching: SearchView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
     }
 
     func test_searchActive_withToolTip() {
         viewModel.showSearchByTypeToolTip = true
         viewModel.state = .results
         viewModel.searchActive = true
-        assertVersionedSnapshot(matching: HomeView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
+        assertVersionedSnapshot(matching: SearchView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
     }
 
     func test_loading() {
@@ -59,7 +59,7 @@ class HomeSnapshots: XCTestCase {
         viewModel.state = .loading
         viewModel.searchActive = true
         viewModel.searchParameter = "She loves me not"
-        assertVersionedSnapshot(matching: HomeView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
+        assertVersionedSnapshot(matching: SearchView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
     }
 
     func test_searchResults() {
@@ -68,7 +68,7 @@ class HomeSnapshots: XCTestCase {
         viewModel.searchActive = true
         viewModel.searchParameter = "Do you love me?"
         viewModel.songResults = [hymn480_songResult, hymn1334_songResult, hymn1151_songResult]
-        assertVersionedSnapshot(matching: HomeView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
+        assertVersionedSnapshot(matching: SearchView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
     }
 
     func test_searchResults_withToolTip() {
@@ -77,7 +77,7 @@ class HomeSnapshots: XCTestCase {
         viewModel.searchActive = true
         viewModel.searchParameter = "Do you love me?"
         viewModel.songResults = [hymn480_songResult, hymn1334_songResult, hymn1151_songResult]
-        assertVersionedSnapshot(matching: HomeView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
+        assertVersionedSnapshot(matching: SearchView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
     }
 
     func test_noResults() {
@@ -85,6 +85,6 @@ class HomeSnapshots: XCTestCase {
         viewModel.state = .empty
         viewModel.searchActive = true
         viewModel.searchParameter = "She loves me not"
-        assertVersionedSnapshot(matching: HomeView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
+        assertVersionedSnapshot(matching: SearchView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
     }
 }

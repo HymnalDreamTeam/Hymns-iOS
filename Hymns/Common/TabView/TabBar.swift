@@ -122,7 +122,7 @@ struct TabWidthPreferenceKey: PreferenceKey {
 struct TabBar_Previews: PreviewProvider {
 
     static var previews: some View {
-        var home: HomeTab = .home
+        var search: HomeTab = .search
         var browse: HomeTab = .browse
         let lyricsTab: HymnLyricsTab = .lyrics(EmptyView().eraseToAnyView())
         return Group {
@@ -138,11 +138,11 @@ struct TabBar_Previews: PreviewProvider {
             GeometryReader { geometry in
                 TabBar(
                     currentTab: Binding<HomeTab>(
-                        get: {home},
-                        set: {home = $0}),
+                        get: {search},
+                        set: {search = $0}),
                     geometry: geometry,
                     tabItems: [
-                        .home,
+                        .search,
                         .browse,
                         .favorites,
                         .settings
@@ -155,7 +155,7 @@ struct TabBar_Previews: PreviewProvider {
                         set: {browse = $0}),
                     geometry: geometry,
                     tabItems: [
-                        .home,
+                        .search,
                         .browse,
                         .favorites,
                         .settings
