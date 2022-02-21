@@ -300,6 +300,8 @@
 		3B020E7E251DCD0C007B7EBB /* DisplayHymnContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayHymnContainerView.swift; sourceTree = "<group>"; };
 		3B020E84251DCD32007B7EBB /* DisplayHymnContainerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayHymnContainerViewModel.swift; sourceTree = "<group>"; };
 		3B02725924777BF9007348B0 /* Dialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dialog.swift; sourceTree = "<group>"; };
+		3B04866127C3793600D09AD9 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
+		3B04866227C3793F00D09AD9 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		3B04D2FB24898137008C7E5E /* TagEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagEntity.swift; sourceTree = "<group>"; };
 		3B04D2FD2489819A008C7E5E /* TagStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagStore.swift; sourceTree = "<group>"; };
 		3B09F900243D3BDC00252C15 /* HymnalApiService_SearchTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HymnalApiService_SearchTest.swift; sourceTree = "<group>"; };
@@ -1433,6 +1435,8 @@
 				Base,
 				"zh-Hans",
 				"zh-Hant",
+				de,
+				es,
 			);
 			mainGroup = 3B1B90062429CF55009FDCC5;
 			productRefGroup = 3B1B90102429CF55009FDCC5 /* Products */;
@@ -2061,6 +2065,8 @@
 				B5E61B35242E613D00EF497D /* en */,
 				3B12855027C2E94D00DB3921 /* zh-Hans */,
 				3B12855127C2E95400DB3921 /* zh-Hant */,
+				3B04866127C3793600D09AD9 /* de */,
+				3B04866227C3793F00D09AD9 /* es */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
