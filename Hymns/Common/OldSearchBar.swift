@@ -32,7 +32,7 @@ struct OldSearchBar: View {
             .cornerRadius(CGFloat(integerLiteral: 10))
 
             if searchActive {
-                Button("Cancel") {
+                Button(NSLocalizedString("Cancel", comment: "Button to cancel active search.")) {
                     // this must be placed before the other commands here
                     UIApplication.shared.endEditing(true)
                     if !self.searchText.isEmpty {

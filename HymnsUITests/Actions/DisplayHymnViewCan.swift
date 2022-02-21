@@ -27,7 +27,7 @@ public class DisplayHymnViewCan: BaseViewCan {
     }
 
     public func maximizeSheetMusic() -> DisplayHymnViewCan {
-        return pressButton("Maximize music")
+        return pressButton("Maximize sheet music")
     }
 
     public func closeSheetMusic() -> DisplayHymnViewCan {

@@ -12,15 +12,15 @@ extension TagColor {
     var name: String {
         switch self {
         case .none:
-            return "None"
+            return NSLocalizedString("None", comment: "Tag has no color.")
         case .blue:
-            return "Blue"
+            return NSLocalizedString("Blue", comment: "Tag color is blue.")
         case .green:
-            return "Green"
+            return NSLocalizedString("Green", comment: "Tag color is green.")
         case .yellow:
-            return "Yellow"
+            return NSLocalizedString("Yellow", comment: "Tag color is yellow.")
         case .red:
-            return "Red"
+            return NSLocalizedString("Red", comment: "Tag color is red.")
         }
     }
 

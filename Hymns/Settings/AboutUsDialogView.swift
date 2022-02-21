@@ -15,7 +15,7 @@ struct AboutUsDialogView: View {
                     Button(action: {
                         self.presentationMode.wrappedValue.dismiss()
                     }, label: {
-                        Image(systemName: "xmark").accessibilityLabel(Text("Close page", comment: "Close the 'About Us' page."))
+                        Image(systemName: "xmark").accessibilityLabel(Text("Close page", comment: "A11y label to close the 'About Us' page."))
                     })
                     Text("About us", comment: "'About Us' page title.").fontWeight(.bold).padding(.leading)
                     Spacer()
@@ -27,15 +27,6 @@ struct AboutUsDialogView: View {
                 HStack {
                     Spacer()
                     Text("- Col. 3:16", comment: "'About Us' page verse reference.").font(.body).fontWeight(.bold).padding(.trailing)
-                }
-                // Cant get this dumb thing in line. It won't concatenate the text since it has a tapGesture.
-                // Right now the whole sentence will link you.
-                // https://stackoverflow.com/questions/59359730/is-it-possible-to-add-an-in-line-button-within-a-text
-                Group {
-                    Text("For a free study Bible tap here.", comment: "Blurb to link out to BFA.").fontWeight(.bold).underline()
-                }.font(.callout).padding().onTapGesture {
-                    self.analytics.logBFALinkClicked()
-                    self.application.open(URL(string: "https://biblesforamerica.org/")!)
                 }
                 Spacer()
             }

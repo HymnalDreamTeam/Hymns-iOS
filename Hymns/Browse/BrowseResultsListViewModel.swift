@@ -19,7 +19,8 @@ class BrowseResultsListViewModel: ObservableObject {
          dataStore: HymnDataStore = Resolver.resolve(),
          mainQueue: DispatchQueue = Resolver.resolve(name: "main"),
          tagStore: TagStore = Resolver.resolve()) {
-        self.title = NSLocalizedString("Songs tagged with \"\(tag.title)\"", comment: "Title of a list of songs tagged with a particular tag.")
+        self.title = String(format: NSLocalizedString("Songs tagged with \"%@\"", comment: "Title of a list of songs tagged with a particular tag."),
+                            tag.title)
         self.resultsType = .tag(tag: tag)
         self.backgroundQueue = backgroundQueue
         self.dataStore = dataStore

@@ -27,8 +27,9 @@ struct UiHymn: Equatable {
      */
     var resultTitle: String {
         if hymnIdentifier.hymnType == .classic {
-            return NSLocalizedString("Hymn \(hymnIdentifier.hymnNumber): \(self.title)",
-                                     comment: "Format for displaying a classic hymn in the format: 'Hymn 123: Low in the grave He lay'.")
+            return String(format: NSLocalizedString("Hymn %@: %@",
+                                                    comment: "Format for displaying a classic hymn in the format: 'Hymn 123: Low in the grave He lay'."),
+                          hymnIdentifier.hymnNumber, self.title)
         }
         return self.title
     }
