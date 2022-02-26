@@ -42,7 +42,7 @@ struct SearchBar: View {
                 }
                 TextField(placeholderText, text: $searchText)
                     .padding(.leading, searchActive ? 0 : 6)
-                    .keyboardType(searchMode == .keyword ? .asciiCapable : .asciiCapableNumberPad)
+                    .keyboardType(searchMode == .keyword ? .default : .asciiCapableNumberPad)
                     .foregroundColor(.primary)
                     .focused($focused)
                 if !self.searchText.isEmpty {
