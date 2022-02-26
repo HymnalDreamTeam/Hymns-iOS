@@ -86,13 +86,36 @@ extension Resolver {
                 fileURL: url!,
                 // Set the new schema version. This must be greater than the previously used
                 // version (if you've never set a schema version before, the version is 0).
-                schemaVersion: 0,
+                schemaVersion: 1,
 
                 // Set the block which will be called automatically when opening a Realm with
                 // a schema version lower than the one set above
-                migrationBlock: { _, _ in
-                    // We haven’t migrated anything yet, so oldSchemaVersion == 0
-            })
+                migrationBlock: { migration, oldSchemaVersion in
+                    // Certain songs are in the format 'Hymn 12: O God, Thou art the source of life'.
+                    // However, since we are adding labels to recent songs, we should remove the initial
+                    // 'Hymn 12: ' so it's not redundant.
+                    if oldSchemaVersion < 1 {
+                        migration.enumerateObjects(ofType: RecentSongEntity.className()) { old, new in
+                            let newTitle = old.flatMap { oldEntity in
+                                oldEntity["recentSong"] as? MigrationObject
+                            }.flatMap { recentSong in
+                                recentSong["songTitle"] as? String
+                            }.flatMap { songTitle in
+                                songTitle.replacingOccurrences(of: #"\Hymn.*: "#, with: "", options: .regularExpression, range: nil)
+                            }
+
+                            guard let newTitle = newTitle else {
+                                return
+                            }
+
+                            new.flatMap { newEntity in
+                                newEntity["recentSong"] as? MigrationObject
+                            }.flatMap { recentSong in
+                                recentSong["songTitle"] = newTitle
+                            }
+                        }
+                    }
+                })
             // If the Realm db is unable to be created, that's an unrecoverable error, so crashing the app is appropriate.
             // swiftlint:disable:next force_try
             let realm = try! Realm(configuration: config)

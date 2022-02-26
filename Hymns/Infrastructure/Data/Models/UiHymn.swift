@@ -22,18 +22,6 @@ struct UiHymn: Equatable {
     let relevant: MetaDatum?
     // add more fields as needed
 
-    /**
-     * Title of song for when it is displayed as a song result in a list of results.
-     */
-    var resultTitle: String {
-        if hymnIdentifier.hymnType == .classic {
-            return String(format: NSLocalizedString("Hymn %@: %@",
-                                                    comment: "Format for displaying a classic hymn in the format: 'Hymn 123: Low in the grave He lay'."),
-                          hymnIdentifier.hymnNumber, self.title)
-        }
-        return self.title
-    }
-
     init(hymnIdentifier: HymnIdentifier, title: String, lyrics: [Verse], pdfSheet: MetaDatum? = nil,
          category: String? = nil, subcategory: String? = nil, author: String? = nil, composer: String? = nil,
          key: String? = nil, time: String? = nil, meter: String? = nil, scriptures: String? = nil,

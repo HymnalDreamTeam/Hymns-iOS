@@ -283,7 +283,10 @@ class SearchViewModelSearchingSpec: QuickSpec {
                         }
                         describe("load more does not reach threshold") {
                             beforeEach {
-                                target.loadMore(at: SongResultViewModel(stableId: "hymnType: h, hymnNumber: 6, queryParams: ", title: "classic6", destinationView: EmptyView().eraseToAnyView()))
+                                target.loadMore(at:
+                                                    SongResultViewModel(stableId: "hymnType: h, hymnNumber: 6, queryParams: ",
+                                                                        title: "classic6", label: "Hymn 6",
+                                                                        destinationView: EmptyView().eraseToAnyView()))
                             }
                             it("should not fetch the next page") {
                                 verify(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 2)).wasNeverCalled()
@@ -291,7 +294,10 @@ class SearchViewModelSearchingSpec: QuickSpec {
                         }
                         describe("load more meets threshold") {
                             beforeEach {
-                                target.loadMore(at: SongResultViewModel(stableId: "hymnType: h, hymnNumber: 7, queryParams: ", title: "classic7", destinationView: EmptyView().eraseToAnyView()))
+                                target.loadMore(at:
+                                                    SongResultViewModel(stableId: "hymnType: h, hymnNumber: 7, queryParams: ",
+                                                                        title: "classic7", label: "Hymn 7",
+                                                                        destinationView: EmptyView().eraseToAnyView()))
                                 testQueue.sync {}
                                 testQueue.sync {}
                                 testQueue.sync {}
@@ -310,7 +316,10 @@ class SearchViewModelSearchingSpec: QuickSpec {
                             }
                             describe("no more pages to load") {
                                 beforeEach {
-                                    target.loadMore(at: SongResultViewModel(stableId: "hymnType: h, hymnNumber: 23, queryParams: ", title: "classic23", destinationView: EmptyView().eraseToAnyView()))
+                                    target.loadMore(at:
+                                                        SongResultViewModel(stableId: "hymnType: h, hymnNumber: 23, queryParams: ",
+                                                                            title: "classic23", label: "Hymn 23",
+                                                                            destinationView: EmptyView().eraseToAnyView()))
                                 }
                                 it("should not fetch the next page") {
                                     verify(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 3)).wasNeverCalled()
@@ -349,7 +358,11 @@ class SearchViewModelSearchingSpec: QuickSpec {
                         }
                         describe("try to load more") {
                             beforeEach {
-                                target.loadMore(at: SongResultViewModel(stableId: "hymnType: h, hymnNumber: 7, queryParams: ", title: "classic7", destinationView: EmptyView().eraseToAnyView()))
+                                target.loadMore(at:
+                                                    SongResultViewModel(
+                                                        stableId: "hymnType: h, hymnNumber: 7, queryParams: ",
+                                                        title: "classic7", label: "Hymn 7",
+                                                        destinationView: EmptyView().eraseToAnyView()))
                                 testQueue.sync {}
                             }
                             it("not fetch the next page since previous call is still loading") {
@@ -370,7 +383,11 @@ class SearchViewModelSearchingSpec: QuickSpec {
                             }
                             describe("loading more") {
                                 beforeEach {
-                                    target.loadMore(at: SongResultViewModel(stableId: "hymnType: h, hymnNumber: 7, queryParams: ", title: "classic7", destinationView: EmptyView().eraseToAnyView()))
+                                    target.loadMore(at:
+                                                        SongResultViewModel(
+                                                            stableId: "hymnType: h, hymnNumber: 7, queryParams: ",
+                                                            title: "classic7", label: "Hymn 7",
+                                                            destinationView: EmptyView().eraseToAnyView()))
                                     testQueue.sync {}
                                     testQueue.sync {}
                                     testQueue.sync {}

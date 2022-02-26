@@ -9,7 +9,12 @@ struct SongResultView: View {
     }
 
     var body: some View {
-        Text(viewModel.title)
+        VStack(alignment: .leading, spacing: 4) {
+            viewModel.label.map { label in
+                Text(label).font(.caption).fontWeight(.bold)
+            }
+            Text(viewModel.title)
+        }
     }
 }
 
@@ -17,8 +22,11 @@ struct SongResultView: View {
 struct SongResultView_Previews: PreviewProvider {
     static var previews: some View {
         SongResultView(
-            viewModel: SongResultViewModel(stableId: "Hymn 480", title: "Hymn 480", destinationView: Text("%_PREVIEW_% Destination").eraseToAnyView()))
-            .previewLayout(.fixed(width: 200, height: 50))
+            viewModel: SongResultViewModel(stableId: "Hymn 480",
+                                           title: "O Lord, breathe Thy Spirit on me",
+                                           label: "Hymn 255",
+                                           destinationView: Text("%_PREVIEW_% Destination").eraseToAnyView()))
+            .previewLayout(.fixed(width: 250, height: 100))
     }
 }
 #endif

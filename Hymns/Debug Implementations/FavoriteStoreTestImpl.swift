@@ -5,8 +5,7 @@ import Foundation
 class FavoriteStoreTestImpl: FavoriteStore {
 
     var entities = [FavoriteEntity(hymnIdentifier: classic40, songTitle: "classic40"),
-                    FavoriteEntity(hymnIdentifier: classic2, songTitle: "classic2"),
-                    FavoriteEntity(hymnIdentifier: classic1151, songTitle: "classic1151")]
+                    FavoriteEntity(hymnIdentifier: classic2, songTitle: "classic2")]
 
     func storeFavorite(_ entity: FavoriteEntity) {
         entities.append(entity)
@@ -25,7 +24,7 @@ class FavoriteStoreTestImpl: FavoriteStore {
     }
 
     func isFavorite(hymnIdentifier: HymnIdentifier) -> AnyPublisher<Bool, ErrorType> {
-        let isFavorite = entities.filter { entity -> Bool in
+        let isFavorite = !entities.filter { entity -> Bool in
             HymnIdentifier(entity.hymnIdentifierEntity) == hymnIdentifier
         }.isEmpty
         return Just(isFavorite).mapError({ _ -> ErrorType in

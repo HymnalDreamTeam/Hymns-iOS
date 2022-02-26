@@ -4,7 +4,11 @@ import Foundation
 
 class HymnDataStoreTestImpl: HymnDataStore {
 
-    private var hymnStore = [classic1151: classic1151Entity, chinese216: chinese216Entity, classic2: classic2Entity]
+    private var hymnStore = [
+        classic1151: classic1151Entity,
+        chinese216: chinese216Entity,
+        classic2: classic2Entity,
+        howardiHigsashi2: howardHigashi2Entity]
     private let searchStore =
         ["search param":
             [SearchResultEntity(hymnType: .classic, hymnNumber: "1151", queryParams: nil, title: "Click me!", matchInfo: Data(repeating: 0, count: 8)),
@@ -28,8 +32,8 @@ class HymnDataStoreTestImpl: HymnDataStore {
          ScriptureEntity(title: "Don't click me!", hymnType: .spanish, hymnNumber: "1151", queryParams: nil, scriptures: "Revelation"),
          ScriptureEntity(title: "chinese24", hymnType: .chinese, hymnNumber: "24", queryParams: nil, scriptures: "Genesis 1:26"),
          ScriptureEntity(title: "chinese33", hymnType: .chinese, hymnNumber: "33", queryParams: nil, scriptures: "Genesis 1:1")]
-    private let classicSongs = Array(1...1361).map { num -> SongResultEntity in
-        SongResultEntity(hymnType: .classic, hymnNumber: "\(num)", queryParams: nil, title: "Title of Hymn \(num)")
+    private let howardHigashiSongs = Array(1...50).map { num -> SongResultEntity in
+        SongResultEntity(hymnType: .howardHigashi, hymnNumber: "\(num)", queryParams: nil, title: "Higashi title \(num)")
     }
 
     var databaseInitializedProperly: Bool = true
@@ -87,8 +91,8 @@ class HymnDataStoreTestImpl: HymnDataStore {
     }
 
     func getAllSongs(hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType> {
-        if hymnType == .classic {
-            return Just(classicSongs).mapError({ _ -> ErrorType in
+        if hymnType == .howardHigashi {
+            return Just(howardHigashiSongs).mapError({ _ -> ErrorType in
                 // This will never be triggered.
             }).eraseToAnyPublisher()
         }
