@@ -58,22 +58,7 @@ class TagSheetViewModelSpec: QuickSpec {
                         expect(target.title).to(beEmpty())
                     }
                 }
-                context("classic song title") {
-                    beforeEach {
-                        given(hymnsRepository.getHymn(cebuano123)) ~> { _ in
-                            Just(UiHymn(hymnIdentifier: classic1151, title: "title here", lyrics: [Verse]()))
-                                .assertNoFailure().eraseToAnyPublisher()
-                        }
-                        target.fetchHymn()
-                        testQueue.sync {}
-                        testQueue.sync {}
-                        testQueue.sync {}
-                    }
-                    it("should prepend hymn number to the song's title") {
-                        expect(target.title).to(equal("Hymn 1151: title here"))
-                    }
-                }
-                context("non-classic song title") {
+                context("with a non-empty title") {
                     beforeEach {
                         given(hymnsRepository.getHymn(cebuano123)) ~> { _ in
                             Just(UiHymn(hymnIdentifier: cebuano123, title: "title here", lyrics: [Verse]()))

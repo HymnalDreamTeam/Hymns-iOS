@@ -35,10 +35,10 @@ class TagSheetViewModel: ObservableObject {
             .receive(on: mainQueue)
             .sink(
                 receiveValue: { [weak self] hymn in
-                    guard let self = self, let hymn = hymn, !hymn.resultTitle.isEmpty else {
+                    guard let self = self, let hymn = hymn, !hymn.title.isEmpty else {
                         return
                     }
-                    self.title = hymn.resultTitle
+                    self.title = hymn.title
             }).store(in: &disposables)
     }
 

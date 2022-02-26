@@ -74,8 +74,7 @@ class DisplayHymnViewModel: ObservableObject {
                     default:
                         self.title = "\(self.identifier.hymnType.displayLabel) \(self.identifier.hymnNumber)"
                     }
-
-                    self.resultsTitle = hymn.resultTitle
+                    self.resultsTitle = hymn.title
 
                     self.tabItems = [.lyrics(HymnLyricsView(viewModel: HymnLyricsViewModel(hymnToDisplay: self.identifier)).maxSize().eraseToAnyView())]
 

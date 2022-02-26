@@ -6,7 +6,7 @@ class HistoryStoreTestImpl: HistoryStore {
 
     var results = [RecentSong(hymnIdentifier: classic1151, songTitle: "classic1151"),
                    RecentSong(hymnIdentifier: classic40, songTitle: "classic40"),
-                   RecentSong(hymnIdentifier: classic2, songTitle: "Hymn 2: Classic 2"),
+                   RecentSong(hymnIdentifier: classic2, songTitle: "Classic 2"),
                    RecentSong(hymnIdentifier: classic3, songTitle: "classic3")]
 
     func clearHistory() throws {

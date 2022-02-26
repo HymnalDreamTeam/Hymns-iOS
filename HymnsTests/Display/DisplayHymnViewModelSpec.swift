@@ -89,7 +89,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                                 expect(target.title).to(equal(expectedTitle))
                             }
                             it("should store the song into the history store") {
-                                verify(historyStore.storeRecentSong(hymnToStore: classic1151, songTitle: "Hymn 1151: title")).wasCalled(exactly(1))
+                                verify(historyStore.storeRecentSong(hymnToStore: classic1151, songTitle: "title")).wasCalled(exactly(1))
                             }
                             it("should call hymnsRepository.getHymn") {
                                 verify(hymnsRepository.getHymn(classic1151)).wasCalled(exactly(1))

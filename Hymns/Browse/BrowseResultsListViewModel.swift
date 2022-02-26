@@ -66,10 +66,7 @@ class BrowseResultsListViewModel: ObservableObject {
                 .receive(on: backgroundQueue)
                 .map({ songResults -> [SongResultViewModel] in
                     songResults.map { songResult -> SongResultViewModel in
-                        let hymnIdentifier = HymnIdentifier(hymnType: songResult.hymnType, hymnNumber: songResult.hymnNumber, queryParams: songResult.queryParams)
-                        let title = songResult.title
-                        let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: hymnIdentifier)).eraseToAnyView()
-                        return SongResultViewModel(stableId: String(describing: hymnIdentifier), title: title, destinationView: destination)
+                        return Transformers.toSongResultsViewModel(entity: songResult)
                     }
                 })
                 .receive(on: mainQueue)
@@ -83,9 +80,7 @@ class BrowseResultsListViewModel: ObservableObject {
                 .subscribe(on: backgroundQueue)
                 .map({ songResults -> [SongResultViewModel] in
                     songResults.map { songResult -> SongResultViewModel in
-                        let hymnIdentifier = HymnIdentifier(hymnType: songResult.hymnType, hymnNumber: songResult.hymnNumber, queryParams: songResult.queryParams)
-                        let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: hymnIdentifier)).eraseToAnyView()
-                        return SongResultViewModel(stableId: String(describing: hymnIdentifier), title: songResult.title, destinationView: destination)
+                        return Transformers.toSongResultsViewModel(entity: songResult)
                     }
                 })
                 .receive(on: mainQueue)
@@ -102,7 +97,7 @@ class BrowseResultsListViewModel: ObservableObject {
                         .filter({ entity -> Bool in
                             if (entity.hymnType == .chinese || entity.hymnType == .chineseSupplement) && entity.queryParams != nil {
                                 // Filter out the chinese songs where they have query params (essentially the gb=1) songs
-                                // so owe don't end up showing double.
+                                // so we don't end up showing double results.
                                 return false
                             }
                             return true

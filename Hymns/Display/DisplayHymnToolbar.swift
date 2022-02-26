@@ -26,10 +26,10 @@ struct DisplayHymnToolbar: View {
                     self.viewModel.toggleFavorited()
                 }, label: {
                     isFavorited ?
-                        Image(systemName: "heart.fill")
-                            .accessibility(label: Text("Mark song as a favorite", comment: "A11y label for marking a song as favorite.")).accentColor(.accentColor) :
-                        Image(systemName: "heart")
-                        .accessibility(label: Text("Unmark song as a favorite", comment: "A11y label for unmarking a song as favorite.")).accentColor(.primary)
+                    Image(systemName: "heart.fill")
+                        .accessibility(label: Text("Unmark song as a favorite", comment: "A11y label for unmarking a song as favorite.")).accentColor(.accentColor) :
+                    Image(systemName: "heart")
+                        .accessibility(label: Text("Mark song as a favorite", comment: "A11y label for marking a song as favorite.")).accentColor(.primary)
                 }).padding()
             }
         }

@@ -17,9 +17,22 @@ public class DisplayHymnViewCan: BaseViewCan {
         return BrowseViewCan(app, testCase: testCase)
     }
 
+    public func goBackToFavorites() -> FavoritesViewCan {
+        _ = pressButton("Go back")
+        return FavoritesViewCan(app, testCase: testCase)
+    }
+
     public func goBackToBrowseResults() -> BrowseResultsViewCan {
         _ = pressButton("Go back")
         return BrowseResultsViewCan(app, testCase: testCase)
+    }
+
+    public func favoriteSong() -> DisplayHymnViewCan {
+        return pressButton("Mark song as a favorite")
+    }
+
+    public func unfavoriteSong() -> DisplayHymnViewCan {
+        return pressButton("Unmark song as a favorite")
     }
 
     public func openPiano() -> DisplayHymnViewCan {

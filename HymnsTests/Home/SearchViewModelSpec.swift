@@ -154,7 +154,9 @@ class SearchViewModelSpec: QuickSpec {
                 it("should display recent songs") {
                     expect(target.songResults).to(haveCount(2))
                     expect(target.songResults[0].title).to(equal(recentSongs[0].songTitle))
+                    expect(target.songResults[0].label).to(equal("Hymn 1151"))
                     expect(target.songResults[1].title).to(equal(recentSongs[1].songTitle))
+                    expect(target.songResults[1].label).to(equal("Cebuano 123"))
                 }
             }
             context("search active") {
@@ -180,7 +182,9 @@ class SearchViewModelSpec: QuickSpec {
                     it("should display recent songs") {
                         expect(target.songResults).toEventually(haveCount(2))
                         expect(target.songResults[0].title).to(equal(recentSongs[0].songTitle))
+                        expect(target.songResults[0].label).to(equal("Hymn 1151"))
                         expect(target.songResults[1].title).to(equal(recentSongs[1].songTitle))
+                        expect(target.songResults[0].label).to(equal("Hymn 1151"))
                     }
                     it("should not call songResultsRepository.search") {
                         verify(songResultsRepository.search(searchParameter: any(), pageNumber: any())).wasNeverCalled()
@@ -204,7 +208,9 @@ class SearchViewModelSpec: QuickSpec {
                         it("song results should contain matching numbers") {
                             expect(target.songResults).to(haveCount(2))
                             expect(target.songResults[0].title).to(equal("Hymn 198"))
+                            expect(target.songResults[0].label).to(beNil())
                             expect(target.songResults[1].title).to(equal("Hymn 1198"))
+                            expect(target.songResults[1].label).to(beNil())
                         }
                         it("should not fetch the recent songs from the history store") {
                             verify(historyStore.recentSongs()).wasNeverCalled()
@@ -248,8 +254,11 @@ class SearchViewModelSpec: QuickSpec {
                         it("song results should contain matching numbers") {
                             expect(target.songResults).to(haveCount(3))
                             expect(target.songResults[0].title).to(equal("Chinese 111"))
+                            expect(target.songResults[0].label).to(beNil())
                             expect(target.songResults[1].title).to(equal("Chinese 1110"))
+                            expect(target.songResults[1].label).to(beNil())
                             expect(target.songResults[2].title).to(equal("Chinese 1111"))
+                            expect(target.songResults[2].label).to(beNil())
                         }
                         it("should not fetch the recent songs from the history store") {
                             verify(historyStore.recentSongs()).wasNeverCalled()
@@ -302,6 +311,7 @@ class SearchViewModelSpec: QuickSpec {
                                 it("song results should contain fetched hymn") {
                                     expect(target.songResults).to(haveCount(1))
                                     expect(target.songResults[0].title).to(equal("title"))
+                                    expect(target.songResults[0].label).to(equal("New tune 111"))
                                 }
                                 it("should try to fetch the song from hymnsRepository") {
                                     verify(hymnsRepository.getHymn(newTune111, makeNetworkRequest: false)).wasCalled(exactly(1))

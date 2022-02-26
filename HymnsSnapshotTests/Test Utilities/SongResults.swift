@@ -14,10 +14,12 @@ let joyUnspeakable_songResult = SongResultViewModel(stableId: "Joy Unspekable",
                                                             viewModel: DisplayHymnContainerViewModel(hymnToDisplay: joyUnspeakable_identifier)).eraseToAnyView())
 let cupOfChrist_songResult = SongResultViewModel(stableId: "Cup of Christ",
                                                  title: "Cup of Christ",
+                                                 label: "New song 115",
                                                  destinationView:
                                                     DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: cupOfChrist_identifier)).eraseToAnyView())
 let hymn480_songResult = SongResultViewModel(stableId: "Hymn 480",
-                                             title: "Hymn 480",
+                                             title: "Joined unto Christ the Conqueror",
+                                             label: "Hymn 480",
                                              destinationView:
                                                 DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: hymn480_identifier)).eraseToAnyView())
 let sinfulPast_songResult = SongResultViewModel(stableId: "What about my sinful past?",
@@ -25,6 +27,6 @@ let sinfulPast_songResult = SongResultViewModel(stableId: "What about my sinful 
                                                 destinationView:
                                                     DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: sinfulPast_identifier)).eraseToAnyView())
 let hymn1334_songResult = SongResultViewModel(stableId: "Hymn 1334",
-                                              title: "Hymn 1334",
+                                              title: "Thou hast turned my mourning into dancing for me",
                                               destinationView:
                                                 DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: hymn1334_identifier)).eraseToAnyView())
