@@ -22,7 +22,7 @@ class FavoritesViewModel: ObservableObject {
             .map({ entities -> [SongResultViewModel] in
                 entities.map { entity -> SongResultViewModel in
                     let identifier = HymnIdentifier(entity.hymnIdentifierEntity)
-                    let label = "\(identifier.hymnType.displayLabel) \(identifier.hymnNumber)"
+                    let label = String(format: identifier.hymnType.displayLabel, identifier.hymnNumber)
                     let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: identifier)).eraseToAnyView()
                     return SongResultViewModel(stableId: String(describing: identifier), title: entity.songTitle,
                                                label: label, destinationView: destination)

@@ -7,7 +7,7 @@ class Transformers: ObservableObject {
         let hymnIdentifier = HymnIdentifier(hymnType: entity.hymnType, hymnNumber: entity.hymnNumber, queryParams: entity.queryParams)
         let stableId = String(describing: hymnIdentifier)
         let title = entity.title
-        let label = "\(hymnIdentifier.hymnType.displayLabel) \(hymnIdentifier.hymnNumber)"
+        let label = String(format: hymnIdentifier.hymnType.displayLabel, hymnIdentifier.hymnNumber)
         let destination =
         DisplayHymnContainerView(
             viewModel: DisplayHymnContainerViewModel(hymnToDisplay: hymnIdentifier, storeInHistoryStore: storeInHistoryStore)).eraseToAnyView()

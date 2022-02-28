@@ -178,39 +178,40 @@ extension HymnType {
     var displayLabel: String {
         switch self {
         case .classic:
-            return NSLocalizedString("Hymn", comment: "Will appear in conjunction with something else (e.g. Hymn 7).")
+            return NSLocalizedString("Hymn %@", comment: "Will appear in conjunction with something else (e.g. Hymn 7).")
         case .newTune:
-            return NSLocalizedString("New tune", comment: "Will appear in conjunction with something else (e.g. New tune 7).")
+            return NSLocalizedString("New tune %@", comment: "Will appear in conjunction with something else (e.g. New tune 7).")
         case .newSong:
-            return NSLocalizedString("New song", comment: "Will appear in conjunction with something else (e.g. New song 7).")
+            return NSLocalizedString("New song %@", comment: "Will appear in conjunction with something else (e.g. New song 7).")
         case .children:
-            return NSLocalizedString("Children", comment: "Will appear in conjunction with something else (e.g. Children 7).")
+            return NSLocalizedString("Children %@", comment: "Will appear in conjunction with something else (e.g. Children 7).")
         case .howardHigashi:
-            return NSLocalizedString("Howard Higashi (LB)", comment: "Will appear in conjunction with something else (e.g. Howard Higashi (LB) 7).")
+            // TODO remove the LB from Android and iOS
+            return NSLocalizedString("Howard Higashi (LB) %@", comment: "Will appear in conjunction with something else (e.g. Howard Higashi (LB) 7).")
         case .dutch:
-            return NSLocalizedString("Dutch", comment: "Will appear in conjunction with something else (e.g. Dutch 7).")
+            return NSLocalizedString("Dutch %@", comment: "Will appear in conjunction with something else (e.g. Dutch 7).")
         case .german:
-            return NSLocalizedString("German", comment: "Will appear in conjunction with something else (e.g. German 7).")
+            return NSLocalizedString("German %@", comment: "Will appear in conjunction with something else (e.g. German 7).")
         case .chinese:
-            return NSLocalizedString("Chinese", comment: "Will appear in conjunction with something else (e.g. Chinese 7).")
+            return NSLocalizedString("Chinese %@", comment: "Will appear in conjunction with something else (e.g. Chinese 7).")
         case .chineseSupplement:
-            return NSLocalizedString("Chinese Supplement", comment: "Will appear in conjunction with something else (e.g. Chinese Supplement 7).")
+            return NSLocalizedString("Chinese Supplement %@", comment: "Will appear in conjunction with something else (e.g. Chinese Supplement 7).")
         case .cebuano:
-            return NSLocalizedString("Cebuano", comment: "Will appear in conjunction with something else (e.g. Cebuano 7).")
+            return NSLocalizedString("Cebuano %@", comment: "Will appear in conjunction with something else (e.g. Cebuano 7).")
         case .tagalog:
-            return NSLocalizedString("Tagalog", comment: "Will appear in conjunction with something else (e.g. Tagalog 7).")
+            return NSLocalizedString("Tagalog %@", comment: "Will appear in conjunction with something else (e.g. Tagalog 7).")
         case .french:
-            return NSLocalizedString("French", comment: "Will appear in conjunction with something else (e.g. French 7).")
+            return NSLocalizedString("French %@", comment: "Will appear in conjunction with something else (e.g. French 7).")
         case .spanish:
-            return NSLocalizedString("Spanish", comment: "Will appear in conjunction with something else (e.g. Spanish 7).")
+            return NSLocalizedString("Spanish %@", comment: "Will appear in conjunction with something else (e.g. Spanish 7).")
         case .korean:
-            return NSLocalizedString("Korean", comment: "Will appear in conjunction with something else (e.g. Korean 7).")
+            return NSLocalizedString("Korean %@", comment: "Will appear in conjunction with something else (e.g. Korean 7).")
         case .japanese:
-            return NSLocalizedString("Japanese", comment: "Will appear in conjunction with something else (e.g. Japanese 7).")
+            return NSLocalizedString("Japanese %@", comment: "Will appear in conjunction with something else (e.g. Japanese 7).")
         case .indonesian:
-            return NSLocalizedString("Indonesian", comment: "Will appear in conjunction with something else (e.g. Indonesian 7).")
+            return NSLocalizedString("Indonesian %@", comment: "Will appear in conjunction with something else (e.g. Indonesian 7).")
         case .farsi:
-            return NSLocalizedString("Farsi", comment: "Will appear in conjunction with something else (e.g. Farsi 7).")
+            return NSLocalizedString("Farsi %@", comment: "Will appear in conjunction with something else (e.g. Farsi 7).")
         }
     }
 }

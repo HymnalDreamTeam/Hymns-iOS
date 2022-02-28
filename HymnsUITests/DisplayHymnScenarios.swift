@@ -94,11 +94,11 @@ class DisplayHymnScenarios: BaseTestCase {
             .favoriteSong()
             .goBackToHome()
             .goToFavorites()
-            .waitForStaticTexts("Hymn 1151", "Minoru's song")
+            .waitForButtons("Hymn 1151, Minoru's song")
             .tapFavorite("Hymn 1151, Minoru's song")
             .waitForStaticTexts("verse 1 line 1")
             .unfavoriteSong()
             .goBackToFavorites()
-            .verifyStaticTextsNotExists("Hymn 1151", "Minoru's song")
+            .verifyButtonsNotExist("Hymn 1151, Minoru's song")
     }
 }
