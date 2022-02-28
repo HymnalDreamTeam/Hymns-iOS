@@ -72,7 +72,7 @@ class DisplayHymnViewModel: ObservableObject {
                     case .newTune, .newSong, .children, .howardHigashi:
                         self.title = hymn.title
                     default:
-                        self.title = "\(self.identifier.hymnType.displayLabel) \(self.identifier.hymnNumber)"
+                        self.title = String(format: self.identifier.hymnType.displayLabel, self.identifier.hymnNumber)
                     }
                     self.resultsTitle = hymn.title
 

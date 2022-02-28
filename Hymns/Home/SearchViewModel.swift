@@ -120,7 +120,7 @@ class SearchViewModel: ObservableObject {
                 recentSongs.map { recentSong -> SongResultViewModel in
                     let identifier = HymnIdentifier(recentSong.hymnIdentifierEntity)
                     let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: identifier, storeInHistoryStore: true)).eraseToAnyView()
-                    let label = "\(identifier.hymnType.displayLabel) \(identifier.hymnNumber)"
+                    let label = String(format: identifier.hymnType.displayLabel, identifier.hymnNumber)
                     return SongResultViewModel(stableId: String(describing: identifier), title: recentSong.songTitle,
                                                label: label, destinationView: destination)
                 }
@@ -153,7 +153,7 @@ class SearchViewModel: ObservableObject {
                 }
                 let matchingNumbers = range.map({String($0)}).filter {$0.contains(hymnNumber)}
                 return matchingNumbers.map({ number -> SongResultViewModel in
-                    let title = "\(hymnType.displayLabel) \(number)"
+                    let title = String(format: hymnType.displayLabel, number)
                     let identifier = HymnIdentifier(hymnType: hymnType, hymnNumber: number)
                     let destination = DisplayHymnContainerView(viewModel:
                                                                 DisplayHymnContainerViewModel(hymnToDisplay: identifier,
@@ -201,7 +201,7 @@ class SearchViewModel: ObservableObject {
                 self.songResults = [
                     SongResultViewModel(stableId: String(describing: hymnIdentifier),
                                         title: uiHymn.title,
-                                        label: "\(hymnIdentifier.hymnType.displayLabel) \(hymnIdentifier.hymnNumber)",
+                                        label: String(format: hymnIdentifier.hymnType.displayLabel, hymnIdentifier.hymnNumber),
                                         destinationView: DisplayHymnContainerView(viewModel:
                                                                                     DisplayHymnContainerViewModel(hymnToDisplay: hymnIdentifier,
                                                                                                                   storeInHistoryStore: true)).eraseToAnyView())
@@ -261,7 +261,7 @@ class SearchViewModel: ObservableObject {
                 let songResults = songResultsPage.results.map { songResult -> SongResultViewModel in
                     let identifier = songResult.identifier
                     let title = songResult.name
-                    let label = "\(identifier.hymnType.displayLabel) \(identifier.hymnNumber)"
+                    let label =  String(format: identifier.hymnType.displayLabel, identifier.hymnNumber)
                     let destination = DisplayHymnContainerView(viewModel:
                                                                 DisplayHymnContainerViewModel(hymnToDisplay: identifier,
                                                                                               storeInHistoryStore: true)).eraseToAnyView()
