@@ -192,7 +192,6 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                     publisher.cancel()
                 }
                 it("should return three results") {
-                    print("expect(\(searchResults)).to(haveCount(3))")
                     expect(searchResults).to(haveCount(3))
                 }
                 describe("first result") {

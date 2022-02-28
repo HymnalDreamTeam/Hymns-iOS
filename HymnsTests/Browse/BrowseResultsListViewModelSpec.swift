@@ -13,10 +13,12 @@ class BrowseResultsListViewModelSpec: QuickSpec {
         describe("BrowseResultsListViewModel") {
             let testQueue = DispatchQueue(label: "test_queue")
             var dataStore: HymnDataStoreMock!
+            var songbaseStore: SongbaseStoreMock!
             var tagStore: TagStoreMock!
             var target: BrowseResultsListViewModel!
             beforeEach {
                 dataStore = mock(HymnDataStore.self)
+                songbaseStore = mock(SongbaseStore.self)
                 tagStore = mock(TagStore.self)
             }
             describe("getting results by category") {
@@ -29,7 +31,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                         }
                         target = BrowseResultsListViewModel(category: "category", subcategory: nil, hymnType: nil,
                                                             backgroundQueue: testQueue, dataStore: dataStore,
-                                                            mainQueue: testQueue, tagStore: tagStore)
+                                                            mainQueue: testQueue, songbaseStore: songbaseStore, tagStore: tagStore)
                         target.fetchResults()
                         testQueue.sync {}
                         testQueue.sync {}
@@ -53,7 +55,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                 }).eraseToAnyPublisher()
                         target = BrowseResultsListViewModel(category: "category", subcategory: "subcategory", hymnType: nil,
                                                             backgroundQueue: testQueue, dataStore: dataStore,
-                                                            mainQueue: testQueue, tagStore: tagStore)
+                                                            mainQueue: testQueue, songbaseStore: songbaseStore, tagStore: tagStore)
                         target.fetchResults()
                         testQueue.sync {}
                         testQueue.sync {}
@@ -82,7 +84,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                 }).eraseToAnyPublisher()
                         target = BrowseResultsListViewModel(category: "category", subcategory: "subcategory", hymnType: .newTune,
                                                             backgroundQueue: testQueue, dataStore: dataStore,
-                                                            mainQueue: testQueue, tagStore: tagStore)
+                                                            mainQueue: testQueue, songbaseStore: songbaseStore, tagStore: tagStore)
                         target.fetchResults()
                         testQueue.sync {}
                         testQueue.sync {}
@@ -107,7 +109,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                         }
                         target = BrowseResultsListViewModel(tag: UiTag(title: "FanIntoFlames", color: .none),
                                                             backgroundQueue: testQueue, mainQueue: testQueue,
-                                                            tagStore: tagStore)
+                                                            songbaseStore: songbaseStore, tagStore: tagStore)
                         target.fetchResults()
                         testQueue.sync {}
                         testQueue.sync {}
@@ -132,7 +134,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                         }
                         target = BrowseResultsListViewModel(tag: UiTag(title: "FanIntoFlames", color: .none),
                                                             backgroundQueue: testQueue, dataStore: dataStore,
-                                                            mainQueue: testQueue, tagStore: tagStore)
+                                                            mainQueue: testQueue, songbaseStore: songbaseStore, tagStore: tagStore)
                         target.fetchResults()
                         testQueue.sync {}
                         testQueue.sync {}
@@ -162,7 +164,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                         }
                         target = BrowseResultsListViewModel(tag: UiTag(title: "FanIntoFlames", color: .none),
                                                             backgroundQueue: testQueue, dataStore: dataStore,
-                                                            mainQueue: testQueue, tagStore: tagStore)
+                                                            mainQueue: testQueue, songbaseStore: songbaseStore, tagStore: tagStore)
                         target.fetchResults()
                         testQueue.sync {}
                         testQueue.sync {}
@@ -187,7 +189,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                         }
                         target = BrowseResultsListViewModel(hymnType: .classic, backgroundQueue: testQueue,
                                                             dataStore: dataStore, mainQueue: testQueue,
-                                                            tagStore: tagStore)
+                                                            songbaseStore: songbaseStore, tagStore: tagStore)
                         target.fetchResults()
                         testQueue.sync {}
                         testQueue.sync {}
@@ -217,7 +219,8 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                     }).eraseToAnyPublisher()
                             }
                             target = BrowseResultsListViewModel(hymnType: .chinese, backgroundQueue: testQueue,
-                                                                dataStore: dataStore, mainQueue: testQueue, tagStore: tagStore)
+                                                                dataStore: dataStore, mainQueue: testQueue,
+                                                                songbaseStore: songbaseStore, tagStore: tagStore)
                             target.fetchResults()
                             testQueue.sync {}
                             testQueue.sync {}
@@ -251,7 +254,8 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                     }).eraseToAnyPublisher()
                             }
                             target = BrowseResultsListViewModel(hymnType: .cebuano, backgroundQueue: testQueue,
-                                                                dataStore: dataStore, mainQueue: testQueue, tagStore: tagStore)
+                                                                dataStore: dataStore, mainQueue: testQueue,
+                                                                songbaseStore: songbaseStore, tagStore: tagStore)
                             target.fetchResults()
                             testQueue.sync {}
                             testQueue.sync {}
@@ -282,7 +286,8 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                     }).eraseToAnyPublisher()
                             }
                             target = BrowseResultsListViewModel(hymnType: .german, backgroundQueue: testQueue,
-                                                                dataStore: dataStore, mainQueue: testQueue, tagStore: tagStore)
+                                                                dataStore: dataStore, mainQueue: testQueue,
+                                                                songbaseStore: songbaseStore, tagStore: tagStore)
                             target.fetchResults()
                             testQueue.sync {}
                             testQueue.sync {}
@@ -298,6 +303,34 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                             expect(target.songResults![3].title).to(equal("classic123"))
                         }
                     }
+                    context("fetch songbase") {
+                        beforeEach {
+                            given(songbaseStore.getAllSongs()) ~> {
+                                Just([SongbaseResultEntity(bookId: 1, bookIndex: 1, title: "First Songbase song"),
+                                      SongbaseResultEntity(bookId: 1, bookIndex: 2, title: "Second Songbase song")])
+                                    .mapError({ _ -> ErrorType in
+                                        // This will never be triggered.
+                                    }).eraseToAnyPublisher()
+                            }
+                            target = BrowseResultsListViewModel(hymnType: .songbase, backgroundQueue: testQueue,
+                                                                dataStore: dataStore, mainQueue: testQueue,
+                                                                songbaseStore: songbaseStore, tagStore: tagStore)
+                            target.fetchResults()
+                            testQueue.sync {}
+                            testQueue.sync {}
+                            testQueue.sync {}
+                            testQueue.sync {}
+                        }
+                        it("should set the title to the hymn type") {
+                            expect(target.title).to(equal(HymnType.songbase.displayTitle))
+                        }
+                        it("should set the correct results") {
+                            expect(target.songResults).toNot(beNil())
+                            expect(target.songResults!).to(haveCount(2))
+                            expect(target.songResults![0].title).to(equal("1. First Songbase song"))
+                            expect(target.songResults![1].title).to(equal("2. Second Songbase song"))
+                        }
+                    }
                 }
                 context("data store error") {
                     beforeEach {
@@ -310,7 +343,8 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                     ErrorType.data(description: "forced data error")
                                 }).eraseToAnyPublisher()
                         target = BrowseResultsListViewModel(hymnType: .newTune, backgroundQueue: testQueue,
-                                                            dataStore: dataStore, mainQueue: testQueue, tagStore: tagStore)
+                                                            dataStore: dataStore, mainQueue: testQueue,
+                                                            songbaseStore: songbaseStore, tagStore: tagStore)
                         target.fetchResults()
                         testQueue.sync {}
                         testQueue.sync {}

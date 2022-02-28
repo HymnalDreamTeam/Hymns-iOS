@@ -11,6 +11,7 @@ class BrowseResultsListViewModel: ObservableObject {
     private let dataStore: HymnDataStore
     private let mainQueue: DispatchQueue
     private let resultsType: ResultsType
+    private let songbaseStore: SongbaseStore
     private let tagStore: TagStore
 
     private var disposables = Set<AnyCancellable>()
@@ -18,6 +19,7 @@ class BrowseResultsListViewModel: ObservableObject {
     init(tag: UiTag, backgroundQueue: DispatchQueue = Resolver.resolve(name: "background"),
          dataStore: HymnDataStore = Resolver.resolve(),
          mainQueue: DispatchQueue = Resolver.resolve(name: "main"),
+         songbaseStore: SongbaseStore = Resolver.resolve(),
          tagStore: TagStore = Resolver.resolve()) {
         self.title = String(format: NSLocalizedString("Songs tagged with \"%@\"", comment: "Title of a list of songs tagged with a particular tag."),
                             tag.title)
@@ -25,6 +27,7 @@ class BrowseResultsListViewModel: ObservableObject {
         self.backgroundQueue = backgroundQueue
         self.dataStore = dataStore
         self.mainQueue = mainQueue
+        self.songbaseStore = songbaseStore
         self.tagStore = tagStore
     }
 
@@ -33,6 +36,7 @@ class BrowseResultsListViewModel: ObservableObject {
          backgroundQueue: DispatchQueue = Resolver.resolve(name: "background"),
          dataStore: HymnDataStore = Resolver.resolve(),
          mainQueue: DispatchQueue = Resolver.resolve(name: "main"),
+         songbaseStore: SongbaseStore = Resolver.resolve(),
          tagStore: TagStore = Resolver.resolve()) {
 
         if let subcategory = subcategory {
@@ -44,18 +48,21 @@ class BrowseResultsListViewModel: ObservableObject {
         self.backgroundQueue = backgroundQueue
         self.dataStore = dataStore
         self.mainQueue = mainQueue
+        self.songbaseStore = songbaseStore
         self.tagStore = tagStore
     }
 
     init(hymnType: HymnType, backgroundQueue: DispatchQueue = Resolver.resolve(name: "background"),
          dataStore: HymnDataStore = Resolver.resolve(),
          mainQueue: DispatchQueue = Resolver.resolve(name: "main"),
+         songbaseStore: SongbaseStore = Resolver.resolve(),
          tagStore: TagStore = Resolver.resolve()) {
         self.title = hymnType.displayTitle
         self.resultsType = .allSongs(hymnType: hymnType)
         self.backgroundQueue = backgroundQueue
         self.dataStore = dataStore
         self.mainQueue = mainQueue
+        self.songbaseStore = songbaseStore
         self.tagStore = tagStore
     }
 
@@ -90,7 +97,15 @@ class BrowseResultsListViewModel: ObservableObject {
                     self.songResults = viewModels
                 }).store(in: &disposables)
         case .allSongs(let hymnType):
-            dataStore.getAllSongs(hymnType: hymnType)
+            // If hymnType is songbase, then use the songbase store instead of the data store.
+            let publisher = hymnType == .songbase ? songbaseStore.getAllSongs().map { songbaseResults -> [SongResultEntity] in
+                songbaseResults.map { songbaseResult -> SongResultEntity in
+                    SongResultEntity(hymnType: .songbase, hymnNumber: String(songbaseResult.bookIndex),
+                                     queryParams: nil, title: songbaseResult.title)
+                }
+            }.eraseToAnyPublisher() : dataStore.getAllSongs(hymnType: hymnType)
+
+            return publisher
                 .subscribe(on: backgroundQueue)
                 .map({ songResults -> [SongResultViewModel] in
                     songResults
