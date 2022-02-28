@@ -11,13 +11,13 @@ import Resolver
 protocol HymnDataStore {
 
     /**
-     * Whether or not the database has been initialized properly. If this value is false, then the database is **NOT** save to use and clients should avoid using it.
+     * Whether or not the database has been initialized properly. If this value is false, then the database is **NOT** safe to use and clients should avoid using it.
      */
     var databaseInitializedProperly: Bool { get }
 
     func saveHymn(_ entity: HymnEntity)
     func getHymn(_ hymnIdentifier: HymnIdentifier) -> AnyPublisher<HymnEntity?, ErrorType>
-    func searchHymn(_ searchParamter: String) -> AnyPublisher<[SearchResultEntity], ErrorType>
+    func searchHymn(_ searchParameter: String) -> AnyPublisher<[SearchResultEntity], ErrorType>
     func getAllCategories() -> AnyPublisher<[CategoryEntity], ErrorType>
     func getCategories(by hymnType: HymnType) -> AnyPublisher<[CategoryEntity], ErrorType>
     func getResultsBy(category: String, hymnType: HymnType?, subcategory: String?) -> AnyPublisher<[SongResultEntity], ErrorType>
@@ -109,6 +109,13 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
                                         columns: [HymnEntity.CodingKeys.id.rawValue],
                                         unique: false,
                                         ifNotExists: true)
+
+                    // CREATE VIRTUAL TABLE IF NOT EXISTS SEARCH_VIRTUAL_SONG_DATA USING FTS4(
+                    //   SONG_TITLE TEXT NOT NULL,
+                    //   SONG_LYRICS TEXT NOT NULL,
+                    //   tokenize=porter,
+                    //   content=SONG_DATA
+                    // )
                     try database.create(virtualTable: "SEARCH_VIRTUAL_SONG_DATA", ifNotExists: true, using: FTS4()) { table in
                         table.synchronize(withTable: self.tableName)
                         table.tokenizer = .porter
@@ -272,7 +279,7 @@ extension Resolver {
                 try? fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
                     .appendingPathComponent("hymnaldb-v16.sqlite")
                     .path else {
-                        Crashlytics.crashlytics().log("The desired path in Application Support is nil, so we are unable to create a databse file. Fall back to useing an in-memory db and initialize it with empty tables")
+                        Crashlytics.crashlytics().log("The desired path in Application Support is nil, so we are unable to create a database file. Fall back to useing an in-memory db and initialize it with empty tables")
                         Crashlytics.crashlytics().setCustomValue("in-memory db", forKey: "database_state")
                         Crashlytics.crashlytics().record(error: NSError(domain: "Database Initialization Error", code: NonFatalEvent.ErrorCode.databaseInitialization.rawValue))
                         return HymnDataStoreGrdbImpl(databaseQueue: DatabaseQueue(), initializeTables: true) as HymnDataStore
@@ -293,7 +300,7 @@ extension Resolver {
                     }
                     try fileManager.copyItem(atPath: bundledDbPath, toPath: dbPath)
                     needToCreateTables = false
-                    Crashlytics.crashlytics().log("Database successfully copied from bundled SqLite file")
+                    Crashlytics.crashlytics().log("Database successfully copied from bundled SQLite file")
                     Crashlytics.crashlytics().setCustomValue("bundled db", forKey: "database_state")
                 }
             } catch {

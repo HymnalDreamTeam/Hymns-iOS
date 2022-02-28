@@ -32,7 +32,7 @@ function_body_length: #
  - 300 # error if function has < 300 lines
 
 file_length:
-  warning: 500
+  warning: 550
   error: 800
 
 # Change from an error to a warning by using the warning flag.
