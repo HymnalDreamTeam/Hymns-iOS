@@ -184,6 +184,7 @@
 		3BBCC21724E0D3FD00977961 /* SoundCloudView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBCC21624E0D3FD00977961 /* SoundCloudView.swift */; };
 		3BBCC21B24E1048400977961 /* ToolTip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBCC21A24E1048300977961 /* ToolTip.swift */; };
 		3BBCC21D24E1C51A00977961 /* SoundCloudViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBCC21C24E1C51900977961 /* SoundCloudViewModel.swift */; };
+		3BBFFF5527D32ED900AE60C5 /* WrappedHStackSnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBFFF5427D32ED900AE60C5 /* WrappedHStackSnapshots.swift */; };
 		3BC1328D243826280082A274 /* PreviewHymns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC1328C243826270082A274 /* PreviewHymns.swift */; };
 		3BC1329724385A580082A274 /* HomeContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC1329624385A580082A274 /* HomeContainerView.swift */; };
 		3BC1329924385C420082A274 /* HomeTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC1329824385C420082A274 /* HomeTab.swift */; };
@@ -491,6 +492,7 @@
 		3BBCC21624E0D3FD00977961 /* SoundCloudView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundCloudView.swift; sourceTree = "<group>"; };
 		3BBCC21A24E1048300977961 /* ToolTip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolTip.swift; sourceTree = "<group>"; };
 		3BBCC21C24E1C51900977961 /* SoundCloudViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundCloudViewModel.swift; sourceTree = "<group>"; };
+		3BBFFF5427D32ED900AE60C5 /* WrappedHStackSnapshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrappedHStackSnapshots.swift; sourceTree = "<group>"; };
 		3BC1328C243826270082A274 /* PreviewHymns.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewHymns.swift; sourceTree = "<group>"; };
 		3BC13291243850B90082A274 /* classic1151.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = classic1151.json; sourceTree = "<group>"; };
 		3BC13293243852C00082A274 /* classic1334.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = classic1334.json; sourceTree = "<group>"; };
@@ -901,10 +903,10 @@
 				3B5935B92435B75100E6993C /* Dependency Injection */,
 				3B59359D24355EA500E6993C /* Data */,
 				3B3A2A0F244D7C65001BF689 /* Application+Extensions.swift */,
-				3B877E81245FF4B4004C10DD /* Data+Extensions.swift */,
 				3B6DA64A24A9637C00A9277F /* ContentSizeCategory+Extensions.swift */,
-				3B25C0E22450398F00C435E1 /* String+Extensions.swift */,
+				3B877E81245FF4B4004C10DD /* Data+Extensions.swift */,
 				3B20368F248C131B00D90DF5 /* NonFatal.swift */,
+				3B25C0E22450398F00C435E1 /* String+Extensions.swift */,
 				3B67A50A244653F1004B9F4A /* View+Extensions.swift */,
 			);
 			path = Infrastructure;
@@ -1214,6 +1216,7 @@
 				3B3DF63824A1CBAF00E60ED9 /* TagSheetSnapshots.swift */,
 				3BCC54CA24C80B2100F0D6FC /* ToastSnapshots.swift */,
 				3BB9319E24E1E65D00E0C873 /* ToolTipSnapshots.swift */,
+				3BBFFF5427D32ED900AE60C5 /* WrappedHStackSnapshots.swift */,
 				3BE7C91D249CAB2700B04A1F /* Info.plist */,
 			);
 			path = HymnsSnapshotTests;
@@ -2031,6 +2034,7 @@
 				3BDD870C249DEB42006288C8 /* DisplayHymnSnapshots.swift in Sources */,
 				3BE31A3D24A4674900B1A038 /* BrowseResultsListSnapshots.swift in Sources */,
 				3BBCC21324DFDF6400977961 /* SoundCloudSnapshots.swift in Sources */,
+				3BBFFF5527D32ED900AE60C5 /* WrappedHStackSnapshots.swift in Sources */,
 				3B45F01624A14EBE00479FE6 /* BrowseTagsSnapshots.swift in Sources */,
 				3BB1928324A3EDB600E5F9FA /* SongInfoDialogSnapshots.swift in Sources */,
 				3BCC54CB24C80B2100F0D6FC /* ToastSnapshots.swift in Sources */,
