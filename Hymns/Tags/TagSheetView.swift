@@ -4,7 +4,6 @@ import Resolver
 struct TagSheetView: View {
 
     @ObservedObject private var viewModel: TagSheetViewModel
-    @Environment(\.presentationMode) var presentationMode
     @State private var tagName = ""
     @State private var tagColor = TagColor.none
     var sheet: Binding<DisplayHymnSheet?>
@@ -15,52 +14,48 @@ struct TagSheetView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading) {
-            HStack {
-                Spacer()
-                Button(action: {
-                    self.sheet.wrappedValue = nil
-                }, label: {
-                    Image(systemName: "xmark").foregroundColor(.primary).padding([.horizontal, .bottom])
-                })
-            }
-            Image("empty tag illustration").maxWidth()
-            TextField(NSLocalizedString("Name your tag", comment: "Hint text for the tag name."), text: self.$tagName)
-            Divider()
-            ColorSelectorView(tagColor: self.$tagColor).padding(.vertical)
-            if !self.viewModel.tags.isEmpty {
-                Text("Tags").font(.body).fontWeight(.bold)
-            }
-            GeometryReader { geometry in
-                ScrollView(showsIndicators: false) {
-                    VStack(alignment: .leading) {
-                        WrappedHStack(items: self.$viewModel.tags, geometry: geometry) { tag in
-                            Button(action: {
-                                self.viewModel.deleteTag(tagTitle: tag.title, tagColor: tag.color)
-                            }, label: {
-                                HStack {
-                                    Text(tag.title).font(.body).fontWeight(.bold)
-                                    Image(systemName: "xmark.circle")
-                                }.accessibilityLabel(Text("Delete tag: \(tag.title)", comment: "A11y label for button to delete a tag."))
-                                .tagPill(backgroundColor: tag.color.background, foregroundColor: tag.color.foreground)
-                            }).padding(2)
-                        }
-                        HStack {
-                            Spacer()
-                            Button(action: {
-                                self.sheet.wrappedValue = nil
-                            }, label: {
-                                Text("Close", comment: "Close the tag sheet.").foregroundColor(.primary).fontWeight(.light)
-                            })
-                            Button(NSLocalizedString("Add", comment: "Button to save the inputted tag.")) {
-                                self.viewModel.addTag(tagTitle: self.tagName, tagColor: self.tagColor)
-                            }.padding(.horizontal).disabled(self.tagName.isEmpty)
-                        }.padding(.top)
-                        Spacer()
-                    }
+        ScrollView(showsIndicators: false) {
+            VStack(alignment: .leading) {
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        self.sheet.wrappedValue = nil
+                    }, label: {
+                        Image(systemName: "xmark").foregroundColor(.primary).padding([.horizontal, .bottom])
+                    })
                 }
+                Image("empty tag illustration").maxWidth()
+                TextField(NSLocalizedString("Name your tag", comment: "Hint text for the tag name."), text: self.$tagName)
+                Divider()
+                ColorSelectorView(tagColor: self.$tagColor).padding(.vertical)
+                if !self.viewModel.tags.isEmpty {
+                    Text("Tags").font(.body).fontWeight(.bold)
+                }
+                WrappedHStack(items: self.$viewModel.tags) { tag in
+                    Button(action: {
+                        self.viewModel.deleteTag(tagTitle: tag.title, tagColor: tag.color)
+                    }, label: {
+                        HStack {
+                            Text(tag.title).font(.body).fontWeight(.bold).multilineTextAlignment(.leading)
+                            Image(systemName: "xmark.circle")
+                        }.accessibilityLabel(Text("Delete tag: \(tag.title)", comment: "A11y label for button to delete a tag."))
+                            .tagPill(backgroundColor: tag.color.background, foregroundColor: tag.color.foreground)
+                    })
+                }
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        self.sheet.wrappedValue = nil
+                    }, label: {
+                        Text("Close", comment: "Close the tag sheet.").foregroundColor(.primary).fontWeight(.light)
+                    })
+                    Button(NSLocalizedString("Add", comment: "Button to save the inputted tag.")) {
+                        self.viewModel.addTag(tagTitle: self.tagName, tagColor: self.tagColor)
+                        self.tagName = ""
+                    }.padding(.horizontal).disabled(self.tagName.isEmpty)
+                }.padding(.top)
+                Spacer()
             }
-            Spacer()
         }.onAppear {
             self.viewModel.fetchHymn()
             self.viewModel.fetchTags()
@@ -90,7 +85,7 @@ struct TagSheetView_Previews: PreviewProvider {
             noTags.previewDisplayName("no tags")
             oneTag.previewDisplayName("one tag")
             manyTags.previewDisplayName("many tags")
-        }.previewLayout(.sizeThatFits)
+        }
     }
 }
 #endif

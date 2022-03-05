@@ -66,3 +66,11 @@ extension SwiftUI.View {
         self.frame(width: width, height: height)
     }
 }
+
+extension SwiftUI.View {
+    func toViewController() -> UIViewController {
+        let viewController = UIHostingController(rootView: self)
+        viewController.view.frame = UIScreen.main.bounds
+        return viewController
+    }
+}
