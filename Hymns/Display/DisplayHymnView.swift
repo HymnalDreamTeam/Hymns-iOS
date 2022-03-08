@@ -22,7 +22,8 @@ struct DisplayHymnView: View {
                         GeometryReader { geometry in
                             IndicatorTabView(geometry: geometry,
                                              currentTab: self.$viewModel.currentTab,
-                                             tabItems: self.viewModel.tabItems)
+                                             tabItems: self.viewModel.tabItems,
+                                             tabSpacing: .custom(spacing: 20))
                         }
                     } else {
                         viewModel.currentTab.content
@@ -59,10 +60,7 @@ struct DisplayHymnView_Previews: PreviewProvider {
                                            VerseViewModel(verseNumber: "3", verseLines: classic40_preview.lyrics[3].verseContent),
                                            VerseViewModel(verseNumber: "4", verseLines: classic40_preview.lyrics[4].verseContent)]
         classic40ViewModel.currentTab = .lyrics(HymnLyricsView(viewModel: classic40LyricsViewModel).eraseToAnyView())
-        classic40ViewModel.tabItems = [classic40ViewModel.currentTab,
-                                       .chords(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/40/f=gtpdf")!)).eraseToAnyView()),
-                                       .guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/40/f=pdf")!)).eraseToAnyView()),
-                                       .piano(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/40/f=ppdf")!)).eraseToAnyView())]
+        classic40ViewModel.tabItems = [classic40ViewModel.currentTab, .music(Text("%_PREVIEW_% Music here").eraseToAnyView())]
         classic40ViewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn40)
         let classic40 = DisplayHymnView(viewModel: classic40ViewModel)
 
@@ -77,50 +75,29 @@ struct DisplayHymnView_Previews: PreviewProvider {
                                              VerseViewModel(verseNumber: "3", verseLines: classic1151_preview.lyrics[3].verseContent),
                                              VerseViewModel(verseNumber: "4", verseLines: classic1151_preview.lyrics[4].verseContent)]
         classic1151ViewModel.currentTab = .lyrics(HymnLyricsView(viewModel: classic1151LyricsViewModel).maxSize().eraseToAnyView())
-        classic1151ViewModel.tabItems = [
-            classic1151ViewModel.currentTab,
-            .chords(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=gtpdf")!)).eraseToAnyView()),
-            .guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=pdf")!)).eraseToAnyView()),
-            .piano(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=ppdf")!)).eraseToAnyView())]
+        classic1151ViewModel.tabItems = [classic1151ViewModel.currentTab, .music(Text("%_PREVIEW_% Music here").eraseToAnyView())]
         classic1151ViewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)
         let classic1151 = DisplayHymnView(viewModel: classic1151ViewModel)
 
-        let classic1151ChordsViewModel = DisplayHymnViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)
-        classic1151ChordsViewModel.isLoaded = true
-        classic1151ChordsViewModel.title = "Hymn 1151"
-        classic1151ChordsViewModel.isFavorited = false
-        classic1151ChordsViewModel.currentTab = .chords(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=gtpdf")!)).eraseToAnyView())
-        classic1151ChordsViewModel.tabItems = [
+        let classic1151MusicViewModel = DisplayHymnViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)
+        classic1151MusicViewModel.isLoaded = true
+        classic1151MusicViewModel.title = "Hymn 1151"
+        classic1151MusicViewModel.isFavorited = false
+        classic1151MusicViewModel.currentTab = .music(Text("%_PREVIEW_% Music here").eraseToAnyView())
+        classic1151MusicViewModel.tabItems = [
             .lyrics(HymnLyricsView(viewModel: HymnLyricsViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)).maxSize().eraseToAnyView()),
-            classic1151ChordsViewModel.currentTab,
-            .guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=pdf")!)).eraseToAnyView()),
-            .piano(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=ppdf")!)).eraseToAnyView())]
-        classic1151ChordsViewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)
-        let classic1151Chords = DisplayHymnView(viewModel: classic1151ChordsViewModel)
-
-        let classic1151PianoViewModel = DisplayHymnViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)
-        classic1151ChordsViewModel.isLoaded = true
-        classic1151PianoViewModel.title = "Hymn 1151"
-        classic1151PianoViewModel.isFavorited = false
-        classic1151PianoViewModel.currentTab = .piano(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=ppdf")!)).eraseToAnyView())
-        classic1151PianoViewModel.tabItems = [
-            .lyrics(HymnLyricsView(viewModel: HymnLyricsViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)).maxSize().eraseToAnyView()),
-            .chords(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=gtpdf")!)).eraseToAnyView()),
-            .guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=pdf")!)).eraseToAnyView()),
-            classic1151PianoViewModel.currentTab]
-        classic1151PianoViewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)
-        let classic1151Piano = DisplayHymnView(viewModel: classic1151PianoViewModel)
+            classic1151MusicViewModel.currentTab]
+        classic1151MusicViewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)
+        let classic1151Music = DisplayHymnView(viewModel: classic1151MusicViewModel)
 
         let classic1334ViewModel = DisplayHymnViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1334)
         classic1334ViewModel.isLoaded = true
         classic1334ViewModel.title = "Hymn 1334"
         classic1334ViewModel.isFavorited = nil
         let classic1334LyricsViewModel = HymnLyricsViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1334)
-        classic1334LyricsViewModel.lyrics
-            = [VerseViewModel(verseNumber: "1", verseLines: classic1334_preview.lyrics[0].verseContent)
-        ]
+        classic1334LyricsViewModel.lyrics = [VerseViewModel(verseNumber: "1", verseLines: classic1334_preview.lyrics[0].verseContent)]
         classic1334ViewModel.currentTab = .lyrics(HymnLyricsView(viewModel: classic1334LyricsViewModel).maxSize().eraseToAnyView())
-        classic1334ViewModel.tabItems = [HymnLyricsTab]()
+        classic1334ViewModel.tabItems = [HymnTab]()
         let classic1334BottomBarViewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)
         let classic1334SongInfoDialogViewModel = SongInfoDialogViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)
         classic1334SongInfoDialogViewModel.songInfo = [SongInfoViewModel(label: "label", values: ["value1", "value2"])]
@@ -138,10 +115,9 @@ struct DisplayHymnView_Previews: PreviewProvider {
             loading.previewDisplayName("loading")
             classic40.previewDisplayName("classic 40")
             classic1151.previewDisplayName("classic 1151")
-            classic1151Chords.previewDisplayName("classic 1151 chords")
-            classic1151Piano.previewDisplayName("classic 1151 piano")
+            classic1151Music.previewDisplayName("classic 1151 music")
             classic1334.previewDisplayName("classic 1134")
         }
     }
-}
-#endif
+ }
+ #endif

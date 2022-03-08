@@ -10,8 +10,8 @@ class DisplayHymnViewModel: ObservableObject {
 
     @Published var isLoaded = false
     @Published var title: String = ""
-    @Published var currentTab: HymnLyricsTab
-    @Published var tabItems: [HymnLyricsTab] = [HymnLyricsTab]()
+    @Published var currentTab: HymnTab
+    @Published var tabItems: [HymnTab] = [HymnTab]()
     @Published var isFavorited: Bool?
     @Published var bottomBar: DisplayHymnBottomBarViewModel?
 
@@ -76,41 +76,12 @@ class DisplayHymnViewModel: ObservableObject {
                     }
                     self.resultsTitle = hymn.title
 
-                    self.tabItems = [.lyrics(HymnLyricsView(viewModel: HymnLyricsViewModel(hymnToDisplay: self.identifier)).maxSize().eraseToAnyView())]
+                    let lyricsTab: HymnTab = .lyrics(HymnLyricsView(viewModel: HymnLyricsViewModel(hymnToDisplay: self.identifier)).maxSize().eraseToAnyView())
+                    self.currentTab = lyricsTab
+                    self.tabItems = [lyricsTab]
 
-                    if self.systemUtil.isNetworkAvailable() {
-                        let chordsPath = hymn.pdfSheet?.data.first(where: { datum -> Bool in
-                            datum.value == DatumValue.text.rawValue
-                        })?.path
-                        let chordsUrl = chordsPath.flatMap({ path -> URL? in
-                            HymnalNet.url(path: path)
-                        })
-                        if let chordsUrl = chordsUrl {
-                            self.pdfLoader.load(url: chordsUrl)
-                            self.tabItems.append(.chords(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: chordsUrl)).eraseToAnyView()))
-                        }
-
-                        let guitarPath = hymn.pdfSheet?.data.first(where: { datum -> Bool in
-                            datum.value == DatumValue.guitar.rawValue
-                        })?.path
-                        let guitarUrl = guitarPath.flatMap({ path -> URL? in
-                            HymnalNet.url(path: path)
-                        })
-                        if let guitarUrl = guitarUrl {
-                            self.pdfLoader.load(url: guitarUrl)
-                            self.tabItems.append(.guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: guitarUrl)).eraseToAnyView()))
-                        }
-
-                        let pianoPath = hymn.pdfSheet?.data.first(where: { datum -> Bool in
-                            datum.value == DatumValue.piano.rawValue
-                        })?.path
-                        let pianoUrl = pianoPath.flatMap({ path -> URL? in
-                            HymnalNet.url(path: path)
-                        })
-                        if let pianoUrl = pianoUrl {
-                            self.pdfLoader.load(url: pianoUrl)
-                            self.tabItems.append(.piano(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: pianoUrl)).eraseToAnyView()))
-                        }
+                    if let musicView = self.getHymnMusic(hymn) {
+                        self.tabItems.append(.music(musicView.eraseToAnyView()))
                     }
 
                     self.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: self.identifier)
@@ -119,6 +90,47 @@ class DisplayHymnViewModel: ObservableObject {
                         self.historyStore.storeRecentSong(hymnToStore: self.identifier, songTitle: self.resultsTitle)
                     }
             }).store(in: &disposables)
+    }
+
+    private func getHymnMusic(_ hymn: UiHymn) -> HymnMusicView? {
+        var hymnMusic = [HymnMusicTab]()
+        if self.systemUtil.isNetworkAvailable() {
+            let pianoPath = hymn.pdfSheet?.data.first(where: { datum -> Bool in
+                datum.value == DatumValue.piano.rawValue
+            })?.path
+            if let pianoUrl = pianoPath.flatMap({ path -> URL? in
+                HymnalNet.url(path: path)
+            }) {
+                self.pdfLoader.load(url: pianoUrl)
+                hymnMusic.append(.piano(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: pianoUrl)).eraseToAnyView()))
+            }
+
+            let chordsPath = hymn.pdfSheet?.data.first(where: { datum -> Bool in
+                datum.value == DatumValue.text.rawValue
+            })?.path
+            if let chordsUrl = chordsPath.flatMap({ path -> URL? in
+                HymnalNet.url(path: path)
+            }) {
+                self.pdfLoader.load(url: chordsUrl)
+                hymnMusic.append(.guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: chordsUrl)).eraseToAnyView()))
+            } else {
+                let guitarSheetPath = hymn.pdfSheet?.data.first(where: { datum -> Bool in
+                    datum.value == DatumValue.guitar.rawValue
+                })?.path
+                if let guitarSheetUrl = guitarSheetPath.flatMap({ path -> URL? in
+                    HymnalNet.url(path: path)
+                }) {
+                    self.pdfLoader.load(url: guitarSheetUrl)
+                    hymnMusic.append(.guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: guitarSheetUrl)).eraseToAnyView()))
+                }
+            }
+        }
+
+        guard !hymnMusic.isEmpty else {
+            return nil
+        }
+
+       return HymnMusicView(viewModel: HymnMusicViewModel(musicViews: hymnMusic))
     }
 
     func fetchFavoriteStatus() {

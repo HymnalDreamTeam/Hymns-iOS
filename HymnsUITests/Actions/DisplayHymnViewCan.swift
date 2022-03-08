@@ -35,12 +35,26 @@ public class DisplayHymnViewCan: BaseViewCan {
         return pressButton("Unmark song as a favorite")
     }
 
-    public func openPiano() -> DisplayHymnViewCan {
-        return pressButton("Piano")
+    public func openMusic() -> DisplayHymnViewCan {
+        return pressButton("Music")
     }
 
     public func maximizeSheetMusic() -> DisplayHymnViewCan {
         return pressButton("Maximize sheet music")
+    }
+
+    public func openPiano() -> DisplayHymnViewCan {
+        return pressButton("Piano sheet music")
+    }
+
+    public func openGuitar() -> DisplayHymnViewCan {
+        return pressButton("Guitar chords")
+    }
+
+    public func verifyPdfDisplaying(_ string: String) -> DisplayHymnViewCan {
+        // swiftlint:disable force_cast
+        XCTAssertEqual(string, app.textViews.element(boundBy: 0).value! as! String)
+        return self
     }
 
     public func closeSheetMusic() -> DisplayHymnViewCan {

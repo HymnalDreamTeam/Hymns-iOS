@@ -4,7 +4,7 @@ import SwiftUI
 public struct HymnLyricsView: View {
 
     @ObservedObject private var viewModel: HymnLyricsViewModel
-    @State var transliterate = false
+    @State private var transliterate = false
     @State private var toast: HymnLyricsToast?
 
     init(viewModel: HymnLyricsViewModel) {
