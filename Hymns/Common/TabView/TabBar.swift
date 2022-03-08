@@ -55,34 +55,32 @@ struct TabBar<TabItemType: TabItem>: View {
             return ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: calculateHStackSpacing()) {
                     ForEach(tabItems) { tabItem in
-                        HStack {
-                            if tabSpacing == .maxWidth {
-                                Spacer()
+                        if tabSpacing == .maxWidth {
+                            Spacer()
+                        }
+                        Button(action: {
+                            withAnimation(.default) {
+                                self.currentTab = tabItem
                             }
-                            Button(action: {
-                                withAnimation(.default) {
-                                    self.currentTab = tabItem
+                        }, label: {
+                            Group {
+                                if self.isSelected(tabItem) {
+                                    tabItem.selectedLabel
+                                } else {
+                                    tabItem.unselectedLabel
                                 }
-                            }, label: {
-                                Group {
-                                    if self.isSelected(tabItem) {
-                                        tabItem.selectedLabel
-                                    } else {
-                                        tabItem.unselectedLabel
-                                    }
-                                }.accessibility(label: tabItem.a11yLabel).padding(.vertical)
-                            }).accentColor(self.isSelected(tabItem) ? .accentColor : .primary)
-                                .anchorPreference(
-                                    key: FirstNonNilPreferenceKey<Anchor<CGRect>>.self,
-                                    value: .bounds,
-                                    transform: { anchor in
-                                        // Find the anchor where the current tab item is selected.
-                                        self.isSelected(tabItem) ? .some(anchor) : nil
-                                    }
-                                )
-                            if tabSpacing == .maxWidth {
-                                Spacer()
-                            }
+                            }.accessibility(label: tabItem.a11yLabel).padding(.vertical)
+                        }).accentColor(self.isSelected(tabItem) ? .accentColor : .primary)
+                            .anchorPreference(
+                                key: FirstNonNilPreferenceKey<Anchor<CGRect>>.self,
+                                value: .bounds,
+                                transform: { anchor in
+                                    // Find the anchor where the current tab item is selected.
+                                    self.isSelected(tabItem) ? .some(anchor) : nil
+                                }
+                            )
+                        if tabSpacing == .maxWidth {
+                            Spacer()
                         }
                     }
                 }.frame(width: self.width > geometry.size.width ? nil : geometry.size.width)
