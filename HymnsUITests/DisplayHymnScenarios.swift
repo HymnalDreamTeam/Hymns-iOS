@@ -13,7 +13,8 @@ class DisplayHymnScenarios: BaseTestCase {
 
     func test_maximizePdf() {
         _ = DisplayHymnViewCan(app, testCase: self)
-            .openPiano()
+            .openMusic()
+            .verifyPdfDisplaying("Hymn 1151\'s Piano\n")
             .maximizeSheetMusic()
             .closeSheetMusic()
     }

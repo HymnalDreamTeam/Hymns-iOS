@@ -8,59 +8,26 @@ import XCTest
 class DisplayHymnPdfSnapshots: XCTestCase {
 
     var preloader: PDFLoader!
-    var viewModel: DisplayHymnViewModel!
 
     override func setUp() {
         super.setUp()
         preloader = PdfLoaderTestImpl()
-        viewModel = DisplayHymnViewModel(hymnToDisplay: hymn1151_identifier, pdfPreloader: preloader)
     }
 
-    func test_classic1151_chords() {
-        viewModel.isLoaded = true
-        viewModel.title = "Hymn 1151"
-        viewModel.isFavorited = false
-        viewModel.currentTab = .chords(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(preloader: preloader,
-                                                                                             url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=gtpdf")!)).eraseToAnyView())
-        viewModel.tabItems = [
-            .lyrics(HymnLyricsView(viewModel: HymnLyricsViewModel(hymnToDisplay: hymn1151_identifier)).maxSize().eraseToAnyView()),
-            viewModel.currentTab,
-            .guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=pdf")!)).eraseToAnyView()),
-            .piano(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=ppdf")!)).eraseToAnyView())]
-        viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1151_identifier)
-        sleep(2)
-        assertVersionedSnapshot(matching: DisplayHymnView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
+    func test_loading() {
+        let view = DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.dummylink.com")!))
+        assertVersionedSnapshot(matching: view, as: .swiftUiImage())
     }
 
-    func test_classic1151_guitar() {
-        viewModel.isLoaded = true
-        viewModel.title = "Hymn 1151"
-        viewModel.isFavorited = false
-        viewModel.currentTab = .guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(preloader: preloader,
-                                                                                             url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=pdf")!)).eraseToAnyView())
-        viewModel.tabItems = [
-            .lyrics(HymnLyricsView(viewModel: HymnLyricsViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)).maxSize().eraseToAnyView()),
-            .chords(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=gtpdf")!)).eraseToAnyView()),
-            viewModel.currentTab,
-            .piano(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=ppdf")!)).eraseToAnyView())]
-        viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1151_identifier)
-        sleep(2)
-        assertVersionedSnapshot(matching: DisplayHymnView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
+    func test_displayError() {
+        let errorViewModel = DisplayHymnPdfViewModel(url: URL(string: "http://www.dummylink.com")!)
+        errorViewModel.isLoading = false
+        let view = DisplayHymnPdfView(viewModel: errorViewModel)
+        assertVersionedSnapshot(matching: view, as: .swiftUiImage())
     }
 
-    func test_classic1151_piano() {
-        viewModel.isLoaded = true
-        viewModel.title = "Hymn 1151"
-        viewModel.isFavorited = false
-        viewModel.currentTab = .piano(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(preloader: preloader,
-                                                                                            url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=ppdf")!)).eraseToAnyView())
-        viewModel.tabItems = [
-            .lyrics(HymnLyricsView(viewModel: HymnLyricsViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)).maxSize().eraseToAnyView()),
-            .chords(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=gtpdf")!)).eraseToAnyView()),
-            .guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=pdf")!)).eraseToAnyView()),
-            viewModel.currentTab]
-        viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1151_identifier)
-        sleep(2)
-        assertVersionedSnapshot(matching: DisplayHymnView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
+    func test_displayPdf() {
+        let view = DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(preloader: preloader, url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=gtpdf")!))
+        assertVersionedSnapshot(matching: view, as: .swiftUiImage())
     }
 }

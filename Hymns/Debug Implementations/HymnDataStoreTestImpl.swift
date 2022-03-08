@@ -8,6 +8,8 @@ class HymnDataStoreTestImpl: HymnDataStore {
         classic1151: classic1151Entity,
         chinese216: chinese216Entity,
         classic2: classic2Entity,
+        classic3: classic3Entity,
+        classic40: classic40Entity,
         howardiHigsashi2: howardHigashi2Entity]
     private let searchStore =
         ["search param":

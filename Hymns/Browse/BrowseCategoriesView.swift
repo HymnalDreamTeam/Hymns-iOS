@@ -23,6 +23,7 @@ struct BrowseCategoriesView: View {
     }
 }
 
+#if DEBUG
 struct BrowseCategoriesView_Previews: PreviewProvider {
     static var previews: some View {
         let errorViewModel = BrowseCategoriesViewModel(hymnType: .classic)
@@ -50,3 +51,4 @@ struct BrowseCategoriesView_Previews: PreviewProvider {
         }
     }
 }
+#endif

@@ -90,7 +90,9 @@ struct BrowseTab_Previews: PreviewProvider {
             GeometryReader { geometry in
                 TabBar(currentTab: currentTabClassic,
                        geometry: geometry,
-                       tabItems: [classicTab, newTunesTab, newSongsTab, childrensTab, scripturesTab, allTab]).toPreviews()
+                       tabItems: [classicTab, newTunesTab, newSongsTab, childrensTab, scripturesTab, allTab],
+                       tabSpacing: .maxWidth,
+                       showIndicator: true)
             }
         }
     }

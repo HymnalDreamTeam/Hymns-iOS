@@ -100,32 +100,22 @@ class DisplayHymnViewModelSpec: QuickSpec {
                             it("should call favoriteStore.isFavorite") {
                                 verify(favoriteStore.isFavorite(hymnIdentifier: classic1151)).wasCalled(exactly(1))
                             }
-                            let chordsUrl = URL(string: "http://www.hymnal.net/en/hymn/c/1151/f=gtpdf")!
-                            it("chords url should be prefetched") {
-                                verify(pdfLoader.load(url: chordsUrl)).wasCalled(exactly(1))
-                            }
-                            let guitarUrl = URL(string: "http://www.hymnal.net/en/hymn/c/1151/f=pdf")!
-                            it("guitar url should be prefetched") {
-                                verify(pdfLoader.load(url: guitarUrl)).wasCalled(exactly(1))
-                            }
                             let pianoUrl = URL(string: "http://www.hymnal.net/en/hymn/c/1151/f=ppdf")!
                             it("piano url should be prefetched") {
                                 verify(pdfLoader.load(url: pianoUrl)).wasCalled(exactly(1))
                             }
-                            it("should have four tabs") {
-                                expect(target.tabItems).to(haveCount(4))
+                            let chordsUrl = URL(string: "http://www.hymnal.net/en/hymn/c/1151/f=gtpdf")!
+                            it("chords url should be prefetched") {
+                                verify(pdfLoader.load(url: chordsUrl)).wasCalled(exactly(1))
+                            }
+                            it("should have two tabs") {
+                                expect(target.tabItems).to(haveCount(2))
                             }
                             it("first tab should be lyrics") {
                                 expect(target.tabItems[0].id).to(equal("Lyrics"))
                             }
-                            it("second tab should be chords") {
-                                expect(target.tabItems[1].id).to(equal("Chords"))
-                            }
-                            it("third tab should be guitar") {
-                                expect(target.tabItems[2].id).to(equal("Guitar"))
-                            }
-                            it("fourth tab should be piano") {
-                                expect(target.tabItems[3].id).to(equal("Piano"))
+                            it("second tab should be music") {
+                                expect(target.tabItems[1].id).to(equal("Music"))
                             }
                             it("should have a bottom bar") {
                                 expect(target.bottomBar).to(equal(DisplayHymnBottomBarViewModel(hymnToDisplay: classic1151)))
@@ -220,32 +210,22 @@ class DisplayHymnViewModelSpec: QuickSpec {
                             it("should call favoriteStore.isFavorite") {
                                 verify(favoriteStore.isFavorite(hymnIdentifier: newSong145)).wasCalled(exactly(1))
                             }
-                            let chordsUrl = URL(string: "http://www.hymnal.net/en/hymn/c/1151/f=gtpdf")!
-                            it("chords url should be prefetched") {
-                                verify(pdfLoader.load(url: chordsUrl)).wasCalled(exactly(1))
-                            }
-                            let guitarUrl = URL(string: "http://www.hymnal.net/en/hymn/c/1151/f=pdf")!
-                            it("guitar url should be prefetched") {
-                                verify(pdfLoader.load(url: guitarUrl)).wasCalled(exactly(1))
-                            }
                             let pianoUrl = URL(string: "http://www.hymnal.net/en/hymn/c/1151/f=ppdf")!
                             it("piano url should be prefetched") {
                                 verify(pdfLoader.load(url: pianoUrl)).wasCalled(exactly(1))
                             }
-                            it("should have four tabs") {
-                                expect(target.tabItems).to(haveCount(4))
+                            let chordsUrl = URL(string: "http://www.hymnal.net/en/hymn/c/1151/f=gtpdf")!
+                            it("chords url should be prefetched") {
+                                verify(pdfLoader.load(url: chordsUrl)).wasCalled(exactly(1))
+                            }
+                            it("should have two tabs") {
+                                expect(target.tabItems).to(haveCount(2))
                             }
                             it("first tab should be lyrics") {
                                 expect(target.tabItems[0].id).to(equal("Lyrics"))
                             }
-                            it("second tab should be chords") {
-                                expect(target.tabItems[1].id).to(equal("Chords"))
-                            }
-                            it("third tab should be guitar") {
-                                expect(target.tabItems[2].id).to(equal("Guitar"))
-                            }
-                            it("fourth tab should be piano") {
-                                expect(target.tabItems[3].id).to(equal("Piano"))
+                            it("second tab should be music") {
+                                expect(target.tabItems[1].id).to(equal("Music"))
                             }
                         }
                         context("hymn does not contain sheet music") {
