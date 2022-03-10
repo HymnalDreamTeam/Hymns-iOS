@@ -73,8 +73,6 @@ struct DisplayHymnBottomBar: View {
                                tag: viewModel,
                                selection: $resultToShow) { EmptyView() }
             }
-        }.onAppear {
-            self.viewModel.fetchHymn()
         }.actionSheet(item: $actionSheet) { item -> ActionSheet in
             switch item {
             case .languages(let viewModels):
@@ -196,25 +194,27 @@ extension DisplayHymnSheet: Identifiable {
 struct DisplayHymnBottomBar_Previews: PreviewProvider {
     static var previews: some View {
         var dialogModel: DialogViewModel<AnyView>?
+        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [Verse]())
 
-        let noButtonsViewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)
+        let noButtonsViewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151, hymn: hymn)
+        noButtonsViewModel.buttons = []
         let noButtons = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
             get: {dialogModel},
             set: {dialogModel = $0}), viewModel: noButtonsViewModel)
 
-        let oneButtonViewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)
+        let oneButtonViewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151, hymn: hymn)
         oneButtonViewModel.buttons = [.tags]
         let oneButton = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
             get: {dialogModel},
             set: {dialogModel = $0}), viewModel: oneButtonViewModel)
 
-        let twoButtonsViewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)
+        let twoButtonsViewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151, hymn: hymn)
         twoButtonsViewModel.buttons = [.tags, .fontSize(FontPickerViewModel())]
         let twoButtons = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
             get: {dialogModel},
             set: {dialogModel = $0}), viewModel: twoButtonsViewModel)
 
-        let maximumViewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)
+        let maximumViewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151, hymn: hymn)
         maximumViewModel.buttons = [
             .soundCloud(SoundCloudViewModel(url: URL(string: "https://soundcloud.com/search?q=query")!)),
             .youTube(URL(string: "https://www.youtube.com/results?search_query=search")!),
@@ -227,7 +227,7 @@ struct DisplayHymnBottomBar_Previews: PreviewProvider {
             get: {dialogModel},
             set: {dialogModel = $0}), viewModel: maximumViewModel)
 
-        let overflowViewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)
+        let overflowViewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151, hymn: hymn)
         overflowViewModel.buttons = [
             .share("lyrics"),
             .fontSize(FontPickerViewModel()),
@@ -246,11 +246,11 @@ struct DisplayHymnBottomBar_Previews: PreviewProvider {
             set: {dialogModel = $0}), viewModel: overflowViewModel)
 
         return Group {
-            noButtons.previewDisplayName("0 buttons").previewLayout(.sizeThatFits)
-            oneButton.previewDisplayName("one button").previewLayout(.sizeThatFits)
-            twoButtons.previewDisplayName("two buttons").previewLayout(.fixed(width: 120, height: 50))
-            maximum.previewDisplayName("maximum number of buttons").previewLayout(.sizeThatFits)
-            overflow.previewDisplayName("overflow menu").previewLayout(.fixed(width: 600, height: 50))
+            noButtons.previewDisplayName("0 buttons").previewLayout(.fixed(width: 50, height: 50))
+            oneButton.previewDisplayName("one button").previewLayout(.fixed(width: 50, height: 50))
+            twoButtons.previewDisplayName("two buttons").previewLayout(.fixed(width: 100, height: 50))
+            maximum.previewDisplayName("maximum number of buttons").previewLayout(.fixed(width: 500, height: 50))
+            overflow.previewDisplayName("overflow menu").previewLayout(.fixed(width: 500, height: 50))
         }
     }
 }

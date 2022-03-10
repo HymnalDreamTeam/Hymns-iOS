@@ -84,7 +84,7 @@ class DisplayHymnViewModel: ObservableObject {
                         self.tabItems.append(.music(musicView.eraseToAnyView()))
                     }
 
-                    self.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: self.identifier)
+                    self.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: self.identifier, hymn: hymn)
                     self.fetchFavoriteStatus()
                     if self.storeInHistoryStore {
                         self.historyStore.storeRecentSong(hymnToStore: self.identifier, songTitle: self.resultsTitle)

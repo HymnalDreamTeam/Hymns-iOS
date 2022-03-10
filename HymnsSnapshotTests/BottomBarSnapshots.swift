@@ -12,10 +12,12 @@ class BottomBarSnapshots: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        viewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)
+        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [Verse]())
+        viewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151, hymn: hymn)
     }
 
     func test_noButtons() {
+        viewModel.buttons = []
         let bottomBar = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
             get: {self.dialog},
             set: {self.dialog = $0}), viewModel: viewModel).padding().ignoresSafeArea()

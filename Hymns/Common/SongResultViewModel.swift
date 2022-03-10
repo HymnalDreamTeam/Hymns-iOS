@@ -31,6 +31,6 @@ extension SongResultViewModel: Hashable {
 
 extension SongResultViewModel: CustomStringConvertible {
     var description: String {
-        "\(stableId): \(label ?? "") \(title)"
+        "\(stableId)|\(label ?? "")|\(title)"
     }
 }
