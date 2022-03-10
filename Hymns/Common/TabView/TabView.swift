@@ -13,15 +13,17 @@ public struct IndicatorTabView<TabType: TabItem>: View {
     private let tabAlignment: TabAlignment
     private let tabSpacing: TabSpacing
     private let showIndicator: Bool
+    private let showDivider: Bool
 
-    init(geometry: GeometryProxy, currentTab: Binding<TabType>, tabItems: [TabType],
-         tabAlignment: TabAlignment = .top, tabSpacing: TabSpacing = .maxWidth, showIndicator: Bool = true) {
+    init(geometry: GeometryProxy, currentTab: Binding<TabType>, tabItems: [TabType], tabAlignment: TabAlignment = .top,
+         tabSpacing: TabSpacing = .maxWidth, showIndicator: Bool = true, showDivider: Bool = true) {
         self._currentTab = currentTab
         self.geometry = geometry
         self.tabItems = tabItems
         self.tabAlignment = tabAlignment
         self.tabSpacing = tabSpacing
         self.showIndicator = showIndicator
+        self.showDivider = showDivider
     }
 
     public var body: some View {
@@ -30,13 +32,17 @@ public struct IndicatorTabView<TabType: TabItem>: View {
                 VStack(spacing: 0) {
                     TabBar(currentTab: $currentTab, geometry: geometry, tabItems: tabItems, tabSpacing: tabSpacing,
                            showIndicator: showIndicator)
-                    Divider()
+                    if showDivider {
+                        Divider()
+                    }
                 }
             }
             currentTab.content
             if tabAlignment == .bottom {
                 VStack(spacing: 0) {
-                    Divider()
+                    if showDivider {
+                        Divider()
+                    }
                     TabBar(currentTab: $currentTab, geometry: geometry, tabItems: tabItems, tabSpacing: tabSpacing,
                            showIndicator: showIndicator)
                 }
@@ -55,20 +61,22 @@ struct IndicatorTabView_Previews: PreviewProvider {
 
     static var previews: some View {
 
-        let selectedTab: HymnTab = .lyrics(Text("%_PREVIEW_% Lyrics here").eraseToAnyView())
+        let selectedTab: HymnTab = .lyrics(Text("%_PREVIEW_% Lyrics here").maxSize().eraseToAnyView())
         let selectedTabBinding: Binding<HymnTab> = .constant(selectedTab)
         let tabItems: [HymnTab] = [selectedTab, .music(Text("%_PREVIEW_% Music here").eraseToAnyView())]
 
         return Group {
             GeometryReader { geometry in
                 IndicatorTabView(geometry: geometry, currentTab: selectedTabBinding, tabItems: tabItems)
-                    .previewDevice(PreviewDevice(rawValue: "iPhone XS Max"))
-                    .previewDisplayName("iPhone XS Max")
+                    .previewDisplayName("Tabs")
+            }
+            GeometryReader { geometry in
+                IndicatorTabView(geometry: geometry, currentTab: selectedTabBinding, tabItems: tabItems, showDivider: false)
+                    .previewDisplayName("No divider")
             }
             GeometryReader { geometry in
                 IndicatorTabView(geometry: geometry, currentTab: selectedTabBinding, tabItems: tabItems, tabAlignment: .bottom)
-                    .previewDevice(PreviewDevice(rawValue: "iPhone XS Max"))
-                    .previewDisplayName("iPhone XS Max bottom tabs")
+                    .previewDisplayName("bottom tabs")
             }
             GeometryReader { geometry in
                 IndicatorTabView(geometry: geometry, currentTab: selectedTabBinding, tabItems: tabItems)
