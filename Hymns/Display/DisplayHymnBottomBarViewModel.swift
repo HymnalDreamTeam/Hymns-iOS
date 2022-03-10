@@ -15,24 +15,16 @@ class DisplayHymnBottomBarViewModel: ObservableObject {
     let identifier: HymnIdentifier
 
     private let analytics: AnalyticsLogger
-    private let backgroundQueue: DispatchQueue
-    private let mainQueue: DispatchQueue
-    private let repository: HymnsRepository
     private let systemUtil: SystemUtil
 
     private var disposables = Set<AnyCancellable>()
 
     init(hymnToDisplay identifier: HymnIdentifier,
+         hymn: UiHymn,
          analytics: AnalyticsLogger = Resolver.resolve(),
-         hymnsRepository repository: HymnsRepository = Resolver.resolve(),
-         mainQueue: DispatchQueue = Resolver.resolve(name: "main"),
-         backgroundQueue: DispatchQueue = Resolver.resolve(name: "background"),
          systemUtil: SystemUtil = Resolver.resolve()) {
         self.analytics = analytics
         self.identifier = identifier
-        self.mainQueue = mainQueue
-        self.repository = repository
-        self.backgroundQueue = backgroundQueue
         self.systemUtil = systemUtil
         self.buttons = [BottomBarButton]()
 
@@ -40,72 +32,65 @@ class DisplayHymnBottomBarViewModel: ObservableObject {
         if systemUtil.isSmallScreen() {
             overflowThreshold = 5
         }
+
+        populateHymn(hymn)
     }
 
-    func fetchHymn() {
-        repository
-            .getHymn(identifier)
-            .subscribe(on: backgroundQueue)
-            .receive(on: mainQueue)
-            .sink(
-                receiveValue: { [weak self] hymn in
-                    guard let self = self, let hymn = hymn, !hymn.lyrics.isEmpty else {
-                        return
-                    }
+    func populateHymn(_ hymn: UiHymn) {
+        var buttons = [BottomBarButton]()
 
-                    var buttons = [BottomBarButton]()
+        if let lyrics = hymn.lyrics {
+            buttons.append(.share(self.convertToOneString(verses: lyrics)))
+        }
 
-                    buttons.append(.share(self.convertToOneString(verses: hymn.lyrics)))
+        buttons.append(.fontSize(FontPickerViewModel()))
 
-                    buttons.append(.fontSize(FontPickerViewModel()))
+        let languages = self.convertToSongResults(hymn.languages)
+        if !languages.isEmpty {
+            buttons.append(.languages(languages))
+        }
 
-                    let languages = self.convertToSongResults(hymn.languages)
-                    if !languages.isEmpty {
-                        buttons.append(.languages(languages))
-                    }
+        let mp3Path = hymn.music?.data.first(where: { datum -> Bool in
+            datum.value == DatumValue.mp3.rawValue
+        })?.path
+        if let mp3Url = mp3Path.flatMap({ path -> URL? in
+            HymnalNet.url(path: path)
+        }), self.systemUtil.isNetworkAvailable() {
+            buttons.append(.musicPlayback(AudioPlayerViewModel(url: mp3Url)))
+        }
 
-                    let mp3Path = hymn.music?.data.first(where: { datum -> Bool in
-                        datum.value == DatumValue.mp3.rawValue
-                    })?.path
-                    if let mp3Url = mp3Path.flatMap({ path -> URL? in
-                        HymnalNet.url(path: path)
-                    }), self.systemUtil.isNetworkAvailable() {
-                        buttons.append(.musicPlayback(AudioPlayerViewModel(url: mp3Url)))
-                    }
+        let relevant = self.convertToSongResults(hymn.relevant)
+        if !relevant.isEmpty {
+            buttons.append(.relevant(relevant))
+        }
 
-                    let relevant = self.convertToSongResults(hymn.relevant)
-                    if !relevant.isEmpty {
-                        buttons.append(.relevant(relevant))
-                    }
+        buttons.append(.tags)
 
-                    buttons.append(.tags)
+        if let url = "https://soundcloud.com/search/results?q=\(hymn.title)".toEncodedUrl,
+            self.systemUtil.isNetworkAvailable() {
+            buttons.append(.soundCloud(SoundCloudViewModel(url: url)))
+        }
 
-                    if let url = "https://soundcloud.com/search/results?q=\(hymn.title)".toEncodedUrl,
-                        self.systemUtil.isNetworkAvailable() {
-                        buttons.append(.soundCloud(SoundCloudViewModel(url: url)))
-                    }
+        if let url = "https://www.youtube.com/results?search_query=\(hymn.title)".toEncodedUrl,
+            self.systemUtil.isNetworkAvailable() {
+            buttons.append(.youTube(url))
+        }
 
-                    if let url = "https://www.youtube.com/results?search_query=\(hymn.title)".toEncodedUrl,
-                        self.systemUtil.isNetworkAvailable() {
-                        buttons.append(.youTube(url))
-                    }
+        let songInfo = SongInfoDialogViewModel.createSongInfo(hymn: hymn)
+        if !songInfo.isEmpty {
+            buttons.append(.songInfo(SongInfoDialogViewModel(hymnToDisplay: self.identifier)))
+        }
 
-                    let songInfo = SongInfoDialogViewModel.createSongInfo(hymn: hymn)
-                    if !songInfo.isEmpty {
-                        buttons.append(.songInfo(SongInfoDialogViewModel(hymnToDisplay: self.identifier)))
-                    }
-
-                    self.buttons = [BottomBarButton]()
-                    if buttons.count > self.overflowThreshold {
-                        self.buttons.append(contentsOf: buttons[0..<(self.overflowThreshold - 1)])
-                        var overflowButtons = [BottomBarButton]()
-                        overflowButtons.append(contentsOf: buttons[(self.overflowThreshold - 1)..<buttons.count])
-                        self.overflowButtons = overflowButtons
-                    } else {
-                        self.buttons.append(contentsOf: buttons)
-                        self.overflowButtons = nil
-                    }
-            }).store(in: &disposables)
+        self.buttons = [BottomBarButton]()
+        if buttons.count > self.overflowThreshold {
+            self.buttons.append(contentsOf: buttons[0..<(self.overflowThreshold - 1)])
+            var overflowButtons = [BottomBarButton]()
+            overflowButtons.append(contentsOf: buttons[(self.overflowThreshold - 1)..<buttons.count])
+            self.overflowButtons = overflowButtons
+        } else {
+            self.buttons.append(contentsOf: buttons)
+            self.overflowButtons = nil
+        }
     }
 
     private func convertToSongResults(_ option: MetaDatum?) -> [SongResultViewModel] {
@@ -125,14 +110,9 @@ class DisplayHymnBottomBarViewModel: ObservableObject {
     }
 
     private func convertToOneString(verses: [Verse]) -> String {
-        var shareableLyrics = ""
-        for verse in verses {
-            for verseLine in verse.verseContent {
-                shareableLyrics += (verseLine + "\n")
-            }
-            shareableLyrics += "\n"
-        }
-        return shareableLyrics
+        verses.flatMap { verse in
+            verse.verseContent
+        }.joined(separator: "\n")
     }
 }
 

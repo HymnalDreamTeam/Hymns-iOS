@@ -9,6 +9,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
 
     override func spec() {
         describe("DisplayHymnViewModel") {
+            let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [Verse]())
             let testQueue = DispatchQueue(label: "test_queue")
             var hymnsRepository: HymnsRepositoryMock!
             var favoriteStore: FavoriteStoreMock!
@@ -118,7 +119,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                                 expect(target.tabItems[1].id).to(equal("Music"))
                             }
                             it("should have a bottom bar") {
-                                expect(target.bottomBar).to(equal(DisplayHymnBottomBarViewModel(hymnToDisplay: classic1151)))
+                                expect(target.bottomBar).to(equal(DisplayHymnBottomBarViewModel(hymnToDisplay: classic1151, hymn: hymn)))
                             }
                         }
                         context("is not favorited") {

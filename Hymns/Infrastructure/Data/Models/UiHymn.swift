@@ -6,7 +6,7 @@ import Foundation
 struct UiHymn: Equatable {
     let hymnIdentifier: HymnIdentifier
     let title: String
-    let lyrics: [Verse]
+    let lyrics: [Verse]?
     let pdfSheet: MetaDatum?
     let category: String?
     let subcategory: String?
@@ -22,7 +22,7 @@ struct UiHymn: Equatable {
     let relevant: MetaDatum?
     // add more fields as needed
 
-    init(hymnIdentifier: HymnIdentifier, title: String, lyrics: [Verse], pdfSheet: MetaDatum? = nil,
+    init(hymnIdentifier: HymnIdentifier, title: String, lyrics: [Verse]?, pdfSheet: MetaDatum? = nil,
          category: String? = nil, subcategory: String? = nil, author: String? = nil, composer: String? = nil,
          key: String? = nil, time: String? = nil, meter: String? = nil, scriptures: String? = nil,
          hymnCode: String? = nil, languages: MetaDatum? = nil, music: MetaDatum? = nil, relevant: MetaDatum? = nil) {

@@ -18,8 +18,4 @@ class FontPickerViewModel: ObservableObject {
         self.fontSize = userDefaultsManager.fontSize
         self.userDefaultsManager = userDefaultsManager
     }
-
-    func updateFontSize(_ fontSize: Float) {
-        userDefaultsManager.fontSize = fontSize
-    }
 }

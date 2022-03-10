@@ -29,10 +29,10 @@ class HymnLyricsViewModel: ObservableObject {
         repository
             .getHymn(identifier)
             .map({ [weak self] hymn -> [VerseViewModel]? in
-                guard let self = self, let hymn = hymn, !hymn.lyrics.isEmpty else {
+                guard let self = self, let hymn = hymn, let lyrics = hymn.lyrics, !lyrics.isEmpty else {
                     return nil
                 }
-                return self.convertToViewModels(verses: hymn.lyrics)
+                return self.convertToViewModels(verses: lyrics)
             })
             .receive(on: mainQueue)
             .sink(receiveCompletion: { [weak self] state in

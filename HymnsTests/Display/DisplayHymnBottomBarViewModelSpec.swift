@@ -10,176 +10,194 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
 
     override func spec() {
         describe("DisplayHymnBottomBarViewModel") {
-            let testQueue = DispatchQueue(label: "test_queue")
-            var hymnsRepository: HymnsRepositoryMock!
+
+            let hymnIdentifier = HymnIdentifier(hymnType: .classic, hymnNumber: "23")
+            let lyrics = [Verse(verseType: .verse, verseContent: ["verse 1 line 1", "verse 1 line 2"]),
+                          Verse(verseType: .chorus, verseContent: ["chorus line 1", "chorus line 2"]),
+                          Verse(verseType: .verse, verseContent: ["verse 2 line 1", "verse 2 line 2"]),
+                          Verse(verseType: .verse, verseContent: ["verse 3 line 1", "verse 3 line 2"])]
+            let pdfSheet = MetaDatum(name: "sheet", data: [Datum(value: "Guitar", path: "https://www.hymnal.net/Hymns/Hymnal/svg/e1151_g.svg")])
+            let languages = MetaDatum(name: "lang", data: [Datum(value: "Tagalog", path: "/en/hymn/ht/1151"),
+                                                           Datum(value: "Missing path", path: ""),
+                                                           Datum(value: "Invalid number", path: "/en/hymn/h/13f/f=333/asdf"),
+                                                           Datum(value: "诗歌(简)", path: "/en/hymn/ts/216?gb=1")])
+            let music = MetaDatum(name: "music", data: [Datum(value: "mp3", path: "/en/hymn/h/1151/f=mp3")])
+            let relevant = MetaDatum(name: "relv", data: [Datum(value: "New Tune", path: "/en/hymn/nt/1151"),
+                                                          Datum(value: "Missing path", path: ""),
+                                                          Datum(value: "Invalid number", path: "/en/hymn/h/13f/f=333/asdf"),
+                                                          Datum(value: "Cool other song", path: "/en/hymn/ns/216?gb=1")])
+            let populatedHymn = UiHymn(hymnIdentifier: hymnIdentifier,
+                                       title: "title", lyrics: lyrics, pdfSheet: pdfSheet,
+                                       category: "Experience of Christ", subcategory: "As Food and Drink",
+                                       languages: languages, music: music, relevant: relevant)
+
             var systemUtil: SystemUtilMock!
             var target: DisplayHymnBottomBarViewModel!
 
             beforeEach {
-                hymnsRepository = mock(HymnsRepository.self)
                 systemUtil = mock(SystemUtil.self)
-                given(systemUtil.isSmallScreen()) ~> false
-                target = DisplayHymnBottomBarViewModel(hymnToDisplay: classic1151, hymnsRepository: hymnsRepository,
-                                                       mainQueue: testQueue, backgroundQueue: testQueue, systemUtil: systemUtil)
             }
-            describe("init") {
-                it("should only contain font size and tags") {
-                    expect(target.buttons).to(beEmpty())
-                    expect(target.overflowButtons).to(beNil())
+
+            context("no network available") {
+                beforeEach {
+                    given(systemUtil.isNetworkAvailable()) ~> false
                 }
-                it("should contain 6 tabs") {
-                    expect(target.overflowThreshold).to(be(6))
+                context("regular screen") {
+                    beforeEach {
+                        given(systemUtil.isSmallScreen()) ~> false
+                    }
+                    context("with nil lyrics") {
+                        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "title", lyrics: nil)
+                        beforeEach {
+                            target = DisplayHymnBottomBarViewModel(hymnToDisplay: classic1151, hymn: hymn, systemUtil: systemUtil)
+                        }
+                        it("should have 2 buttons in the buttons list and nothing in the overflow") {
+                            expect(target.buttons).to(haveCount(2))
+                            expect(target.buttons[0]).to(equal(.fontSize(FontPickerViewModel())))
+                            expect(target.buttons[1]).to(equal(.tags))
+                            expect(target.overflowButtons).to(beNil())
+                        }
+                    }
+                    context("with only lyrics") {
+                        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"),
+                                                  title: "title",
+                                                  lyrics: [Verse(verseType: .verse, verseContent: ["verse 1 line 1", "verse 1 line 2"]),
+                                                           Verse(verseType: .chorus, verseContent: ["chorus line 1", "chorus line 2"]),
+                                                           Verse(verseType: .verse, verseContent: ["verse 2 line 1", "verse 2 line 2"]),
+                                                           Verse(verseType: .verse, verseContent: ["verse 3 line 1", "verse 3 line 2"])])
+                        beforeEach {
+                            target = DisplayHymnBottomBarViewModel(hymnToDisplay: classic1151, hymn: hymn, systemUtil: systemUtil)
+                        }
+                        it("should have 3 buttons in the buttons list and nothing in the overflow") {
+                            expect(target.buttons).to(haveCount(3))
+                            expect(target.buttons[0]).to(equal(.share("verse 1 line 1\nverse 1 line 2\nchorus line 1\nchorus line 2\nverse 2 line 1\nverse 2 line 2\nverse 3 line 1\nverse 3 line 2")))
+                            expect(target.buttons[1]).to(equal(.fontSize(FontPickerViewModel())))
+                            expect(target.buttons[2]).to(equal(.tags))
+                            expect(target.overflowButtons).to(beNil())
+                        }
+                    }
+                    context("with maximum number of buttons") {
+                        beforeEach {
+                            target = DisplayHymnBottomBarViewModel(hymnToDisplay: classic1151, hymn: populatedHymn, systemUtil: systemUtil)
+                        }
+                        it("should have 6 buttons in the buttons list and nothing in the overflow") {
+                            expect(target.buttons).to(haveCount(6))
+                            expect(target.buttons[0]).to(equal(.share("verse 1 line 1\nverse 1 line 2\nchorus line 1\nchorus line 2\nverse 2 line 1\nverse 2 line 2\nverse 3 line 1\nverse 3 line 2")))
+                            expect(target.buttons[1]).to(equal(.fontSize(FontPickerViewModel())))
+                            expect(target.buttons[2]).to(equal(.languages([
+                                SongResultViewModel(stableId: "hymnType: ht, hymnNumber: 1151, queryParams: ", title: "Tagalog",
+                                                    destinationView: EmptyView().eraseToAnyView()),
+                                SongResultViewModel(stableId: "hymnType: ts, hymnNumber: 216, queryParams: ?gb=1", title: "诗歌(简)",
+                                                    destinationView: EmptyView().eraseToAnyView())])))
+                            expect(target.buttons[3]).to(equal(.relevant([
+                                    SongResultViewModel(stableId: "hymnType: nt, hymnNumber: 1151, queryParams: ", title: "New Tune",
+                                                        destinationView: EmptyView().eraseToAnyView()),
+                                    SongResultViewModel(stableId: "hymnType: ns, hymnNumber: 216, queryParams: ?gb=1", title: "Cool other song",
+                                                        destinationView: EmptyView().eraseToAnyView())])))
+                            expect(target.buttons[4]).to(equal(.tags))
+                            expect(target.buttons[5]).to(equal(.songInfo(SongInfoDialogViewModel(hymnToDisplay: classic1151))))
+                            expect(target.overflowButtons).to(beNil())
+                        }
+                    }
                 }
                 context("small screen") {
                     beforeEach {
                         given(systemUtil.isSmallScreen()) ~> true
-                        target = DisplayHymnBottomBarViewModel(hymnToDisplay: classic1151, hymnsRepository: hymnsRepository,
-                                                               mainQueue: testQueue, backgroundQueue: testQueue, systemUtil: systemUtil)
                     }
-                    it("should contain 5 tabs") {
-                        expect(target.overflowThreshold).to(be(5))
+                    context("with maximum number of buttons") {
+                        beforeEach {
+                            target = DisplayHymnBottomBarViewModel(hymnToDisplay: classic1151, hymn: populatedHymn, systemUtil: systemUtil)
+                        }
+                        it("should have 4 buttons in the buttons list and the rest in the overflow") {
+                            expect(target.buttons).to(haveCount(4))
+                            expect(target.buttons[0]).to(equal(.share("verse 1 line 1\nverse 1 line 2\nchorus line 1\nchorus line 2\nverse 2 line 1\nverse 2 line 2\nverse 3 line 1\nverse 3 line 2")))
+                            expect(target.buttons[1]).to(equal(.fontSize(FontPickerViewModel())))
+                            expect(target.buttons[2]).to(equal(.languages([
+                                SongResultViewModel(stableId: "hymnType: ht, hymnNumber: 1151, queryParams: ", title: "Tagalog",
+                                                    destinationView: EmptyView().eraseToAnyView()),
+                                SongResultViewModel(stableId: "hymnType: ts, hymnNumber: 216, queryParams: ?gb=1", title: "诗歌(简)",
+                                                    destinationView: EmptyView().eraseToAnyView())])))
+                            expect(target.buttons[3]).to(equal(.relevant([
+                                SongResultViewModel(stableId: "hymnType: nt, hymnNumber: 1151, queryParams: ", title: "New Tune",
+                                                    destinationView: EmptyView().eraseToAnyView()),
+                                SongResultViewModel(stableId: "hymnType: ns, hymnNumber: 216, queryParams: ?gb=1", title: "Cool other song",
+                                                    destinationView: EmptyView().eraseToAnyView())])))
+                            expect(target.overflowButtons).toNot(beNil())
+                            expect(target.overflowButtons!).to(haveCount(2))
+                            expect(target.overflowButtons![0]).to(equal(.tags))
+                            expect(target.overflowButtons![1]).to(equal(.songInfo(SongInfoDialogViewModel(hymnToDisplay: classic1151))))
+                        }
                     }
                 }
             }
-            context("with nil repository result") {
+            context("network available") {
                 beforeEach {
-                    given(hymnsRepository.getHymn(classic1151)) ~> { _ in
-                        Just(nil).assertNoFailure().eraseToAnyPublisher()
-                    }
-
-                    target.fetchHymn()
-                    testQueue.sync {}
-                    testQueue.sync {}
-                    testQueue.sync {}
-                }
-                it("should call hymnsRepository.getHymn") {
-                    verify(hymnsRepository.getHymn(classic1151)).wasCalled(exactly(1))
-                }
-                it("should only contain font size and tags") {
-                    expect(target.buttons).to(beEmpty())
-                    expect(target.overflowButtons).to(beNil())
-                }
-            }
-            context("with empty repository result") {
-                beforeEach {
-                    let emptyLyrics = UiHymn(hymnIdentifier: classic1151, title: "title", lyrics: [Verse]())
-                    given(hymnsRepository.getHymn(classic1151)) ~> { _ in
-                        Just(emptyLyrics).assertNoFailure().eraseToAnyPublisher()
-                    }
-
-                    target.fetchHymn()
-                    testQueue.sync {}
-                    testQueue.sync {}
-                    testQueue.sync {}
-                }
-                it("should call hymnsRepository.getHymn") {
-                    verify(hymnsRepository.getHymn(classic1151)).wasCalled(exactly(1))
-                }
-                it("should only contain font size and tags") {
-                    expect(target.buttons).to(beEmpty())
-                    expect(target.overflowButtons).to(beNil())
-                }
-            }
-            context("with all options in repository result") {
-                beforeEach {
-                    let lyricsWithoutTransliteration = [
-                        Verse(verseType: .verse, verseContent: ["Drink! a river pure and clear that's flowing from the throne;", "Eat! the tree of life with fruits abundant, richly grown"], transliteration: nil),
-                        Verse(verseType: .chorus, verseContent: ["Do come, oh, do come,", "Says Spirit and the Bride:"], transliteration: nil)
-                    ]
-                    let languages = MetaDatum(name: "lang", data: [Datum(value: "Tagalog", path: "/en/hymn/ht/1151"),
-                                                                   Datum(value: "Missing path", path: ""),
-                                                                   Datum(value: "Invalid number", path: "/en/hymn/h/13f/f=333/asdf"),
-                                                                   Datum(value: "诗歌(简)", path: "/en/hymn/ts/216?gb=1")])
-                    let relevant = MetaDatum(name: "relv", data: [Datum(value: "New Tune", path: "/en/hymn/nt/1151"),
-                                                                  Datum(value: "Missing path", path: ""),
-                                                                  Datum(value: "Invalid number", path: "/en/hymn/h/13f/f=333/asdf"),
-                                                                  Datum(value: "Cool other song", path: "/en/hymn/ns/216?gb=1")])
-                    let music = MetaDatum(name: "music", data: [Datum(value: "mp3", path: "/en/hymn/h/1151/f=mp3")])
-                    let hymn = UiHymn(hymnIdentifier: classic1151, title: "title", lyrics: lyricsWithoutTransliteration,
-                                      category: "category", languages: languages, music: music, relevant: relevant)
-                    given(hymnsRepository.getHymn(classic1151)) ~> { _ in
-                        Just(hymn).assertNoFailure().eraseToAnyPublisher()
-                    }
                     given(systemUtil.isNetworkAvailable()) ~> true
-
-                    target.fetchHymn()
-                    testQueue.sync {}
-                    testQueue.sync {}
-                    testQueue.sync {}
                 }
-                it("should call hymnsRepository.getHymn") {
-                    verify(hymnsRepository.getHymn(classic1151)).wasCalled(exactly(1))
-                }
-                let mp3Url = URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=mp3")!
-                it("should have 5 buttons in the buttons list and the rest in the overflow") {
-                    expect(target.buttons).to(haveCount(5))
-                    expect(target.buttons[0]).to(equal(.share("Drink! a river pure and clear that's flowing from the throne;\nEat! the tree of life with fruits abundant, richly grown\n\nDo come, oh, do come,\nSays Spirit and the Bride:\n\n")))
-                    expect(target.buttons[1]).to(equal(.fontSize(FontPickerViewModel())))
-                    expect(target.buttons[2]).to(equal(.languages([
-                        SongResultViewModel(stableId: "hymnType: ht, hymnNumber: 1151, queryParams: ", title: "Tagalog", destinationView: EmptyView().eraseToAnyView()),
-                        SongResultViewModel(stableId: "hymnType: ts, hymnNumber: 216, queryParams: ?gb=1", title: "诗歌(简)", destinationView: EmptyView().eraseToAnyView())])))
-                    expect(target.buttons[3]).to(equal(.musicPlayback(AudioPlayerViewModel(url: mp3Url))))
-                    expect(target.buttons[4]).to(equal(.relevant([
-                        SongResultViewModel(stableId: "hymnType: nt, hymnNumber: 1151, queryParams: ", title: "New Tune", destinationView: EmptyView().eraseToAnyView()),
-                        SongResultViewModel(stableId: "hymnType: ns, hymnNumber: 216, queryParams: ?gb=1", title: "Cool other song", destinationView: EmptyView().eraseToAnyView())])))
-                    expect(target.overflowButtons!).to(haveCount(4))
-                    expect(target.overflowButtons![0]).to(equal(.tags))
-                    expect(target.overflowButtons![1]).to(equal(.soundCloud(SoundCloudViewModel(url: URL(string: "https://soundcloud.com/search/results?q=title")!))))
-                    expect(target.overflowButtons![2]).to(equal(.youTube(URL(string: "https://www.youtube.com/results?search_query=title")!)))
-                    expect(target.overflowButtons![3]).to(equal(.songInfo(SongInfoDialogViewModel(hymnToDisplay: classic1151))))
-                }
-                context("while network is unavailable") {
+                context("regular screen") {
                     beforeEach {
-                        given(systemUtil.isNetworkAvailable()) ~> false
-                        target.fetchHymn()
-                        testQueue.sync {}
-                        testQueue.sync {}
-                        testQueue.sync {}
+                        given(systemUtil.isSmallScreen()) ~> false
                     }
-                    it("should not contain the buttons that require network connectivity") {
-                        expect(target.buttons).to(haveCount(6))
-                        expect(target.buttons[0]).to(equal(.share("Drink! a river pure and clear that's flowing from the throne;\nEat! the tree of life with fruits abundant, richly grown\n\nDo come, oh, do come,\nSays Spirit and the Bride:\n\n")))
-                        expect(target.buttons[1]).to(equal(.fontSize(FontPickerViewModel())))
-                        expect(target.buttons[2]).to(equal(.languages([
-                            SongResultViewModel(stableId: "hymnType: ht, hymnNumber: 1151, queryParams: ", title: "Tagalog", destinationView: EmptyView().eraseToAnyView()),
-                            SongResultViewModel(stableId: "hymnType: ts, hymnNumber: 216, queryParams: ?gb=1", title: "诗歌(简)", destinationView: EmptyView().eraseToAnyView())])))
-                        expect(target.buttons[3]).to(equal(.relevant([
-                            SongResultViewModel(stableId: "hymnType: nt, hymnNumber: 1151, queryParams: ", title: "New Tune", destinationView: EmptyView().eraseToAnyView()),
-                            SongResultViewModel(stableId: "hymnType: ns, hymnNumber: 216, queryParams: ?gb=1", title: "Cool other song", destinationView: EmptyView().eraseToAnyView())])))
-                        expect(target.buttons[4]).to(equal(.tags))
-                        expect(target.buttons[5]).to(equal(.songInfo(SongInfoDialogViewModel(hymnToDisplay: classic1151))))
-                        expect(target.overflowButtons).to(beNil())
+                    context("with nil lyrics") {
+                        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "title", lyrics: nil)
+                        beforeEach {
+                            target = DisplayHymnBottomBarViewModel(hymnToDisplay: classic1151, hymn: hymn, systemUtil: systemUtil)
+                        }
+                        it("should have 4 buttons in the buttons list and nothing in the overflow") {
+                            expect(target.buttons).to(haveCount(4))
+                            expect(target.buttons[0]).to(equal(.fontSize(FontPickerViewModel())))
+                            expect(target.buttons[1]).to(equal(.tags))
+                            expect(target.buttons[2]).to(equal(.soundCloud(SoundCloudViewModel(url: URL(string: "https://soundcloud.com/search/results?q=title")!))))
+                            expect(target.buttons[3]).to(equal(.youTube(URL(string: "https://www.youtube.com/results?search_query=title")!)))
+                            expect(target.overflowButtons).to(beNil())
+                        }
                     }
-                }
-            }
-            context("with the least number of options in repository result") {
-                beforeEach {
-                    let lyricsWithoutTransliteration = [
-                        Verse(verseType: .verse, verseContent: ["Drink! a river pure and clear that's flowing from the throne;", "Eat! the tree of life with fruits abundant, richly grown"], transliteration: nil),
-                        Verse(verseType: .chorus, verseContent: ["Do come, oh, do come,", "Says Spirit and the Bride:"], transliteration: nil)
-                    ]
-                    let hymn = UiHymn(hymnIdentifier: classic1151, title: "title", lyrics: lyricsWithoutTransliteration)
-                    given(hymnsRepository.getHymn(classic1151)) ~> { _ in
-                        Just(hymn).assertNoFailure().eraseToAnyPublisher()
+                    context("with only lyrics") {
+                        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"),
+                                                  title: "title",
+                                                  lyrics: [Verse(verseType: .verse, verseContent: ["verse 1 line 1", "verse 1 line 2"]),
+                                                           Verse(verseType: .chorus, verseContent: ["chorus line 1", "chorus line 2"]),
+                                                           Verse(verseType: .verse, verseContent: ["verse 2 line 1", "verse 2 line 2"]),
+                                                           Verse(verseType: .verse, verseContent: ["verse 3 line 1", "verse 3 line 2"])])
+                        beforeEach {
+                            target = DisplayHymnBottomBarViewModel(hymnToDisplay: classic1151, hymn: hymn, systemUtil: systemUtil)
+                        }
+                        it("should have 3 buttons in the buttons list and nothing in the overflow") {
+                            expect(target.buttons).to(haveCount(5))
+                            expect(target.buttons[0]).to(equal(.share("verse 1 line 1\nverse 1 line 2\nchorus line 1\nchorus line 2\nverse 2 line 1\nverse 2 line 2\nverse 3 line 1\nverse 3 line 2")))
+                            expect(target.buttons[1]).to(equal(.fontSize(FontPickerViewModel())))
+                            expect(target.buttons[2]).to(equal(.tags))
+                            expect(target.buttons[3]).to(equal(.soundCloud(SoundCloudViewModel(url: URL(string: "https://soundcloud.com/search/results?q=title")!))))
+                            expect(target.buttons[4]).to(equal(.youTube(URL(string: "https://www.youtube.com/results?search_query=title")!)))
+                            expect(target.overflowButtons).to(beNil())
+                        }
                     }
-                    given(systemUtil.isNetworkAvailable()) ~> true
-
-                    target.fetchHymn()
-                    testQueue.sync {}
-                    testQueue.sync {}
-                    testQueue.sync {}
-                }
-                it("should call hymnsRepository.getHymn") {
-                    verify(hymnsRepository.getHymn(classic1151)).wasCalled(exactly(1))
-                }
-                it("should have all the buttons in the buttons list and nothing in the overflow") {
-                    expect(target.buttons).to(haveCount(5))
-                    expect(target.buttons[0]).to(equal(.share("Drink! a river pure and clear that's flowing from the throne;\nEat! the tree of life with fruits abundant, richly grown\n\nDo come, oh, do come,\nSays Spirit and the Bride:\n\n")))
-                    expect(target.buttons[1]).to(equal(.fontSize(FontPickerViewModel())))
-                    expect(target.buttons[2]).to(equal(.tags))
-                    expect(target.buttons[3]).to(equal(.soundCloud(SoundCloudViewModel(url: URL(string: "https://soundcloud.com/search/results?q=title")!))))
-                    expect(target.buttons[4]).to(equal(.youTube(URL(string: "https://www.youtube.com/results?search_query=title")!)))
-                    expect(target.overflowButtons).to(beNil())
+                    context("with maximum number of buttons") {
+                        beforeEach {
+                            target = DisplayHymnBottomBarViewModel(hymnToDisplay: classic1151, hymn: populatedHymn, systemUtil: systemUtil)
+                        }
+                        it("should have 5 buttons in the buttons list and the rest in the overflow") {
+                            expect(target.buttons).to(haveCount(5))
+                            expect(target.buttons[0]).to(equal(.share("verse 1 line 1\nverse 1 line 2\nchorus line 1\nchorus line 2\nverse 2 line 1\nverse 2 line 2\nverse 3 line 1\nverse 3 line 2")))
+                            expect(target.buttons[1]).to(equal(.fontSize(FontPickerViewModel())))
+                            expect(target.buttons[2]).to(equal(.languages([
+                                SongResultViewModel(stableId: "hymnType: ht, hymnNumber: 1151, queryParams: ", title: "Tagalog",
+                                                    destinationView: EmptyView().eraseToAnyView()),
+                                SongResultViewModel(stableId: "hymnType: ts, hymnNumber: 216, queryParams: ?gb=1", title: "诗歌(简)",
+                                                    destinationView: EmptyView().eraseToAnyView())])))
+                            expect(target.buttons[3]).to(equal(.musicPlayback(AudioPlayerViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=mp3")!))))
+                            expect(target.buttons[4]).to(equal(.relevant([
+                                    SongResultViewModel(stableId: "hymnType: nt, hymnNumber: 1151, queryParams: ", title: "New Tune",
+                                                        destinationView: EmptyView().eraseToAnyView()),
+                                    SongResultViewModel(stableId: "hymnType: ns, hymnNumber: 216, queryParams: ?gb=1", title: "Cool other song",
+                                                        destinationView: EmptyView().eraseToAnyView())])))
+                            expect(target.overflowButtons!).to(haveCount(4))
+                            expect(target.overflowButtons![0]).to(equal(.tags))
+                            expect(target.overflowButtons![1]).to(equal(.soundCloud(SoundCloudViewModel(url: URL(string: "https://soundcloud.com/search/results?q=title")!))))
+                            expect(target.overflowButtons![2]).to(equal(.youTube(URL(string: "https://www.youtube.com/results?search_query=title")!)))
+                            expect(target.overflowButtons![3]).to(equal(.songInfo(SongInfoDialogViewModel(hymnToDisplay: classic1151))))
+                        }
+                    }
                 }
             }
         }
