@@ -19,6 +19,15 @@ struct SongbaseSong: Codable {
     }
 }
 
+extension SongbaseSong {
+
+    public static let chordsPattern = "\\[(.*?)\\]"
+
+    var containsChords: Bool {
+        return chords.range(of: Self.chordsPattern, options: .regularExpression) != nil
+    }
+}
+
 extension SongbaseSong: FetchableRecord {
 
     // https://github.com/groue/GRDB.swift/blob/master/README.md#conflict-resolution

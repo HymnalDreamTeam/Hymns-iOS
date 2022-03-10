@@ -58,15 +58,39 @@ class DisplayHymnViewModel: ObservableObject {
 
     func fetchHymn() {
         analytics.logDisplaySong(hymnIdentifier: identifier)
-        repository
-            .getHymn(identifier)
+        let hymnPublisher: AnyPublisher<UiHymn?, Never> = {
+            if identifier.hymnType != .songbase {
+                return repository.getHymn(identifier)
+            } else {
+                return Just<UiHymn?>(nil).eraseToAnyPublisher()
+            }
+        }()
+        let songbasePublisher: AnyPublisher<SongbaseSong?, Never> = {
+            if let hymnType = identifier.hymnType.toSongbaseBook,
+               identifier.hymnNumber.isPositiveInteger,
+               let hymnNumber = Int(identifier.hymnNumber) {
+                return repository.getSongbase(bookId: hymnType, bookIndex: hymnNumber)
+            } else {
+                return Just<SongbaseSong?>(nil).eraseToAnyPublisher()
+            }
+        }()
+
+        Publishers.CombineLatest(hymnPublisher, songbasePublisher)
             .subscribe(on: backgroundQueue)
             .receive(on: mainQueue)
             .sink(
-                receiveValue: { [weak self] hymn in
+                receiveValue: { [weak self] (hymn, songbaseSong) in
                     guard let self = self else { return }
                     self.isLoaded = true
-                    guard let hymn = hymn else { return }
+                    guard let hymn = hymn else {
+                        if let songbaseSong = songbaseSong {
+                            let songbaseViewModel = DisplaySongbaseViewModel(bookId: songbaseSong.bookId, bookIndex: songbaseSong.bookIndex)
+                            let songbaseTab: HymnTab = .lyrics(DisplaySongbaseView(viewModel: songbaseViewModel).eraseToAnyView())
+                            self.currentTab = songbaseTab
+                            self.tabItems = [songbaseTab]
+                        }
+                        return
+                    }
 
                     switch self.identifier.hymnType {
                     case .newTune, .newSong, .children, .howardHigashi:
@@ -80,7 +104,7 @@ class DisplayHymnViewModel: ObservableObject {
                     self.currentTab = lyricsTab
                     self.tabItems = [lyricsTab]
 
-                    if let musicView = self.getHymnMusic(hymn) {
+                    if let musicView = self.getHymnMusic(hymn: hymn, songbaseSong: songbaseSong) {
                         self.tabItems.append(.music(musicView.eraseToAnyView()))
                     }
 
@@ -92,9 +116,39 @@ class DisplayHymnViewModel: ObservableObject {
             }).store(in: &disposables)
     }
 
-    private func getHymnMusic(_ hymn: UiHymn) -> HymnMusicView? {
+    private func getHymnMusic(hymn: UiHymn?, songbaseSong: SongbaseSong?) -> HymnMusicView? {
         var hymnMusic = [HymnMusicTab]()
-        if self.systemUtil.isNetworkAvailable() {
+
+        // Add guitar tab
+        if let songbaseSong = songbaseSong, songbaseSong.containsChords {
+            let viewModel = DisplaySongbaseViewModel(bookId: songbaseSong.bookId, bookIndex: songbaseSong.bookIndex)
+            hymnMusic.append(.guitar(DisplaySongbaseView(viewModel: viewModel).eraseToAnyView()))
+        } else {
+            if self.systemUtil.isNetworkAvailable(), let hymn = hymn {
+                let chordsPath = hymn.pdfSheet?.data.first(where: { datum -> Bool in
+                    datum.value == DatumValue.text.rawValue
+                })?.path
+                if let chordsUrl = chordsPath.flatMap({ path -> URL? in
+                    HymnalNet.url(path: path)
+                }) {
+                    self.pdfLoader.load(url: chordsUrl)
+                    hymnMusic.append(.guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: chordsUrl)).eraseToAnyView()))
+                } else {
+                    let guitarSheetPath = hymn.pdfSheet?.data.first(where: { datum -> Bool in
+                        datum.value == DatumValue.guitar.rawValue
+                    })?.path
+                    if let guitarSheetUrl = guitarSheetPath.flatMap({ path -> URL? in
+                        HymnalNet.url(path: path)
+                    }) {
+                        self.pdfLoader.load(url: guitarSheetUrl)
+                        hymnMusic.append(.guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: guitarSheetUrl)).eraseToAnyView()))
+                    }
+                }
+            }
+        }
+        
+        // Add piano tab
+        if self.systemUtil.isNetworkAvailable(), let hymn = hymn {
             let pianoPath = hymn.pdfSheet?.data.first(where: { datum -> Bool in
                 datum.value == DatumValue.piano.rawValue
             })?.path
@@ -103,26 +157,6 @@ class DisplayHymnViewModel: ObservableObject {
             }) {
                 self.pdfLoader.load(url: pianoUrl)
                 hymnMusic.append(.piano(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: pianoUrl)).eraseToAnyView()))
-            }
-
-            let chordsPath = hymn.pdfSheet?.data.first(where: { datum -> Bool in
-                datum.value == DatumValue.text.rawValue
-            })?.path
-            if let chordsUrl = chordsPath.flatMap({ path -> URL? in
-                HymnalNet.url(path: path)
-            }) {
-                self.pdfLoader.load(url: chordsUrl)
-                hymnMusic.append(.guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: chordsUrl)).eraseToAnyView()))
-            } else {
-                let guitarSheetPath = hymn.pdfSheet?.data.first(where: { datum -> Bool in
-                    datum.value == DatumValue.guitar.rawValue
-                })?.path
-                if let guitarSheetUrl = guitarSheetPath.flatMap({ path -> URL? in
-                    HymnalNet.url(path: path)
-                }) {
-                    self.pdfLoader.load(url: guitarSheetUrl)
-                    hymnMusic.append(.guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: guitarSheetUrl)).eraseToAnyView()))
-                }
             }
         }
 
