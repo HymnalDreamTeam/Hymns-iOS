@@ -19,9 +19,9 @@ class IndicatorTabSnapshots: XCTestCase {
         assertVersionedSnapshot(matching: view.ignoresSafeArea(), as: .swiftUiImage())
     }
 
-    func test_secondTabSelected() {
+    func test_secondTabSelected_noDivider() {
         let view = GeometryReader { geometry in
-            IndicatorTabView(geometry: geometry, currentTab: .constant(self.tabs[1]), tabItems: self.tabs)
+            IndicatorTabView(geometry: geometry, currentTab: .constant(self.tabs[1]), tabItems: self.tabs, showDivider: false)
         }
         assertVersionedSnapshot(matching: view.ignoresSafeArea(), as: .swiftUiImage())
     }
