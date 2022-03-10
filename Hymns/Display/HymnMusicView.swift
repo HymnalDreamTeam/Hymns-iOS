@@ -17,7 +17,8 @@ struct HymnMusicView: View {
                                  currentTab: self.$viewModel.currentTab,
                                  tabItems: self.viewModel.musicViews,
                                  tabSpacing: .custom(spacing: 25),
-                                 showIndicator: false)
+                                 showIndicator: false,
+                                 showDivider: false)
             }.eraseToAnyView()
         } else {
             return self.viewModel.currentTab.content
