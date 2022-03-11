@@ -55,24 +55,18 @@ extension VerseLineViewModel {
     }
 }
 
+extension VerseLineViewModel: CustomStringConvertible {
+    var description: String {
+        "verseNumber: \(String(describing: verseNumber)), verseText: \(verseText), transliteration: \(String(describing: transliteration))"
+    }
+}
+
 class VerseViewModel {
 
     let verseLines: [VerseLineViewModel]
 
-    convenience init(verseLines: [String]) {
-        self.init(verseNumber: nil, verseLines: verseLines, transliteration: nil)
-    }
-
-    convenience init(verseLines: [String], transliteration: [String]?) {
-        self.init(verseNumber: nil, verseLines: verseLines, transliteration: transliteration)
-    }
-
-    convenience init(verseNumber: String, verseLines: [String]) {
-        self.init(verseNumber: verseNumber, verseLines: verseLines, transliteration: nil)
-    }
-
-    init(verseNumber: String?, verseLines: [String],
-         transliteration: [String]?, shouldTransliterate: Binding<Bool>? = nil) {
+    init(verseNumber: String? = nil, verseLines: [String],
+         transliteration: [String]? = nil, shouldTransliterate: Binding<Bool>? = nil) {
         self.verseLines = verseLines.enumerated().map { (index, line) -> VerseLineViewModel in
             let transliteration = transliteration?[index]
             return VerseLineViewModel(verseNumber: index == 0 ? verseNumber : nil, verseText: line, transliteration: transliteration)
@@ -106,5 +100,11 @@ extension VerseViewModel: Hashable {
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(verseLines)
+    }
+}
+
+extension VerseViewModel: CustomStringConvertible {
+    var description: String {
+        verseLines.map { $0.description }.joined(separator: "|")
     }
 }

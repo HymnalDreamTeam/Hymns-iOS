@@ -36,7 +36,7 @@ class DisplayHymnBottomBarViewModel: ObservableObject {
         populateButtons(hymn)
     }
 
-    func populateButtons(_ hymn: UiHymn) {
+    private func populateButtons(_ hymn: UiHymn) {
         var buttons = [BottomBarButton]()
 
         if let lyrics = hymn.lyrics {
@@ -76,8 +76,7 @@ class DisplayHymnBottomBarViewModel: ObservableObject {
             buttons.append(.youTube(url))
         }
 
-        let songInfo = SongInfoDialogViewModel(hymnToDisplay: self.identifier, hymn: hymn)
-        if let songInfo = songInfo {
+        if let songInfo = SongInfoDialogViewModel(hymnToDisplay: self.identifier, hymn: hymn) {
             buttons.append(.songInfo(songInfo))
         }
 

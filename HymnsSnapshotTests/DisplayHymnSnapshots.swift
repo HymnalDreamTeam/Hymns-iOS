@@ -24,10 +24,6 @@ class DisplayHymnSnapshots: XCTestCase {
         viewModel.isLoaded = true
         viewModel.title = "Hymn 40"
         viewModel.isFavorited = false
-        let lyricsViewModel = HymnLyricsViewModel(hymnToDisplay: hymn40_identifier)
-        lyricsViewModel.lyrics = nil
-        viewModel.currentTab = .lyrics(HymnLyricsView(viewModel: lyricsViewModel).maxSize().eraseToAnyView())
-        viewModel.tabItems = [viewModel.currentTab]
         assertVersionedSnapshot(
             matching: DisplayHymnView(viewModel: viewModel).ignoresSafeArea(),
             as: .swiftUiImage())
@@ -38,13 +34,7 @@ class DisplayHymnSnapshots: XCTestCase {
         viewModel.isLoaded = true
         viewModel.title = "Hymn 40"
         viewModel.isFavorited = false
-        let lyricsViewModel = HymnLyricsViewModel(hymnToDisplay: hymn40_identifier)
-        lyricsViewModel.lyrics
-            = [VerseViewModel(verseNumber: "1", verseLines: hymn40_hymn.lyrics[0].verseContent),
-               VerseViewModel(verseNumber: "2", verseLines: hymn40_hymn.lyrics[1].verseContent),
-               VerseViewModel(verseNumber: "3", verseLines: hymn40_hymn.lyrics[2].verseContent),
-               VerseViewModel(verseNumber: "4", verseLines: hymn40_hymn.lyrics[3].verseContent),
-               VerseViewModel(verseNumber: "5", verseLines: hymn40_hymn.lyrics[4].verseContent)]
+        let lyricsViewModel = HymnLyricsViewModel(hymnToDisplay: hymn40_identifier, lyrics: hymn40_hymn.lyrics)!
         viewModel.currentTab = .lyrics(HymnLyricsView(viewModel: lyricsViewModel).maxSize().eraseToAnyView())
         viewModel.tabItems = [viewModel.currentTab, .music(EmptyView().eraseToAnyView())]
         let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [Verse]())
@@ -60,14 +50,27 @@ class DisplayHymnSnapshots: XCTestCase {
         viewModel.isLoaded = true
         viewModel.title = "Hymn 1334"
         viewModel.isFavorited = true
-        let lyricsViewModel = HymnLyricsViewModel(hymnToDisplay: hymn1334_identifier)
-        lyricsViewModel.lyrics
-            = [VerseViewModel(verseNumber: "1", verseLines: hymn1334_hymn.lyrics[0].verseContent)
-        ]
+        let lyricsViewModel = HymnLyricsViewModel(hymnToDisplay: hymn1334_identifier, lyrics: hymn1334_hymn.lyrics)!
         viewModel.currentTab = .lyrics(HymnLyricsView(viewModel: lyricsViewModel).maxSize().eraseToAnyView())
         viewModel.tabItems = [viewModel.currentTab, .music(EmptyView().eraseToAnyView())]
         let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [Verse]())
         viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1334_identifier, hymn: hymn)
+        viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize(FontPickerViewModel()), .tags]
+        assertVersionedSnapshot(
+            matching: DisplayHymnView(viewModel: viewModel).ignoresSafeArea(),
+            as: .swiftUiImage())
+    }
+
+    func test_classic1151_nilFavorite() {
+        viewModel = DisplayHymnViewModel(hymnToDisplay: hymn1151_identifier)
+        viewModel.isLoaded = true
+        viewModel.title = "Hymn 1151"
+        viewModel.isFavorited = nil
+        let lyricsViewModel = HymnLyricsViewModel(hymnToDisplay: hymn1151_identifier, lyrics: hymn1151_hymn.lyrics)!
+        viewModel.currentTab = .lyrics(HymnLyricsView(viewModel: lyricsViewModel).maxSize().eraseToAnyView())
+        viewModel.tabItems = [viewModel.currentTab]
+        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [Verse]())
+        viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1151_identifier, hymn: hymn)
         viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize(FontPickerViewModel()), .tags]
         assertVersionedSnapshot(
             matching: DisplayHymnView(viewModel: viewModel).ignoresSafeArea(),
@@ -79,35 +82,9 @@ class DisplayHymnSnapshots: XCTestCase {
         viewModel.isLoaded = true
         viewModel.title = "Hymn 1151"
         viewModel.isFavorited = false
-        let lyricsViewModel = HymnLyricsViewModel(hymnToDisplay: hymn1151_identifier)
-        lyricsViewModel.lyrics = [VerseViewModel(verseNumber: "1", verseLines: hymn1151_hymn.lyrics[0].verseContent),
-                                  VerseViewModel(verseLines: hymn1151_hymn.lyrics[1].verseContent),
-                                  VerseViewModel(verseNumber: "2", verseLines: hymn1151_hymn.lyrics[2].verseContent),
-                                  VerseViewModel(verseNumber: "3", verseLines: hymn1151_hymn.lyrics[3].verseContent),
-                                  VerseViewModel(verseNumber: "4", verseLines: hymn1151_hymn.lyrics[4].verseContent)]
+        let lyricsViewModel = HymnLyricsViewModel(hymnToDisplay: hymn1151_identifier, lyrics: hymn1151_hymn.lyrics)!
         viewModel.currentTab = .lyrics(HymnLyricsView(viewModel: lyricsViewModel).maxSize().eraseToAnyView())
         viewModel.tabItems = [HymnTab]()
-        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [Verse]())
-        viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1151_identifier, hymn: hymn)
-        viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize(FontPickerViewModel()), .tags]
-        assertVersionedSnapshot(
-            matching: DisplayHymnView(viewModel: viewModel).ignoresSafeArea(),
-            as: .swiftUiImage())
-    }
-
-    func test_classic1151_oneTab() {
-        viewModel = DisplayHymnViewModel(hymnToDisplay: hymn1151_identifier)
-        viewModel.isLoaded = true
-        viewModel.title = "Hymn 1151"
-        viewModel.isFavorited = nil
-        let lyricsViewModel = HymnLyricsViewModel(hymnToDisplay: hymn1151_identifier)
-        lyricsViewModel.lyrics = [VerseViewModel(verseNumber: "1", verseLines: hymn1151_hymn.lyrics[0].verseContent),
-                                  VerseViewModel(verseLines: hymn1151_hymn.lyrics[1].verseContent),
-                                  VerseViewModel(verseNumber: "2", verseLines: hymn1151_hymn.lyrics[2].verseContent),
-                                  VerseViewModel(verseNumber: "3", verseLines: hymn1151_hymn.lyrics[3].verseContent),
-                                  VerseViewModel(verseNumber: "4", verseLines: hymn1151_hymn.lyrics[4].verseContent)]
-        viewModel.currentTab = .lyrics(HymnLyricsView(viewModel: lyricsViewModel).maxSize().eraseToAnyView())
-        viewModel.tabItems = [viewModel.currentTab]
         let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [Verse]())
         viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1151_identifier, hymn: hymn)
         viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize(FontPickerViewModel()), .tags]
@@ -121,12 +98,7 @@ class DisplayHymnSnapshots: XCTestCase {
         viewModel.isLoaded = true
         viewModel.title = "Hymn 1151"
         viewModel.isFavorited = false
-        let lyricsViewModel = HymnLyricsViewModel(hymnToDisplay: hymn1151_identifier)
-        lyricsViewModel.lyrics = [VerseViewModel(verseNumber: "1", verseLines: hymn1151_hymn.lyrics[0].verseContent),
-                                  VerseViewModel(verseLines: hymn1151_hymn.lyrics[1].verseContent),
-                                  VerseViewModel(verseNumber: "2", verseLines: hymn1151_hymn.lyrics[2].verseContent),
-                                  VerseViewModel(verseNumber: "3", verseLines: hymn1151_hymn.lyrics[3].verseContent),
-                                  VerseViewModel(verseNumber: "4", verseLines: hymn1151_hymn.lyrics[4].verseContent)]
+        let lyricsViewModel = HymnLyricsViewModel(hymnToDisplay: hymn1151_identifier, lyrics: hymn1151_hymn.lyrics)!
         viewModel.currentTab = .lyrics(HymnLyricsView(viewModel: lyricsViewModel).maxSize().eraseToAnyView())
         viewModel.tabItems = [viewModel.currentTab, .music(EmptyView().eraseToAnyView())]
         let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [Verse]())

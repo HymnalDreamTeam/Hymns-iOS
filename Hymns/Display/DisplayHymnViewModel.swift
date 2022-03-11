@@ -45,7 +45,7 @@ class DisplayHymnViewModel: ObservableObject {
          storeInHistoryStore: Bool = false) {
         self.analytics = analytics
         self.backgroundQueue = backgroundQueue
-        self.currentTab = .lyrics(HymnLyricsView(viewModel: HymnLyricsViewModel(hymnToDisplay: identifier)).maxSize().eraseToAnyView())
+        self.currentTab = .lyrics(HymnNotExistsView().maxSize().eraseToAnyView())
         self.favoriteStore = favoriteStore
         self.historyStore = historyStore
         self.identifier = identifier
@@ -58,15 +58,19 @@ class DisplayHymnViewModel: ObservableObject {
 
     func fetchHymn() {
         analytics.logDisplaySong(hymnIdentifier: identifier)
+        var latestValue: UiHymn?
         repository
             .getHymn(identifier)
             .subscribe(on: backgroundQueue)
             .receive(on: mainQueue)
-            .sink(
-                receiveValue: { [weak self] hymn in
-                    guard let self = self else { return }
+            .sink(receiveCompletion: { [weak self] state in
+                guard let self = self else { return }
+                // Only display the hymn if the call is finished and we aren't getting any more values
+                if state == .finished {
                     self.isLoaded = true
-                    guard let hymn = hymn else { return }
+                    guard let hymn = latestValue else {
+                        return
+                    }
 
                     switch self.identifier.hymnType {
                     case .newTune, .newSong, .children, .howardHigashi:
@@ -76,12 +80,17 @@ class DisplayHymnViewModel: ObservableObject {
                     }
                     self.resultsTitle = hymn.title
 
-                    let lyricsTab: HymnTab = .lyrics(HymnLyricsView(viewModel: HymnLyricsViewModel(hymnToDisplay: self.identifier)).maxSize().eraseToAnyView())
-                    self.currentTab = lyricsTab
-                    self.tabItems = [lyricsTab]
+                    if let lyrics = HymnLyricsViewModel(hymnToDisplay: self.identifier, lyrics: hymn.lyrics) {
+                        let lyricsTab: HymnTab = .lyrics(HymnLyricsView(viewModel: lyrics).maxSize().eraseToAnyView())
+                        self.tabItems.append(lyricsTab)
+                    }
 
                     if let musicView = self.getHymnMusic(hymn) {
                         self.tabItems.append(.music(musicView.eraseToAnyView()))
+                    }
+
+                    if let firstTab = self.tabItems.first {
+                        self.currentTab = firstTab
                     }
 
                     self.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: self.identifier, hymn: hymn)
@@ -89,6 +98,9 @@ class DisplayHymnViewModel: ObservableObject {
                     if self.storeInHistoryStore {
                         self.historyStore.storeRecentSong(hymnToStore: self.identifier, songTitle: self.resultsTitle)
                     }
+                }
+            }, receiveValue: { value in
+                latestValue = value
             }).store(in: &disposables)
     }
 

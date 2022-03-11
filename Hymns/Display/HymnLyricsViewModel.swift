@@ -6,50 +6,34 @@ class HymnLyricsViewModel: ObservableObject {
 
     @UserDefault("repeat_chorus", defaultValue: false) var shouldRepeatChorus: Bool
 
-    @Published var lyrics: [VerseViewModel]? = [VerseViewModel]()
+    @Published var lyrics: [VerseViewModel] = [VerseViewModel]()
     @Published var showTransliterationButton = false
 
     private let identifier: HymnIdentifier
-    private let mainQueue: DispatchQueue
-    private let repository: HymnsRepository
 
     private var disposables = Set<AnyCancellable>()
 
-    init(hymnToDisplay identifier: HymnIdentifier,
-         hymnsRepository repository: HymnsRepository = Resolver.resolve(),
-         mainQueue: DispatchQueue = Resolver.resolve(name: "main")) {
+    init?(hymnToDisplay identifier: HymnIdentifier, lyrics: [Verse]?) {
         self.identifier = identifier
-        self.mainQueue = mainQueue
-        self.repository = repository
+
+        guard let lyrics = lyrics else {
+            return nil
+        }
+
+        let viewModels = convertToViewModels(lyrics)
+        self.lyrics = viewModels
+        self.showTransliterationButton = viewModels.first.flatMap { fisrtVerse in
+            fisrtVerse.verseLines.first
+        }.flatMap { fisrtLine in
+            fisrtLine.transliteration
+        } != nil
+
+        if viewModels.isEmpty {
+            return nil
+        }
     }
 
-    func fetchLyrics() {
-        var latestValue: [VerseViewModel]? = [VerseViewModel]()
-        var showTransliterationButton = false
-        repository
-            .getHymn(identifier)
-            .map({ [weak self] hymn -> [VerseViewModel]? in
-                guard let self = self, let hymn = hymn, let lyrics = hymn.lyrics, !lyrics.isEmpty else {
-                    return nil
-                }
-                return self.convertToViewModels(verses: lyrics)
-            })
-            .receive(on: mainQueue)
-            .sink(receiveCompletion: { [weak self] state in
-                guard let self = self else { return }
-                if state == .finished {
-                    // Only display the lyrics if the call is finished and we aren't getting any more values
-                    self.lyrics = latestValue
-                    self.showTransliterationButton = showTransliterationButton
-                }
-                }, receiveValue: { [weak self ] lyrics in
-                    guard let self = self else { return }
-                    latestValue = lyrics
-                    showTransliterationButton = self.containsTransliteration(viewModels: lyrics)
-            }).store(in: &disposables)
-    }
-
-    func convertToViewModels(verses: [Verse]) -> [VerseViewModel] {
+    private func convertToViewModels(_ verses: [Verse]) -> [VerseViewModel] {
         let lyrics: [Verse]
         if self.shouldRepeatChorus {
             lyrics = duplicateChorus(verses)
@@ -103,15 +87,5 @@ class HymnLyricsViewModel: ObservableObject {
             }
         }
         return newVerses
-    }
-
-    private func containsTransliteration(viewModels: [VerseViewModel]?) -> Bool {
-        guard
-            let viewModels = viewModels,
-            let firstViewModel = viewModels.first,
-            let firstLine = firstViewModel.verseLines.first else {
-                return false
-        }
-        return firstLine.transliteration != nil
     }
 }
