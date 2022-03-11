@@ -6,17 +6,12 @@ import XCTest
 // https://troz.net/post/2020/swiftui_snapshots/
 class SongInfoDialogSnapshots: XCTestCase {
 
+    let hymn = UiHymn(hymnIdentifier: PreviewHymnIdentifiers.hymn40, title: "", lyrics: nil, author: "MC")
     var viewModel: SongInfoDialogViewModel!
 
     override func setUp() {
         super.setUp()
-        viewModel = SongInfoDialogViewModel(hymnToDisplay: hymn40_identifier)
-    }
-
-    func test_empty() {
-        assertVersionedSnapshot(
-            matching: SongInfoDialogView(viewModel: viewModel).ignoresSafeArea(),
-            as: .swiftUiImage())
+        viewModel = SongInfoDialogViewModel(hymnToDisplay: hymn40_identifier, hymn: hymn)!
     }
 
     func test_songInfo() {
