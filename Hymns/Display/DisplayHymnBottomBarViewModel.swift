@@ -76,9 +76,9 @@ class DisplayHymnBottomBarViewModel: ObservableObject {
             buttons.append(.youTube(url))
         }
 
-        let songInfo = SongInfoDialogViewModel.createSongInfo(hymn: hymn)
-        if !songInfo.isEmpty {
-            buttons.append(.songInfo(SongInfoDialogViewModel(hymnToDisplay: self.identifier)))
+        let songInfo = SongInfoDialogViewModel(hymnToDisplay: self.identifier, hymn: hymn)
+        if let songInfo = songInfo {
+            buttons.append(.songInfo(songInfo))
         }
 
         self.buttons = [BottomBarButton]()

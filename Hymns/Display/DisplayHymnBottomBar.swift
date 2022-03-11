@@ -221,7 +221,8 @@ struct DisplayHymnBottomBar_Previews: PreviewProvider {
             .languages([SongResultViewModel(stableId: "empty language view", title: "language", destinationView: EmptyView().eraseToAnyView())]),
             .musicPlayback(AudioPlayerViewModel(url: URL(string: "https://www.hymnal.net/Hymns/NewSongs/mp3/ns0767.mp3")!)),
             .relevant([SongResultViewModel(stableId: "empty relevant view", title: "relevant", destinationView: EmptyView().eraseToAnyView())]),
-            .songInfo(SongInfoDialogViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151))
+            .songInfo(SongInfoDialogViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151,
+                                              hymn: UiHymn(hymnIdentifier: PreviewHymnIdentifiers.hymn1151, title: "", lyrics: nil, author: "MC"))!)
         ]
         let maximum = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
             get: {dialogModel},
@@ -239,7 +240,8 @@ struct DisplayHymnBottomBar_Previews: PreviewProvider {
         overflowViewModel.overflowButtons = [
             .soundCloud(SoundCloudViewModel(url: URL(string: "https://soundcloud.com/search?q=query")!)),
             .youTube(URL(string: "https://www.youtube.com/results?search_query=search")!),
-            .songInfo(SongInfoDialogViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151))
+            .songInfo(SongInfoDialogViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151,
+                                              hymn: UiHymn(hymnIdentifier: PreviewHymnIdentifiers.hymn1151, title: "", lyrics: nil, author: "MC"))!)
         ]
         let overflow = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
             get: {dialogModel},

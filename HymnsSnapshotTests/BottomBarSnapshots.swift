@@ -50,7 +50,8 @@ class BottomBarSnapshots: XCTestCase {
             .musicPlayback(AudioPlayerViewModel(url: URL(string: "https://www.hymnal.net/Hymns/NewSongs/mp3/ns0767.mp3")!)),
             .relevant([SongResultViewModel(stableId: "empty relevant view", title: "relevant", destinationView: EmptyView().eraseToAnyView())]),
             .tags,
-            .songInfo(SongInfoDialogViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151))
+            .songInfo(SongInfoDialogViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151,
+                                              hymn: UiHymn(hymnIdentifier: PreviewHymnIdentifiers.hymn40, title: "", lyrics: nil, author: "MC"))!)
         ]
 
         let bottomBar = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
@@ -71,7 +72,8 @@ class BottomBarSnapshots: XCTestCase {
         viewModel.overflowButtons = [
             .soundCloud(SoundCloudViewModel(url: URL(string: "https://soundcloud.com/search?q=query")!)),
             .youTube(URL(string: "https://www.youtube.com/results?search_query=search")!),
-            .songInfo(SongInfoDialogViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151))
+            .songInfo(SongInfoDialogViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151,
+                                              hymn: UiHymn(hymnIdentifier: PreviewHymnIdentifiers.hymn40, title: "", lyrics: nil, author: "MC"))!)
         ]
 
         let bottomBar = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(

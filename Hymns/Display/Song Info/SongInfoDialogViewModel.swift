@@ -8,39 +8,22 @@ class SongInfoDialogViewModel: ObservableObject {
 
     @Published var songInfo = [SongInfoViewModel]()
 
-    private let backgroundQueue: DispatchQueue
     private let identifier: HymnIdentifier
-    private let mainQueue: DispatchQueue
-    private let repository: HymnsRepository
+    private let hymn: UiHymn
 
     private var disposables = Set<AnyCancellable>()
 
-    init(backgroundQueue: DispatchQueue = Resolver.resolve(name: "background"),
-         hymnToDisplay identifier: HymnIdentifier,
-         hymnsRepository repository: HymnsRepository = Resolver.resolve(),
-         mainQueue: DispatchQueue = Resolver.resolve(name: "main")) {
-        self.backgroundQueue = backgroundQueue
+    init?(hymnToDisplay identifier: HymnIdentifier, hymn: UiHymn) {
         self.identifier = identifier
-        self.mainQueue = mainQueue
-        self.repository = repository
-        fetchSongInfo()
+        self.hymn = hymn
+        self.songInfo = createSongInfo(hymn: hymn)
+
+        if self.songInfo.isEmpty {
+            return nil
+        }
     }
 
-    func fetchSongInfo() {
-        repository
-            .getHymn(identifier)
-            .subscribe(on: backgroundQueue)
-            .receive(on: mainQueue)
-            .sink(
-                receiveValue: { [weak self] hymn in
-                    guard let self = self else { return }
-                    guard let hymn = hymn else { return }
-
-                    self.songInfo = Self.createSongInfo(hymn: hymn)
-            }).store(in: &disposables)
-    }
-
-    static func createSongInfo(hymn: UiHymn) -> [SongInfoViewModel] {
+    private func createSongInfo(hymn: UiHymn) -> [SongInfoViewModel] {
         var songInfo = [SongInfoViewModel]()
 
         if let category = hymn.category, !category.isEmpty {
@@ -73,12 +56,12 @@ class SongInfoDialogViewModel: ObservableObject {
         return songInfo
     }
 
-    private static func createSongInfoViewModel(label: String, compositeValue: String) -> SongInfoViewModel {
+    private func createSongInfoViewModel(label: String, compositeValue: String) -> SongInfoViewModel {
         let values = compositeValue.components(separatedBy: ";").compactMap { value -> String? in
             guard !value.trim().isEmpty else {
                 return nil
             }
-            return value
+            return value.trim()
         }
         return SongInfoViewModel(label: label, values: values)
     }

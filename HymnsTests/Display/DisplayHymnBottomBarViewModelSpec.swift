@@ -95,7 +95,7 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                                     SongResultViewModel(stableId: "hymnType: ns, hymnNumber: 216, queryParams: ?gb=1", title: "Cool other song",
                                                         destinationView: EmptyView().eraseToAnyView())])))
                             expect(target.buttons[4]).to(equal(.tags))
-                            expect(target.buttons[5]).to(equal(.songInfo(SongInfoDialogViewModel(hymnToDisplay: classic1151))))
+                            expect(target.buttons[5]).to(equal(.songInfo(SongInfoDialogViewModel(hymnToDisplay: classic1151, hymn: populatedHymn)!)))
                             expect(target.overflowButtons).to(beNil())
                         }
                     }
@@ -125,7 +125,7 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                             expect(target.overflowButtons).toNot(beNil())
                             expect(target.overflowButtons!).to(haveCount(2))
                             expect(target.overflowButtons![0]).to(equal(.tags))
-                            expect(target.overflowButtons![1]).to(equal(.songInfo(SongInfoDialogViewModel(hymnToDisplay: classic1151))))
+                            expect(target.overflowButtons![1]).to(equal(.songInfo(SongInfoDialogViewModel(hymnToDisplay: classic1151, hymn: populatedHymn)!)))
                         }
                     }
                 }
@@ -195,7 +195,7 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                             expect(target.overflowButtons![0]).to(equal(.tags))
                             expect(target.overflowButtons![1]).to(equal(.soundCloud(SoundCloudViewModel(url: URL(string: "https://soundcloud.com/search/results?q=title")!))))
                             expect(target.overflowButtons![2]).to(equal(.youTube(URL(string: "https://www.youtube.com/results?search_query=title")!)))
-                            expect(target.overflowButtons![3]).to(equal(.songInfo(SongInfoDialogViewModel(hymnToDisplay: classic1151))))
+                            expect(target.overflowButtons![3]).to(equal(.songInfo(SongInfoDialogViewModel(hymnToDisplay: classic1151, hymn: populatedHymn)!)))
                         }
                     }
                 }
