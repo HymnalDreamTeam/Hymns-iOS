@@ -33,10 +33,10 @@ class DisplayHymnBottomBarViewModel: ObservableObject {
             overflowThreshold = 5
         }
 
-        populateHymn(hymn)
+        populateButtons(hymn)
     }
 
-    func populateHymn(_ hymn: UiHymn) {
+    func populateButtons(_ hymn: UiHymn) {
         var buttons = [BottomBarButton]()
 
         if let lyrics = hymn.lyrics {
