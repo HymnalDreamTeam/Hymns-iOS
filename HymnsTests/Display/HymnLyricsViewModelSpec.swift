@@ -7,177 +7,107 @@ import Nimble
 class HymnLyricsViewModelSpec: QuickSpec {
 
     override func spec() {
-        describe("HymnLyricsViewModel") {
-            // https://www.vadimbulavin.com/unit-testing-async-code-in-swift/
-            let testQueue = DispatchQueue(label: "test_queue")
-            var hymnsRepository: HymnsRepositoryMock!
+        describe("HymnLyricsViewModel initialized") {
             var target: HymnLyricsViewModel!
-            beforeEach {
-                hymnsRepository = mock(HymnsRepository.self)
-                target = HymnLyricsViewModel(hymnToDisplay: classic1151, hymnsRepository: hymnsRepository, mainQueue: testQueue)
-                target.shouldRepeatChorus = false
-            }
-            context("with nil repository result") {
-                context("result is completed") {
-                    beforeEach {
-                        given(hymnsRepository.getHymn(classic1151)) ~> { _ in
-                            Just(nil).assertNoFailure().eraseToAnyPublisher()
-                        }
-                    }
-                    describe("fetching lyrics") {
-                        beforeEach {
-                            target.fetchLyrics()
-                            testQueue.sync {}
-                        }
-                        it("lyrics should be nil") {
-                            expect(target.lyrics).to(beNil())
-                        }
-                        it("should call hymnsRepository.getHymn") {
-                            verify(hymnsRepository.getHymn(classic1151)).wasCalled(exactly(1))
-                        }
-                    }
-                }
-                context("result is not yet finished") {
-                    var currentValue: CurrentValueSubject<UiHymn?, Never>!
-                    beforeEach {
-                        currentValue = CurrentValueSubject<UiHymn?, Never>(nil)
-                        given(hymnsRepository.getHymn(classic1151)) ~> { _ in
-                            currentValue.eraseToAnyPublisher()
-                        }
-                    }
-                    describe("fetching lyrics") {
-                        beforeEach {
-                            target.fetchLyrics()
-                            testQueue.sync {}
-                        }
-                        it("lyrics should not be nil") {
-                            expect(target.lyrics).toNot(beNil())
-                        }
-                        it("lyrics should not be empty") {
-                            expect(target.lyrics).to(beEmpty())
-                        }
-                        it("should call hymnsRepository.getHymn") {
-                            verify(hymnsRepository.getHymn(classic1151)).wasCalled(exactly(1))
-                        }
-                        context("result finishes") {
-                            beforeEach {
-                                currentValue.send(completion: .finished)
-                                testQueue.sync {}
-                            }
-                            it("lyrics should be nil") {
-                                expect(target.lyrics).to(beNil())
-                            }
-                            it("should call hymnsRepository.getHymn") {
-                                verify(hymnsRepository.getHymn(classic1151)).wasCalled(exactly(1))
-                            }
-                        }
-                    }
-                }
-            }
-            context("with empty repository result") {
+            context("with nil lyrics") {
                 beforeEach {
-                    let emptyHymn = UiHymn(hymnIdentifier: classic1151, title: "Empty Hymn", lyrics: [Verse]())
-                    given(hymnsRepository.getHymn(classic1151)) ~> { _ in Just(emptyHymn).assertNoFailure().eraseToAnyPublisher()}
+                    target = HymnLyricsViewModel(hymnToDisplay: classic1151, lyrics: nil)
                 }
-                describe("fetching lyrics") {
-                    beforeEach {
-                        target.fetchLyrics()
-                        testQueue.sync {}
-                    }
-                    it("lyrics should be empty") {
-                        expect(target.lyrics).to(beNil())
-                    }
-                    it("should call hymnsRepository.getHymn") {
-                        verify(hymnsRepository.getHymn(classic1151)).wasCalled(exactly(1))
-                    }
+                it("should return nil view model") {
+                    expect(target).to(beNil())
                 }
             }
-            context("with valid repository result") {
-                let lyricsWithoutTransliteration: [Verse] = [
-                    Verse(verseType: .verse, verseContent: ["line 1", "line 2"], transliteration: nil),
-                    Verse(verseType: .chorus, verseContent: ["chorus 1", "chorus 2"], transliteration: nil),
-                    Verse(verseType: .other, verseContent: ["other 1", "other 2"], transliteration: nil),
-                    Verse(verseType: .verse, verseContent: ["line 3", "line 4"], transliteration: nil)]
+            context("with empty lyrics") {
                 beforeEach {
-                    let validHymn = UiHymn(hymnIdentifier: classic1151, title: "Filled Hymn", lyrics: lyricsWithoutTransliteration)
-                    given(hymnsRepository.getHymn(classic1151)) ~> { _ in Just(validHymn).assertNoFailure().eraseToAnyPublisher()}
+                    target = HymnLyricsViewModel(hymnToDisplay: classic1151, lyrics: [Verse]())
                 }
-                describe("fetching lyrics") {
-                    beforeEach {
-                        target.fetchLyrics()
-                        testQueue.sync {}
+                it("should return nil view model") {
+                    expect(target).to(beNil())
+                }
+            }
+            context("without transliterable lyrics") {
+                let verses = [Verse(verseType: .verse, verseContent: ["line 1", "line 2"]), Verse(verseType: .chorus, verseContent: ["chorus 1", "chorus 2"])]
+                beforeEach {
+                    target = HymnLyricsViewModel(hymnToDisplay: classic1151, lyrics: verses)!
+                }
+                it("should display lyrics") {
+                    expect(target.lyrics).to(equal([VerseViewModel(verseNumber: "1", verseLines: ["line 1", "line 2"]), VerseViewModel(verseLines: ["chorus 1", "chorus 2"])]))
+                }
+                describe("formatted string") {
+                    context("do not include transliteration") {
+                        it("should not include transliteration") {
+                            let formattedString = target.lyrics.map { $0.createFormattedString(includeTransliteration: false) }
+                            expect(formattedString).to(equal(["line 1\nline 2\n", "chorus 1\nchorus 2\n"]))
+                        }
                     }
-                    it("lyrics should be filled with lyrics") {
-                        expect(target.lyrics).to(equal([
-                            VerseViewModel(verseNumber: "1", verseLines: ["line 1", "line 2"]),
-                            VerseViewModel(verseLines: ["chorus 1", "chorus 2"]),
-                            VerseViewModel(verseLines: ["other 1", "other 2"]),
-                            VerseViewModel(verseNumber: "2", verseLines: ["line 3", "line 4"])
-                        ]))
+                    context("include transliteration") {
+                        it("should not include transliteration since it doesn't exist") {
+                            let formattedString = target.lyrics.map { $0.createFormattedString(includeTransliteration: true) }
+                            expect(formattedString).to(equal(["line 1\nline 2\n", "chorus 1\nchorus 2\n"]))
+                        }
                     }
-                    it("should call hymnsRepository.getHymn") {
-                        verify(hymnsRepository.getHymn(classic1151)).wasCalled(exactly(1))
+                }
+                it("should not show transliteration button") {
+                    expect(target!.showTransliterationButton).to(beFalse())
+                }
+            }
+            context("with transliterable lyrics") {
+                let verses = [Verse(verseType: .verse, verseContent: ["line 1", "line 2"], transliteration: ["transliteration 1", "transliteration 2"]),
+                              Verse(verseType: .chorus, verseContent: ["chorus 1", "chorus 2"], transliteration: ["chorus transliteration 1", "chorus transliteration 2"])]
+                beforeEach {
+                    target = HymnLyricsViewModel(hymnToDisplay: classic1151, lyrics: verses)!
+                }
+                it("should display lyrics") {
+                    expect(target.lyrics).to(equal([VerseViewModel(verseNumber: "1", verseLines: ["line 1", "line 2"], transliteration: ["transliteration 1", "transliteration 2"]),
+                                                    VerseViewModel(verseLines: ["chorus 1", "chorus 2"], transliteration: ["chorus transliteration 1", "chorus transliteration 2"])]))
+                }
+                describe("formatted string") {
+                    context("do not include transliteration") {
+                        it("should not include transliteration") {
+                            let formattedString = target.lyrics.map { $0.createFormattedString(includeTransliteration: false) }
+                            expect(formattedString).to(equal(["line 1\nline 2\n", "chorus 1\nchorus 2\n"]))
+                        }
                     }
+                    context("include transliteration") {
+                        it("should include transliteration") {
+                            let formattedString = target.lyrics.map { $0.createFormattedString(includeTransliteration: true) }
+                            expect(formattedString).to(equal(["transliteration 1\nline 1\ntransliteration 2\nline 2\n",
+                                                              "chorus transliteration 1\nchorus 1\nchorus transliteration 2\nchorus 2\n"]))
+                        }
+                    }
+                }
+                it("should show transliteration button") {
+                    expect(target.showTransliterationButton).to(beTrue())
                 }
             }
             context("repeat chorus") {
                 beforeEach {
-                    target.shouldRepeatChorus = true
+                    UserDefaults.standard.set(true, forKey: "repeat_chorus")
                 }
-                context("no choruses") {
+                context("no chorus") {
                     let verses: [Verse] = [
-                        Verse(verseType: .verse, verseContent: ["line 1", "line 2"], transliteration: nil),
-                        Verse(verseType: .other, verseContent: ["other 1", "other 2"], transliteration: nil),
-                        Verse(verseType: .verse, verseContent: ["line 3", "line 4"], transliteration: nil)]
+                        Verse(verseType: .verse, verseContent: ["line 1", "line 2"]),
+                        Verse(verseType: .other, verseContent: ["other 1", "other 2"]),
+                        Verse(verseType: .verse, verseContent: ["line 3", "line 4"])]
                     beforeEach {
-                        let validHymn = UiHymn(hymnIdentifier: classic1151, title: "Filled Hymn", lyrics: verses)
-                        given(hymnsRepository.getHymn(classic1151)) ~> { _ in Just(validHymn).assertNoFailure().eraseToAnyPublisher()}
-                        target.fetchLyrics()
-                        testQueue.sync {}
+                        target = HymnLyricsViewModel(hymnToDisplay: classic1151, lyrics: verses)!
                     }
                     it("should not repeat choruses") {
                         expect(target.lyrics).to(equal([
                             VerseViewModel(verseNumber: "1", verseLines: ["line 1", "line 2"]),
-                            VerseViewModel(verseLines: ["other 1", "other 2"]),
-                            VerseViewModel(verseNumber: "2", verseLines: ["line 3", "line 4"])
-                        ]))
-                    }
-                }
-                context("multiple choruses") {
-                    let verses: [Verse] = [
-                        Verse(verseType: .verse, verseContent: ["line 1", "line 2"], transliteration: nil),
-                        Verse(verseType: .chorus, verseContent: ["chorus 1", "chorus 2"], transliteration: nil),
-                        Verse(verseType: .chorus, verseContent: ["chorus 3", "chorus 4"], transliteration: nil),
-                        Verse(verseType: .other, verseContent: ["other 1", "other 2"], transliteration: nil),
-                        Verse(verseType: .verse, verseContent: ["line 3", "line 4"], transliteration: nil)]
-                    beforeEach {
-                        let validHymn = UiHymn(hymnIdentifier: classic1151, title: "Filled Hymn", lyrics: verses)
-                        given(hymnsRepository.getHymn(classic1151)) ~> { _ in Just(validHymn).assertNoFailure().eraseToAnyPublisher()}
-                        target.fetchLyrics()
-                        testQueue.sync {}
-                    }
-                    it("should not repeat choruses") {
-                        expect(target.lyrics).to(equal([
-                            VerseViewModel(verseNumber: "1", verseLines: ["line 1", "line 2"]),
-                            VerseViewModel(verseLines: ["chorus 1", "chorus 2"]),
-                            VerseViewModel(verseLines: ["chorus 3", "chorus 4"]),
                             VerseViewModel(verseLines: ["other 1", "other 2"]),
                             VerseViewModel(verseNumber: "2", verseLines: ["line 3", "line 4"])
                         ]))
                     }
                 }
                 context("one chorus") {
-                    let verses: [Verse] = [
-                        Verse(verseType: .verse, verseContent: ["line 1", "line 2"], transliteration: nil),
-                        Verse(verseType: .other, verseContent: ["other 1", "other 2"], transliteration: nil),
-                        Verse(verseType: .verse, verseContent: ["line 3", "line 4"], transliteration: nil),
-                        Verse(verseType: .verse, verseContent: ["line 5", "line 6"], transliteration: nil),
-                        Verse(verseType: .chorus, verseContent: ["chorus 1", "chorus 2"], transliteration: nil)]
+                    let verses: [Verse] = [Verse(verseType: .verse, verseContent: ["line 1", "line 2"]),
+                                           Verse(verseType: .other, verseContent: ["other 1", "other 2"]),
+                                           Verse(verseType: .verse, verseContent: ["line 3", "line 4"]),
+                                           Verse(verseType: .verse, verseContent: ["line 5", "line 6"]),
+                                           Verse(verseType: .chorus, verseContent: ["chorus 1", "chorus 2"])]
                     beforeEach {
-                        let validHymn = UiHymn(hymnIdentifier: classic1151, title: "Filled Hymn", lyrics: verses)
-                        given(hymnsRepository.getHymn(classic1151)) ~> { _ in Just(validHymn).assertNoFailure().eraseToAnyPublisher()}
-                        target.fetchLyrics()
-                        testQueue.sync {}
+                        target = HymnLyricsViewModel(hymnToDisplay: classic1151, lyrics: verses)
                     }
                     it("should repeat the chorus") {
                         expect(target.lyrics).to(equal([
@@ -188,6 +118,25 @@ class HymnLyricsViewModelSpec: QuickSpec {
                             VerseViewModel(verseLines: ["chorus 1", "chorus 2"]),
                             VerseViewModel(verseNumber: "3", verseLines: ["line 5", "line 6"]),
                             VerseViewModel(verseLines: ["chorus 1", "chorus 2"])
+                        ]))
+                    }
+                }
+                context("multiple choruses") {
+                    let verses: [Verse] = [Verse(verseType: .verse, verseContent: ["line 1", "line 2"]),
+                                           Verse(verseType: .chorus, verseContent: ["chorus 1", "chorus 2"]),
+                                           Verse(verseType: .chorus, verseContent: ["chorus 3", "chorus 4"]),
+                                           Verse(verseType: .other, verseContent: ["other 1", "other 2"]),
+                                           Verse(verseType: .verse, verseContent: ["line 3", "line 4"])]
+                    beforeEach {
+                        target = HymnLyricsViewModel(hymnToDisplay: classic1151, lyrics: verses)
+                    }
+                    it("should not repeat choruses") {
+                        expect(target.lyrics).to(equal([
+                            VerseViewModel(verseNumber: "1", verseLines: ["line 1", "line 2"]),
+                            VerseViewModel(verseLines: ["chorus 1", "chorus 2"]),
+                            VerseViewModel(verseLines: ["chorus 3", "chorus 4"]),
+                            VerseViewModel(verseLines: ["other 1", "other 2"]),
+                            VerseViewModel(verseNumber: "2", verseLines: ["line 3", "line 4"])
                         ]))
                     }
                 }

@@ -43,6 +43,9 @@ class DisplayHymnViewModelSpec: QuickSpec {
                     it("should have no tabs") {
                         expect(target.tabItems).to(beEmpty())
                     }
+                    it("should have current tab as lyrics") {
+                        expect(target.currentTab).to(equal(.lyrics(HymnNotExistsView().maxSize().eraseToAnyView())))
+                    }
                     it("should not store any song into the history store") {
                         verify(historyStore.storeRecentSong(hymnToStore: any(), songTitle: any())).wasNeverCalled()
                     }
@@ -57,7 +60,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                                                           hymnToDisplay: classic1151, hymnsRepository: hymnsRepository,
                                                           historyStore: historyStore, mainQueue: testQueue,
                                                           pdfPreloader: pdfLoader, systemUtil: systemUtil, storeInHistoryStore: true)
-                            let hymn = UiHymn(hymnIdentifier: classic1151, title: "title", lyrics: [Verse](),
+                            let hymn = UiHymn(hymnIdentifier: classic1151, title: "title", lyrics: [Verse(verseType: .verse, verseContent: ["verse line"])],
                                               pdfSheet: Hymns.MetaDatum(name: "Lead Sheet",
                                                                         data: [Hymns.Datum(value: "Piano", path: "/en/hymn/c/1151/f=ppdf"),
                                                                                Hymns.Datum(value: "Guitar", path: "/en/hymn/c/1151/f=pdf"),
@@ -148,7 +151,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                                     Just(false).tryMap({ _ -> Bool in
                                         throw URLError(.badServerResponse)
                                     }).mapError({ _ -> ErrorType in
-                                        .data(description: "Forced error")
+                                            .data(description: "Forced error")
                                     }).eraseToAnyPublisher()
                                 }
                                 target.fetchHymn()
@@ -171,12 +174,42 @@ class DisplayHymnViewModelSpec: QuickSpec {
                                                           hymnToDisplay: newSong145, hymnsRepository: hymnsRepository,
                                                           historyStore: historyStore, mainQueue: testQueue,
                                                           pdfPreloader: pdfLoader, systemUtil: systemUtil)
-                             given(systemUtil.isNetworkAvailable()) ~> true
+                            given(systemUtil.isNetworkAvailable()) ~> true
+                        }
+                        context("hymn lacks lyrics but has sheet music") {
+                            beforeEach {
+                                let hymnWithHymnColonTitle = UiHymn(hymnIdentifier: newSong145, title: "In my spirit, I can see You as You are",
+                                                                    lyrics: [Verse](),
+                                                                    pdfSheet: Hymns.MetaDatum(name: "Lead Sheet",
+                                                                                              data: [Hymns.Datum(value: "Piano", path: "/en/hymn/c/1151/f=ppdf"),
+                                                                                                     Hymns.Datum(value: "Guitar", path: "/en/hymn/c/1151/f=pdf"),
+                                                                                                     Hymns.Datum(value: "Text", path: "/en/hymn/c/1151/f=gtpdf")]))
+                                given(hymnsRepository.getHymn(newSong145)) ~> { _ in
+                                    Just(hymnWithHymnColonTitle).assertNoFailure().eraseToAnyPublisher()
+                                }
+                                given(favoriteStore.isFavorite(hymnIdentifier: newSong145)) ~> { _ in
+                                    Just(false).mapError({ _ -> ErrorType in
+                                        // This will never be triggered.
+                                    }).eraseToAnyPublisher()
+                                }
+
+                                target.fetchHymn()
+                                testQueue.sync {}
+                                testQueue.sync {}
+                                testQueue.sync {}
+                                testQueue.sync {}
+                            }
+                            it("should have one tabs") {
+                                expect(target.tabItems).to(haveCount(1))
+                            }
+                            it("tab should be music") {
+                                expect(target.tabItems[0].id).to(equal("Music"))
+                            }
                         }
                         context("hymn contains sheet music") {
                             beforeEach {
                                 let hymnWithHymnColonTitle = UiHymn(hymnIdentifier: newSong145, title: "In my spirit, I can see You as You are",
-                                                                    lyrics: [Verse](),
+                                                                    lyrics: [Verse(verseType: .chorus, verseContent: ["chorus line"])],
                                                                     pdfSheet: Hymns.MetaDatum(name: "Lead Sheet",
                                                                                               data: [Hymns.Datum(value: "Piano", path: "/en/hymn/c/1151/f=ppdf"),
                                                                                                      Hymns.Datum(value: "Guitar", path: "/en/hymn/c/1151/f=pdf"),
@@ -231,7 +264,8 @@ class DisplayHymnViewModelSpec: QuickSpec {
                         }
                         context("hymn does not contain sheet music") {
                             beforeEach {
-                                let hymnWithoutSheetMusic = UiHymn(hymnIdentifier: newSong145, title: "In my spirit, I can see You as You are", lyrics: [Verse]())
+                                let hymnWithoutSheetMusic = UiHymn(hymnIdentifier: newSong145, title: "In my spirit, I can see You as You are",
+                                                                   lyrics: [Verse(verseType: .verse, verseContent: ["verse content"])])
                                 given(hymnsRepository.getHymn(newSong145)) ~> { _ in
                                     Just(hymnWithoutSheetMusic).assertNoFailure().eraseToAnyPublisher()
                                 }
@@ -255,7 +289,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                         context("network unavailable") {
                             beforeEach {
                                 let hymn = UiHymn(hymnIdentifier: newSong145, title: "title'",
-                                                  lyrics: [Verse](),
+                                                  lyrics: [Verse(verseType: .verse, verseContent: ["verse content"])],
                                                   pdfSheet: Hymns.MetaDatum(name: "Lead Sheet",
                                                                             data: [Hymns.Datum(value: "Piano", path: "/en/hymn/c/1151/f=ppdf"),
                                                                                    Hymns.Datum(value: "Guitar", path: "/en/hymn/c/1151/f=pdf"),
@@ -278,6 +312,8 @@ class DisplayHymnViewModelSpec: QuickSpec {
                             }
                             it("should have one tab") {
                                 expect(target.tabItems).to(haveCount(1))
+                            }
+                            it("tab should be lyrics") {
                                 expect(target.tabItems[0].id).to(equal("Lyrics"))
                             }
                         }
