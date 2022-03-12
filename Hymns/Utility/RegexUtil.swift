@@ -194,7 +194,7 @@ extension NSRegularExpression {
     // Create convenience method to avoid the try! which swiftlint doesn't like
     convenience init(_ pattern: String, options: Options) {
         do {
-            try self.init(pattern: pattern)
+            try self.init(pattern: pattern, options: options)
         } catch {
             preconditionFailure("Illegal regular expression: \(pattern).")
         }

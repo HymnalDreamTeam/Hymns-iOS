@@ -14,6 +14,7 @@ protocol SongbaseStore {
      * Whether or not the database has been initialized properly. If this value is false, then the database is **NOT** safe to use and clients should avoid using it.
      */
     var databaseInitializedProperly: Bool { get }
+    func getHymn(bookId: Int, bookIndex: Int) -> AnyPublisher<SongbaseSong?, ErrorType>
     func searchHymn(_ searchParameter: String) -> AnyPublisher<[SongbaseSearchResultEntity], ErrorType>
     func getAllSongs() -> AnyPublisher<[SongbaseResultEntity], ErrorType>
 }
@@ -104,6 +105,18 @@ class SongbaseStoreGrdbImpl: SongbaseStore {
                 }
             }
         }
+    }
+
+    func getHymn(bookId: Int, bookIndex: Int) -> AnyPublisher<SongbaseSong?, ErrorType> {
+        return databaseQueue.readPublisher { database in
+            try SongbaseSong.fetchOne(database,
+                                      sql: "SELECT * FROM songs WHERE book_id = ? AND book_index = ?",
+                                      arguments: [bookId, bookIndex])
+        }.mapError({error -> ErrorType in
+            .data(description: error.localizedDescription)
+        }).map({entity -> SongbaseSong? in
+            return entity
+        }).eraseToAnyPublisher()
     }
 
     func searchHymn(_ searchParameter: String) -> AnyPublisher<[SongbaseSearchResultEntity], ErrorType> {

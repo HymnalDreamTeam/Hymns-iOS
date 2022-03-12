@@ -132,6 +132,8 @@ extension HymnType {
             return 1111
         case .chineseSupplement:
             return 1005
+        case .songbase:
+            return 706
         default:
             return 0
         }
@@ -251,5 +253,18 @@ extension HymnType: Decodable {
             throw HymnTypeCodingError.decoding("Unrecognized abbreviated hymn type: \(value)")
         }
         self = hymnType
+    }
+}
+
+extension HymnType {
+    var toSongbaseBook: Int? {
+        switch self {
+        case .songbase:
+            return 1
+        case .classic:
+            return 2
+        default:
+            return nil
+        }
     }
 }

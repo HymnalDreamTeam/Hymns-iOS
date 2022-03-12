@@ -1,6 +1,6 @@
 import GRDB
 
-struct SongbaseSong: Codable {
+struct SongbaseSong: Codable, Equatable {
     static let databaseTableName = "songs"
     let bookId: Int
     let bookIndex: Int

@@ -23,7 +23,8 @@ struct DisplayHymnView: View {
                             IndicatorTabView(geometry: geometry,
                                              currentTab: self.$viewModel.currentTab,
                                              tabItems: self.viewModel.tabItems,
-                                             tabSpacing: .custom(spacing: 20))
+                                             tabSpacing: .custom(spacing: 20),
+                                             showDivider: false)
                         }
                     } else {
                         viewModel.currentTab.content
