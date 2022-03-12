@@ -3,6 +3,7 @@ import Quick
 import Nimble
 @testable import Hymns
 
+// swiftlint:disable:next type_body_length
 class SongbaseStoreGrdbImplSpec: QuickSpec {
 
     let oldMacdonald = SongbaseSong(bookId: 1, bookIndex: 1, title: "Old Macdonald", language: "english",
@@ -50,6 +51,81 @@ class SongbaseStoreGrdbImplSpec: QuickSpec {
             describe("the database") {
                 it("should have been initialized successfully") {
                     expect(target.databaseInitializedProperly).to(beTrue())
+                }
+            }
+            describe("getting a song") {
+                context("song is stored") {
+                    it("should return the stored song") {
+                        let completion = XCTestExpectation(description: "completion received")
+                        let value = XCTestExpectation(description: "value received")
+                        let publisher = target.getHymn(bookId: 1, bookIndex: 1)
+                            .print(self.description)
+                            .receive(on: testQueue)
+                            .sink(receiveCompletion: { state in
+                                completion.fulfill()
+                                expect(state).to(equal(.finished))
+                            }, receiveValue: { song in
+                                value.fulfill()
+                                expect(song!).to(equal(self.oldMacdonald))
+                            })
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        self.wait(for: [completion, value], timeout: testTimeout)
+                        publisher.cancel()
+                    }
+                }
+                context("song is not stored") {
+                    it("should return nil") {
+                        let completion = XCTestExpectation(description: "completion received")
+                        let value = XCTestExpectation(description: "value received")
+                        let publisher = target.getHymn(bookId: 1, bookIndex: 9)
+                            .print(self.description)
+                            .receive(on: testQueue)
+                            .sink(receiveCompletion: { state in
+                                completion.fulfill()
+                                expect(state).to(equal(.finished))
+                            }, receiveValue: { song in
+                                value.fulfill()
+                                expect(song).to(beNil())
+                            })
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        self.wait(for: [completion, value], timeout: testTimeout)
+                        publisher.cancel()
+                    }
+                }
+                context("database tables dropped") {
+                    beforeEach {
+                        inMemoryDBQueue.inDatabase { database in
+                            // Don't worry about force_try in tests.
+                            // swiftlint:disable:next force_try
+                            try! database.drop(table: "songs")
+                        }
+                    }
+                    it("should trigger a completion failure") {
+                        let completion = XCTestExpectation(description: "completion received")
+                        let value = XCTestExpectation(description: "value received")
+                        value.isInverted = true
+                        let publisher = target.getHymn(bookId: 1, bookIndex: 9)
+                            .print(self.description)
+                            .receive(on: testQueue)
+                            .sink(receiveCompletion: { state in
+                                completion.fulfill()
+                                expect(state).to(equal(.failure(.data(description: "SQLite error 1 with statement `SELECT * FROM songs WHERE book_id = ? AND book_index = ?`: no such table: songs"))))
+                            }, receiveValue: { _ in
+                                value.fulfill()
+                            })
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        self.wait(for: [completion, value], timeout: testTimeout)
+                        publisher.cancel()
+                    }
                 }
             }
             describe("perform a search") {

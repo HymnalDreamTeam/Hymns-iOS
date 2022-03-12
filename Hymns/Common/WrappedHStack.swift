@@ -140,7 +140,7 @@ In the local church.
         return Group {
             ScrollView {
                 VStack {
-                    Text("Title").font(.headline)
+                    Text("%_PREVIEW_% Title").font(.headline)
                     WrappedHStack(items: severalItems) { item in
                         Text(item)
                     }
@@ -149,7 +149,7 @@ In the local church.
             }.previewDisplayName("several items")
             ScrollView {
                 VStack {
-                    Text("Title").font(.headline)
+                    Text("%_PREVIEW_% Title").font(.headline)
                     WrappedHStack(items: hundredItems, horizontalSpacing: 0, verticalSpacing: 0) { item in
                         Text(item)
                     }
@@ -158,7 +158,7 @@ In the local church.
             }.previewDisplayName("hundred items")
             ScrollView {
                 VStack {
-                    Text("Hymn 1151").font(.headline)
+                    Text("%_PREVIEW_% Hymn 1151").font(.headline)
                     WrappedHStack(items: lyrics, horizontalSpacing: 0, verticalSpacing: 0) { item in
                         Text(item)
                     }

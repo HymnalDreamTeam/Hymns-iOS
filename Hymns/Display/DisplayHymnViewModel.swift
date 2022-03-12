@@ -56,11 +56,49 @@ class DisplayHymnViewModel: ObservableObject {
         self.storeInHistoryStore = storeInHistoryStore
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func fetchHymn() {
         analytics.logDisplaySong(hymnIdentifier: identifier)
+
+        let hymnPublisher: AnyPublisher<UiHymn?, Never> = {
+            if identifier.hymnType != .songbase {
+                return repository.getHymn(identifier)
+            } else {
+                return Just<UiHymn?>(nil).eraseToAnyPublisher()
+            }
+        }()
+        let songbasePublisher: AnyPublisher<SongbaseSong?, Never> = {
+            if let hymnType = identifier.hymnType.toSongbaseBook,
+               identifier.hymnNumber.isPositiveInteger,
+               let hymnNumber = Int(identifier.hymnNumber) {
+                return repository.getSongbase(bookId: hymnType, bookIndex: hymnNumber)
+            } else {
+                return Just<SongbaseSong?>(nil).eraseToAnyPublisher()
+            }
+        }()
+
         var latestValue: UiHymn?
-        repository
-            .getHymn(identifier)
+        Publishers.CombineLatest(hymnPublisher, songbasePublisher)
+            .map({ uiHymn, songbaseSong -> UiHymn? in
+                guard let songbaseSong = songbaseSong else {
+                    return uiHymn
+                }
+
+                let chordLines = songbaseSong.chords.split(omittingEmptySubsequences: false, whereSeparator: \.isNewline).map {  ChordLine(String($0)) }
+                guard let uiHymn = uiHymn else {
+                    return UiHymnBuilder(hymnIdentifier: self.identifier, title: songbaseSong.title).chords(chordLines).build()
+                }
+
+                let chordsFound = chordLines.contains { chordLine in
+                    chordLine.hasChords
+                }
+                // Songbase song found, but no chords in songbase song, so then just return without setting chords.
+                if !chordsFound {
+                    return uiHymn
+                }
+
+                return uiHymn.builder.chords(chordLines).build()
+            })
             .subscribe(on: backgroundQueue)
             .receive(on: mainQueue)
             .sink(receiveCompletion: { [weak self] state in
@@ -106,17 +144,10 @@ class DisplayHymnViewModel: ObservableObject {
 
     private func getHymnMusic(_ hymn: UiHymn) -> HymnMusicView? {
         var hymnMusic = [HymnMusicTab]()
-        if self.systemUtil.isNetworkAvailable() {
-            let pianoPath = hymn.pdfSheet?.data.first(where: { datum -> Bool in
-                datum.value == DatumValue.piano.rawValue
-            })?.path
-            if let pianoUrl = pianoPath.flatMap({ path -> URL? in
-                HymnalNet.url(path: path)
-            }) {
-                self.pdfLoader.load(url: pianoUrl)
-                hymnMusic.append(.piano(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: pianoUrl)).eraseToAnyView()))
-            }
 
+        if let chords = hymn.chords {
+            hymnMusic.append(.guitar(DisplaySongbaseView(viewModel: DisplaySongbaseViewModel(chords: chords)).eraseToAnyView()))
+        } else if self.systemUtil.isNetworkAvailable() {
             let chordsPath = hymn.pdfSheet?.data.first(where: { datum -> Bool in
                 datum.value == DatumValue.text.rawValue
             })?.path
@@ -135,6 +166,18 @@ class DisplayHymnViewModel: ObservableObject {
                     self.pdfLoader.load(url: guitarSheetUrl)
                     hymnMusic.append(.guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: guitarSheetUrl)).eraseToAnyView()))
                 }
+            }
+        }
+
+        if self.systemUtil.isNetworkAvailable() {
+            let pianoPath = hymn.pdfSheet?.data.first(where: { datum -> Bool in
+                datum.value == DatumValue.piano.rawValue
+            })?.path
+            if let pianoUrl = pianoPath.flatMap({ path -> URL? in
+                HymnalNet.url(path: path)
+            }) {
+                self.pdfLoader.load(url: pianoUrl)
+                hymnMusic.append(.piano(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: pianoUrl)).eraseToAnyView()))
             }
         }
 
