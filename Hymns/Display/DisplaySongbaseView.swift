@@ -4,6 +4,7 @@ import SwiftUI
 
 public struct DisplaySongbaseView: View {
 
+    @State private var showPdfSheet = false
     @ObservedObject private var viewModel: DisplaySongbaseViewModel
 
     init(viewModel: DisplaySongbaseViewModel) {
@@ -18,7 +19,27 @@ public struct DisplaySongbaseView: View {
                     }
                 }
             }
-        }.padding()
+        }.padding().onAppear {
+            viewModel.loadPdf()
+        }.overlay(
+            viewModel.pdfDocument.map({ _ in
+                Button(action: {
+                    self.showPdfSheet = true
+                }, label: {
+                    Image(systemName: "arrow.up.left.and.arrow.down.right").rotationEffect(.degrees(90)).accessibility(label: Text("Maximize sheet music", comment: "A11y label for maximizing the sheet music.")).padding().padding(.top, 15)
+                }).zIndex(1)
+            }), alignment: .topTrailing).fullScreenCover(isPresented: $showPdfSheet) {
+                VStack(alignment: .leading) {
+                    Button(action: {
+                        self.showPdfSheet = false
+                    }, label: {
+                        Text("Close", comment: "Close the full screen PDF view.").padding()
+                    })
+                    if let pdfDocument = viewModel.pdfDocument {
+                        PDFViewer(pdfDocument)
+                    }
+                }
+            }
     }
 }
 
@@ -53,7 +74,7 @@ public struct DisplaySongbaseView: View {
      ]
 
     static var previews: some View {
-        let viewModel = DisplaySongbaseViewModel(chords: hymn1151Chords)
+        let viewModel = DisplaySongbaseViewModel(chords: hymn1151Chords, guitarUrl: nil)
         return DisplaySongbaseView(viewModel: viewModel)
     }
  }

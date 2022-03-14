@@ -145,28 +145,27 @@ class DisplayHymnViewModel: ObservableObject {
     private func getHymnMusic(_ hymn: UiHymn) -> HymnMusicView? {
         var hymnMusic = [HymnMusicTab]()
 
+        let chordsPath = hymn.pdfSheet?.data.first(where: { datum -> Bool in
+            datum.value == DatumValue.text.rawValue
+        })?.path
+        let chordsUrl = chordsPath.flatMap({ path -> URL? in
+            HymnalNet.url(path: path)
+        })
+        let guitarSheetPath = hymn.pdfSheet?.data.first(where: { datum -> Bool in
+            datum.value == DatumValue.guitar.rawValue
+        })?.path
+        let guitarSheetUrl = guitarSheetPath.flatMap({ path -> URL? in
+            HymnalNet.url(path: path)
+        })
+        let guitarUrl = self.systemUtil.isNetworkAvailable() ? chordsUrl ?? guitarSheetUrl : nil
+        if let guitarUrl = guitarUrl {
+            self.pdfLoader.load(url: guitarUrl)
+        }
+
         if let chords = hymn.chords {
-            hymnMusic.append(.guitar(DisplaySongbaseView(viewModel: DisplaySongbaseViewModel(chords: chords)).eraseToAnyView()))
-        } else if self.systemUtil.isNetworkAvailable() {
-            let chordsPath = hymn.pdfSheet?.data.first(where: { datum -> Bool in
-                datum.value == DatumValue.text.rawValue
-            })?.path
-            if let chordsUrl = chordsPath.flatMap({ path -> URL? in
-                HymnalNet.url(path: path)
-            }) {
-                self.pdfLoader.load(url: chordsUrl)
-                hymnMusic.append(.guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: chordsUrl)).eraseToAnyView()))
-            } else {
-                let guitarSheetPath = hymn.pdfSheet?.data.first(where: { datum -> Bool in
-                    datum.value == DatumValue.guitar.rawValue
-                })?.path
-                if let guitarSheetUrl = guitarSheetPath.flatMap({ path -> URL? in
-                    HymnalNet.url(path: path)
-                }) {
-                    self.pdfLoader.load(url: guitarSheetUrl)
-                    hymnMusic.append(.guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: guitarSheetUrl)).eraseToAnyView()))
-                }
-            }
+            hymnMusic.append(.guitar(DisplaySongbaseView(viewModel: DisplaySongbaseViewModel(chords: chords, guitarUrl: guitarUrl)).eraseToAnyView()))
+        } else if let guitarUrl = guitarUrl {
+            hymnMusic.append(.guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: guitarUrl)).eraseToAnyView()))
         }
 
         if self.systemUtil.isNetworkAvailable() {
