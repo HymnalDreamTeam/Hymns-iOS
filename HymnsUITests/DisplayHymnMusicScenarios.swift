@@ -22,6 +22,23 @@ class DisplayHymnMusicScenarios: BaseTestCase {
             .waitForStaticTexts("G", "Songbase", "version", "of", "Hymn", "1151", "chords")
     }
 
+    func test_changeFontOfSongbase() {
+        _ = HomeViewCan(app, testCase: self)
+            .waitForButtons("Hymn 1151, classic1151", "Hymn 40, classic40", "Hymn 2, Classic 2", "Hymn 3, classic3")
+            .tapResult("Hymn 1151, classic1151")
+            .waitForStaticTexts("verse 1 line 1")
+            .openMusic()
+            .waitForStaticTexts("G", "Songbase", "version", "of", "Hymn", "1151", "chords")
+            .verifyStaticTextSize(size: CGSize(width: 68.6666, height: 18.0), text: "Songbase")
+            .tapFontPicker()
+            .adjustFontPickerToSmallest()
+            .assertSmallestFontPickerValue()
+            .verifyStaticTextSize(size: CGSize(width: 60.3333, height: 15.6666), text: "Songbase")
+            .adjustFontPickerToLargest()
+            .assertLargestFontPickerValue()
+            .verifyStaticTextSize(size: CGSize(width: 104.3333, height: 28.6666), text: "Songbase")
+    }
+
     func test_guitarFallbackToSheetMusicChordsSongbaseIsMissing() {
         _ = HomeViewCan(app, testCase: self)
             .waitForButtons("Hymn 1151, classic1151", "Hymn 40, classic40", "Hymn 2, Classic 2", "Hymn 3, classic3")

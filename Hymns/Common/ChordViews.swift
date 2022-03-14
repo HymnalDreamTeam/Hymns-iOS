@@ -2,7 +2,7 @@ import SwiftUI
 
 public struct ChordWordView: View {
 
-    let chordWord: ChordWord
+    @ObservedObject var chordWord: ChordWord
 
     init(_ chordWord: ChordWord) {
         self.chordWord = chordWord
@@ -15,8 +15,9 @@ public struct ChordWordView: View {
                     .foregroundColor(.accentColor)
                     .frame(alignment: .topLeading)
                     .padding(.bottom, 8)
+                    .font(.system(size: CGFloat(chordWord.fontSize)))
             }
-            Text(chordWord.word).frame(alignment: .bottomLeading)
+            Text(chordWord.word).frame(alignment: .bottomLeading).font(.system(size: CGFloat(chordWord.fontSize)))
         }
     }
 }
