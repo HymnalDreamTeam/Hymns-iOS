@@ -58,6 +58,12 @@ public class BaseViewCan {
         return self
     }
 
+    public func verifyStaticTextSize(size: CGSize, text: String) -> Self {
+        XCTAssertEqual(size.width, app.staticTexts[text].frame.size.width, accuracy: 0.0001)
+        XCTAssertEqual(size.height, app.staticTexts[text].frame.size.height, accuracy: 0.0001)
+        return self
+    }
+
     public func waitForSliders(_ strings: String...) -> Self {
         for string in strings {
             XCTAssertTrue(app.sliders[string].waitForExistence(timeout: 1))

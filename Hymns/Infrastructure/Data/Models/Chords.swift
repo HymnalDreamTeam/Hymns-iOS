@@ -1,4 +1,6 @@
+import Combine
 import Foundation
+import Resolver
 
 struct ChordLine: Identifiable {
 
@@ -63,8 +65,9 @@ extension ChordLine: Hashable, Equatable {
 }
 
 /// Represents a word that could optionally have a chord associated with it.
-struct ChordWord: Identifiable {
+class ChordWord: Identifiable, ObservableObject {
 
+    @Published var fontSize: Float
     public let chords: [String]?
     public let word: String
     public var chordString: String? {
@@ -80,10 +83,18 @@ struct ChordWord: Identifiable {
     }
 
     var id = UUID()
+    private var disposables = Set<AnyCancellable>()
 
-    init(_ word: String, chords: [String]? = [String]()) {
+    init(_ word: String, chords: [String]? = [String](),
+         userDefaultsManager: UserDefaultsManager = Resolver.resolve()) {
         self.chords = chords
         self.word = word
+        self.fontSize = userDefaultsManager.fontSize
+        userDefaultsManager
+            .fontSizeSubject
+            .sink { fontSize in
+                self.fontSize = fontSize
+        }.store(in: &disposables)
     }
 }
 
