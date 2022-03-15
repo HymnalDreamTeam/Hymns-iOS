@@ -81,4 +81,34 @@ class BottomBarSnapshots: XCTestCase {
             set: {self.dialog = $0}), viewModel: viewModel).padding().ignoresSafeArea()
         assertVersionedSnapshot(matching: bottomBar.referenceFrame(width: 600, height: 100), as: .image)
     }
+
+    func test_fontSize_selected() {
+        let fontSize = BottomBarButton.fontSize(FontPickerViewModel())
+        assertVersionedSnapshot(matching: fontSize.selectedLabel, as: .image(layout: .sizeThatFits))
+    }
+
+    func test_fontSize_unselected() {
+        let fontSize = BottomBarButton.fontSize(FontPickerViewModel())
+        assertVersionedSnapshot(matching: fontSize.unselectedLabel, as: .image(layout: .sizeThatFits))
+    }
+
+    func test_soundCloud_selected() {
+        let soundCloud = BottomBarButton.soundCloud(SoundCloudViewModel(url: URL(string: "http://www.soundcloud.com")!))
+        assertVersionedSnapshot(matching: soundCloud.selectedLabel, as: .image(layout: .sizeThatFits))
+    }
+
+    func test_soundCloud_unselected() {
+        let soundCloud = BottomBarButton.soundCloud(SoundCloudViewModel(url: URL(string: "http://www.soundcloud.com")!))
+        assertVersionedSnapshot(matching: soundCloud.unselectedLabel, as: .image(layout: .sizeThatFits))
+    }
+
+    func test_youtube_selected() {
+        let youtube = BottomBarButton.youTube(URL(string: "http://www.youtube.com")!)
+        assertVersionedSnapshot(matching: youtube.selectedLabel, as: .image(layout: .sizeThatFits))
+    }
+
+    func test_youtube_unselected() {
+        let youtube = BottomBarButton.youTube(URL(string: "http://www.youtube.com")!)
+        assertVersionedSnapshot(matching: youtube.unselectedLabel, as: .image(layout: .sizeThatFits))
+    }
 }

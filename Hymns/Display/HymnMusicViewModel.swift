@@ -25,7 +25,7 @@ extension HymnMusicTab {
     var label: Image {
         switch self {
         case .piano:
-            return Image(systemName: "pianokeys.inverse")
+            return Image(systemName: "pianokeys")
         case .guitar:
             return Image(systemName: "guitars.fill")
         }
@@ -46,11 +46,11 @@ extension HymnMusicTab: TabItem {
     }
 
     var selectedLabel: some View {
-        Text(label).font(.body).foregroundColor(.accentColor)
+        label.foregroundColor(.accentColor)
     }
 
     var unselectedLabel: some View {
-        Text(label).font(.body).foregroundColor(.primary)
+        label.foregroundColor(.primary)
     }
 
     var a11yLabel: Text {
@@ -66,3 +66,19 @@ extension HymnMusicTab: TabItem {
         lhs.id == rhs.id
     }
 }
+
+#if DEBUG
+struct HymnMusicTab_Previews: PreviewProvider {
+    static var previews: some View {
+        let guitar = HymnMusicTab.guitar(EmptyView().eraseToAnyView())
+        let piano = HymnMusicTab.piano(EmptyView().eraseToAnyView())
+        return Group {
+            guitar.selectedLabel.previewDisplayName("guitar selected")
+            piano.selectedLabel.previewDisplayName("piano selected")
+
+            guitar.unselectedLabel.previewDisplayName("guitar unselectedLabel")
+            piano.unselectedLabel.previewDisplayName("piano unselectedLabel")
+        }.previewLayout(.sizeThatFits)
+    }
+}
+#endif
