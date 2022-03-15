@@ -7,6 +7,10 @@ import XCTest
 // https://troz.net/post/2020/swiftui_snapshots/
 class HymnMusicSnapshots: XCTestCase {
 
+    override func setUp() {
+        super.setUp()
+    }
+
     func test_empty() {
         let view = HymnMusicView(viewModel: HymnMusicViewModel(musicViews: []))
         assertVersionedSnapshot(matching: view, as: .swiftUiImage())
@@ -36,5 +40,25 @@ class HymnMusicSnapshots: XCTestCase {
         viewModel.currentTab = .guitar(Text("Guitar sheet music here").eraseToAnyView())
         let view = HymnMusicView(viewModel: viewModel)
         assertVersionedSnapshot(matching: view, as: .swiftUiImage())
+    }
+
+    func test_guitar_selected() {
+        let guitar = HymnMusicTab.guitar(EmptyView().eraseToAnyView())
+        assertVersionedSnapshot(matching: guitar.selectedLabel, as: .swiftUiImage())
+    }
+
+    func test_guitar_unselected() {
+        let guitar = HymnMusicTab.guitar(EmptyView().eraseToAnyView())
+        assertVersionedSnapshot(matching: guitar.unselectedLabel, as: .swiftUiImage())
+    }
+
+    func test_piano_selected() {
+        let piano = HymnMusicTab.piano(EmptyView().eraseToAnyView())
+        assertVersionedSnapshot(matching: piano.selectedLabel, as: .swiftUiImage())
+    }
+
+    func test_piano_unselected() {
+        let piano = HymnMusicTab.piano(EmptyView().eraseToAnyView())
+        assertVersionedSnapshot(matching: piano.unselectedLabel, as: .swiftUiImage())
     }
 }

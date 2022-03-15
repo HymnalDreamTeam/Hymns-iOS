@@ -159,7 +159,18 @@ struct BottomBarLabel: View {
 #if DEBUG
 struct BottomBarLabel_Previews: PreviewProvider {
     static var previews: some View {
-        BottomBarLabel(image: Image("soundcloud"), a11yLabel: "a11y label").previewLayout(.sizeThatFits)
+        let fontSize = BottomBarButton.fontSize(FontPickerViewModel())
+        let soundCloud = BottomBarButton.soundCloud(SoundCloudViewModel(url: URL(string: "http://www.soundcloud.com")!))
+        let youtube = BottomBarButton.youTube(URL(string: "http://www.youtube.com")!)
+        Group {
+            fontSize.selectedLabel.previewDisplayName("fontSize selected")
+            soundCloud.selectedLabel.previewDisplayName("soundcloud selected")
+            youtube.selectedLabel.previewDisplayName("youtube selected")
+
+            fontSize.unselectedLabel.previewDisplayName("fontSize unselectedLabel")
+            soundCloud.unselectedLabel.previewDisplayName("soundcloud unselectedLabel")
+            youtube.unselectedLabel.previewDisplayName("youtube unselectedLabel")
+        }.previewLayout(.sizeThatFits)
     }
 }
 #endif
