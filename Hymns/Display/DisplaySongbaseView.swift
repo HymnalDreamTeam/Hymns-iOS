@@ -74,8 +74,18 @@ public struct DisplaySongbaseView: View {
      ]
 
     static var previews: some View {
-        let viewModel = DisplaySongbaseViewModel(chords: hymn1151Chords, guitarUrl: nil)
-        return DisplaySongbaseView(viewModel: viewModel)
+        let noGuitarUrlViewModel = DisplaySongbaseViewModel(chords: hymn1151Chords, guitarUrl: nil)
+        let noGuitarUrl = DisplaySongbaseView(viewModel: noGuitarUrlViewModel)
+
+        let guitarUrlViewModel = DisplaySongbaseViewModel(
+            chords: hymn1151Chords,
+            guitarUrl: URL(string: "https://www.hymnal.net/Hymns/Hymnal/svg/e0040_g.svg")!)
+        let guitarUrl = DisplaySongbaseView(viewModel: guitarUrlViewModel)
+
+        return Group {
+            noGuitarUrl
+            guitarUrl
+        }
     }
  }
  #endif

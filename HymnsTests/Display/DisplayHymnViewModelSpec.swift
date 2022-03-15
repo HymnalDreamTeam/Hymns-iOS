@@ -220,6 +220,21 @@ class DisplayHymnViewModelSpec: QuickSpec {
                             it("tab should be music") {
                                 expect(target.tabItems[0].id).to(equal("Music"))
                             }
+                            describe("fetch hymn again") {
+                                beforeEach {
+                                    target.fetchHymn()
+                                    testQueue.sync {}
+                                    testQueue.sync {}
+                                    testQueue.sync {}
+                                    testQueue.sync {}
+                                }
+                                it("should still just have one tabs") {
+                                    expect(target.tabItems).to(haveCount(1))
+                                }
+                                it("tab should still be music") {
+                                    expect(target.tabItems[0].id).to(equal("Music"))
+                                }
+                            }
                         }
                         context("hymn contains sheet music") {
                             beforeEach {
@@ -520,8 +535,8 @@ class DisplayHymnViewModelSpec: QuickSpec {
                         verify(pdfLoader.load(url: pianoUrl)).wasCalled(exactly(1))
                     }
                     let chordsUrl = URL(string: "http://www.hymnal.net/en/hymn/c/1151/f=gtpdf")!
-                    it("chords url should not be prefetched") {
-                        verify(pdfLoader.load(url: chordsUrl)).wasNeverCalled()
+                    it("chords url should be prefetched") {
+                        verify(pdfLoader.load(url: chordsUrl)).wasCalled(exactly(1))
                     }
                     it("should have two tabs") {
                         expect(target.tabItems).to(haveCount(2))

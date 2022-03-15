@@ -12,7 +12,10 @@ class ChordsSpec: QuickSpec {
                     target = ChordLine("")
                 }
                 it("should be converted to empty ChordWord") {
-                    expect(target.words).to(equal([ChordWord("", chords: nil)]))
+                    expect(target.words).to(haveCount(1))
+                    expect(target.words[0].word).to(equal(""))
+                    expect(target.words[0].chords).to(beNil())
+                    expect(target.words[0].chordString).to(beNil())
                 }
             }
             context("no chords found") {
@@ -20,10 +23,10 @@ class ChordsSpec: QuickSpec {
                     target = ChordLine("With Christ in my vessel I will")
                 }
                 it("should be converted to chord words with empty chords") {
-                    expect(target.words).to(equal([ChordWord("With", chords: nil), ChordWord("Christ", chords: nil),
-                                                   ChordWord("in", chords: nil), ChordWord("my", chords: nil),
-                                                   ChordWord("vessel", chords: nil), ChordWord("I", chords: nil),
-                                                   ChordWord("will", chords: nil)]))
+                    expect(target.words).to(haveCount(7))
+                    expect(target.words.map { $0.word }).to(equal(["With", "Christ", "in", "my", "vessel", "I", "will"]))
+                    expect(target.words.map { $0.chords }).to(equal([nil, nil, nil, nil, nil, nil, nil]))
+                    expect(target.words.map { $0.chordString }).to(equal([nil, nil, nil, nil, nil, nil, nil]))
                 }
             }
             context("empty chords found") {
@@ -31,8 +34,10 @@ class ChordsSpec: QuickSpec {
                     target = ChordLine("[]With Christ in my vessel I will")
                 }
                 it("should extract the words out with empty chords (but not nil)") {
-                    expect(target.words).to(equal([ChordWord("With", chords: [""]), ChordWord("Christ"), ChordWord("in"), ChordWord("my"),
-                                                   ChordWord("vessel"), ChordWord("I"), ChordWord("will")]))
+                    expect(target.words).to(haveCount(7))
+                    expect(target.words.map { $0.word }).to(equal(["With", "Christ", "in", "my", "vessel", "I", "will"]))
+                    expect(target.words.map { $0.chords }).to(equal([[""], [String](), [String](), [String](), [String](), [String](), [String]()]))
+                    expect(target.words.map { $0.chordString }).to(equal([" ", " ", " ", " ", " ", " ", " "]))
                 }
             }
             context("chords found") {
@@ -40,9 +45,10 @@ class ChordsSpec: QuickSpec {
                     target = ChordLine("Un[G]til we are [D]sailing [G]hom[C]e. [G]")
                 }
                 it("should extract the chords out into ChordWords") {
-                    expect(target.words).to(equal([ChordWord("Until", chords: ["G"]), ChordWord("we"), ChordWord("are"),
-                                                   ChordWord("sailing", chords: ["D"]), ChordWord("home.", chords: ["G", "C"]),
-                                                   ChordWord("", chords: ["G"])]))
+                    expect(target.words).to(haveCount(6))
+                    expect(target.words.map { $0.word }).to(equal(["Until", "we", "are", "sailing", "home.", ""]))
+                    expect(target.words.map { $0.chords }).to(equal([["G"], [String](), [String](), ["D"], ["G", "C"], ["G"]]))
+                    expect(target.words.map { $0.chordString }).to(equal(["G", " ", " ", "D", "G C", "G"]))
                 }
             }
         }

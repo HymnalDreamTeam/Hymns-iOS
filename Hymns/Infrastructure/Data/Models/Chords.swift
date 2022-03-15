@@ -100,11 +100,10 @@ class ChordWord: Identifiable, ObservableObject {
 
 extension ChordWord: Hashable, Equatable {
     static func == (lhs: ChordWord, rhs: ChordWord) -> Bool {
-        lhs.word == rhs.word && lhs.chords == rhs.chords
+        lhs.id == rhs.id
     }
 
     func hash(into hasher: inout Hasher) {
-        hasher.combine(word)
-        hasher.combine(chords)
+        hasher.combine(id)
     }
 }
