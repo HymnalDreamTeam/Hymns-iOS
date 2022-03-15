@@ -14,7 +14,7 @@ struct SongResultView: View {
                 Text(label).font(.caption).fontWeight(.bold)
             }
             Text(viewModel.title)
-        }
+        }.padding(.vertical, 4)
     }
 }
 
