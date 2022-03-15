@@ -118,6 +118,7 @@ class DisplayHymnViewModel: ObservableObject {
                     }
                     self.resultsTitle = hymn.title
 
+                    self.tabItems.removeAll()
                     if let lyrics = HymnLyricsViewModel(hymnToDisplay: self.identifier, lyrics: hymn.lyrics) {
                         let lyricsTab: HymnTab = .lyrics(HymnLyricsView(viewModel: lyrics).maxSize().eraseToAnyView())
                         self.tabItems.append(lyricsTab)
