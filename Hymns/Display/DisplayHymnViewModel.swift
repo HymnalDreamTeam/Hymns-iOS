@@ -135,7 +135,9 @@ class DisplayHymnViewModel: ObservableObject {
                     self.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: self.identifier, hymn: hymn)
                     self.fetchFavoriteStatus()
                     if self.storeInHistoryStore {
-                        self.historyStore.storeRecentSong(hymnToStore: self.identifier, songTitle: self.resultsTitle)
+                        self.mainQueue.asyncAfter(deadline: .now() + 1) {
+                            self.historyStore.storeRecentSong(hymnToStore: self.identifier, songTitle: self.resultsTitle)
+                        }
                     }
                 }
             }, receiveValue: { value in
