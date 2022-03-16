@@ -51,6 +51,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                         expect(target.currentTab).to(equal(.lyrics(HymnNotExistsView().maxSize().eraseToAnyView())))
                     }
                     it("should not store any song into the history store") {
+                        sleep(2) // Give time for the async call to historyStore to run.
                         verify(historyStore.storeRecentSong(hymnToStore: any(), songTitle: any())).wasNeverCalled()
                     }
                     it("should call hymnsRepository.getHymn") {
@@ -105,6 +106,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                                 expect(target.title).to(equal(expectedTitle))
                             }
                             it("should store the song into the history store") {
+                                sleep(2) // Give time for the async call to historyStore to run.
                                 verify(historyStore.storeRecentSong(hymnToStore: classic1151, songTitle: "title")).wasCalled(exactly(1))
                             }
                             it("should call hymnsRepository.getHymn") {
@@ -263,6 +265,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                                 expect(target.title).to(equal("In my spirit, I can see You as You are"))
                             }
                             it("should store the song into the history store") {
+                                sleep(2) // Give time for the async call to historyStore to run.
                                 verify(historyStore.storeRecentSong(hymnToStore: any(), songTitle: any())).wasNeverCalled()
                             }
                             it("should call hymnsRepository.getHymn") {
@@ -388,6 +391,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                             expect(target.title).to(equal(expectedTitle))
                         }
                         it("should store the song into the history store") {
+                            sleep(2) // Give time for the async call to historyStore to run.
                             verify(historyStore.storeRecentSong(hymnToStore: songbase1, songTitle: "Songbase song")).wasCalled(exactly(1))
                         }
                         it("should not call hymnsRepository.getHymn") {
@@ -455,6 +459,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                             expect(target.title).to(equal(expectedTitle))
                         }
                         it("should store the song into the history store") {
+                            sleep(2) // Give time for the async call to historyStore to run.
                             verify(historyStore.storeRecentSong(hymnToStore: songbase1, songTitle: "Songbase song")).wasCalled(exactly(1))
                         }
                         it("should not call hymnsRepository.getHymn") {
