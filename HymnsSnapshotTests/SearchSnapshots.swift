@@ -11,6 +11,7 @@ class SearchSnapshots: XCTestCase {
     override func setUp() {
         super.setUp()
         viewModel = SearchViewModel()
+        viewModel.setUp()
     }
 
     func test_default() {

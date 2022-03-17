@@ -33,6 +33,7 @@ class SearchViewModelSearchingSpec: QuickSpec {
                 songResultsRepository = mock(SongResultsRepository.self)
                 target = SearchViewModel(backgroundQueue: testQueue, historyStore: historyStore,
                                          mainQueue: testQueue, repository: songResultsRepository)
+                target.setUp()
 
                 target.searchActive = true
                 testQueue.sync {}

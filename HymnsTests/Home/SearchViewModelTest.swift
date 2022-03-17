@@ -27,12 +27,12 @@ class SearchViewModelTest: XCTestCase {
         songResultsRepository = mock(SongResultsRepository.self)
         target = SearchViewModel(backgroundQueue: testQueue, historyStore: historyStore,
                                  mainQueue: testQueue, repository: songResultsRepository)
+        target.setUp()
+        testQueue.sync {}
+        testQueue.sync {}
     }
 
     func test_defaultState() {
-        testQueue.sync {}
-        testQueue.sync {}
-
         expect(self.target.label).toNot(beNil())
         expect(self.target.label).to(equal(recentHymns))
         expect(self.target.state).to(equal(HomeResultState.results))
@@ -43,8 +43,6 @@ class SearchViewModelTest: XCTestCase {
     }
 
     func test_defaultState_withoutRecentSongs() {
-        testQueue.sync {}
-        testQueue.sync {}
         clearInvocations(on: historyStore)
         reset(historyStore)
         given(historyStore.recentSongs()) ~> {
@@ -54,6 +52,7 @@ class SearchViewModelTest: XCTestCase {
         }
         target = SearchViewModel(backgroundQueue: testQueue, historyStore: historyStore,
                                  mainQueue: testQueue, repository: songResultsRepository)
+        target.setUp()
         testQueue.sync {}
         testQueue.sync {}
 
@@ -65,8 +64,6 @@ class SearchViewModelTest: XCTestCase {
 
     func test_searchActive_emptySearchParameter() {
         target.searchActive = true
-        testQueue.sync {}
-        testQueue.sync {}
 
         expect(self.target.label).toNot(beNil())
         expect(self.target.label).to(equal(recentHymns))
@@ -80,8 +77,6 @@ class SearchViewModelTest: XCTestCase {
 
     func test_searchActive_numericSearchParameter() {
         target.searchActive = true
-        testQueue.sync {}
-        testQueue.sync {}
         clearInvocations(on: historyStore) // clear invocations called from activating search
         target.searchParameter = "198 "
         sleep(1) // allow time for the debouncer to trigger.
@@ -97,8 +92,6 @@ class SearchViewModelTest: XCTestCase {
 
     func test_searchActive_invalidNumericSearchParameter() {
         target.searchActive = true
-        testQueue.sync {}
-        testQueue.sync {}
         clearInvocations(on: historyStore) // clear invocations called from activating search
         target.searchParameter = "2000 " // number is larger than any valid song
         sleep(1) // allow time for the debouncer to trigger.
