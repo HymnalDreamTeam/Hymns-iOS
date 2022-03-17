@@ -5,6 +5,7 @@ import SwiftUI
 struct SearchView: View {
 
     @ObservedObject private var viewModel: SearchViewModel
+    @State private var resultToShow: SongResultViewModel?
 
     init(viewModel: SearchViewModel = Resolver.resolve()) {
         self.viewModel = viewModel
@@ -95,11 +96,20 @@ struct SearchView: View {
                     Spacer()
                 } else {
                     List(viewModel.songResults, id: \.stableId) { songResult in
-                        NavigationLink(destination: songResult.destinationView) {
-                            SongResultView(viewModel: songResult)
+                        HStack(alignment: .center) {
+                            Button(action: {
+                                self.viewModel.tearDown()
+                                self.resultToShow = songResult
+                            }, label: {
+                                SongResultView(viewModel: songResult).padding(.trailing)
+                            })
+                            Spacer()
+                            NavigationLink(destination: songResult.destinationView, tag: songResult, selection: self.$resultToShow) {
+                                EmptyView()
+                            }.frame(width: 0, height: 0).padding(.trailing)
                         }.onAppear {
                             self.viewModel.loadMore(at: songResult)
-                        }
+                        }.maxWidth()
                     }.listStyle(PlainListStyle()).resignKeyboardOnDragGesture()
                 }
             }
@@ -107,6 +117,8 @@ struct SearchView: View {
             let params: [String: Any] = [
                 AnalyticsParameterScreenName: "HomeView"]
             Analytics.logEvent(AnalyticsEventScreenView, parameters: params)
+            resultToShow = nil
+            self.viewModel.setUp()
         }
     }
 }

@@ -48,7 +48,11 @@ class SearchViewModel: ObservableObject {
         backgroundQueue.async {
             let _: HymnDataStore = Resolver.resolve()
         }
+        // Search is active
+        self.showSearchByTypeToolTip = !self.hasSeenSearchByTypeTooltip
+    }
 
+    func setUp() {
         $searchActive
             .receive(on: mainQueue)
             .sink { searchActive in
@@ -69,9 +73,10 @@ class SearchViewModel: ObservableObject {
                 self.analytics.logQueryChanged(queryText: searchParameter)
                 self.refreshSearchResults()
         }.store(in: &disposables)
+    }
 
-        // Search is active
-        self.showSearchByTypeToolTip = !self.hasSeenSearchByTypeTooltip
+    func tearDown() {
+        self.disposables.removeAll()
     }
 
     private func resetState() {

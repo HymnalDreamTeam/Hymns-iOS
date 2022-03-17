@@ -35,6 +35,7 @@ class SearchViewModelSpec: QuickSpec {
                     target = SearchViewModel(backgroundQueue: initiallyInactiveQueue, historyStore: historyStore,
                                              hymnsRepository: hymnsRepository, mainQueue: initiallyInactiveQueue,
                                              repository: songResultsRepository)
+                    target.setUp()
                 }
                 it("searchActive should be false") {
                     expect(target.searchActive).to(beFalse())
@@ -48,6 +49,7 @@ class SearchViewModelSpec: QuickSpec {
                         target = SearchViewModel(backgroundQueue: testQueue, historyStore: historyStore,
                                                  hymnsRepository: hymnsRepository, mainQueue: testQueue,
                                                  repository: songResultsRepository)
+                        target.setUp()
                     }
                     it("showSearchByTypeToolTip should be false") {
                         expect(target.showSearchByTypeToolTip).to(beFalse())
@@ -59,6 +61,7 @@ class SearchViewModelSpec: QuickSpec {
                         target = SearchViewModel(backgroundQueue: testQueue, historyStore: historyStore,
                                                  hymnsRepository: hymnsRepository, mainQueue: testQueue,
                                                  repository: songResultsRepository)
+                        target.setUp()
                     }
                     it("showSearchByTypeToolTip should be true") {
                         expect(target.showSearchByTypeToolTip).to(beTrue())
@@ -93,6 +96,7 @@ class SearchViewModelSpec: QuickSpec {
                     }
                     target = SearchViewModel(backgroundQueue: testQueue, historyStore: historyStore,
                                              mainQueue: testQueue, repository: songResultsRepository)
+                    target.setUp()
                     testQueue.sync {}
                     testQueue.sync {}
                 }
@@ -117,6 +121,7 @@ class SearchViewModelSpec: QuickSpec {
                     target = SearchViewModel(backgroundQueue: testQueue, historyStore: historyStore,
                                              hymnsRepository: hymnsRepository, mainQueue: testQueue,
                                              repository: songResultsRepository)
+                    target.setUp()
                     testQueue.sync {}
                     testQueue.sync {}
                 }
@@ -136,6 +141,7 @@ class SearchViewModelSpec: QuickSpec {
                     target = SearchViewModel(backgroundQueue: testQueue, historyStore: historyStore,
                                              hymnsRepository: hymnsRepository, mainQueue: testQueue,
                                              repository: songResultsRepository)
+                    target.setUp()
                     testQueue.sync {}
                     testQueue.sync {}
                 }
@@ -164,6 +170,7 @@ class SearchViewModelSpec: QuickSpec {
                     target = SearchViewModel(backgroundQueue: testQueue, historyStore: historyStore,
                                              hymnsRepository: hymnsRepository, mainQueue: testQueue,
                                              repository: songResultsRepository)
+                    target.setUp()
                     target.searchActive = true
                     testQueue.sync {}
                     testQueue.sync {}
