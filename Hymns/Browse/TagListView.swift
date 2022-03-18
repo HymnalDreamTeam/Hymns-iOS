@@ -4,6 +4,7 @@ import Resolver
 struct TagListView: View {
 
     @ObservedObject private var viewModel: TagListViewModel
+    @State private var tagToShow: UiTag?
 
     init(viewModel: TagListViewModel = Resolver.resolve()) {
         self.viewModel = viewModel
@@ -31,9 +32,19 @@ struct TagListView: View {
                 }.eraseToAnyView()
             }
             return List(tags, id: \.self) { tag in
-                NavigationLink(destination: BrowseResultsListView(viewModel: BrowseResultsListViewModel(tag: tag))) {
-                    Text(tag.title).tagPill(backgroundColor: tag.color.background, foregroundColor: tag.color.foreground)
-                }
+                HStack(alignment: .center) {
+                    Button(action: {
+                        self.viewModel.tearDown()
+                        self.tagToShow = tag
+                    }, label: {
+                        Text(tag.title).tagPill(backgroundColor: tag.color.background, foregroundColor: tag.color.foreground)
+                    })
+                    Spacer()
+                    NavigationLink(destination: BrowseResultsListView(viewModel: BrowseResultsListViewModel(tag: tag)),
+                                   tag: tag, selection: self.$tagToShow) {
+                        EmptyView()
+                    }.frame(width: 0, height: 0).padding(.trailing)
+                }.maxWidth()
             }.listStyle(PlainListStyle()).padding(.top).eraseToAnyView()
         }.onAppear {
             self.viewModel.fetchUniqueTags()

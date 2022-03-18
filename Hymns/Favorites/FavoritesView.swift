@@ -5,6 +5,7 @@ import SwiftUI
 struct FavoritesView: View {
 
     @ObservedObject private var viewModel: FavoritesViewModel
+    @State private var favoriteToShow: SongResultViewModel?
 
     init(viewModel: FavoritesViewModel = Resolver.resolve()) {
         self.viewModel = viewModel
@@ -24,9 +25,18 @@ struct FavoritesView: View {
                     }.maxSize().offset(y: -25).eraseToAnyView()
                 }
                 return List(favorites, id: \.stableId) { favorite in
-                    NavigationLink(destination: favorite.destinationView) {
-                        SongResultView(viewModel: favorite)
-                    }
+                    HStack(alignment: .center) {
+                        Button(action: {
+                            self.viewModel.tearDown()
+                            self.favoriteToShow = favorite
+                        }, label: {
+                            SongResultView(viewModel: favorite).padding(.trailing)
+                        })
+                        Spacer()
+                        NavigationLink(destination: favorite.destinationView, tag: favorite, selection: self.$favoriteToShow) {
+                            EmptyView()
+                        }.frame(width: 0, height: 0).padding(.trailing)
+                    }.maxWidth()
                 }.listStyle(PlainListStyle()).id(viewModel.favorites).resignKeyboardOnDragGesture().eraseToAnyView()
             }
         }.onAppear {

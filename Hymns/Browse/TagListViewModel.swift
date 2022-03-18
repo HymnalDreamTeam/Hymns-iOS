@@ -25,6 +25,10 @@ class TagListViewModel: ObservableObject {
                 self.tags = tags
             }).store(in: &disposables)
     }
+
+    func tearDown() {
+        disposables.removeAll()
+    }
 }
 
 extension Resolver {

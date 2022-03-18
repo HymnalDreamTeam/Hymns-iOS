@@ -36,6 +36,10 @@ class FavoritesViewModel: ObservableObject {
                 }
             }).store(in: &disposables)
     }
+
+    func tearDown() {
+        disposables.removeAll()
+    }
 }
 
 extension Resolver {
