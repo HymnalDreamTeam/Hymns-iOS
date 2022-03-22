@@ -58,7 +58,32 @@ public func given<DeclarationType: Declaration, InvocationType, ReturnType>(
   _ declaration: Mockable<DeclarationType, InvocationType, ReturnType>
 ) -> StaticStubbingManager<DeclarationType, InvocationType, ReturnType> {
   return StaticStubbingManager(invocation: declaration.invocation,
-                               context: declaration.mock.mockingbirdContext)
+                               context: declaration.context)
+}
+
+/// Stub a Swift declaration to return a value or perform an operation.
+///
+/// This overload is used to help debug typing errors by disambiguating Swift method declarations
+/// from Objective-C or property declarations.
+///
+/// - Parameter declaration: A stubbable Swift declaration.
+public func givenSwift<DeclarationType: Declaration, InvocationType, ReturnType>(
+  _ declaration: Mockable<DeclarationType, InvocationType, ReturnType>
+) -> StaticStubbingManager<DeclarationType, InvocationType, ReturnType> {
+  return given(declaration)
+}
+
+/// Overload to catch Swift typing errors.
+///
+/// Stubbing a Swift method with incorrect parameter or return types is not always caught by the
+/// compiler due to the generic version of `given` for Objective-C and property declarations. This
+/// overload ensures that stubs with mismatched types are surfaced as a compile-time warning.
+///
+/// - Parameter declaration: A stubbable Swift declaration.
+@available(*, deprecated, renamed: "givenSwift",
+           message: "Unable to infer types for this stub; switch to 'givenSwift' to disambiguate")
+public func given<T: AnyMockable>(_ declaration: T) -> DynamicStubbingManager<Never> {
+  fatalError("Incorrect parameter or return types")
 }
 
 /// Stub an Objective-C or property declaration to return a value or perform an operation.
@@ -96,6 +121,7 @@ public func given<DeclarationType: Declaration, InvocationType, ReturnType>(
 /// ```
 ///
 /// - Parameter declaration: A stubbable declaration.
+@_disfavoredOverload
 public func given<ReturnType>(
   _ declaration: @autoclosure () throws -> ReturnType
 ) -> DynamicStubbingManager<ReturnType> {
@@ -136,6 +162,14 @@ public class StubbingManager<DeclarationType: Declaration, InvocationType, Retur
   var implementationsProvidedCount = 0
   var stubs = [(stub: StubbingContext.Stub, context: Context)]()
   
+  var isAsync: Bool {
+    return DeclarationType.self == AsyncFunctionDeclaration.self || DeclarationType.self == ThrowingAsyncFunctionDeclaration.self
+  }
+  
+  var isThrowing: Bool {
+    return DeclarationType.self == ThrowingFunctionDeclaration.self || DeclarationType.self == ThrowingAsyncFunctionDeclaration.self
+  }
+  
   /// When to use the next chained implementation provider.
   public enum TransitionStrategy {
     /// Go to the next provider after providing a certain number of implementations.
@@ -175,7 +209,7 @@ public class StubbingManager<DeclarationType: Declaration, InvocationType, Retur
   init(invocation: Invocation, context: Context) {
     self.context = context
     self.invocation = invocation
-    let stub = context.stubbing.swizzle(invocation) { return self.getCurrentImplementation() }
+    let stub = context.stubbing.swizzle(invocation) { self.getCurrentImplementation() as Any }
     self.stubs.append((stub, context))
   }
   
@@ -241,8 +275,7 @@ public class StubbingManager<DeclarationType: Declaration, InvocationType, Retur
   /// given(bird.property).willReturn(someValue)
   /// ```
   ///
-  /// Match exact or wildcard argument values when stubbing methods with parameters. Stubs added
-  /// later have a higher precedence, so add stubs with specific matchers last.
+  /// You can match exact or wildcard argument values when stubbing.
   ///
   /// ```swift
   /// given(bird.canChirp(volume: any())).willReturn(true)     // Any volume
@@ -250,11 +283,29 @@ public class StubbingManager<DeclarationType: Declaration, InvocationType, Retur
   /// given(bird.canChirp(volume: 10)).willReturn(true)        // Volume = 10
   /// ```
   ///
+  /// It’s possible to add multiple stubs to a single method or property. Stubs are checked in
+  /// reverse order, so add stubs with specific matchers last.
+  ///
+  /// ```swift
+  /// given(bird.chirp(volume: 42)).willReturn(true)      // #2
+  /// given(bird.chirp(volume: any())).willReturn(false)  // #1
+  /// print(bird.chirp(volume: 42))  // Prints "false"
+  /// ```
+  ///
   /// - Parameter value: A stubbed value to return.
   /// - Returns: The current stubbing manager which can be used to chain additional stubs.
   @discardableResult
   public func willReturn(_ value: ReturnType) -> Self {
-    return addImplementation({ return value })
+#if swift(>=5.5.2)
+    if isAsync {
+      if isThrowing {
+        return addImplementation({ () async throws in value })
+      } else {
+        return addImplementation({ () async in value })
+      }
+    }
+#endif
+    return addImplementation({ value })
   }
   
   /// Stub a mocked method or property with an implementation provider.
@@ -373,12 +424,12 @@ extension StubbingManager where DeclarationType == ThrowingFunctionDeclaration {
   ///
   /// ```swift
   /// protocol Bird {
-  ///   func getMessage<T>() throws -> T    // Overloaded generically
-  ///   func getMessage() throws -> String  // Overloaded explicitly
-  ///   func getMessage() throws -> Data
+  ///   func fetchMessage<T>() throws -> T    // Overloaded generically
+  ///   func fetchMessage() throws -> String  // Overloaded explicitly
+  ///   func fetchMessage() throws -> Data
   /// }
   ///
-  /// given(bird.send(any()))
+  /// given(bird.fetchMessage())
   ///   .returning(String.self)
   ///   .willThrow(BirdError())
   /// ```
@@ -423,13 +474,21 @@ infix operator ~>
 /// given(bird.property) ~> someValue
 /// ```
 ///
-/// Match exact or wildcard argument values when stubbing methods with parameters. Stubs added
-/// later have a higher precedence, so add stubs with specific matchers last.
+/// You can match exact or wildcard argument values when stubbing.
 ///
 /// ```swift
 /// given(bird.canChirp(volume: any())) ~> true     // Any volume
 /// given(bird.canChirp(volume: notNil())) ~> true  // Any non-nil volume
 /// given(bird.canChirp(volume: 10)) ~> true        // Volume = 10
+/// ```
+///
+/// It’s possible to add multiple stubs to a single method or property. Stubs are checked in
+/// reverse order, so add stubs with specific matchers last.
+///
+/// ```swift
+/// given(bird.chirp(volume: 42)) ~> true      // #2
+/// given(bird.chirp(volume: any())) ~> false  // #1
+/// print(bird.chirp(volume: 42))  // Prints "false"
 /// ```
 ///
 /// - Parameters:
@@ -439,7 +498,17 @@ public func ~> <DeclarationType: Declaration, InvocationType, ReturnType>(
   manager: StaticStubbingManager<DeclarationType, InvocationType, ReturnType>,
   implementation: @escaping @autoclosure () -> ReturnType
 ) {
-  manager.addImplementation(implementation)
+#if swift(>=5.5.2)
+  if manager.isAsync {
+    if manager.isThrowing {
+      manager.addImplementation({ () async throws in implementation() })
+    } else {
+      manager.addImplementation({ () async in implementation() })
+    }
+    return
+  }
+#endif
+  manager.addImplementation({ implementation() })
 }
 
 /// Stub a mocked method or property with a closure implementation.
@@ -528,4 +597,67 @@ public func ~> <DeclarationType: Declaration, InvocationType, ReturnType>(
   forwardingContext: ForwardingContext
 ) {
   manager.addForwardingTarget(forwardingContext.target)
+}
+
+// MARK: Dynamic stubbing compatibility
+
+/// Stub a mocked method or property by returning an implicitly unwrapped optional value.
+///
+/// Implicitly unwrapped optional stubs cannot be automatically unwrapped by the compiler due to the
+/// generic overload of `given` for Objective-C and property declarations. This function allows you
+/// to pass an optional in place of the expected non-optional return type to support storing stubs
+/// as an implicitly unwrapped variable.
+///
+/// ```swift
+/// let name: String! = "Ryan"
+/// given(bird.name) ~> name  // Converted from `String?` to `String`
+/// ```
+///
+/// - Parameters:
+///   - manager: A stubbing manager containing declaration and argument metadata for stubbing.
+///   - implementation: A stubbed implicitly unwrapped optional value to return.
+public func ~> <DeclarationType: Declaration, InvocationType, ReturnType>(
+  manager: StaticStubbingManager<DeclarationType, InvocationType, ReturnType>,
+  implementation: @escaping @autoclosure () -> ReturnType?
+) {
+  manager.addImplementation({ () -> ReturnType in
+    guard let value = implementation() else {
+      // Ideally this would be a compile-time check.
+      preconditionFailure(FailTest("Cannot stub 'nil' for a method with a non-optional return type",
+                                   isFatal: true))
+    }
+    return value
+  })
+}
+
+/// Stub an optional mocked method or property with a concrete value.
+///
+/// Concrete value stubs cannot be automatically wrapped to an optional by the compiler due to the
+/// generic overload of `given` for Objective-C and property declarations. This function allows you
+/// to pass a value in place of an expected optional return type.
+///
+/// ```swift
+/// protocol Bird {
+///   var optionalName: String? { get }
+/// }
+/// given(bird.optionalName) ~> "Ryan"  // Converted from `String` to `String?`
+/// ```
+public func ~> <DeclarationType: Declaration, InvocationType, ReturnType: AnyOptional>(
+  manager: StaticStubbingManager<DeclarationType, InvocationType, ReturnType>,
+  implementation: @escaping @autoclosure () -> ReturnType.Wrapped
+) {
+  manager.addImplementation({ () -> ReturnType in
+    // Re-wrap the optional to match the expected implementation type.
+    return Optional<ReturnType.Wrapped>(implementation()) as! ReturnType
+  })
+}
+
+/// Overload to catch Swift typing errors.
+///
+/// See ``givenSwift(_:)`` for more information.
+public func ~> <Implementation>(
+  manager: DynamicStubbingManager<Never>,
+  implementation: Implementation
+) {
+    fatalError()
 }

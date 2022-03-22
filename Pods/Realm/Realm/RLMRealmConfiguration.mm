@@ -159,9 +159,15 @@ NSString *RLMRealmPathForFile(NSString *fileName) {
         @throw RLMException(@"In-memory identifier must not be empty");
     }
     _config.sync_config = nullptr;
+    _seedFilePath = nil;
 
     RLMNSStringToStdString(_config.path, [NSTemporaryDirectory() stringByAppendingPathComponent:inMemoryIdentifier]);
     _config.in_memory = true;
+}
+
+- (void)setSeedFilePath:(NSURL *)seedFilePath {
+    _seedFilePath = seedFilePath;
+    _config.in_memory = false;
 }
 
 - (NSData *)encryptionKey {
@@ -238,7 +244,7 @@ static bool isSync(realm::Realm::Config const& config) {
 }
 
 - (BOOL)deleteRealmIfMigrationNeeded {
-    return _config.schema_mode == realm::SchemaMode::ResetFile;
+    return _config.schema_mode == realm::SchemaMode::SoftResetFile;
 }
 
 - (void)setDeleteRealmIfMigrationNeeded:(BOOL)deleteRealmIfMigrationNeeded {
@@ -249,7 +255,7 @@ static bool isSync(realm::Realm::Config const& config) {
         if (isSync(_config)) {
             @throw RLMException(@"Cannot set 'deleteRealmIfMigrationNeeded' when sync is enabled ('syncConfig' is set).");
         }
-        _config.schema_mode = realm::SchemaMode::ResetFile;
+        _config.schema_mode = realm::SchemaMode::SoftResetFile;
     }
     else if (self.deleteRealmIfMigrationNeeded) {
         _config.schema_mode = realm::SchemaMode::Automatic;

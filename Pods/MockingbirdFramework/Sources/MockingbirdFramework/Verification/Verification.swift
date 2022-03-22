@@ -11,7 +11,7 @@ import XCTest
 /// verify(bird.setProperty(any())).wasCalled()
 /// ```
 ///
-/// Match exact or wildcard argument values when verifying methods with parameters.
+/// You can match exact or wildcard argument values when verifying.
 ///
 /// ```swift
 /// verify(bird.canChirp(volume: any())).wasCalled()     // Called with any volume
@@ -38,7 +38,7 @@ public func verify<DeclarationType: Declaration, InvocationType, ReturnType>(
 /// verify(bird.setProperty(any())).wasCalled()
 /// ```
 ///
-/// Match exact or wildcard argument values when verifying methods with parameters.
+/// You can match exact or wildcard argument values when verifying.
 ///
 /// ```swift
 /// verify(bird.canChirp(volume: any())).wasCalled()     // Called with any volume
@@ -80,11 +80,11 @@ public class VerificationManager<InvocationType, ReturnType> {
 
   init<DeclarationType>(with declaration: Mockable<DeclarationType, InvocationType, ReturnType>,
                         at sourceLocation: SourceLocation) {
-    self.context = declaration.mock.mockingbirdContext
+    self.context = declaration.context
     self.invocation = declaration.invocation
     self.sourceLocation = sourceLocation
   }
-  
+
   init(from record: InvocationRecord, at sourceLocation: SourceLocation) {
     self.context = record.context
     self.invocation = record.invocation
@@ -97,7 +97,7 @@ public class VerificationManager<InvocationType, ReturnType> {
   public func wasCalled(_ countMatcher: CountMatcher) {
     verify(using: countMatcher, for: sourceLocation)
   }
-  
+
   /// Verify that the mock received the invocation an exact number of times.
   ///
   /// - Parameter times: The exact number of invocations expected.
@@ -109,7 +109,7 @@ public class VerificationManager<InvocationType, ReturnType> {
   public func wasNeverCalled() {
     verify(using: exactly(never), for: sourceLocation)
   }
-  
+
   /// Disambiguate methods overloaded by return type.
   ///
   /// Declarations for methods overloaded by return type cannot type inference and should be
@@ -117,12 +117,12 @@ public class VerificationManager<InvocationType, ReturnType> {
   ///
   /// ```swift
   /// protocol Bird {
-  ///   func getMessage<T>() throws -> T    // Overloaded generically
-  ///   func getMessage() throws -> String  // Overloaded explicitly
-  ///   func getMessage() throws -> Data
+  ///   func fetchMessage<T>() throws -> T    // Overloaded generically
+  ///   func fetchMessage() throws -> String  // Overloaded explicitly
+  ///   func fetchMessage() throws -> Data
   /// }
   ///
-  /// verify(bird.send(any()))
+  /// verify(bird.fetchMessage())
   ///   .returning(String.self)
   ///   .wasCalled()
   /// ```
@@ -131,7 +131,7 @@ public class VerificationManager<InvocationType, ReturnType> {
   public func returning(_ type: ReturnType.Type = ReturnType.self) -> Self {
     return self
   }
-  
+
   /// Runs the block within an attributed `DispatchQueue`.
   func verify(using countMatcher: CountMatcher, for sourceLocation: SourceLocation) {
     let expectation = Expectation(countMatcher: countMatcher,
@@ -152,7 +152,7 @@ struct Expectation {
   let countMatcher: CountMatcher
   let sourceLocation: SourceLocation
   let group: ExpectationGroup?
-  
+
   init(countMatcher: CountMatcher,
        sourceLocation: SourceLocation,
        group: ExpectationGroup?) {
@@ -160,7 +160,7 @@ struct Expectation {
     self.sourceLocation = sourceLocation
     self.group = group
   }
-  
+
   init(from other: Expectation, withGroup: Bool = false) {
     self.init(countMatcher: other.countMatcher,
               sourceLocation: other.sourceLocation,
@@ -201,13 +201,13 @@ func expect(_ mockingContext: MockingContext,
                          expectation: Expectation(from: expectation))
     return []
   }
-  
+
   let allInvocations = findInvocations(in: mockingContext,
                                        with: invocation.selectorName,
                                        before: nextInvocation,
                                        after: baseInvocation)
   let allMatchingInvocations = allInvocations.filter({ $0.isEqual(to: invocation) })
-  
+
   let actualCallCount = allMatchingInvocations.count
   guard !expectation.countMatcher.matches(actualCallCount) else { return allInvocations }
   throw TestFailure.incorrectInvocationCount(invocationCount: actualCallCount,
