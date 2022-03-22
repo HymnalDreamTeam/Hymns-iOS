@@ -11,7 +11,7 @@ struct SongResultView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             viewModel.label.map { label in
-                Text(label).font(.caption).fontWeight(.bold)
+                Text(label).font(.caption).fontWeight(.bold).foregroundColor(.gray)
             }
             Text(viewModel.title)
         }.padding(.vertical, 4)
