@@ -72,6 +72,15 @@ class SearchSnapshots: XCTestCase {
         assertVersionedSnapshot(matching: SearchView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
     }
 
+    func test_searchResultsDark() {
+        viewModel.showSearchByTypeToolTip = false
+        viewModel.state = .results
+        viewModel.searchActive = true
+        viewModel.searchParameter = "Do you love me?"
+        viewModel.songResults = [hymn480_songResult, hymn1334_songResult, hymn1151_songResult]
+        assertVersionedSnapshot(matching: SearchView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage(traits: .init(userInterfaceStyle: .dark)))
+    }
+
     func test_searchResults_withToolTip() {
         viewModel.showSearchByTypeToolTip = true
         viewModel.state = .results
