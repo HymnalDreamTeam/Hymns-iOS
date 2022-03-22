@@ -42,13 +42,13 @@ class ChordsSpec: QuickSpec {
             }
             context("chords found") {
                 beforeEach {
-                    target = ChordLine("Un[G]til we are [D]sailing [G]hom[C]e. [G]")
+                    target = ChordLine("Un[G]til [Am - C]we are [D]sailing [G]hom[C]e. [G]")
                 }
                 it("should extract the chords out into ChordWords") {
                     expect(target.words).to(haveCount(6))
                     expect(target.words.map { $0.word }).to(equal(["Until", "we", "are", "sailing", "home.", ""]))
-                    expect(target.words.map { $0.chords }).to(equal([["G"], [String](), [String](), ["D"], ["G", "C"], ["G"]]))
-                    expect(target.words.map { $0.chordString }).to(equal(["G", " ", " ", "D", "G C", "G"]))
+                    expect(target.words.map { $0.chords }).to(equal([["G"], ["Am - C"], [String](), ["D"], ["G", "C"], ["G"]]))
+                    expect(target.words.map { $0.chordString }).to(equal(["G", "Am - C", " ", "D", "G C", "G"]))
                 }
             }
         }
