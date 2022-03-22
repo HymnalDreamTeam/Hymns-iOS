@@ -4,6 +4,12 @@ import Resolver
 
 struct ChordLine: Identifiable {
 
+    // Separates line out into words.
+    // Note: ?: represents a non-matching group. i.e. the regex matches,
+    //       but the range isn't extracted.
+    // (?:\\[.*?\\])? --> optionally extracts chord (non-matching)
+    // \\S+ --> one or more non-whitespace characters
+    private static let separatorPattern = "(?:\\[.*?\\])?\\S+"
     private static let chordsPattern = "\\[(.*?)\\]"
 
     var id = UUID()
@@ -17,8 +23,25 @@ struct ChordLine: Identifiable {
     let words: [ChordWord]
 
     init(_ line: String) {
-        let words = line.split(omittingEmptySubsequences: false, whereSeparator: \.isWhitespace)
+        if line.isEmpty {
+            self.words = [ChordWord("", chords: nil)]
+            return
+        }
 
+        let range = NSRange(line.startIndex..<line.endIndex, in: line)
+        let pattern = NSRegularExpression(Self.separatorPattern, options: [])
+        let matches = pattern.matches(in: line, range: range)
+
+        let words = matches.map { match -> String? in
+            if match.numberOfRanges < 1 {
+                return nil
+            }
+            let matchedRange = match.range(at: 0)
+            if let substringRange = Range(matchedRange, in: line) {
+                return String(line[substringRange])
+            }
+            return nil
+        }.compactMap { $0 }
         // If there is no chord pattern found
         let chordPatternFound = line.range(of: Self.chordsPattern, options: .regularExpression) != nil
         if !chordPatternFound {
