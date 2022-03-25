@@ -3,7 +3,7 @@ import Foundation
 import PDFKit
 import Resolver
 
-class DisplaySongbaseViewModel: ObservableObject {
+class InlineChordsViewModel: ObservableObject {
 
     @Published var chords: [ChordLine] = [ChordLine]()
     @Published var pdfDocument: PDFDocument?

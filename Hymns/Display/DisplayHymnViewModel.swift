@@ -164,7 +164,7 @@ class DisplayHymnViewModel: ObservableObject {
         }
 
         if let chords = hymn.chords {
-            hymnMusic.append(.guitar(DisplaySongbaseView(viewModel: DisplaySongbaseViewModel(chords: chords, guitarUrl: guitarUrl)).eraseToAnyView()))
+            hymnMusic.append(.guitar(InlineChordsView(viewModel: InlineChordsViewModel(chords: chords, guitarUrl: guitarUrl)).eraseToAnyView()))
         } else if let guitarUrl = guitarUrl {
             hymnMusic.append(.guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: guitarUrl)).eraseToAnyView()))
         }
