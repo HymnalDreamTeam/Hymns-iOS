@@ -5,7 +5,7 @@ import XCTest
 @testable import Hymns
 
 // https://troz.net/post/2020/swiftui_snapshots/
-class DisplayHymnSongbaseSnapshots: XCTestCase {
+class InlineChordsSnapshots: XCTestCase {
 
     var preloader: PDFLoader!
 
@@ -41,8 +41,8 @@ class DisplayHymnSongbaseSnapshots: XCTestCase {
             ChordLine("Christ, our everything!")
         ]
 
-        let viewModel = DisplaySongbaseViewModel(chords: hymn1151Chords, guitarUrl: nil)
-        let view = DisplaySongbaseView(viewModel: viewModel)
+        let viewModel = InlineChordsViewModel(chords: hymn1151Chords, guitarUrl: nil)
+        let view = InlineChordsView(viewModel: viewModel)
         assertVersionedSnapshot(matching: view, as: .swiftUiImage())
     }
 
@@ -74,9 +74,9 @@ class DisplayHymnSongbaseSnapshots: XCTestCase {
             ChordLine("Christ, our everything!")
         ]
 
-        let viewModel = DisplaySongbaseViewModel(chords: hymn1151Chords,
-                                                 guitarUrl: URL(string: "http://www.google.com")!)
-        let view = DisplaySongbaseView(viewModel: viewModel)
+        let viewModel = InlineChordsViewModel(chords: hymn1151Chords,
+                                              guitarUrl: URL(string: "http://www.google.com")!)
+        let view = InlineChordsView(viewModel: viewModel)
         assertVersionedSnapshot(matching: view, as: .swiftUiImage())
     }
 }

@@ -2,12 +2,12 @@ import Foundation
 import MobileCoreServices
 import SwiftUI
 
-public struct DisplaySongbaseView: View {
+public struct InlineChordsView: View {
 
     @State private var showPdfSheet = false
-    @ObservedObject private var viewModel: DisplaySongbaseViewModel
+    @ObservedObject private var viewModel: InlineChordsViewModel
 
-    init(viewModel: DisplaySongbaseViewModel) {
+    init(viewModel: InlineChordsViewModel) {
         self.viewModel = viewModel
     }
     public var body: some View {
@@ -44,7 +44,7 @@ public struct DisplaySongbaseView: View {
 }
 
  #if DEBUG
- struct DisplaySongbaseView_Previews: PreviewProvider {
+ struct InlineChordsView_Previews: PreviewProvider {
 
      private static let hymn1151Chords = [
         // Verse 1
@@ -74,13 +74,13 @@ public struct DisplaySongbaseView: View {
      ]
 
     static var previews: some View {
-        let noGuitarUrlViewModel = DisplaySongbaseViewModel(chords: hymn1151Chords, guitarUrl: nil)
-        let noGuitarUrl = DisplaySongbaseView(viewModel: noGuitarUrlViewModel)
+        let noGuitarUrlViewModel = InlineChordsViewModel(chords: hymn1151Chords, guitarUrl: nil)
+        let noGuitarUrl = InlineChordsView(viewModel: noGuitarUrlViewModel)
 
-        let guitarUrlViewModel = DisplaySongbaseViewModel(
+        let guitarUrlViewModel = InlineChordsViewModel(
             chords: hymn1151Chords,
             guitarUrl: URL(string: "https://www.hymnal.net/Hymns/Hymnal/svg/e0040_g.svg")!)
-        let guitarUrl = DisplaySongbaseView(viewModel: guitarUrlViewModel)
+        let guitarUrl = InlineChordsView(viewModel: guitarUrlViewModel)
 
         return Group {
             noGuitarUrl

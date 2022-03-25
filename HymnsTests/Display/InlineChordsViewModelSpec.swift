@@ -5,10 +5,10 @@ import PDFKit
 import Quick
 @testable import Hymns
 
-class DisplaySongbaseViewModelSpec: QuickSpec {
+class InlineChordsViewModelSpec: QuickSpec {
 
     override func spec() {
-        describe("DisplaySongbaseViewModel") {
+        describe("InlineChordsViewModel") {
             let lyrics = [
                 // Verse 1
                 ChordLine("1"),
@@ -38,7 +38,7 @@ class DisplaySongbaseViewModelSpec: QuickSpec {
             let dummyPdf = createDummyPdf()
             let testQueue = DispatchQueue(label: "test_queue")
             var preloader: PDFLoaderMock!
-            var target: DisplaySongbaseViewModel!
+            var target: InlineChordsViewModel!
 
             beforeEach {
                 preloader = mock(PDFLoader.self)
@@ -46,8 +46,8 @@ class DisplaySongbaseViewModelSpec: QuickSpec {
 
             context("init without guitar url") {
                 beforeEach {
-                    target = DisplaySongbaseViewModel(backgroundQueue: testQueue, chords: lyrics, guitarUrl: nil,
-                                                      mainQueue: testQueue, preloader: preloader)
+                    target = InlineChordsViewModel(backgroundQueue: testQueue, chords: lyrics, guitarUrl: nil,
+                                                   mainQueue: testQueue, preloader: preloader)
                 }
                 it("should set the chords to the passed-in chords") {
                     expect(target.chords).to(equal(lyrics))
@@ -67,8 +67,8 @@ class DisplaySongbaseViewModelSpec: QuickSpec {
             context("init with guitar url") {
                 let guitarUrl = URL(string: "https://www.hymnal.net/Hymns/Hymnal/pdfs/e1151_g.pdf")!
                 beforeEach {
-                    target = DisplaySongbaseViewModel(backgroundQueue: testQueue, chords: lyrics, guitarUrl: guitarUrl,
-                                                      mainQueue: testQueue, preloader: preloader)
+                    target = InlineChordsViewModel(backgroundQueue: testQueue, chords: lyrics, guitarUrl: guitarUrl,
+                                                   mainQueue: testQueue, preloader: preloader)
                 }
                 it("should set the chords to the passed-in chords") {
                     expect(target.chords).to(equal(lyrics))
@@ -103,8 +103,8 @@ class DisplaySongbaseViewModelSpec: QuickSpec {
             context("init with malformed guitar url") {
                 let guitarUrl = URL(string: "https://nopdfhere.pdf")!
                 beforeEach {
-                    target = DisplaySongbaseViewModel(backgroundQueue: testQueue, chords: lyrics, guitarUrl: guitarUrl,
-                                                      mainQueue: testQueue, preloader: preloader)
+                    target = InlineChordsViewModel(backgroundQueue: testQueue, chords: lyrics, guitarUrl: guitarUrl,
+                                                   mainQueue: testQueue, preloader: preloader)
                 }
                 it("should set the chords to the passed-in chords") {
                     expect(target.chords).to(equal(lyrics))
