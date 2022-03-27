@@ -32,7 +32,7 @@ struct ChordLine: Identifiable {
         let pattern = NSRegularExpression(Self.separatorPattern, options: [])
         let matches = pattern.matches(in: line, range: range)
 
-        let words = matches.map { match -> String? in
+        let chordWords = matches.map { match -> String? in
             if match.numberOfRanges < 1 {
                 return nil
             }
@@ -45,34 +45,37 @@ struct ChordLine: Identifiable {
         // If there is no chord pattern found
         let chordPatternFound = line.range(of: Self.chordsPattern, options: .regularExpression) != nil
         if !chordPatternFound {
-            self.words = words.map { word in
+            self.words = chordWords.map { word in
                 ChordWord(String(word), chords: nil)
             }
             return
         }
 
-        // If there is at least one chord in the line
-        self.words = words.map { word in
-            let wordRange = NSRange(word.startIndex..<word.endIndex, in: word)
+        self.words = chordWords.map { chordWord in
             let chordPattern = NSRegularExpression(Self.chordsPattern, options: [])
-            let matches = chordPattern.matches(in: String(word), range: wordRange)
-            if matches.isEmpty {
-                return ChordWord(String(word))
+
+            var word = chordWord
+            var chords = ""
+            var match = chordPattern.firstMatch(in: word, range: NSRange(word.startIndex..<word.endIndex, in: word))
+            while match != nil {
+                if match!.numberOfRanges < 2 {
+                    continue
+                }
+                let matchedRange = Range(match!.range(at: 0), in: word) // Entire match (e.g.: [G])
+                let chordRange = Range(match!.range(at: 1), in: word) // Only the chord portion (e.g.: G)
+                guard let matchedRange = matchedRange, let chordRange = chordRange else {
+                    continue
+                }
+                let chord = String(word[chordRange])
+                let index = matchedRange.lowerBound.utf16Offset(in: word)
+                while chords.count < index {
+                    chords.append(" ")
+                }
+                chords.append(chord)
+                word = word.replacingCharacters(in: matchedRange, with: "")
+                match = chordPattern.firstMatch(in: word, range: NSRange(word.startIndex..<word.endIndex, in: word))
             }
-
-            let chords = matches.map { match -> String? in
-                if match.numberOfRanges < 2 {
-                    return nil
-                }
-                let matchedRange = match.range(at: 1)
-                if let substringRange = Range(matchedRange, in: word) {
-                    return String(word[substringRange])
-                }
-                return nil
-            }.compactMap { $0 } // Removes nils from list
-
-            let wordWithoutChords = word.replacingOccurrences(of: Self.chordsPattern, with: "", options: .regularExpression)
-            return ChordWord(wordWithoutChords, chords: chords)
+            return ChordWord(word, chords: chords)
         }
     }
 }
@@ -91,24 +94,13 @@ extension ChordLine: Hashable, Equatable {
 class ChordWord: Identifiable, ObservableObject {
 
     @Published var fontSize: Float
-    public let chords: [String]?
+    public let chords: String?
     public let word: String
-    public var chordString: String? {
-        guard let chords = chords else {
-            return nil
-        }
-
-        let chordsString = chords.joined(separator: " ").trim()
-        if word.isEmpty && chordsString.isEmpty {
-            return nil
-        }
-        return !chordsString.isEmpty ? chordsString : " "
-    }
 
     var id = UUID()
     private var disposables = Set<AnyCancellable>()
 
-    init(_ word: String, chords: [String]? = [String](),
+    init(_ word: String, chords: String?,
          userDefaultsManager: UserDefaultsManager = Resolver.resolve()) {
         self.chords = chords
         self.word = word
