@@ -22,7 +22,7 @@ class DisplayHymnMusicScenarios: BaseTestCase {
             .waitForStaticTexts("G", "Songbase", "version", "of", "Hymn", "1151", "chords")
     }
 
-    func test_changeFontOfSongbase() {
+    func test_changeFontOfInlineChords() {
         _ = HomeViewCan(app, testCase: self)
             .waitForButtons("Hymn 1151, classic1151", "Hymn 40, classic40", "Hymn 2, Classic 2", "Hymn 3, classic3")
             .tapResult("Hymn 1151, classic1151")

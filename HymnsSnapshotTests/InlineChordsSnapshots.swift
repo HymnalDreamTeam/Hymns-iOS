@@ -17,7 +17,7 @@ class InlineChordsSnapshots: XCTestCase {
         let hymn1151Chords = [
             // Verse 1
             ChordLine("1"),
-            ChordLine("[G]Drink! A river pure and clear"),
+            ChordLine("[G]Drink! A river pure and clear[C]"),
             ChordLine("That’s [G7]flowing from the throne;"),
             ChordLine("[C]Eat! The tree of life with fruits"),
             ChordLine("[G]Here there [D7]is no [G-C-G]night!"),
@@ -50,7 +50,7 @@ class InlineChordsSnapshots: XCTestCase {
         let hymn1151Chords = [
             // Verse 1
             ChordLine("1"),
-            ChordLine("[G]Drink! A river pure and clear"),
+            ChordLine("[G]Drink! A river pure and clear[C]"),
             ChordLine("That’s [G7]flowing from the throne;"),
             ChordLine("[C]Eat! The tree of life with fruits"),
             ChordLine("[G]Here there [D7]is no [G-C-G]night!"),
