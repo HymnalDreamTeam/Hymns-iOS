@@ -69,7 +69,7 @@ extension HymnType {
            "jp": .japanese, "japanese": .japanese,
            "indonesian": .indonesian,
            "farsi": .farsi,
-           "songbase": .songbase
+           "songbase": .songbase, "sb": .songbase
     ]
 
     var abbreviatedValue: String {
