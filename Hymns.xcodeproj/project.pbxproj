@@ -235,6 +235,7 @@
 		3BE44365248AC08300763B3C /* ScriptureViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE44364248AC08300763B3C /* ScriptureViewModel.swift */; };
 		3BE44369248AC12C00763B3C /* ScriptureSongView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE44368248AC12C00763B3C /* ScriptureSongView.swift */; };
 		3BE4436B248AC21300763B3C /* ScriptureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE4436A248AC21300763B3C /* ScriptureView.swift */; };
+		3BE7269827F27646000BD1D3 /* hymnaldb-v18.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 3BE7269627F2749E000BD1D3 /* hymnaldb-v18.sqlite */; };
 		3BE7C91C249CAB2700B04A1F /* SearchSnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE7C91B249CAB2700B04A1F /* SearchSnapshots.swift */; };
 		3BE7C926249CAEAA00B04A1F /* Snapshot+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE7C925249CAEAA00B04A1F /* Snapshot+Extensions.swift */; };
 		3BE7C929249CB16B00B04A1F /* SongResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE7C928249CB16B00B04A1F /* SongResults.swift */; };
@@ -246,7 +247,6 @@
 		3BF93B6127DC1ECF00EE95CA /* Chords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF93B6027DC1ECF00EE95CA /* Chords.swift */; };
 		3BF93B6327DC1F1800EE95CA /* ChordViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF93B6227DC1F1800EE95CA /* ChordViews.swift */; };
 		3BFA66342495A453009CB0BB /* TagPillModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BFA66332495A453009CB0BB /* TagPillModifier.swift */; };
-		3BFE517227EA871500DBCAE2 /* hymnaldb-v17.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 3BFE517127EA871500DBCAE2 /* hymnaldb-v17.sqlite */; };
 		3BFF25AE24480CC500DD91F6 /* DisplayHymnViewModelSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BFF25AD24480CC500DD91F6 /* DisplayHymnViewModelSpec.swift */; };
 		4831ECF9489E247191C18E3F /* Pods_HymnsTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C61B73C1AD4A9669B7C1879 /* Pods_HymnsTests.framework */; };
 		5C45E09924512E9000872369 /* VerseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C45E09824512E9000872369 /* VerseViewModel.swift */; };
@@ -557,6 +557,7 @@
 		3BE44364248AC08300763B3C /* ScriptureViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptureViewModel.swift; sourceTree = "<group>"; };
 		3BE44368248AC12C00763B3C /* ScriptureSongView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptureSongView.swift; sourceTree = "<group>"; };
 		3BE4436A248AC21300763B3C /* ScriptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptureView.swift; sourceTree = "<group>"; };
+		3BE7269627F2749E000BD1D3 /* hymnaldb-v18.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = "hymnaldb-v18.sqlite"; sourceTree = "<group>"; };
 		3BE7C919249CAB2700B04A1F /* HymnsSnapshotTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HymnsSnapshotTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BE7C91B249CAB2700B04A1F /* SearchSnapshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSnapshots.swift; sourceTree = "<group>"; };
 		3BE7C91D249CAB2700B04A1F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -570,7 +571,6 @@
 		3BF93B6027DC1ECF00EE95CA /* Chords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chords.swift; sourceTree = "<group>"; };
 		3BF93B6227DC1F1800EE95CA /* ChordViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordViews.swift; sourceTree = "<group>"; };
 		3BFA66332495A453009CB0BB /* TagPillModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagPillModifier.swift; sourceTree = "<group>"; };
-		3BFE517127EA871500DBCAE2 /* hymnaldb-v17.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = "hymnaldb-v17.sqlite"; sourceTree = "<group>"; };
 		3BFF25AD24480CC500DD91F6 /* DisplayHymnViewModelSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayHymnViewModelSpec.swift; sourceTree = "<group>"; };
 		5C45E09824512E9000872369 /* VerseViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VerseViewModel.swift; sourceTree = "<group>"; };
 		5C8CF1CB0F3C7393E53A012D /* Pods-Hymns-HymnsSnapshotTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hymns-HymnsSnapshotTests.debug.xcconfig"; path = "Target Support Files/Pods-Hymns-HymnsSnapshotTests/Pods-Hymns-HymnsSnapshotTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -1362,7 +1362,6 @@
 			isa = PBXGroup;
 			children = (
 				3B1B90122429CF55009FDCC5 /* AppDelegate.swift */,
-				3BFE517127EA871500DBCAE2 /* hymnaldb-v17.sqlite */,
 				3BDDC01E27CC8DEB004307D4 /* songbase-v1.sqlite */,
 				3B1B90142429CF55009FDCC5 /* SceneDelegate.swift */,
 				B5E61B36242E613D00EF497D /* Localizable.strings */,
@@ -1370,6 +1369,7 @@
 				B5915C6324CE900100342D7E /* firstLaunchAnimation.json */,
 				3BB931A824E3801500E0C873 /* soundCloudPlayingAnimation.json */,
 				3B1B90202429CF57009FDCC5 /* LaunchScreen.storyboard */,
+				3BE7269627F2749E000BD1D3 /* hymnaldb-v18.sqlite */,
 				3B1B90232429CF57009FDCC5 /* Info.plist */,
 				3B1B90162429CF55009FDCC5 /* Hymns.xcdatamodeld */,
 			);
@@ -1522,8 +1522,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BDDC02527CCB6DC004307D4 /* songbase-v1.sqlite in Resources */,
+				3BE7269827F27646000BD1D3 /* hymnaldb-v18.sqlite in Resources */,
 				3B1B90222429CF57009FDCC5 /* LaunchScreen.storyboard in Resources */,
-				3BFE517227EA871500DBCAE2 /* hymnaldb-v17.sqlite in Resources */,
 				3BB931A924E3801500E0C873 /* soundCloudPlayingAnimation.json in Resources */,
 				B5E61B34242E613D00EF497D /* Localizable.strings in Resources */,
 				3BADB429248461D1008CEDAB /* chineseSupplement216.json in Resources */,
