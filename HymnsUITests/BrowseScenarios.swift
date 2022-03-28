@@ -47,6 +47,22 @@ class BrowseScenarios: BaseTestCase {
             .assertSubcategory(category: "category 1", subcategory: "subcategory 2", count: 1)
     }
 
+    // Need to test new tunes as well because of an issue in iOS 15.4 where onAppear wasn't being
+    // called, which caused the new tunes page to have a forever loading screen.
+    func test_browseNewTunes() {
+        _ = HomeViewCan(app, testCase: self)
+            .goToBrowse()
+            .goToNewTunes()
+            .assertCategory("category 1", chevronUp: false)
+            .assertCategory("category 2", chevronUp: false)
+            .tapCategory("category 1")
+            .assertCategory("category 1", chevronUp: true)
+            .assertCategory("category 2", chevronUp: false)
+            .assertSubcategory(category: "category 1", subcategory: "All subcategories", count: 6)
+            .assertSubcategory(category: "category 1", subcategory: "subcategory 1", count: 5)
+            .assertSubcategory(category: "category 1", subcategory: "subcategory 2", count: 1)
+    }
+
     func test_browseScriptures() {
         _ = HomeViewCan(app, testCase: self)
             .goToBrowse()

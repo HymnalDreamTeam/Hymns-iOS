@@ -17,6 +17,14 @@ public class BrowseViewCan: BaseViewCan {
         return BrowseResultsViewCan(app, testCase: testCase)
     }
 
+    public func goToNewTunes() -> BrowseViewCan {
+        while !app.buttons["New Tunes"].exists {
+            app.scrollViews.element.swipeLeft()
+        }
+        app.buttons["New Tunes"].tap()
+        return self
+    }
+
     public func tapCategory(_ category: String) -> BrowseViewCan {
         app.staticTexts[category].tap()
         return self
