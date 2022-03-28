@@ -164,7 +164,7 @@ extension Resolver {
             let fileManager = FileManager.default
             guard let dbPath =
                 try? fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-                    .appendingPathComponent("songbase-v1.sqlite")
+                    .appendingPathComponent("songbasedb-v2.sqlite")
                     .path else {
                         Crashlytics.crashlytics().log("The desired path in Application Support is nil, so we are unable to create a database file. Fall back to useing an in-memory db and initialize it with empty tables")
                         Crashlytics.crashlytics().setCustomValue("in-memory db", forKey: "songbase_state")
@@ -178,7 +178,7 @@ extension Resolver {
                 // Need to copy the bundled database into the Application Support directory on order for GRDB to access it
                 // https://github.com/groue/GRDB.swift#how-do-i-open-a-database-stored-as-a-resource-of-my-application
                 if !fileManager.fileExists(atPath: dbPath) {
-                    guard let bundledDbPath = Bundle.main.path(forResource: "songbase-v1", ofType: "sqlite") else {
+                    guard let bundledDbPath = Bundle.main.path(forResource: "songbasedb-v2", ofType: "sqlite") else {
                         Crashlytics.crashlytics().log("Path to the bundled database was not found, so just create an empty database instead and initialize it with empty tables")
                         Crashlytics.crashlytics().setCustomValue("empty persistent db", forKey: "songbase_state")
                         Crashlytics.crashlytics().record(error: NSError(domain: "Database Initialization Error", code: NonFatalEvent.ErrorCode.databaseInitialization.rawValue))
