@@ -19,7 +19,7 @@ public struct InlineChordsView: View {
                     }
                 }
             }
-        }.padding().onAppear {
+        }.padding(.horizontal).onAppear {
             viewModel.loadPdf()
         }.overlay(
             viewModel.pdfDocument.map({ _ in
