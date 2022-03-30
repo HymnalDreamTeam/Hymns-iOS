@@ -27,6 +27,16 @@ public class DisplayHymnViewCan: BaseViewCan {
         return BrowseResultsViewCan(app, testCase: testCase)
     }
 
+    public func swipeLeft() -> DisplayHymnViewCan {
+        app.swipeLeft()
+        return self
+    }
+
+    public func swipeRight() -> DisplayHymnViewCan {
+        app.swipeRight()
+        return self
+    }
+
     public func favoriteSong() -> DisplayHymnViewCan {
         return pressButton("Mark song as a favorite")
     }
@@ -136,6 +146,16 @@ public class DisplayHymnViewCan: BaseViewCan {
             return waitForButtons("play")
         } else {
             return waitForButtons("play.circle")
+        }
+    }
+
+    public func verifyPlayButtonNotExists() -> DisplayHymnViewCan {
+        if #available(iOS 15.0, *) {
+            return verifyButtonsNotExist("Play")
+        } else if #available(iOS 14.5, *) {
+            return verifyButtonsNotExist("play")
+        } else {
+            return verifyButtonsNotExist("play.circle")
         }
     }
 

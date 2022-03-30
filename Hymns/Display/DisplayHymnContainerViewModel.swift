@@ -6,9 +6,9 @@ class DisplayHymnContainerViewModel: ObservableObject {
     static let songSwipableEvent = "songSwipableEvent"
 
     @Published var hymns: [DisplayHymnViewModel]?
-    @Published var currentHymn: Int = 0
     @Published var swipeEnabled = true
 
+    var currentHymn: Int = 0
     private let identifier: HymnIdentifier
     private let storeInHistoryStore: Bool
 

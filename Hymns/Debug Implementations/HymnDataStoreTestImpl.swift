@@ -6,6 +6,7 @@ class HymnDataStoreTestImpl: HymnDataStore {
 
     private var hymnStore = [
         classic1151: classic1151Entity,
+        classic1152: classic1152Entity,
         chinese216: chinese216Entity,
         classic2: classic2Entity,
         classic3: classic3Entity,
