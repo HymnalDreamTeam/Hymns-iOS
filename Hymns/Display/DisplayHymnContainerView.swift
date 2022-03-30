@@ -12,7 +12,9 @@ struct DisplayHymnContainerView: View {
     var body: some View {
         Group { () -> AnyView in
             guard let hymns = self.viewModel.hymns else {
-                return ActivityIndicator().maxSize().eraseToAnyView()
+                return ActivityIndicator().maxSize().onAppear {
+                    self.viewModel.populateHymns()
+                }.eraseToAnyView()
             }
             if hymns.count == 1, let onlyHymn = hymns.first {
                 return DisplayHymnView(viewModel: onlyHymn).eraseToAnyView()
@@ -21,10 +23,10 @@ struct DisplayHymnContainerView: View {
                          data: Array(0..<hymns.count),
                          id: \.self,
                          content: { index in
-                            DisplayHymnView(viewModel: hymns[index])
-                         }).allowsDragging(viewModel.swipeEnabled).eraseToAnyView()
-        }.onAppear {
-            self.viewModel.populateHymns()
+                DisplayHymnView(viewModel: hymns[index])
+            }).onPageChanged({ newHymn in
+                self.viewModel.currentHymn = newHymn
+            }).allowsDragging(viewModel.swipeEnabled).eraseToAnyView()
         }
     }
 }

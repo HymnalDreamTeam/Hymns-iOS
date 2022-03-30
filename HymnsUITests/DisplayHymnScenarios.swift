@@ -106,4 +106,18 @@ class DisplayHymnScenarios: BaseTestCase {
             .goBackToFavorites()
             .verifyButtonsNotExist("Hymn 1151, Minoru's song")
     }
+
+    func test_swipeBetweenHymns() {
+        _ = DisplayHymnViewCan(app, testCase: self)
+            .swipeLeft()
+            .waitForStaticTexts("classic hymn 1152")
+            .tapFontPicker()
+            .waitForFontPicker()
+            .swipeRight()
+            .waitForStaticTexts("classic hymn 1152")
+            .tapFontPicker()
+            .swipeRight()
+            .verifyFontPickerNotExists()
+            .waitForStaticTexts("verse 1 line 1")
+    }
 }
