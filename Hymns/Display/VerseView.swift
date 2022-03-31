@@ -10,7 +10,7 @@ struct VerseLineView: View {
         VStack(alignment: .leading) {
             viewModel.verseNumber.map { verseNumber in
                 Text(verseNumber)
-                    .font(.system(size: CGFloat(viewModel.fontSize)))
+                    .font(.system(size: CGFloat(viewModel.fontSize) * 0.80))
                     .fontWeight(.bold)
                     .padding(.bottom, 2).foregroundColor(.gray)
             }
