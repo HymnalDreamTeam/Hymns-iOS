@@ -65,8 +65,7 @@ class VerseViewModel {
 
     let verseLines: [VerseLineViewModel]
 
-    init(verseNumber: String? = nil, verseLines: [String],
-         transliteration: [String]? = nil, shouldTransliterate: Binding<Bool>? = nil) {
+    init(verseNumber: String, verseLines: [String], transliteration: [String]? = nil, shouldTransliterate: Binding<Bool>? = nil) {
         self.verseLines = verseLines.enumerated().map { (index, line) -> VerseLineViewModel in
             let transliteration = transliteration?[index]
             return VerseLineViewModel(verseNumber: index == 0 ? verseNumber : nil, verseText: line, transliteration: transliteration)

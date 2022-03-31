@@ -37,7 +37,7 @@ public struct HymnLyricsView: View {
                             self.toast = .verseCopied
                         }
                 }
-            }.frame(minWidth: 0, maxWidth: .infinity, alignment: .center).padding()
+            }.frame(minWidth: 0, maxWidth: .infinity, alignment: .leading).padding()
         }.maxSize().toast(item: $toast, options: ToastOptions(alignment: .bottom, disappearAfter: 2)) { toastType -> AnyView in
             switch toastType {
             case .verseCopied:
