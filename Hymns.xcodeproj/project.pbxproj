@@ -13,6 +13,9 @@
 		3B02725A24777BF9007348B0 /* Dialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B02725924777BF9007348B0 /* Dialog.swift */; };
 		3B04D2FC24898137008C7E5E /* TagEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B04D2FB24898137008C7E5E /* TagEntity.swift */; };
 		3B04D2FE2489819A008C7E5E /* TagStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B04D2FD2489819A008C7E5E /* TagStore.swift */; };
+		3B08FE9A27F4F7C10091594D /* classic1151.json in Resources */ = {isa = PBXBuildFile; fileRef = 3BC13291243850B90082A274 /* classic1151.json */; };
+		3B08FE9B27F4F7C10091594D /* classic40.json in Resources */ = {isa = PBXBuildFile; fileRef = 3B9AE08D245902920027C571 /* classic40.json */; };
+		3B08FE9C27F4F7C10091594D /* classic1334.json in Resources */ = {isa = PBXBuildFile; fileRef = 3BC13293243852C00082A274 /* classic1334.json */; };
 		3B09F901243D3BDC00252C15 /* HymnalApiService_SearchTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B09F900243D3BDC00252C15 /* HymnalApiService_SearchTest.swift */; };
 		3B09F904243D4D9300252C15 /* URLProtocolMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B09F903243D4D9300252C15 /* URLProtocolMock.swift */; };
 		3B09F909243D806500252C15 /* TestHymns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B09F908243D806500252C15 /* TestHymns.swift */; };
@@ -1521,6 +1524,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3B08FE9A27F4F7C10091594D /* classic1151.json in Resources */,
+				3B08FE9B27F4F7C10091594D /* classic40.json in Resources */,
+				3B08FE9C27F4F7C10091594D /* classic1334.json in Resources */,
 				3BE7269827F27646000BD1D3 /* hymnaldb-v18.sqlite in Resources */,
 				3BE7269927F27646000BD1D3 /* songbasedb-v2.sqlite in Resources */,
 				3B1B90222429CF57009FDCC5 /* LaunchScreen.storyboard in Resources */,

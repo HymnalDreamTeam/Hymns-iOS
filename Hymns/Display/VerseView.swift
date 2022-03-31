@@ -7,17 +7,20 @@ struct VerseLineView: View {
     @Binding var transliterate: Bool
 
     var body: some View {
-        HStack(alignment: .top) {
-            Text(viewModel.verseNumber ?? "").font(.system(size: CGFloat(viewModel.fontSize)))
-            VStack(alignment: .leading) {
-                if transliterate {
-                    viewModel.transliteration.map { transliteration in
-                        Text(transliteration).font(.system(size: CGFloat(viewModel.fontSize)))
-                    }
+        VStack(alignment: .leading) {
+            viewModel.verseNumber.map { verseNumber in
+                Text(verseNumber)
+                    .font(.system(size: CGFloat(viewModel.fontSize)))
+                    .fontWeight(.bold)
+                    .padding(.bottom, 2).foregroundColor(.gray)
+            }
+            if transliterate {
+                viewModel.transliteration.map { transliteration in
+                    Text(transliteration).font(.system(size: CGFloat(viewModel.fontSize)))
                 }
-                Text(viewModel.verseText).font(.system(size: CGFloat(viewModel.fontSize)))
-            }.fixedSize(horizontal: false, vertical: true).padding(.bottom, 5).lineSpacing(5)
-        }
+            }
+            Text(viewModel.verseText).font(.system(size: CGFloat(viewModel.fontSize)))
+        }.fixedSize(horizontal: false, vertical: true).padding(.bottom, 5).lineSpacing(5)
     }
 }
 
@@ -46,9 +49,9 @@ struct VerseLineView_Previews: PreviewProvider {
         }
 
         let extraLargeTextViewModels = [VerseLineViewModel(verseNumber: "1", verseText: "Drink! A river pure and clear that's flowing from the throne"),
-                                      VerseLineViewModel(verseText: "Eat! The tree of life with fruits abundant, richly grown")]
-        largeTextViewModels[0].fontSize = 24.0
-        largeTextViewModels[1].fontSize = 24.0
+                                        VerseLineViewModel(verseText: "Eat! The tree of life with fruits abundant, richly grown")]
+        extraLargeTextViewModels[0].fontSize = 24.0
+        extraLargeTextViewModels[1].fontSize = 24.0
         let extraLargeText = VStack(alignment: .leading) {
             VerseLineView(viewModel: extraLargeTextViewModels[0], transliterate: doNotTransliterateBinding)
             VerseLineView(viewModel: extraLargeTextViewModels[1], transliterate: doNotTransliterateBinding)
@@ -68,10 +71,10 @@ struct VerseLineView_Previews: PreviewProvider {
         }
 
         return Group {
-            regularVerse.previewLayout(.fixed(width: 425, height: 50)).previewDisplayName("regular verse")
-            transliteration.previewLayout(.fixed(width: 425, height: 100)).previewDisplayName("verse with transliteration")
-            largeText.previewLayout(.fixed(width: 425, height: 100)).previewDisplayName("large text")
-            extraLargeText.previewLayout(.fixed(width: 425, height: 175)).previewDisplayName("extra large text")
+            regularVerse.previewLayout(.fixed(width: 425, height: 85)).previewDisplayName("regular verse")
+            largeText.previewLayout(.fixed(width: 425, height: 120)).previewDisplayName("large text")
+            extraLargeText.previewLayout(.fixed(width: 425, height: 180)).previewDisplayName("extra large text")
+            transliteration.previewLayout(.fixed(width: 250, height: 125)).previewDisplayName("verse with transliteration")
         }
     }
 }
@@ -104,7 +107,7 @@ struct VerseView_Previews: PreviewProvider {
             VerseView(viewModel: VerseViewModel(verseNumber: "1",
                                                 verseLines: ["Drink! A river pure and clear that's flowing from the throne", "Eat! The tree of life with fruits abundant, richly grown", "Look! No need of lamp nor sun nor moon to keep it bright, for", "  Here this is no night!"]),
                       transliterate: noTransliterationBinding)
-            VerseView(viewModel: VerseViewModel(verseLines: ["Do come, oh, do come,", "Says Spirit and the Bride:", "Do come, oh, do come,", "Let him that heareth, cry.", "Do come, oh, do come,", "Let him who thirsts and will", "  Take freely the water of life!"]),
+            VerseView(viewModel: VerseViewModel(verseNumber: "Chorus", verseLines: ["Do come, oh, do come,", "Says Spirit and the Bride:", "Do come, oh, do come,", "Let him that heareth, cry.", "Do come, oh, do come,", "Let him who thirsts and will", "  Take freely the water of life!"]),
                       transliterate: noTransliterationBinding)
         }
     }
