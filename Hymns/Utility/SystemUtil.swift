@@ -1,6 +1,7 @@
 import Foundation
 import Network
 import Resolver
+import SystemConfiguration
 
 protocol SystemUtil {
     func isNetworkAvailable() -> Bool
@@ -13,15 +14,14 @@ protocol SystemUtil {
 
 class SystemUtilImpl: SystemUtil {
 
-    private let networkMonitor: NWPathMonitor
+    private let reachability = SCNetworkReachabilityCreateWithName(nil, "www.hymnal.net")
 
-    init(backgroundQueue: DispatchQueue = Resolver.resolve(name: "background")) {
-        networkMonitor = NWPathMonitor()
-        networkMonitor.start(queue: backgroundQueue)
-    }
-
+    /// https://designcode.io/swiftui-advanced-handbook-network-connection
     func isNetworkAvailable() -> Bool {
-        return networkMonitor.currentPath.status == .satisfied
+        var flags = SCNetworkReachabilityFlags()
+        SCNetworkReachabilityGetFlags(reachability!, &flags)
+
+        return flags.contains(.reachable)
     }
 
     func isSmallScreen() -> Bool {
