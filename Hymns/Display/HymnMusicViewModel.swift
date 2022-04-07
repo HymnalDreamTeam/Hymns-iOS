@@ -27,7 +27,7 @@ extension HymnMusicTab {
         case .piano:
             return Image(systemName: "pianokeys")
         case .guitar:
-            return Image(systemName: "guitars.fill")
+            return Image("guitalele")
         }
     }
 }
