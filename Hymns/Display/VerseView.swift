@@ -10,16 +10,17 @@ struct VerseLineView: View {
         VStack(alignment: .leading) {
             viewModel.verseNumber.map { verseNumber in
                 Text(verseNumber)
-                    .font(.system(size: CGFloat(viewModel.fontSize) * 0.80))
                     .fontWeight(.bold)
-                    .padding(.bottom, 2).foregroundColor(.gray)
+                    .padding(.bottom, 2)
+                    .foregroundColor(.gray)
+                    .relativeFont(CGFloat(viewModel.fontSize) * 0.80)
             }
             if transliterate {
                 viewModel.transliteration.map { transliteration in
-                    Text(transliteration).font(.system(size: CGFloat(viewModel.fontSize)))
+                    Text(transliteration).relativeFont(CGFloat(viewModel.fontSize))
                 }
             }
-            Text(viewModel.verseText).font(.system(size: CGFloat(viewModel.fontSize)))
+            Text(viewModel.verseText).relativeFont(CGFloat(viewModel.fontSize))
         }.fixedSize(horizontal: false, vertical: true).padding(.bottom, 5).lineSpacing(5)
     }
 }

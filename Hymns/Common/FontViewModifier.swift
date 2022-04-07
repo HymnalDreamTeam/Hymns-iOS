@@ -16,3 +16,23 @@ extension View {
         return self.modifier(CustomTitleLayout())
     }
 }
+
+/// https://useyourloaf.com/blog/scaling-custom-swiftui-fonts-with-dynamic-type/
+struct ScaledFont: ViewModifier {
+
+    private let font: Font
+
+    init(_ fontSize: CGFloat) {
+        self.font = .custom("Default", size: fontSize)
+    }
+
+    func body(content: Content) -> some View {
+        content.font(font)
+    }
+}
+
+extension View {
+    func relativeFont(_ fontSize: CGFloat) -> some View {
+        return self.modifier(ScaledFont(fontSize))
+    }
+}

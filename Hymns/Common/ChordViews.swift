@@ -15,9 +15,9 @@ public struct ChordWordView: View {
                     .foregroundColor(.accentColor)
                     .frame(alignment: .topLeading)
                     .padding(.bottom, 8)
-                    .font(.system(size: CGFloat(chordWord.fontSize)))
+                    .relativeFont(CGFloat(chordWord.fontSize))
             }
-            Text(chordWord.word).frame(alignment: .bottomLeading).font(.system(size: CGFloat(chordWord.fontSize)))
+            Text(chordWord.word).frame(alignment: .bottomLeading).relativeFont(CGFloat(chordWord.fontSize))
         }
     }
 }
