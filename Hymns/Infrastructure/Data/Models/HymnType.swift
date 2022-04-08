@@ -22,11 +22,12 @@ import Foundation
     case japanese
     case indonesian
     case farsi
+    case russian
     case songbase
 
     static var allCases: [HymnType] {
         return [classic, newTune, newSong, children, howardHigashi, dutch, german, chinese, chineseSupplement, cebuano,
-                tagalog, french, spanish, korean, japanese, indonesian, farsi, songbase]
+                tagalog, french, spanish, korean, japanese, indonesian, farsi, russian, songbase]
     }
 }
 
@@ -52,6 +53,7 @@ extension HymnType {
            HymnType.japanese.abbreviatedValue.lowercased(): .japanese,
            HymnType.indonesian.abbreviatedValue.lowercased(): .indonesian,
            HymnType.farsi.abbreviatedValue.lowercased(): .farsi,
+           HymnType.russian.abbreviatedValue.lowercased(): .russian,
            "classic": classic, "hymn": classic,
            "new tune": .newTune,
            "new song": .newSong,
@@ -69,6 +71,7 @@ extension HymnType {
            "jp": .japanese, "japanese": .japanese,
            "indonesian": .indonesian,
            "farsi": .farsi,
+           "russian": .russian,
            "songbase": .songbase, "sb": .songbase
     ]
 
@@ -108,6 +111,8 @@ extension HymnType {
             return "I"
         case .farsi:
             return "F"
+        case .russian:
+            return "R"
         case .songbase:
             return "sb"
         }
@@ -132,6 +137,8 @@ extension HymnType {
             return 1111
         case .chineseSupplement:
             return 1005
+        case .russian:
+            return 800
         case .songbase:
             return 706
         default:
@@ -189,6 +196,8 @@ extension HymnType {
             return NSLocalizedString("Indonesian Songs", comment: "Display name of 'Indonesian Songs'. Usually appears just by itself (i.e. as a title).")
         case .farsi:
             return NSLocalizedString("Farsi Songs", comment: "Display name of 'Farsi Songs'. Usually appears just by itself (i.e. as a title).")
+        case .russian:
+            return NSLocalizedString("Russian Songs", comment: "Display name of 'Russian Songs'. Usually appears just by itself (i.e. as a title).")
         case .songbase:
             return NSLocalizedString("Songbase Songs", comment: "Display name of 'Songbase Songs'. Usually appears just by itself (i.e. as a title).")
         }
@@ -230,6 +239,8 @@ extension HymnType {
             return NSLocalizedString("Indonesian %@", comment: "Will appear in conjunction with something else (e.g. Indonesian 7).")
         case .farsi:
             return NSLocalizedString("Farsi %@", comment: "Will appear in conjunction with something else (e.g. Farsi 7).")
+        case .russian:
+            return NSLocalizedString("Russian %@", comment: "Will appear in conjunction with something else (e.g. Russian 7).")
         case .songbase:
             return NSLocalizedString("Songbase %@", comment: "Will appear in conjunction with something else (e.g. Songbase 7).")
         }
