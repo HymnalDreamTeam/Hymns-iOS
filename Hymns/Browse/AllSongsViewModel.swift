@@ -6,7 +6,7 @@ class AllSongsViewModel: ObservableObject {
 
     init() {
         hymnTypes = [.classic, .newSong, .children, .howardHigashi, .songbase, .dutch, .german, .chinese, .chineseSupplement,
-                     .cebuano, .tagalog, .french, .spanish, .korean, .japanese, .farsi]
+                     .cebuano, .tagalog, .french, .spanish, .korean, .japanese, .farsi, .russian]
     }
 }
 
