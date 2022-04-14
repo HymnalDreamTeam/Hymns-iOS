@@ -32,48 +32,35 @@ import Foundation
 }
 
 extension HymnType {
+
     /**
      * Prefixes that match this paritcular hymn type during search (e.g. ch40, Chinese 40, Chinese40 should all match the song for "ch40")
      */
-    static let searchPrefixes: [String: HymnType]
-        = [HymnType.classic.abbreviatedValue.lowercased(): .classic,
-           HymnType.newTune.abbreviatedValue.lowercased().lowercased(): .newTune,
-           HymnType.newSong.abbreviatedValue.lowercased(): .newSong,
-           HymnType.children.abbreviatedValue.lowercased(): children,
-           HymnType.howardHigashi.abbreviatedValue.lowercased(): .howardHigashi,
-           HymnType.dutch.abbreviatedValue.lowercased(): .dutch,
-           HymnType.german.abbreviatedValue.lowercased(): .german,
-           HymnType.chinese.abbreviatedValue.lowercased(): .chinese,
-           HymnType.chineseSupplement.abbreviatedValue.lowercased(): .chineseSupplement,
-           HymnType.cebuano.abbreviatedValue.lowercased(): .cebuano,
-           HymnType.tagalog.abbreviatedValue.lowercased(): .tagalog,
-           HymnType.french.abbreviatedValue.lowercased(): .french,
-           HymnType.spanish.abbreviatedValue.lowercased(): .spanish,
-           HymnType.korean.abbreviatedValue.lowercased(): .korean,
-           HymnType.japanese.abbreviatedValue.lowercased(): .japanese,
-           HymnType.indonesian.abbreviatedValue.lowercased(): .indonesian,
-           HymnType.farsi.abbreviatedValue.lowercased(): .farsi,
-           HymnType.russian.abbreviatedValue.lowercased(): .russian,
-           "classic": classic, "hymn": classic,
-           "new tune": .newTune,
-           "new song": .newSong,
-           "chidren": .children,
-           "howard higashi": .howardHigashi, "long beach": .howardHigashi, "longbeach": .howardHigashi,
-           "dt": .dutch, "dutch": .dutch,
-           "g": german, "ge": .german, "german": .german,
-           "chinese": .chinese, "中文": .chinese,
-           "cs": .chineseSupplement, "chs": .chineseSupplement, "chinese supplement": .chineseSupplement, "中文補充": .chineseSupplement, "中文补充": .chineseSupplement, "補充": .chineseSupplement, "补充": .chineseSupplement,
-           "cebuano": .cebuano,
-           "tg": .tagalog, "t": .tagalog, "tagalog": .tagalog,
-           "fr": .french, "french": .french,
-           "sp": .spanish, "spanish": .spanish,
-           "kr": .korean, "korean": .korean,
-           "jp": .japanese, "japanese": .japanese,
-           "indonesian": .indonesian,
-           "farsi": .farsi,
-           "russian": .russian,
-           "songbase": .songbase, "sb": .songbase
-    ]
+    static let searchPrefixes = allCases.reduce([String: HymnType]()) { partialResult, hymnType in
+        var partialResult = partialResult
+        partialResult[hymnType.abbreviatedValue.lowercased()] = hymnType
+        return partialResult
+    }.merging([
+        "classic": classic, "hymn": classic,
+        "new tune": .newTune,
+        "new song": .newSong,
+        "chidren": .children,
+        "howard higashi": .howardHigashi, "long beach": .howardHigashi, "longbeach": .howardHigashi,
+        "dt": .dutch, "dutch": .dutch,
+        "g": german, "ge": .german, "german": .german,
+        "chinese": .chinese, "中文": .chinese,
+        "cs": .chineseSupplement, "chs": .chineseSupplement, "chinese supplement": .chineseSupplement, "中文補充": .chineseSupplement, "中文补充": .chineseSupplement, "補充": .chineseSupplement, "补充": .chineseSupplement,
+        "cebuano": .cebuano,
+        "tg": .tagalog, "t": .tagalog, "tagalog": .tagalog,
+        "fr": .french, "french": .french,
+        "sp": .spanish, "spanish": .spanish,
+        "kr": .korean, "korean": .korean,
+        "jp": .japanese, "japanese": .japanese,
+        "indonesian": .indonesian,
+        "farsi": .farsi,
+        "russian": .russian, "ru": .russian,
+        "songbase": .songbase, "sb": .songbase
+    ]) { _, new in new } // merging two dictionaries: https://stackoverflow.com/a/43615143/1907538
 
     var abbreviatedValue: String {
         switch self {
