@@ -70,13 +70,12 @@ extension Pager: Buildable {
 
     #if !os(tvOS)
 
-    /// Sets the explicit animation to be used. Defaults to `.standard`
+    /// User can only swipe forward so in one direction
     ///
-    /// - Parameter value: animation to use while dragging and to page
-    ///
-    /// - Warning: `spring` animations don't work well. Avoid high responses while dragging as the animation should be short
-    public func draggingAnimation(_ value: DraggingAnimation) -> Self {
-        mutating(keyPath: \.draggingAnimation, value: value)
+    /// - Parameter enabled: by default dragForwardOnly is disables so pages can be scrolled in both directions,
+    ///     set to true to disable scrolling backwards
+    public func dragForwardOnly(_ value: Bool = true) -> Self {
+        mutating(keyPath: \.dragForwardOnly, value: value)
     }
 
     /// Sets the explicit animation to be used. Defaults to `.standard`
@@ -161,8 +160,39 @@ extension Pager: Buildable {
         mutating(keyPath: \.onDraggingEnded, value: callback)
     }
   
-    #else
-    
+    #endif
+
+    /// Adds a callback to react when _iWatch Digital Crown_ is rotated
+    ///
+    /// - Parameter callback: block to be called when  dragging begins
+    @available(iOS, unavailable)
+    @available(macOS, unavailable)
+    @available(tvOS, unavailable)
+    @available(watchOS 7.0, *)
+    public func onDigitalCrownRotated(_ callback: ((Double) -> Void)?) -> Self {
+        mutating(keyPath: \.onDigitalCrownRotated, value: callback)
+    }
+
+    /// Disables any interaction with the digital crown
+    @available(iOS, unavailable)
+    @available(macOS, unavailable)
+    @available(tvOS, unavailable)
+    @available(watchOS 7.0, *)
+    public func disableDigitalCrownRotation() -> Self {
+        mutating(keyPath: \.allowsDigitalCrownRotation, value: false)
+    }
+
+    /// Sets whether the `Pager` interacts with the _watchOS_ digital crown
+    ///
+    /// - Parameter value: `true` if  allowed, `false`, otherwise. Defaults to `true`
+    @available(iOS, unavailable)
+    @available(macOS, unavailable)
+    @available(tvOS, unavailable)
+    @available(watchOS 7.0, *)
+    public func allowsDigitalCrownRotation(_ value: Bool = true) -> Self {
+        mutating(keyPath: \.allowsDigitalCrownRotation, value: value)
+    }
+
     /// Sets the explicit animation to be used. Defaults to `.standard`
     ///
     /// - Parameter value: animation to use while dragging and to page
@@ -171,8 +201,6 @@ extension Pager: Buildable {
     public func draggingAnimation(_ value: DraggingAnimation) -> Self {
         mutating(keyPath: \.draggingAnimation, value: value)
     }
-
-    #endif
 
     /// Changes the a the  alignment of the pages relative to their container
     ///

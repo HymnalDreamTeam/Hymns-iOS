@@ -54,6 +54,8 @@ public class Page: ObservableObject {
   
     var isInfinite = false
 
+    var lastDigitalCrownPageOffset: CGFloat = 0
+
     /// Initializes a new instance
     /// 
     /// - Parameter page: Current page index
@@ -79,6 +81,9 @@ extension Page {
 
         /// Will move to the first page
         case moveToFirst
+
+        /// Will increment or decrement the `index` by the passed argument
+        case move(increment: Int)
 
         /// Will move to the last page
         case moveToLast
@@ -116,6 +121,8 @@ extension Page {
             index = 0
         case .moveToLast:
             index = totalPages - 1
+        case .move(let increment):
+            index += increment
         case .new(let newIndex):
             index = newIndex
         }
