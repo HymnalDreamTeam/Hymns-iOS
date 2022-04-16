@@ -96,6 +96,9 @@ public struct Pager<Element, ID, PageView>: View  where PageView: View, Element:
     /// The elements alignment relative to the container
     var alignment: PositionAlignment = .center
 
+    /// Swiping back is disabled
+    var dragForwardOnly: Bool = false
+
     /// `true` if the pager is horizontal
     var isHorizontal: Bool = true
 
@@ -107,6 +110,9 @@ public struct Pager<Element, ID, PageView>: View  where PageView: View, Element:
 
     /// `true` if  `Pager` can be dragged
     var allowsDragging: Bool = true
+
+    /// `true` if  `Pager`interacts with the digital crown
+    var allowsDigitalCrownRotation: Bool = true
 
     /// `true` if pages should have a 3D rotation effect
     var shouldRotate: Bool = false
@@ -150,14 +156,17 @@ public struct Pager<Element, ID, PageView>: View  where PageView: View, Element:
     /// Callback invoked when a new page is set
     var onPageChanged: ((Int) -> Void)?
 	
-	/// Callback for when dragging begins
-	var onDraggingBegan: (() -> Void)?
+    /// Callback for a dragging began event
+    var onDraggingBegan: (() -> Void)?
 
-    /// Callback for when dragging changes
+    /// Callback for a dragging changed event
     var onDraggingChanged: ((Double) -> Void)?
 
-    /// Callback for when dragging ends
+    /// Callback for a dragging ended event
     var onDraggingEnded: (() -> Void)?
+
+    /// Callback for a digital crown rotated event
+    var onDigitalCrownRotated: ((Double) -> Void)?
 
     /*** State and Binding properties ***/
 
@@ -219,8 +228,17 @@ public struct Pager<Element, ID, PageView>: View  where PageView: View, Element:
             .onDraggingEnded(onDraggingEnded)
             .bounces(bounces)
             .draggingAnimation(draggingAnimation)
+            .dragForwardOnly(dragForwardOnly)
         #else
         pagerContent = pagerContent.draggingAnimation(draggingAnimation)
+        #endif
+
+        #if os(watchOS)
+        if #available(watchOS 7.0, *) {
+            pagerContent = pagerContent
+                .onDigitalCrownRotated(onDigitalCrownRotated)
+                .allowsDigitalCrownRotation(allowsDigitalCrownRotation)
+        }
         #endif
 
         pagerContent = allowsMultiplePagination ? pagerContent.multiplePagination() : pagerContent

@@ -77,6 +77,9 @@ extension Pager {
         /// The elements alignment relative to the container
         var alignment: PositionAlignment = .center
 
+        /// Swiping back is disabled
+        var dragForwardOnly: Bool = false
+
         /// `true` if the pager is horizontal
         var isHorizontal: Bool = true
 
@@ -88,6 +91,9 @@ extension Pager {
 
         /// `true` if  `Pager` can be dragged
         var allowsDragging: Bool = true
+
+        /// `true` if  `Pager`interacts with the digital crown
+        var allowsDigitalCrownRotation: Bool = true
 
         /// `true` if pages should have a 3D rotation effect
         var shouldRotate: Bool = false
@@ -128,19 +134,34 @@ extension Pager {
         /// Callback invoked when a new page is set
         var onPageChanged: ((Int) -> Void)?
 		
-        /// Callback for when dragging begins
+        /// Callback for a dragging began event
         var onDraggingBegan: (() -> Void)?
 
-        /// Callback for when dragging changes
+        /// Callback for a dragging changed event
         var onDraggingChanged: ((Double) -> Void)?
 
-        /// Callback for when dragging ends
+        /// Callback for a dragging ended event
         var onDraggingEnded: (() -> Void)?
+
+        /// Callback for a digital crown rotated event
+        var onDigitalCrownRotated: ((Double) -> Void)?
 
         /*** State and Binding properties ***/
 
         /// Page index
         @ObservedObject var pagerModel: Page
+
+        #if !os(tvOS)
+        /// DragGesture state to indicate whether the gesture was interrupted
+        @GestureState var isGestureFinished = true
+        #endif
+
+        #if os(watchOS)
+
+        /// Digital Crown offset
+        @State var digitalCrownPageOffset: CGFloat = 0
+
+        #endif
 
         /// Initializes a new `Pager`.
         ///
@@ -165,15 +186,15 @@ extension Pager {
                             EmptyView()
                         } else {
                             self.content(item.element)
+                                .frame(size: self.pageSize)
+                                .scaleEffect(self.scale(for: item))
+                                .rotation3DEffect((self.isHorizontal ? .zero : Angle(degrees: -90)) - self.scrollDirectionAngle,
+                                                  axis: (0, 0, 1))
+                                .rotation3DEffect(self.angle(for: item),
+                                                  axis:  self.axis)
+                                .opacity(opacity(for: item))
                         }
                     }
-                    .frame(size: self.pageSize)
-                    .scaleEffect(self.scale(for: item))
-                    .rotation3DEffect((self.isHorizontal ? .zero : Angle(degrees: -90)) - self.scrollDirectionAngle,
-                                      axis: (0, 0, 1))
-                    .rotation3DEffect(self.angle(for: item),
-                                          axis:  self.axis)
-                    .opacity(opacity(for: item))
                 }
                 .offset(x: self.xOffset, y : self.yOffset)
             }
@@ -196,16 +217,10 @@ extension Pager {
             #endif
 
             var resultView = wrappedView
-                .rotation3DEffect((isHorizontal ? .zero : Angle(degrees: 90)) + scrollDirectionAngle,
-                                  axis: (0, 0, 1))
-                .onDeactivate(perform: {
-                    if self.isDragging {
-                        #if !os(tvOS)
-                        self.onDragGestureEnded()
-                        #endif
-                    }
-                })
-                .eraseToAny()
+                .rotation3DEffect(
+                    (isHorizontal ? .zero : Angle(degrees: 90)) + scrollDirectionAngle,
+                    axis: (0, 0, 1)
+                ).eraseToAny()
 
             if #available(iOS 13.2, macOS 10.15, tvOS 13.0, watchOS 6.0, *) {
                 resultView = resultView
@@ -220,6 +235,51 @@ extension Pager {
                     .eraseToAny()
             }
 
+            #if !os(tvOS)
+            if #available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *) {
+                resultView = resultView
+                    .onChange(of: isGestureFinished) { value in
+                        if value {
+                            onDragGestureEnded()
+                        }
+                    }
+                    .eraseToAny()
+            }
+            #endif
+
+            #if os(watchOS)
+            if #available(watchOS 7.0, *), allowsDigitalCrownRotation {
+                resultView = resultView
+                    .focusable()
+                    .digitalCrownRotation(
+                        $digitalCrownPageOffset,
+                        from: 0,
+                        through: CGFloat(numberOfPages - 1),
+                        by: 1,
+                        sensitivity: .low
+                    )
+                    .onChange(of: digitalCrownPageOffset) { newValue in
+                        let pageIncrement = min(1, max(-1, Int(newValue - pagerModel.lastDigitalCrownPageOffset)))
+                        let offset = (newValue - pagerModel.lastDigitalCrownPageOffset) - CGFloat(pageIncrement)
+                        onDigitalCrownRotated?(newValue * pageDistance)
+                        let animation = self.draggingAnimation.animation ?? .default
+                        guard abs(pageIncrement) > 0 else {
+                            withAnimation(animation) {
+                                pagerModel.draggingOffset = -offset * pageDistance
+                                pagerModel.objectWillChange.send()
+                            }
+                            return
+                        }
+                        withAnimation(animation) {
+                            pagerModel.lastDigitalCrownPageOffset = newValue - offset
+                            pagerModel.draggingOffset = -offset
+                            pagerModel.update(.move(increment: pageIncrement))
+                        }
+                    }
+                    .eraseToAny()
+            }
+            #endif
+
             return resultView.contentShape(Rectangle())
         }
     }
@@ -233,28 +293,36 @@ extension Pager.PagerContent {
     #if os(tvOS) || os(macOS)
     func onMoveCommandSent(_ command: MoveCommandDirection) {
       let animation = self.draggingAnimation.animation ?? .default
-      switch command {
-      case .left:
-        withAnimation(animation) { self.pagerModel.update(.previous) }
-      case .right:
-        withAnimation(animation) { self.pagerModel.update(.next) }
-      case .up, .down:
-        break
-      @unknown default:
-        break
-      }
+        switch (command, isHorizontal) {
+        case (.left, true):
+            guard !dragForwardOnly else { return }
+            withAnimation(animation) { self.pagerModel.update(.previous) }
+        case (.right, true):
+            withAnimation(animation) { self.pagerModel.update(.next) }
+        case (.up, false):
+            guard !dragForwardOnly else { return }
+            withAnimation(animation) { self.pagerModel.update(.previous) }
+        case (.down, false):
+            withAnimation(animation) { self.pagerModel.update(.next) }
+        case (.down, true), (.up, true), (.left, false), (.right, false):
+            break
+        @unknown default:
+            break
+        }
     }
     #endif
 
     /// `DragGesture` customized to work with `Pager`
     #if !os(tvOS)
     var swipeGesture: some Gesture {
-        DragGesture(minimumDistance: minimumDistance)
+        DragGesture(minimumDistance: minimumDistance, coordinateSpace: .global)
+            .updating($isGestureFinished) { _, state, _ in
+                state = false
+            }
             .onChanged({ value in
-                self.onDragChanged(with: value)
-            })
-            .onEnded({ (value) in
-                self.onDragGestureEnded()
+                if !dragForwardOnly || dragTranslation(for: value).width < 0 {
+                    self.onDragChanged(with: value)
+                }
             })
     }
 
@@ -265,8 +333,10 @@ extension Pager.PagerContent {
                 onDraggingBegan?()
             }
 
-            let lastLocation = self.lastDraggingValue?.location ?? value.location
-            let swipeAngle = (value.location - lastLocation).angle ?? .zero
+            let currentLocation = dragLocation(for: value)
+            let currentTranslation = dragTranslation(for: value)
+            let lastLocation = self.lastDraggingValue.flatMap(dragLocation) ?? currentLocation
+            let swipeAngle = (currentLocation - lastLocation).angle ?? .zero
             // Ignore swipes that aren't on the X-Axis
             guard swipeAngle.isAlongXAxis else {
                 self.pagerModel.lastDraggingValue = value
@@ -275,10 +345,10 @@ extension Pager.PagerContent {
 
             let side = self.isHorizontal ? self.size.width : self.size.height
             let normalizedRatio = self.allowsMultiplePagination ? 1 : (self.pageDistance / side)
-            let offsetIncrement = (value.location.x - lastLocation.x) * normalizedRatio
+            let offsetIncrement = (currentLocation.x - lastLocation.x) * normalizedRatio
 
             // If swipe hasn't started yet, ignore swipes if they didn't start on the X-Axis
-            let isTranslationInXAxis = abs(value.translation.width) > abs(value.translation.height)
+            let isTranslationInXAxis = abs(currentTranslation.width) > abs(currentTranslation.height)
             guard self.draggingOffset != 0 || isTranslationInXAxis else {
                 return
             }
@@ -325,13 +395,15 @@ extension Pager.PagerContent {
         }
         withAnimation(animation) {
             self.pagerModel.draggingOffset = 0
-            let sign = page > newPage ? -1 : +1
-            self.pagerModel.pageIncrement += sign * pageIncrement
+            self.pagerModel.pageIncrement = pageIncrement
             self.pagerModel.draggingVelocity = 0
             self.pagerModel.lastDraggingValue = nil
             self.pagerModel.index = newPage
+            self.pagerModel.lastDigitalCrownPageOffset = CGFloat(pagerModel.index)
             self.pagerModel.objectWillChange.send()
-
+            #if os(watchOS)
+            digitalCrownPageOffset = CGFloat(pagerModel.index)
+            #endif
         }
 
         // #194 AnimatableModifier symbol not found in iOS 13.0 and iOS 13.1
@@ -378,6 +450,36 @@ extension Pager.PagerContent {
 
         newPage = max(0, min(self.numberOfPages - 1, newPage))
         return (newPage, pageIncrement)
+    }
+
+    private func dragTranslation(for value: DragGesture.Value) -> CGSize {
+        let multiplier: CGFloat = scrollDirectionAngle == .zero ? 1 : -1
+        if isHorizontal {
+            return CGSize(
+                width: value.translation.width * multiplier,
+                height: value.translation.height * multiplier
+            )
+        } else {
+            return CGSize(
+                width: value.translation.height * multiplier,
+                height: value.translation.width * multiplier
+            )
+        }
+    }
+
+    private func dragLocation(for value: DragGesture.Value) -> CGPoint {
+        let multiplier: CGFloat = scrollDirectionAngle == .zero ? 1 : -1
+        if isHorizontal {
+            return CGPoint(
+                x: value.location.x * multiplier,
+                y: value.location.y * multiplier
+            )
+        } else {
+            return CGPoint(
+                x: value.location.y * multiplier,
+                y: value.location.x * multiplier
+            )
+        }
     }
     #endif
 

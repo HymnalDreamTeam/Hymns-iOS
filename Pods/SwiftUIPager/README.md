@@ -1,7 +1,7 @@
 # SwiftUIPager
 
 ![CI](https://github.com/fermoya/SwiftUIPager/workflows/Unit%20Tests/badge.svg)
-[![codecov](https://codecov.io/gh/fermoya/SwiftUIPager/branch/develop/graph/badge.svg)](https://codecov.io/gh/fermoya/SwiftUIPager)
+[![codecov](https://codecov.io/gh/fermoya/SwiftUIPager/branch/main/graph/badge.svg)](https://codecov.io/gh/fermoya/SwiftUIPager)
 [![Swift Package Manager compatible](https://img.shields.io/badge/Swift%20Package%20Manager-compatible-brightgreen.svg)](https://github.com/apple/swift-package-manager)
 [![Cocoapods](https://img.shields.io/cocoapods/v/SwiftUIPager.svg)](https://cocoapods.org/pods/SwiftUIPager)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
@@ -25,6 +25,7 @@ Create vertical or horizontal pagers, align the cards, change the direction of t
         - [Configure your page size](Documentation/Usage.md#configure-your-page-size)
         - [Pagination sensitivity](Documentation/Usage.md#pagination-sensitivity)
         - [Orientation and direction](Documentation/Usage.md#orientation-and-direction)
+        - [Constrain direction](Documentation/Usage.md#constrain-direction)
         - [Alignment](Documentation/Usage.md#alignment)
         - [Partial pagination](Documentation/Usage.md#partial-pagination)
         - [Multiple pagination](Documentation/Usage.md#multiple-pagination)
