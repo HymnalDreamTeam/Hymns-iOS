@@ -2606,7 +2606,7 @@
 		13312EE86E05F17CB01543035E1AD9D0 /* SuiteHooks.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SuiteHooks.swift; path = Sources/Quick/Hooks/SuiteHooks.swift; sourceTree = "<group>"; };
 		139A1AC529D7BB57DFD81536A266E141 /* MKBIntInvocationHandler.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MKBIntInvocationHandler.h; path = "Sources/MockingbirdFramework/Objective-C/InvocationHandlers/MKBIntInvocationHandler.h"; sourceTree = "<group>"; };
 		13B3052CFB9DE6769932061A774F31D0 /* Bundle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Bundle.swift; path = Sources/Private/Model/Extensions/Bundle.swift; sourceTree = "<group>"; };
-		13BFF75486F8CBCA7932CE5DA21AB8C5 /* Pods-Hymns */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-Hymns"; path = Pods_Hymns.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		13BFF75486F8CBCA7932CE5DA21AB8C5 /* Pods_Hymns.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Hymns.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		13C8C8B254851998F9289F71229B28A2 /* FirebaseInstallations.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = FirebaseInstallations.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		14C8AAB61E8F805FF1C85A733D4FE8A2 /* RLMRealm_Private.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = RLMRealm_Private.h; path = include/RLMRealm_Private.h; sourceTree = "<group>"; };
 		14D56C6865596B37FA54EE342D73C2DB /* FBSDKBridgeAPIProtocolWebV2.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = FBSDKBridgeAPIProtocolWebV2.m; path = FBSDKCoreKit/FBSDKCoreKit/Internal/BridgeAPI/ProtocolVersions/FBSDKBridgeAPIProtocolWebV2.m; sourceTree = "<group>"; };
@@ -5566,7 +5566,7 @@
 				FF46A01D9BC3229F7B9C161513D8BBD5 /* Mockingbird.framework */,
 				06FC5C9CF96D60C50FCD47D339C91951 /* nanopb.framework */,
 				BAE263041362D074978BB3B577DF0A05 /* Nimble.framework */,
-				13BFF75486F8CBCA7932CE5DA21AB8C5 /* Pods-Hymns */,
+				13BFF75486F8CBCA7932CE5DA21AB8C5 /* Pods_Hymns.framework */,
 				4FB5AB6F9B9FF8254709FCA5702215F7 /* Pods-Hymns-HymnsSnapshotTests */,
 				6519F2D04157EFEBAC882F913A6C8A0A /* Pods-Hymns-HymnsUITests */,
 				00E4AFF08F604D37F13FE452448830E2 /* Pods-HymnsTests */,
@@ -7940,7 +7940,7 @@
 			);
 			name = "Pods-Hymns";
 			productName = Pods_Hymns;
-			productReference = 13BFF75486F8CBCA7932CE5DA21AB8C5 /* Pods-Hymns */;
+			productReference = 13BFF75486F8CBCA7932CE5DA21AB8C5 /* Pods_Hymns.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		ADEAE7CDD604DE4F3072E6021A314487 /* SnapshotTesting */ = {

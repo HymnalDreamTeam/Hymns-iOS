@@ -4,17 +4,17 @@ import Resolver
 
 class HymnLyricsViewModel: ObservableObject {
 
-    @UserDefault("repeat_chorus", defaultValue: false) var shouldRepeatChorus: Bool
-
     @Published var lyrics: [VerseViewModel] = [VerseViewModel]()
     @Published var showTransliterationButton = false
 
     private let identifier: HymnIdentifier
+    private let userDefaultsManager: UserDefaultsManager
 
     private var disposables = Set<AnyCancellable>()
 
-    init?(hymnToDisplay identifier: HymnIdentifier, lyrics: [Verse]?) {
+    init?(hymnToDisplay identifier: HymnIdentifier, lyrics: [Verse]?, userDefaultsManager: UserDefaultsManager = Resolver.resolve()) {
         self.identifier = identifier
+        self.userDefaultsManager = userDefaultsManager
 
         guard let lyrics = lyrics else {
             return nil
@@ -35,7 +35,7 @@ class HymnLyricsViewModel: ObservableObject {
 
     private func convertToViewModels(_ verses: [Verse]) -> [VerseViewModel] {
         let lyrics: [Verse]
-        if self.shouldRepeatChorus {
+        if userDefaultsManager.shouldRepeatChorus {
             lyrics = duplicateChorus(verses)
         } else {
             lyrics = verses

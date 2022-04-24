@@ -2,11 +2,12 @@ import Combine
 import FirebaseCrashlytics
 import Foundation
 import Resolver
+import SwiftUI
 
 // swiftlint:disable:next type_body_length
 class SearchViewModel: ObservableObject {
 
-    @UserDefault("has_seen_search_by_type_tooltip", defaultValue: false) var hasSeenSearchByTypeTooltip: Bool {
+    @AppStorage("has_seen_search_by_type_tooltip") var hasSeenSearchByTypeTooltip = false {
         willSet {
             self.showSearchByTypeToolTip = !newValue
         }

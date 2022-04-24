@@ -16,8 +16,9 @@ class UserDefaultsManager {
         }
     }
 
-    @UserDefault("show_splash_animation", defaultValue: true) var showSplashAnimation: Bool
-    @UserDefault("repeat_chorus", defaultValue: false) var shouldRepeatChorus: Bool
+    @AppStorage("show_splash_animation") var showSplashAnimation = true
+    @AppStorage("repeat_chorus") var shouldRepeatChorus = false
+    @AppStorage("has_seen_soundcloud_minimize_tooltip") var hasSeenSoundCloudMinimizeTooltip = false
 
     init() {
         // Migrate font size to be a float instead of a string
@@ -41,25 +42,5 @@ class UserDefaultsManager {
 
         self.fontSize = initialFontSize
         self.fontSizeSubject = CurrentValueSubject<Float, Never>(initialFontSize)
-    }
-}
-
-@propertyWrapper
-struct UserDefault<T> {
-    let key: String
-    let defaultValue: T
-
-    init(_ key: String, defaultValue: T) {
-        self.key = key
-        self.defaultValue = defaultValue
-    }
-
-    var wrappedValue: T {
-        get {
-            return UserDefaults.standard.object(forKey: key) as? T ?? defaultValue
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: key)
-        }
     }
 }
