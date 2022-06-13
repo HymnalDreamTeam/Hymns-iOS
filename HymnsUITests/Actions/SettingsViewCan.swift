@@ -39,6 +39,11 @@ public class SettingsHymnViewCan: BaseViewCan {
         return self
     }
 
+    public func tapDonate() -> SettingsHymnViewCan {
+        app.buttons["Buy us coffee!"].tap()
+        return self
+    }
+
     public func returnToHome() -> HomeViewCan {
         return HomeViewCan(app, testCase: testCase)
     }
