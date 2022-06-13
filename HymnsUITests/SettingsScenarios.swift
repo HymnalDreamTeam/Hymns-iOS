@@ -43,4 +43,10 @@ class SettingsScenarios: BaseTestCase {
             .cancelAboutUs()
             .verifyAboutUsDialogNotExists()
     }
+
+    func test_goToDonate() {
+        _ = HomeViewCan(app, testCase: self)
+            .goToSettings()
+            .tapDonate()
+    }
 }

@@ -7,7 +7,7 @@ struct AboutUsButtonView: View {
         Button(action: {
             self.isShowingInfo.toggle()
         }, label: {
-            Text("About us").font(.callout)
+            Text("About us", comment: "Title for settings item to see the 'About Us' dialog.").font(.callout)
         }).padding().foregroundColor(.primary)
             .sheet(isPresented: $isShowingInfo) {
                 AboutUsDialogView()
