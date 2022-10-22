@@ -29,9 +29,6 @@ struct AboutUsDialogView: View {
                     Text("- Col. 3:16", comment: "'About Us' page verse reference.").font(.body).fontWeight(.bold).padding(.trailing)
                 }
                 Spacer()
-                if #available(iOS 15.0, *) {
-                    Text("[If you wish to help us make this app even better, please consider buying us a coffee to help us out!](https://www.buymeacoffee.com/hymnsmobile)", comment: "'About Us' donation plug.").font(.callout).padding()
-                }
             }
         }
     }
