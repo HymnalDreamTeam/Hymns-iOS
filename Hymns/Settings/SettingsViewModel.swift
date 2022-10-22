@@ -26,13 +26,6 @@ class SettingsViewModel: ObservableObject {
         #else
         settings = [.repeatChorus(RepeatChorusViewModel()), .clearHistory(clearHistoryViewModel), .aboutUs, .feedback(result), .privacyPolicy]
         #endif
-
-        if let url = URL(string: "https://www.buymeacoffee.com/hymnsmobile") {
-            let donateViewModel = SimpleSettingViewModel(title: NSLocalizedString("Buy us coffee!", comment: "Settings item for making a donation."), action: {
-                UIApplication.shared.open(url)
-            })
-            settings?.append(.donate(donateViewModel))
-        }
     }
 }
 
@@ -42,7 +35,6 @@ enum SettingsModel {
     case aboutUs
     case feedback(Binding<Result<SettingsToastItem, Error>?>)
     case privacyPolicy
-    case donate(SimpleSettingViewModel)
     case clearUserDefaults
 }
 
@@ -60,8 +52,6 @@ extension SettingsModel {
             return FeedbackView(result: result).eraseToAnyView()
         case .privacyPolicy:
             return PrivacyPolicySettingView().eraseToAnyView()
-        case .donate(let viewModel):
-            return SimpleSettingView(viewModel: viewModel).eraseToAnyView()
         case .clearUserDefaults:
             return ClearUserDefaultsView().eraseToAnyView()
         }
@@ -81,10 +71,8 @@ extension SettingsModel: Identifiable {
             return 3
         case .privacyPolicy:
             return 4
-        case .donate:
-            return 5
         case .clearUserDefaults:
-            return 6
+            return 5
         }
     }
 }
