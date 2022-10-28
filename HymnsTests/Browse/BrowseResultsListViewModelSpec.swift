@@ -3,6 +3,7 @@ import Mockingbird
 import Nimble
 import Quick
 import RealmSwift
+import Resolver
 import SwiftUI
 @testable import Hymns
 
@@ -20,6 +21,17 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                 dataStore = mock(HymnDataStore.self)
                 songbaseStore = mock(SongbaseStore.self)
                 tagStore = mock(TagStore.self)
+
+                let test = Resolver(child: .mock)
+                test.register(name: "main") { testQueue }
+                test.register(name: "background") { testQueue }
+                test.register { dataStore as HymnDataStore }
+                test.register { songbaseStore as SongbaseStore }
+                test.register { tagStore as TagStore }
+                Resolver.root = test
+            }
+            afterEach {
+                Resolver.root = .mock
             }
             describe("getting results by category") {
                 context("only category") {
@@ -29,9 +41,8 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                 // This will never be triggered.
                             }).eraseToAnyPublisher()
                         }
-                        target = BrowseResultsListViewModel(category: "category", subcategory: nil, hymnType: nil,
-                                                            backgroundQueue: testQueue, dataStore: dataStore,
-                                                            mainQueue: testQueue, songbaseStore: songbaseStore, tagStore: tagStore)
+
+                        target = BrowseResultsListViewModel(category: "category", subcategory: nil, hymnType: nil)
                         target.fetchResults()
                         testQueue.sync {}
                         testQueue.sync {}
@@ -53,9 +64,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                 .mapError({ _ -> ErrorType in
                                     // This will never be triggered.
                                 }).eraseToAnyPublisher()
-                        target = BrowseResultsListViewModel(category: "category", subcategory: "subcategory", hymnType: nil,
-                                                            backgroundQueue: testQueue, dataStore: dataStore,
-                                                            mainQueue: testQueue, songbaseStore: songbaseStore, tagStore: tagStore)
+                        target = BrowseResultsListViewModel(category: "category", subcategory: "subcategory", hymnType: nil)
                         target.fetchResults()
                         testQueue.sync {}
                         testQueue.sync {}
@@ -82,9 +91,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                 .mapError({ _ -> ErrorType in
                                     ErrorType.data(description: "forced data error")
                                 }).eraseToAnyPublisher()
-                        target = BrowseResultsListViewModel(category: "category", subcategory: "subcategory", hymnType: .newTune,
-                                                            backgroundQueue: testQueue, dataStore: dataStore,
-                                                            mainQueue: testQueue, songbaseStore: songbaseStore, tagStore: tagStore)
+                        target = BrowseResultsListViewModel(category: "category", subcategory: "subcategory", hymnType: .newTune)
                         target.fetchResults()
                         testQueue.sync {}
                         testQueue.sync {}
@@ -107,9 +114,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                 // This will never be triggered.
                             }).eraseToAnyPublisher()
                         }
-                        target = BrowseResultsListViewModel(tag: UiTag(title: "FanIntoFlames", color: .none),
-                                                            backgroundQueue: testQueue, mainQueue: testQueue,
-                                                            songbaseStore: songbaseStore, tagStore: tagStore)
+                        target = BrowseResultsListViewModel(tag: UiTag(title: "FanIntoFlames", color: .none))
                         target.fetchResults()
                         testQueue.sync {}
                         testQueue.sync {}
@@ -132,9 +137,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                     // This will never be triggered.
                                 }).eraseToAnyPublisher()
                         }
-                        target = BrowseResultsListViewModel(tag: UiTag(title: "FanIntoFlames", color: .none),
-                                                            backgroundQueue: testQueue, dataStore: dataStore,
-                                                            mainQueue: testQueue, songbaseStore: songbaseStore, tagStore: tagStore)
+                        target = BrowseResultsListViewModel(tag: UiTag(title: "FanIntoFlames", color: .none))
                         target.fetchResults()
                         testQueue.sync {}
                         testQueue.sync {}
@@ -162,9 +165,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                     .data(description: "forced data error")
                                 }).eraseToAnyPublisher()
                         }
-                        target = BrowseResultsListViewModel(tag: UiTag(title: "FanIntoFlames", color: .none),
-                                                            backgroundQueue: testQueue, dataStore: dataStore,
-                                                            mainQueue: testQueue, songbaseStore: songbaseStore, tagStore: tagStore)
+                        target = BrowseResultsListViewModel(tag: UiTag(title: "FanIntoFlames", color: .none))
                         target.fetchResults()
                         testQueue.sync {}
                         testQueue.sync {}
@@ -187,9 +188,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                 // This will never be triggered.
                             }).eraseToAnyPublisher()
                         }
-                        target = BrowseResultsListViewModel(hymnType: .classic, backgroundQueue: testQueue,
-                                                            dataStore: dataStore, mainQueue: testQueue,
-                                                            songbaseStore: songbaseStore, tagStore: tagStore)
+                        target = BrowseResultsListViewModel(hymnType: .classic)
                         target.fetchResults()
                         testQueue.sync {}
                         testQueue.sync {}
@@ -213,14 +212,13 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                       SongResultEntity(hymnType: .classic, hymnNumber: "11b", queryParams: nil, title: "non numeric number"),
                                       SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "5", queryParams: [String: String](), title: "should be filtered out"),
                                       SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "5", queryParams: nil, title: "should not be filtered out"),
+                                      SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "-9", queryParams: nil, title: "negative hymn numbers should be filtered out"),
                                       SongResultEntity(hymnType: .chinese, hymnNumber: "3", queryParams: nil, title: "should not be filtered out")])
                                     .mapError({ _ -> ErrorType in
                                         // This will never be triggered.
                                     }).eraseToAnyPublisher()
                             }
-                            target = BrowseResultsListViewModel(hymnType: .chinese, backgroundQueue: testQueue,
-                                                                dataStore: dataStore, mainQueue: testQueue,
-                                                                songbaseStore: songbaseStore, tagStore: tagStore)
+                            target = BrowseResultsListViewModel(hymnType: .chinese)
                             target.fetchResults()
                             testQueue.sync {}
                             testQueue.sync {}
@@ -253,9 +251,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                         // This will never be triggered.
                                     }).eraseToAnyPublisher()
                             }
-                            target = BrowseResultsListViewModel(hymnType: .cebuano, backgroundQueue: testQueue,
-                                                                dataStore: dataStore, mainQueue: testQueue,
-                                                                songbaseStore: songbaseStore, tagStore: tagStore)
+                            target = BrowseResultsListViewModel(hymnType: .cebuano)
                             target.fetchResults()
                             testQueue.sync {}
                             testQueue.sync {}
@@ -285,9 +281,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                         // This will never be triggered.
                                     }).eraseToAnyPublisher()
                             }
-                            target = BrowseResultsListViewModel(hymnType: .german, backgroundQueue: testQueue,
-                                                                dataStore: dataStore, mainQueue: testQueue,
-                                                                songbaseStore: songbaseStore, tagStore: tagStore)
+                            target = BrowseResultsListViewModel(hymnType: .german)
                             target.fetchResults()
                             testQueue.sync {}
                             testQueue.sync {}
@@ -312,9 +306,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                         // This will never be triggered.
                                     }).eraseToAnyPublisher()
                             }
-                            target = BrowseResultsListViewModel(hymnType: .songbase, backgroundQueue: testQueue,
-                                                                dataStore: dataStore, mainQueue: testQueue,
-                                                                songbaseStore: songbaseStore, tagStore: tagStore)
+                            target = BrowseResultsListViewModel(hymnType: .songbase)
                             target.fetchResults()
                             testQueue.sync {}
                             testQueue.sync {}
@@ -342,9 +334,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                 .mapError({ _ -> ErrorType in
                                     ErrorType.data(description: "forced data error")
                                 }).eraseToAnyPublisher()
-                        target = BrowseResultsListViewModel(hymnType: .newTune, backgroundQueue: testQueue,
-                                                            dataStore: dataStore, mainQueue: testQueue,
-                                                            songbaseStore: songbaseStore, tagStore: tagStore)
+                        target = BrowseResultsListViewModel(hymnType: .newTune)
                         target.fetchResults()
                         testQueue.sync {}
                         testQueue.sync {}

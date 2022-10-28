@@ -20,7 +20,7 @@ protocol HymnDataStore {
     func searchHymn(_ searchParameter: String) -> AnyPublisher<[SearchResultEntity], ErrorType>
     func getAllCategories() -> AnyPublisher<[CategoryEntity], ErrorType>
     func getCategories(by hymnType: HymnType) -> AnyPublisher<[CategoryEntity], ErrorType>
-    func getResultsBy(category: String, hymnType: HymnType?, subcategory: String?) -> AnyPublisher<[SongResultEntity], ErrorType>
+    func getResultsBy(category: String, subcategory: String?, hymnType: HymnType?) -> AnyPublisher<[SongResultEntity], ErrorType>
     func getResultsBy(hymnCode: String) -> AnyPublisher<[SongResultEntity], ErrorType>
     func getScriptureSongs() -> AnyPublisher<[ScriptureEntity], ErrorType>
     func getAllSongs(hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType>
@@ -195,7 +195,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
         }).eraseToAnyPublisher()
     }
 
-    func getResultsBy(category: String, hymnType: HymnType?, subcategory: String?) -> AnyPublisher<[SongResultEntity], ErrorType> {
+    func getResultsBy(category: String, subcategory: String?, hymnType: HymnType?) -> AnyPublisher<[SongResultEntity], ErrorType> {
         let publisher: AnyPublisher<[SongResultEntity], Error>
 
         if let hymnType = hymnType, let subcategory = subcategory {
