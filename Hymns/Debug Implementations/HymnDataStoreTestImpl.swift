@@ -73,7 +73,7 @@ class HymnDataStoreTestImpl: HymnDataStore {
         }).eraseToAnyPublisher()
     }
 
-    func getResultsBy(category: String, hymnType: HymnType?, subcategory: String?) -> AnyPublisher<[SongResultEntity], ErrorType> {
+    func getResultsBy(category: String, subcategory: String?, hymnType: HymnType?) -> AnyPublisher<[SongResultEntity], ErrorType> {
         Just(songResultsByCategory["\(category) \(hymnType?.abbreviatedValue ?? "") \(subcategory ?? "")"] ?? [SongResultEntity]())
             .mapError({ _ -> ErrorType in
                 // This will never be triggered.
