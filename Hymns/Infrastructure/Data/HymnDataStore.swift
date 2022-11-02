@@ -20,7 +20,12 @@ protocol HymnDataStore {
     func searchHymn(_ searchParameter: String) -> AnyPublisher<[SearchResultEntity], ErrorType>
     func getAllCategories() -> AnyPublisher<[CategoryEntity], ErrorType>
     func getCategories(by hymnType: HymnType) -> AnyPublisher<[CategoryEntity], ErrorType>
-    func getResultsBy(category: String, subcategory: String?, hymnType: HymnType?) -> AnyPublisher<[SongResultEntity], ErrorType>
+    func getResultsBy(category: String) -> AnyPublisher<[SongResultEntity], ErrorType>
+    func getResultsBy(category: String, hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType>
+    func getResultsBy(category: String, subcategory: String) -> AnyPublisher<[SongResultEntity], ErrorType>
+    func getResultsBy(category: String, subcategory: String, hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType>
+    func getResultsBy(subcategory: String) -> AnyPublisher<[SongResultEntity], ErrorType>
+    func getResultsBy(subcategory: String, hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType>
     func getResultsBy(hymnCode: String) -> AnyPublisher<[SongResultEntity], ErrorType>
     func getScriptureSongs() -> AnyPublisher<[ScriptureEntity], ErrorType>
     func getAllSongs(hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType>
@@ -195,40 +200,63 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
         }).eraseToAnyPublisher()
     }
 
-    func getResultsBy(category: String, subcategory: String?, hymnType: HymnType?) -> AnyPublisher<[SongResultEntity], ErrorType> {
-        let publisher: AnyPublisher<[SongResultEntity], Error>
+    func getResultsBy(category: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
+        databaseQueue.readPublisher { database in
+            try SongResultEntity.fetchAll(database,
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE SONG_META_DATA_CATEGORY = ?",
+                                          arguments: [category])
+        }.mapError({error -> ErrorType in
+                .data(description: error.localizedDescription)
+        }).eraseToAnyPublisher()
+    }
 
-        if let hymnType = hymnType, let subcategory = subcategory {
-            // Both hymn type and subcategory are not nil
-            publisher = databaseQueue.readPublisher { database in
-                try SongResultEntity.fetchAll(database,
-                                              sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE HYMN_TYPE = ? AND SONG_META_DATA_CATEGORY = ? AND SONG_META_DATA_SUBCATEGORY = ?",
-                                              arguments: [hymnType.abbreviatedValue, category, subcategory])
-            }
-        } else if let hymnType = hymnType {
-            // hymn type is not nil but subcategory is nil
-            publisher = databaseQueue.readPublisher { database in
-                try SongResultEntity.fetchAll(database,
-                                              sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE HYMN_TYPE = ? AND SONG_META_DATA_CATEGORY = ?",
-                                              arguments: [hymnType.abbreviatedValue, category])
-            }
-        } else if let subcategory = subcategory {
-            // hymn type is nil but subcategory is not nil
-            publisher = databaseQueue.readPublisher { database in
-                try SongResultEntity.fetchAll(database,
-                                              sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE SONG_META_DATA_CATEGORY = ? AND SONG_META_DATA_SUBCATEGORY = ?",
-                                              arguments: [category, subcategory])
-            }
-        } else {
-            // both hymn type and subcategory are nil
-            publisher = databaseQueue.readPublisher { database in
-                try SongResultEntity.fetchAll(database,
-                                              sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE SONG_META_DATA_CATEGORY = ?",
-                                              arguments: [category])
-            }
-        }
-        return publisher.mapError({error -> ErrorType in
-            .data(description: error.localizedDescription)
+    func getResultsBy(category: String, hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType> {
+        databaseQueue.readPublisher { database in
+            try SongResultEntity.fetchAll(database,
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE HYMN_TYPE = ? AND SONG_META_DATA_CATEGORY = ?",
+                                          arguments: [hymnType.abbreviatedValue, category])
+        }.mapError({error -> ErrorType in
+                .data(description: error.localizedDescription)
+        }).eraseToAnyPublisher()
+    }
+
+    func getResultsBy(category: String, subcategory: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
+        databaseQueue.readPublisher { database in
+            try SongResultEntity.fetchAll(database,
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE SONG_META_DATA_CATEGORY = ? AND SONG_META_DATA_SUBCATEGORY = ?",
+                                          arguments: [category, subcategory])
+        }.mapError({error -> ErrorType in
+                .data(description: error.localizedDescription)
+        }).eraseToAnyPublisher()
+    }
+
+    func getResultsBy(category: String, subcategory: String, hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType> {
+        databaseQueue.readPublisher { database in
+            try SongResultEntity.fetchAll(database,
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE HYMN_TYPE = ? AND SONG_META_DATA_CATEGORY = ? AND SONG_META_DATA_SUBCATEGORY = ?",
+                                          arguments: [hymnType.abbreviatedValue, category, subcategory])
+        }.mapError({error -> ErrorType in
+                .data(description: error.localizedDescription)
+        }).eraseToAnyPublisher()
+    }
+
+    func getResultsBy(subcategory: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
+        databaseQueue.readPublisher { database in
+            try SongResultEntity.fetchAll(database,
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE SONG_META_DATA_SUBCATEGORY = ?",
+                                          arguments: [subcategory])
+        }.mapError({error -> ErrorType in
+                .data(description: error.localizedDescription)
+        }).eraseToAnyPublisher()
+    }
+
+    func getResultsBy(subcategory: String, hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType> {
+        databaseQueue.readPublisher { database in
+            try SongResultEntity.fetchAll(database,
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE HYMN_TYPE = ? AND SONG_META_DATA_SUBCATEGORY = ?",
+                                          arguments: [hymnType.abbreviatedValue, subcategory])
+        }.mapError({error -> ErrorType in
+                .data(description: error.localizedDescription)
         }).eraseToAnyPublisher()
     }
 

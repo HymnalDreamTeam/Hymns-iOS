@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 
 struct SubcategoryViewModel: Equatable, Hashable {
-    let subcategory: String?
+    let subcategory: String? // subcategory is null in the "All subcategories" case
     let count: Int
 }
 

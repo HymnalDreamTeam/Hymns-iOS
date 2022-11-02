@@ -17,7 +17,10 @@ struct CategoryView: View {
             }.foregroundColor(isExpanded ? .accentColor : .primary)
             if isExpanded {
                 ForEach(viewModel.subcategories) { subcategory in
-                    NavigationLink(destination: BrowseResultsListView(viewModel: BrowseResultsListViewModel(category: self.viewModel.category, subcategory: subcategory.subcategory, hymnType: self.viewModel.hymnType))) {
+                    NavigationLink(destination: BrowseResultsListView(viewModel:
+                                                                        BrowseResultsListViewModel(category: self.viewModel.category,
+                                                                                                   subcategory: subcategory.subcategory,
+                                                                                                   hymnType: self.viewModel.hymnType))) {
                         SubcategoryView(viewModel: subcategory)
                     }
                 }
@@ -26,6 +29,7 @@ struct CategoryView: View {
     }
 }
 
+#if DEBUG
 struct CategoryView_Previews: PreviewProvider {
 
     static var previews: some View {
@@ -40,3 +44,4 @@ struct CategoryView_Previews: PreviewProvider {
         }
     }
 }
+#endif

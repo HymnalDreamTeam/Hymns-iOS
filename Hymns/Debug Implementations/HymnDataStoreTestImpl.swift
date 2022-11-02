@@ -73,8 +73,43 @@ class HymnDataStoreTestImpl: HymnDataStore {
         }).eraseToAnyPublisher()
     }
 
-    func getResultsBy(category: String, subcategory: String?, hymnType: HymnType?) -> AnyPublisher<[SongResultEntity], ErrorType> {
-        Just(songResultsByCategory["\(category) \(hymnType?.abbreviatedValue ?? "") \(subcategory ?? "")"] ?? [SongResultEntity]())
+    func getResultsBy(category: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
+        Just(songResultsByCategory["\(category)"] ?? [SongResultEntity]())
+            .mapError({ _ -> ErrorType in
+                // This will never be triggered.
+            }).eraseToAnyPublisher()
+    }
+
+    func getResultsBy(category: String, hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType> {
+        Just(songResultsByCategory["\(category) \(hymnType.abbreviatedValue)"] ?? [SongResultEntity]())
+            .mapError({ _ -> ErrorType in
+                // This will never be triggered.
+            }).eraseToAnyPublisher()
+    }
+
+    func getResultsBy(category: String, subcategory: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
+        Just(songResultsByCategory["\(category) \(subcategory)"] ?? [SongResultEntity]())
+            .mapError({ _ -> ErrorType in
+                // This will never be triggered.
+            }).eraseToAnyPublisher()
+    }
+
+    func getResultsBy(category: String, subcategory: String, hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType> {
+        Just(songResultsByCategory["\(category) \(hymnType.abbreviatedValue) \(subcategory)"] ?? [SongResultEntity]())
+            .mapError({ _ -> ErrorType in
+                // This will never be triggered.
+            }).eraseToAnyPublisher()
+    }
+
+    func getResultsBy(subcategory: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
+        Just(songResultsByCategory["\(subcategory)"] ?? [SongResultEntity]())
+            .mapError({ _ -> ErrorType in
+                // This will never be triggered.
+            }).eraseToAnyPublisher()
+    }
+
+    func getResultsBy(subcategory: String, hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType> {
+        Just(songResultsByCategory["\(hymnType.abbreviatedValue) \(subcategory)"] ?? [SongResultEntity]())
             .mapError({ _ -> ErrorType in
                 // This will never be triggered.
             }).eraseToAnyPublisher()
