@@ -36,13 +36,13 @@ class BrowseResultsListViewModelSpec: QuickSpec {
             describe("getting results by category") {
                 context("only category") {
                     beforeEach {
-                        given(dataStore.getResultsBy(category: "category", hymnType: nil, subcategory: nil)) ~> { _, _, _ in
+                        given(dataStore.getResultsBy(category: "category")) ~> { _  in
                             Just([SongResultEntity]()).mapError({ _ -> ErrorType in
                                 // This will never be triggered.
                             }).eraseToAnyPublisher()
                         }
 
-                        target = BrowseResultsListViewModel(category: "category", subcategory: nil, hymnType: nil)
+                        target = BrowseResultsListViewModel(category: "category")
                         target.fetchResults()
                         testQueue.sync {}
                         testQueue.sync {}
@@ -56,9 +56,53 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                         expect(target.songResults).to(beEmpty())
                     }
                 }
-                context("has subcategory") {
+                context("category and hymn type") {
                     beforeEach {
-                        given(dataStore.getResultsBy(category: "category", hymnType: nil, subcategory: "subcategory")) ~>
+                        given(dataStore.getResultsBy(category: "category", hymnType: .classic)) ~> { _, _  in
+                            Just([SongResultEntity]()).mapError({ _ -> ErrorType in
+                                // This will never be triggered.
+                            }).eraseToAnyPublisher()
+                        }
+
+                        target = BrowseResultsListViewModel(category: "category", hymnType: .classic)
+                        target.fetchResults()
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                    }
+                    it("should set the title using only the category") {
+                        expect(target.title).to(equal("category"))
+                    }
+                    it("should have an empty result list") {
+                        expect(target.songResults).to(beEmpty())
+                    }
+                }
+                context("category and hymn type and subcategory") {
+                    beforeEach {
+                        given(dataStore.getResultsBy(category: "category", subcategory: "subcategory", hymnType: .classic)) ~> { _, _, _  in
+                            Just([SongResultEntity]()).mapError({ _ -> ErrorType in
+                                // This will never be triggered.
+                            }).eraseToAnyPublisher()
+                        }
+
+                        target = BrowseResultsListViewModel(category: "category", subcategory: "subcategory", hymnType: .classic)
+                        target.fetchResults()
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                    }
+                    it("should set the title using only the subcategory") {
+                        expect(target.title).to(equal("subcategory"))
+                    }
+                    it("should have an empty result list") {
+                        expect(target.songResults).to(beEmpty())
+                    }
+                }
+                context("category and subcategory") {
+                    beforeEach {
+                        given(dataStore.getResultsBy(category: "category", subcategory: "subcategory")) ~>
                             Just([SongResultEntity(hymnType: .classic, hymnNumber: "44", queryParams: nil, title: "classic44"),
                                   SongResultEntity(hymnType: .newSong, hymnNumber: "99", queryParams: nil, title: "newSong99")])
                                 .mapError({ _ -> ErrorType in
@@ -83,7 +127,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                 }
                 context("data store error") {
                     beforeEach {
-                        given(dataStore.getResultsBy(category: "category", hymnType: .newTune, subcategory: "subcategory")) ~>
+                        given(dataStore.getResultsBy(category: "category", subcategory: "subcategory", hymnType: .newTune)) ~>
                             Just([SongResultEntity]())
                                 .tryMap({ _ -> [SongResultEntity] in
                                     throw URLError(.badServerResponse)
@@ -92,6 +136,52 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                     ErrorType.data(description: "forced data error")
                                 }).eraseToAnyPublisher()
                         target = BrowseResultsListViewModel(category: "category", subcategory: "subcategory", hymnType: .newTune)
+                        target.fetchResults()
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                    }
+                    it("should set the title using only the subcategory") {
+                        expect(target.title).to(equal("subcategory"))
+                    }
+                    it("should have an empty result list") {
+                        expect(target.songResults).to(beEmpty())
+                    }
+                }
+            }
+            describe("getting results by subcategory") {
+                context("only subcategory") {
+                    beforeEach {
+                        given(dataStore.getResultsBy(subcategory: "subcategory")) ~> { _  in
+                            Just([SongResultEntity]()).mapError({ _ -> ErrorType in
+                                // This will never be triggered.
+                            }).eraseToAnyPublisher()
+                        }
+
+                        target = BrowseResultsListViewModel(subcategory: "subcategory")
+                        target.fetchResults()
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                    }
+                    it("should set the title using only the subcategory") {
+                        expect(target.title).to(equal("subcategory"))
+                    }
+                    it("should have an empty result list") {
+                        expect(target.songResults).to(beEmpty())
+                    }
+                }
+                context("subcategory and hymn type") {
+                    beforeEach {
+                        given(dataStore.getResultsBy(subcategory: "subcategory", hymnType: .classic)) ~> { _, _  in
+                            Just([SongResultEntity]()).mapError({ _ -> ErrorType in
+                                // This will never be triggered.
+                            }).eraseToAnyPublisher()
+                        }
+
+                        target = BrowseResultsListViewModel(subcategory: "subcategory", hymnType: .classic)
                         target.fetchResults()
                         testQueue.sync {}
                         testQueue.sync {}

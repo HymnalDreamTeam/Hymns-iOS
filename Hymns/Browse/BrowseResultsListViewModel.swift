@@ -17,32 +17,32 @@ class BrowseResultsListViewModel: ObservableObject {
     private var disposables = Set<AnyCancellable>()
 
     convenience init(tag: UiTag) {
-        let title = String(format: NSLocalizedString("Songs tagged with \"%@\"", comment: "Title of a list of songs tagged with a particular tag."),
-                           tag.title)
-        self.init(title: title, resultsType: .tag(tag: tag))
+        self.init(resultsType: .tag(tag: tag))
+    }
+
+    convenience init(subcategory: String, hymnType: HymnType? = nil) {
+        self.init(resultsType: .subcategory(subcategory: subcategory, hymnType: hymnType))
     }
 
     convenience init(category: String, subcategory: String? = nil, hymnType: HymnType? = nil) {
-        let resultsType = ResultsType.category(category: category, subcategory: subcategory, hymnType: hymnType)
         if let subcategory = subcategory {
-            self.init(title: subcategory, resultsType: resultsType)
+            self.init(resultsType: .subcategory(category: category, subcategory: subcategory, hymnType: hymnType))
         } else {
-            self.init(title: category, resultsType: resultsType)
+            self.init(resultsType: .category(category: category, hymnType: hymnType))
         }
     }
 
     convenience init(hymnType: HymnType) {
-        self.init(title: hymnType.displayTitle, resultsType: .hymnType(hymnType: hymnType))
+        self.init(resultsType: .hymnType(hymnType: hymnType))
     }
 
-    private init(title: String,
-                 resultsType: ResultsType,
+    private init(resultsType: ResultsType,
                  backgroundQueue: DispatchQueue = Resolver.resolve(name: "background"),
                  dataStore: HymnDataStore = Resolver.resolve(),
                  mainQueue: DispatchQueue = Resolver.resolve(name: "main"),
                  songbaseStore: SongbaseStore = Resolver.resolve(),
                  tagStore: TagStore = Resolver.resolve()) {
-        self.title = title
+        self.title = resultsType.title
         self.resultsType = resultsType
         self.backgroundQueue = backgroundQueue
         self.dataStore = dataStore
@@ -55,8 +55,26 @@ class BrowseResultsListViewModel: ObservableObject {
         switch resultsType {
         case .tag(let tag):
             subscribeToPublisher(tagStore.getSongsByTag(tag))
-        case .category(let category, let subcategory, let hymnType):
-            subscribeToPublisher(dataStore.getResultsBy(category: category, subcategory: subcategory, hymnType: hymnType))
+        case .category(let category, let hymnType):
+            if let hymnType = hymnType {
+                subscribeToPublisher(dataStore.getResultsBy(category: category, hymnType: hymnType))
+            } else {
+                subscribeToPublisher(dataStore.getResultsBy(category: category))
+            }
+        case .subcategory(let category, let subcategory, let hymnType):
+            if let category = category, let hymnType = hymnType {
+                // Both hymn type and category are not nil
+                subscribeToPublisher(dataStore.getResultsBy(category: category, subcategory: subcategory, hymnType: hymnType))
+            } else if let hymnType = hymnType {
+                // hymn type is not nil but category is nil
+                subscribeToPublisher(dataStore.getResultsBy(subcategory: subcategory, hymnType: hymnType))
+            } else if let category = category {
+                // hymn type is nil but category is not nil
+                subscribeToPublisher(dataStore.getResultsBy(category: category, subcategory: subcategory))
+            } else {
+                // both hymn type and category are nil
+                subscribeToPublisher(dataStore.getResultsBy(subcategory: subcategory))
+            }
         case .hymnType(let hymnType):
             fetchByHymnType(hymnType)
         }
@@ -129,7 +147,34 @@ class BrowseResultsListViewModel: ObservableObject {
 }
 
 private enum ResultsType {
-    case tag(tag: UiTag)
-    case category(category: String, subcategory: String? = nil, hymnType: HymnType? = nil)
+    case category(category: String, hymnType: HymnType? = nil)
+    case subcategory(category: String? = nil, subcategory: String, hymnType: HymnType? = nil)
     case hymnType(hymnType: HymnType)
+    case tag(tag: UiTag)
+
+    var label: String {
+        switch self {
+        case .category:
+            return NSLocalizedString("Category", comment: "Label for 'Category'.")
+        case .subcategory:
+            return NSLocalizedString("Subcategory", comment: "Label for 'Subcategory'.")
+        case .hymnType:
+            return NSLocalizedString("Hymn Type", comment: "Label for 'Hymn Type'.")
+        case .tag:
+            return NSLocalizedString("Tags", comment: "Label for 'Tags'.")
+        }
+    }
+
+    var title: String {
+        switch self {
+        case .category(let category, _):
+            return category
+        case .subcategory(_, let subcategory, _):
+            return subcategory
+        case .hymnType(let hymnType):
+            return hymnType.displayTitle
+        case .tag(let tag):
+            return String(format: NSLocalizedString("Songs tagged with \"%@\"", comment: "Title of a list of songs tagged with a particular tag."), tag.title)
+        }
+    }
 }
