@@ -26,6 +26,12 @@ protocol HymnDataStore {
     func getResultsBy(category: String, subcategory: String, hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType>
     func getResultsBy(subcategory: String) -> AnyPublisher<[SongResultEntity], ErrorType>
     func getResultsBy(subcategory: String, hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType>
+    func getResultsBy(author: String) -> AnyPublisher<[SongResultEntity], ErrorType>
+    func getResultsBy(composer: String) -> AnyPublisher<[SongResultEntity], ErrorType>
+    func getResultsBy(key: String) -> AnyPublisher<[SongResultEntity], ErrorType>
+    func getResultsBy(time: String) -> AnyPublisher<[SongResultEntity], ErrorType>
+    func getResultsBy(meter: String) -> AnyPublisher<[SongResultEntity], ErrorType>
+    func getResultsBy(scriptures: String) -> AnyPublisher<[SongResultEntity], ErrorType>
     func getResultsBy(hymnCode: String) -> AnyPublisher<[SongResultEntity], ErrorType>
     func getScriptureSongs() -> AnyPublisher<[ScriptureEntity], ErrorType>
     func getAllSongs(hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType>
@@ -34,6 +40,7 @@ protocol HymnDataStore {
 /**
  * Implementation of `HymnDataStore` that uses `GRDB`.
  */
+// swiftlint:disable:next type_body_length
 class HymnDataStoreGrdbImpl: HymnDataStore {
 
     let tableName = "SONG_DATA"
@@ -260,10 +267,70 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
         }).eraseToAnyPublisher()
     }
 
+    func getResultsBy(author: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
+        databaseQueue.readPublisher { database in
+            try SongResultEntity.fetchAll(database,
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE SONG_META_DATA_AUTHOR LIKE '%' || ? || '%'",
+                                          arguments: [author])
+        }.mapError({error -> ErrorType in
+            .data(description: error.localizedDescription)
+        }).eraseToAnyPublisher()
+    }
+
+    func getResultsBy(composer: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
+        databaseQueue.readPublisher { database in
+            try SongResultEntity.fetchAll(database,
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE SONG_META_DATA_COMPOSER LIKE '%' || ? || '%'",
+                                          arguments: [composer])
+        }.mapError({error -> ErrorType in
+            .data(description: error.localizedDescription)
+        }).eraseToAnyPublisher()
+    }
+
+    func getResultsBy(key: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
+        databaseQueue.readPublisher { database in
+            try SongResultEntity.fetchAll(database,
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE SONG_META_DATA_KEY = ?",
+                                          arguments: [key])
+        }.mapError({error -> ErrorType in
+            .data(description: error.localizedDescription)
+        }).eraseToAnyPublisher()
+    }
+
+    func getResultsBy(time: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
+        databaseQueue.readPublisher { database in
+            try SongResultEntity.fetchAll(database,
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE SONG_META_DATA_TIME LIKE '%' || ? || '%'",
+                                          arguments: [time])
+        }.mapError({error -> ErrorType in
+            .data(description: error.localizedDescription)
+        }).eraseToAnyPublisher()
+    }
+
+    func getResultsBy(meter: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
+        databaseQueue.readPublisher { database in
+            try SongResultEntity.fetchAll(database,
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE SONG_META_DATA_METER LIKE '%' || ? || '%'",
+                                          arguments: [meter])
+        }.mapError({error -> ErrorType in
+            .data(description: error.localizedDescription)
+        }).eraseToAnyPublisher()
+    }
+
+    func getResultsBy(scriptures: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
+        databaseQueue.readPublisher { database in
+            try SongResultEntity.fetchAll(database,
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE SONG_META_DATA_SCRIPTURES = ?",
+                                          arguments: [scriptures])
+        }.mapError({error -> ErrorType in
+            .data(description: error.localizedDescription)
+        }).eraseToAnyPublisher()
+    }
+
     func getResultsBy(hymnCode: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
         databaseQueue.readPublisher { database in
             try SongResultEntity.fetchAll(database,
-                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE SONG_META_DATA_HYMN_CODE LIKE '%' || ? || '%'",
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE SONG_META_DATA_HYMN_CODE = ?",
                                           arguments: [hymnCode])
         }.mapError({error -> ErrorType in
             .data(description: error.localizedDescription)

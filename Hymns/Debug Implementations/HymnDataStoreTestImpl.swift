@@ -24,7 +24,15 @@ class HymnDataStoreTestImpl: HymnDataStore {
         [("category 1 h subcategory 2"):
             [SongResultEntity(hymnType: .classic, hymnNumber: "1151", queryParams: nil, title: "Click me!"),
              SongResultEntity(hymnType: .newTune, hymnNumber: "37", queryParams: nil, title: "Don't click!"),
-             SongResultEntity(hymnType: .classic, hymnNumber: "883", queryParams: nil, title: "Don't click either!")]]
+             SongResultEntity(hymnType: .classic, hymnNumber: "883", queryParams: nil, title: "Don't click either!")],
+         ("song's category"):
+             [SongResultEntity(hymnType: .classic, hymnNumber: "1151", queryParams: nil, title: "Click me!"),
+              SongResultEntity(hymnType: .newTune, hymnNumber: "37", queryParams: nil, title: "Don't click!"),
+              SongResultEntity(hymnType: .classic, hymnNumber: "883", queryParams: nil, title: "Don't click either!")]]
+    private let songResultsByAuthor =
+        [("Barack Obama"):
+            [SongResultEntity(hymnType: .classic, hymnNumber: "113", queryParams: nil, title: "Hymn 113"),
+             SongResultEntity(hymnType: .classic, hymnNumber: "990", queryParams: nil, title: "Hymn 990")]]
     private let songResultsByHymnCode =
         [("171214436716555"):
             [SongResultEntity(hymnType: .classic, hymnNumber: "1151", queryParams: nil, title: "Click me!"),
@@ -74,7 +82,7 @@ class HymnDataStoreTestImpl: HymnDataStore {
     }
 
     func getResultsBy(category: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
-        Just(songResultsByCategory["\(category)"] ?? [SongResultEntity]())
+        Just(songResultsByCategory[category] ?? [SongResultEntity]())
             .mapError({ _ -> ErrorType in
                 // This will never be triggered.
             }).eraseToAnyPublisher()
@@ -110,6 +118,48 @@ class HymnDataStoreTestImpl: HymnDataStore {
 
     func getResultsBy(subcategory: String, hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType> {
         Just(songResultsByCategory["\(hymnType.abbreviatedValue) \(subcategory)"] ?? [SongResultEntity]())
+            .mapError({ _ -> ErrorType in
+                // This will never be triggered.
+            }).eraseToAnyPublisher()
+    }
+
+    func getResultsBy(author: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
+        Just(songResultsByAuthor[author] ?? [SongResultEntity]())
+            .mapError({ _ -> ErrorType in
+                // This will never be triggered.
+            }).eraseToAnyPublisher()
+    }
+
+    func getResultsBy(composer: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
+        Just([SongResultEntity]()) // Populate list in when we have tests that use it
+            .mapError({ _ -> ErrorType in
+                // This will never be triggered.
+            }).eraseToAnyPublisher()
+    }
+
+    func getResultsBy(key: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
+        Just([SongResultEntity]()) // Populate list in when we have tests that use it
+            .mapError({ _ -> ErrorType in
+                // This will never be triggered.
+            }).eraseToAnyPublisher()
+    }
+
+    func getResultsBy(time: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
+        Just([SongResultEntity]()) // Populate list in when we have tests that use it
+            .mapError({ _ -> ErrorType in
+                // This will never be triggered.
+            }).eraseToAnyPublisher()
+    }
+
+    func getResultsBy(meter: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
+        Just([SongResultEntity]()) // Populate list in when we have tests that use it
+            .mapError({ _ -> ErrorType in
+                // This will never be triggered.
+            }).eraseToAnyPublisher()
+    }
+
+    func getResultsBy(scriptures: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
+        Just([SongResultEntity]()) // Populate list in when we have tests that use it
             .mapError({ _ -> ErrorType in
                 // This will never be triggered.
             }).eraseToAnyPublisher()

@@ -1,3 +1,4 @@
+// swiftlint:disable file_length
 import GRDB
 import Quick
 import Nimble
@@ -67,9 +68,9 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                             }, receiveValue: { entity in
                                 value.fulfill()
                                 expect(entity).to(equal(HymnEntityBuilder(hymnIdentifier: cebuano123QueryParams)
-                                                            .title("cebuano 123 with query params")
-                                                            .hymnCode("171214436716555")
-                                                            .build()))
+                                    .title("cebuano 123 with query params")
+                                    .hymnCode("171214436716555")
+                                    .build()))
                             })
                         testQueue.sync {}
                         testQueue.sync {}
@@ -177,11 +178,9 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         .receive(on: testQueue)
                         .sink(receiveCompletion: { state in
                             completion.fulfill()
-                            print("completion fulfilled on \(Thread.current)")
                             expect(state).to(equal(.finished))
                         }, receiveValue: { entities in
                             value.fulfill()
-                            print("value fulfilled on \(Thread.current)")
                             searchResults = entities
                         })
                     testQueue.sync {}
@@ -243,48 +242,368 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                     }
                 }
             }
-            describe("hymn code not found") {
-                it("should return empty results") {
-                    let completion = XCTestExpectation(description: "completion received")
-                    let value = XCTestExpectation(description: "value received")
-                    let publisher = target.getResultsBy(hymnCode: "Obama")
-                        .print(self.description)
-                        .receive(on: testQueue)
-                        .sink(receiveCompletion: { state in
-                            completion.fulfill()
-                            expect(state).to(equal(.finished))
-                        }, receiveValue: { entities in
-                            value.fulfill()
-                            expect(entities).to(beEmpty())
-                        })
-                    testQueue.sync {}
-                    testQueue.sync {}
-                    testQueue.sync {}
-                    testQueue.sync {}
-                    self.wait(for: [completion, value], timeout: testTimeout)
-                    publisher.cancel()
+            describe("search by author") {
+                let becoming = HymnEntityBuilder(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "1")).title("Becoming").author("Michelle Obama").build()
+                let shortestWayHome = HymnEntityBuilder(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "2")).title("Shortest Way Home").author("Pete Buttigieg").build()
+                beforeEach {
+                    target.saveHymn(becoming)
+                    target.saveHymn(shortestWayHome)
+                }
+                context("author not found") {
+                    it("should return empty results") {
+                        let completion = XCTestExpectation(description: "completion received")
+                        let value = XCTestExpectation(description: "value received")
+                        let publisher = target.getResultsBy(author: "Barack Obama")
+                            .print(self.description)
+                            .receive(on: testQueue)
+                            .sink(receiveCompletion: { state in
+                                completion.fulfill()
+                                expect(state).to(equal(.finished))
+                            }, receiveValue: { entities in
+                                value.fulfill()
+                                expect(entities).to(beEmpty())
+                            })
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        self.wait(for: [completion, value], timeout: testTimeout)
+                        publisher.cancel()
+                    }
+                }
+                context("author found") {
+                    it("should return results") {
+                        let completion = XCTestExpectation(description: "completion received")
+                        let value = XCTestExpectation(description: "value received")
+                        let publisher = target.getResultsBy(author: "Michelle Obama")
+                            .print(self.description)
+                            .receive(on: testQueue)
+                            .sink(receiveCompletion: { state in
+                                completion.fulfill()
+                                expect(state).to(equal(.finished))
+                            }, receiveValue: { entities in
+                                value.fulfill()
+                                expect(entities).to(equal([SongResultEntity(hymnType: .classic, hymnNumber: "1", title: "Becoming")]))
+                            })
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        self.wait(for: [completion, value], timeout: testTimeout)
+                        publisher.cancel()
+                    }
                 }
             }
-            describe("hymn code found") {
-                it("should return results") {
-                    let completion = XCTestExpectation(description: "completion received")
-                    let value = XCTestExpectation(description: "value received")
-                    let publisher = target.getResultsBy(hymnCode: "436716")
-                        .print(self.description)
-                        .receive(on: testQueue)
-                        .sink(receiveCompletion: { state in
-                            completion.fulfill()
-                            expect(state).to(equal(.finished))
-                        }, receiveValue: { entities in
-                            value.fulfill()
-                            expect(entities).to(beEmpty())
-                        })
-                    testQueue.sync {}
-                    testQueue.sync {}
-                    testQueue.sync {}
-                    testQueue.sync {}
-                    self.wait(for: [completion, value], timeout: testTimeout)
-                    publisher.cancel()
+            describe("search by composer") {
+                let becoming = HymnEntityBuilder(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "1")).title("Becoming").composer("Michelle Obama").build()
+                let shortestWayHome = HymnEntityBuilder(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "2")).title("Shortest Way Home").composer("Pete Buttigieg").build()
+                beforeEach {
+                    target.saveHymn(becoming)
+                    target.saveHymn(shortestWayHome)
+                }
+                context("composer not found") {
+                    it("should return empty results") {
+                        let completion = XCTestExpectation(description: "completion received")
+                        let value = XCTestExpectation(description: "value received")
+                        let publisher = target.getResultsBy(composer: "Barack Obama")
+                            .print(self.description)
+                            .receive(on: testQueue)
+                            .sink(receiveCompletion: { state in
+                                completion.fulfill()
+                                expect(state).to(equal(.finished))
+                            }, receiveValue: { entities in
+                                value.fulfill()
+                                expect(entities).to(beEmpty())
+                            })
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        self.wait(for: [completion, value], timeout: testTimeout)
+                        publisher.cancel()
+                    }
+                }
+                context("composer found") {
+                    it("should return results") {
+                        let completion = XCTestExpectation(description: "completion received")
+                        let value = XCTestExpectation(description: "value received")
+                        let publisher = target.getResultsBy(composer: "Michelle Obama")
+                            .print(self.description)
+                            .receive(on: testQueue)
+                            .sink(receiveCompletion: { state in
+                                completion.fulfill()
+                                expect(state).to(equal(.finished))
+                            }, receiveValue: { entities in
+                                value.fulfill()
+                                expect(entities).to(equal([SongResultEntity(hymnType: .classic, hymnNumber: "1", title: "Becoming")]))
+                            })
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        self.wait(for: [completion, value], timeout: testTimeout)
+                        publisher.cancel()
+                    }
+                }
+            }
+            describe("search by key") {
+                let becoming = HymnEntityBuilder(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "1")).title("Becoming").key("A").build()
+                let shortestWayHome = HymnEntityBuilder(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "2")).title("Shortest Way Home").key("A#").build()
+                beforeEach {
+                    target.saveHymn(becoming)
+                    target.saveHymn(shortestWayHome)
+                }
+                context("key not found") {
+                    it("should return empty results") {
+                        let completion = XCTestExpectation(description: "completion received")
+                        let value = XCTestExpectation(description: "value received")
+                        let publisher = target.getResultsBy(key: "F")
+                            .print(self.description)
+                            .receive(on: testQueue)
+                            .sink(receiveCompletion: { state in
+                                completion.fulfill()
+                                expect(state).to(equal(.finished))
+                            }, receiveValue: { entities in
+                                value.fulfill()
+                                expect(entities).to(beEmpty())
+                            })
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        self.wait(for: [completion, value], timeout: testTimeout)
+                        publisher.cancel()
+                    }
+                }
+                context("key found") {
+                    it("should return results") {
+                        let completion = XCTestExpectation(description: "completion received")
+                        let value = XCTestExpectation(description: "value received")
+                        let publisher = target.getResultsBy(key: "A")
+                            .print(self.description)
+                            .receive(on: testQueue)
+                            .sink(receiveCompletion: { state in
+                                completion.fulfill()
+                                expect(state).to(equal(.finished))
+                            }, receiveValue: { entities in
+                                value.fulfill()
+                                expect(entities).to(equal([SongResultEntity(hymnType: .classic, hymnNumber: "1", title: "Becoming")]))
+                            })
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        self.wait(for: [completion, value], timeout: testTimeout)
+                        publisher.cancel()
+                    }
+                }
+            }
+            describe("search by time") {
+                let becoming = HymnEntityBuilder(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "1")).title("Becoming").time("4/4").build()
+                let shortestWayHome = HymnEntityBuilder(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "2")).title("Shortest Way Home").time("3/4").build()
+                beforeEach {
+                    target.saveHymn(becoming)
+                    target.saveHymn(shortestWayHome)
+                }
+                context("time not found") {
+                    it("should return empty results") {
+                        let completion = XCTestExpectation(description: "completion received")
+                        let value = XCTestExpectation(description: "value received")
+                        let publisher = target.getResultsBy(time: "2/4")
+                            .print(self.description)
+                            .receive(on: testQueue)
+                            .sink(receiveCompletion: { state in
+                                completion.fulfill()
+                                expect(state).to(equal(.finished))
+                            }, receiveValue: { entities in
+                                value.fulfill()
+                                expect(entities).to(beEmpty())
+                            })
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        self.wait(for: [completion, value], timeout: testTimeout)
+                        publisher.cancel()
+                    }
+                }
+                context("time found") {
+                    it("should return results") {
+                        let completion = XCTestExpectation(description: "completion received")
+                        let value = XCTestExpectation(description: "value received")
+                        let publisher = target.getResultsBy(time: "4/4")
+                            .print(self.description)
+                            .receive(on: testQueue)
+                            .sink(receiveCompletion: { state in
+                                completion.fulfill()
+                                expect(state).to(equal(.finished))
+                            }, receiveValue: { entities in
+                                value.fulfill()
+                                expect(entities).to(equal([SongResultEntity(hymnType: .classic, hymnNumber: "1", title: "Becoming")]))
+                            })
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        self.wait(for: [completion, value], timeout: testTimeout)
+                        publisher.cancel()
+                    }
+                }
+            }
+            describe("search by meter") {
+                let becoming = HymnEntityBuilder(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "1")).title("Becoming").meter("8.8.8.8").build()
+                let shortestWayHome = HymnEntityBuilder(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "2")).title("Shortest Way Home").meter("Peculiar Meter").build()
+                beforeEach {
+                    target.saveHymn(becoming)
+                    target.saveHymn(shortestWayHome)
+                }
+                context("meter not found") {
+                    it("should return empty results") {
+                        let completion = XCTestExpectation(description: "completion received")
+                        let value = XCTestExpectation(description: "value received")
+                        let publisher = target.getResultsBy(meter: "4.4.4.4")
+                            .print(self.description)
+                            .receive(on: testQueue)
+                            .sink(receiveCompletion: { state in
+                                completion.fulfill()
+                                expect(state).to(equal(.finished))
+                            }, receiveValue: { entities in
+                                value.fulfill()
+                                expect(entities).to(beEmpty())
+                            })
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        self.wait(for: [completion, value], timeout: testTimeout)
+                        publisher.cancel()
+                    }
+                }
+                context("meter found") {
+                    it("should return results") {
+                        let completion = XCTestExpectation(description: "completion received")
+                        let value = XCTestExpectation(description: "value received")
+                        let publisher = target.getResultsBy(meter: "8.8.8.8")
+                            .print(self.description)
+                            .receive(on: testQueue)
+                            .sink(receiveCompletion: { state in
+                                completion.fulfill()
+                                expect(state).to(equal(.finished))
+                            }, receiveValue: { entities in
+                                value.fulfill()
+                                expect(entities).to(equal([SongResultEntity(hymnType: .classic, hymnNumber: "1", title: "Becoming")]))
+                            })
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        self.wait(for: [completion, value], timeout: testTimeout)
+                        publisher.cancel()
+                    }
+                }
+            }
+            describe("search by scriptures") {
+                let becoming = HymnEntityBuilder(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "1")).title("Becoming").scriptures("Gen. 12").build()
+                let shortestWayHome = HymnEntityBuilder(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "2")).title("Shortest Way Home").scriptures("Gen. 2").build()
+                beforeEach {
+                    target.saveHymn(becoming)
+                    target.saveHymn(shortestWayHome)
+                }
+                context("scriptures not found") {
+                    it("should return empty results") {
+                        let completion = XCTestExpectation(description: "completion received")
+                        let value = XCTestExpectation(description: "value received")
+                        let publisher = target.getResultsBy(scriptures: "Gen. 1")
+                            .print(self.description)
+                            .receive(on: testQueue)
+                            .sink(receiveCompletion: { state in
+                                completion.fulfill()
+                                expect(state).to(equal(.finished))
+                            }, receiveValue: { entities in
+                                value.fulfill()
+                                expect(entities).to(beEmpty())
+                            })
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        self.wait(for: [completion, value], timeout: testTimeout)
+                        publisher.cancel()
+                    }
+                }
+                context("scriptures found") {
+                    it("should return results") {
+                        let completion = XCTestExpectation(description: "completion received")
+                        let value = XCTestExpectation(description: "value received")
+                        let publisher = target.getResultsBy(scriptures: "Gen. 12")
+                            .print(self.description)
+                            .receive(on: testQueue)
+                            .sink(receiveCompletion: { state in
+                                completion.fulfill()
+                                expect(state).to(equal(.finished))
+                            }, receiveValue: { entities in
+                                value.fulfill()
+                                expect(entities).to(equal([SongResultEntity(hymnType: .classic, hymnNumber: "1", title: "Becoming")]))
+                            })
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        self.wait(for: [completion, value], timeout: testTimeout)
+                        publisher.cancel()
+                    }
+                }
+            }
+            describe("search by hymn code") {
+                let becoming = HymnEntityBuilder(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "1")).title("Becoming").hymnCode("33829223232").build()
+                let shortestWayHome = HymnEntityBuilder(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "2")).title("Shortest Way Home").hymnCode("436716").build()
+                beforeEach {
+                    target.saveHymn(becoming)
+                    target.saveHymn(shortestWayHome)
+                }
+                describe("hymn code not found") {
+                    it("should return empty results") {
+                        let completion = XCTestExpectation(description: "completion received")
+                        let value = XCTestExpectation(description: "value received")
+                        let publisher = target.getResultsBy(hymnCode: "3")
+                            .print(self.description)
+                            .receive(on: testQueue)
+                            .sink(receiveCompletion: { state in
+                                completion.fulfill()
+                                expect(state).to(equal(.finished))
+                            }, receiveValue: { entities in
+                                value.fulfill()
+                                expect(entities).to(beEmpty())
+                            })
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        self.wait(for: [completion, value], timeout: testTimeout)
+                        publisher.cancel()
+                    }
+                }
+                describe("hymn code found") {
+                    it("should return results") {
+                        let completion = XCTestExpectation(description: "completion received")
+                        let value = XCTestExpectation(description: "value received")
+                        let publisher = target.getResultsBy(hymnCode: "436716")
+                            .print(self.description)
+                            .receive(on: testQueue)
+                            .sink(receiveCompletion: { state in
+                                completion.fulfill()
+                                expect(state).to(equal(.finished))
+                            }, receiveValue: { entities in
+                                value.fulfill()
+                                expect(entities).to(equal([SongResultEntity(hymnType: .classic, hymnNumber: "2", title: "Shortest Way Home")]))
+                            })
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        testQueue.sync {}
+                        self.wait(for: [completion, value], timeout: testTimeout)
+                        publisher.cancel()
+                    }
                 }
             }
         }

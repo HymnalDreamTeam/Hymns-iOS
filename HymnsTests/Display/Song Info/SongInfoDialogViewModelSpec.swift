@@ -40,15 +40,15 @@ class SongInfoDialogViewModelSpec: QuickSpec {
                 }
                 it("song info should be filled") {
                     expect(target.songInfo).to(haveCount(9))
-                    let expected = [SongInfoViewModel(label: "Category", values: ["Experience of Christ"]),
-                                    SongInfoViewModel(label: "Subcategory", values: ["As Food and Drink"]),
-                                    SongInfoViewModel(label: "Author", values: ["M. C.", "Titus Ting", "Will Jeng"]),
-                                    SongInfoViewModel(label: "Composer", values: ["Traditional melody"]),
-                                    SongInfoViewModel(label: "Key", values: ["Ab Major"]),
-                                    SongInfoViewModel(label: "Time", values: ["4/4"]),
-                                    SongInfoViewModel(label: "Meter", values: ["Peculiar Meter."]),
-                                    SongInfoViewModel(label: "Scriptures", values: ["Revelation 22", "Genesis 1:1"]),
-                                    SongInfoViewModel(label: "Hymn Code", values: ["5556111233321"])]
+                    let expected = [SongInfoViewModel(type: .category, values: ["Experience of Christ"]),
+                                    SongInfoViewModel(type: .subcategory, values: ["As Food and Drink"]),
+                                    SongInfoViewModel(type: .author, values: ["M. C.", "Titus Ting", "Will Jeng"]),
+                                    SongInfoViewModel(type: .composer, values: ["Traditional melody"]),
+                                    SongInfoViewModel(type: .key, values: ["Ab Major"]),
+                                    SongInfoViewModel(type: .time, values: ["4/4"]),
+                                    SongInfoViewModel(type: .meter, values: ["Peculiar Meter."]),
+                                    SongInfoViewModel(type: .scriptures, values: ["Revelation 22", "Genesis 1:1"]),
+                                    SongInfoViewModel(type: .hymnCode, values: ["5556111233321"])]
                     expect(target.songInfo).to(equal(expected))
                 }
             }

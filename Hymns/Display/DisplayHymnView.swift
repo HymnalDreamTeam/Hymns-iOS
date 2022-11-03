@@ -103,7 +103,7 @@ struct DisplayHymnView_Previews: PreviewProvider {
         let classic1334BottomBarViewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151, hymn: hymn)
         let classic1334SongInfoDialogViewModel = SongInfoDialogViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151,
                                                                          hymn: UiHymn(hymnIdentifier: PreviewHymnIdentifiers.hymn1151, title: "", lyrics: nil, author: "MC"))!
-        classic1334SongInfoDialogViewModel.songInfo = [SongInfoViewModel(label: "label", values: ["value1", "value2"])]
+        classic1334SongInfoDialogViewModel.songInfo = [SongInfoViewModel(type: .hymnCode, values: ["value1", "value2"])]
         classic1334BottomBarViewModel.buttons = [
             .share("Shareable lyrics"),
             .languages([SongResultViewModel(stableId: "Empty title view", title: "language", destinationView: EmptyView().eraseToAnyView())]),

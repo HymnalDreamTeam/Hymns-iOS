@@ -39,7 +39,10 @@ class DisplayHymnScenarios: BaseTestCase {
             .waitForStaticTexts("Additional options")
             .waitForButtons("Song Info", "Search in SoundCloud", "Search in YouTube")
             .openSongInfo()
-            .waitForStaticTexts("Category", "song's category", "Subcategory", "song's subcategory")
+            .waitForStaticTexts("Category", "Subcategory")
+            .waitForButtons("song's category", "song's subcategory")
+            .pressButton("song's category")
+            .waitForStaticTexts("song's category", "Hymn 1151", "Click me!", "New tune 37", "Don't click!", "Hymn 883", "Don't click either!")
     }
 
     func test_audioPlayer() {
