@@ -9,19 +9,23 @@ struct SongInfoView: View {
         Group {
             if sizeCategory.isAccessibilityCategory() {
                 VStack(alignment: .leading) {
-                    Text(viewModel.label).font(.callout).bold()
+                    Text(viewModel.type.label).font(.callout).bold()
                     VStack(alignment: .leading) {
                         ForEach(viewModel.values, id: \.self) { value in
-                            Text(value).font(.callout)
+                            NavigationLink(destination: BrowseResultsListView(viewModel: viewModel.createSongInfoItem(value))) {
+                                Text(value).font(.callout)
+                            }
                         }
                     }
                 }
             } else {
                 HStack {
-                    Text(viewModel.label).font(.callout).bold()
+                    Text(viewModel.type.label).font(.callout).bold()
                     VStack(alignment: .leading) {
                         ForEach(viewModel.values, id: \.self) { value in
-                            Text(value).font(.callout)
+                            NavigationLink(destination: BrowseResultsListView(viewModel: viewModel.createSongInfoItem(value))) {
+                                Text(value).font(.callout)
+                            }
                         }
                     }
                 }
@@ -33,7 +37,7 @@ struct SongInfoView: View {
 #if DEBUG
 struct SongInfoView_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = SongInfoViewModel(label: "Category", values: ["Worship of the Father", "The Son's Redemption"])
+        let viewModel = SongInfoViewModel(type: .category, values: ["Worship of the Father", "The Son's Redemption"])
         return Group {
             SongInfoView(viewModel: viewModel).toPreviews()
         }

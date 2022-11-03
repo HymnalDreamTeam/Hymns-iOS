@@ -24,28 +24,28 @@ struct SongInfoDialogView: View {
     }
 }
 
-#if DEBUG
-struct SongInfoDialogView_Previews: PreviewProvider {
+ #if DEBUG
+ struct SongInfoDialogView_Previews: PreviewProvider {
     static var previews: some View {
         let hymn = UiHymn(hymnIdentifier: PreviewHymnIdentifiers.hymn40, title: "", lyrics: nil, author: "MC")
 
         let dialogViewModel = SongInfoDialogViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn40, hymn: hymn)!
-        dialogViewModel.songInfo = [SongInfoViewModel(label: "Category", values: ["Worship of the Father"]),
-                                    SongInfoViewModel(label: "Subcategory", values: ["As the Source of Life"]),
-                                    SongInfoViewModel(label: "Author", values: ["Will Jeng", "Titus Ting"])]
+        dialogViewModel.songInfo = [SongInfoViewModel(type: .category, values: ["Worship of the Father"]),
+                                    SongInfoViewModel(type: .subcategory, values: ["As the Source of Life"]),
+                                    SongInfoViewModel(type: .author, values: ["Will Jeng", "Titus Ting"])]
         let dialog = SongInfoDialogView(viewModel: dialogViewModel)
 
         let longValuesViewModel = SongInfoDialogViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn40, hymn: hymn)!
-        longValuesViewModel.songInfo = [SongInfoViewModel(label: "CategoryCategoryCategory",
+        longValuesViewModel.songInfo = [SongInfoViewModel(type: .category,
                                                           values: ["Worship Worship Worship of of of the the the Father Father Father"]),
-                                        SongInfoViewModel(label: "SubcategorySubcategorySubcategory",
+                                        SongInfoViewModel(type: .subcategory,
                                                           values: ["As As As the the the Source Source Source of of of Life Life Life"]),
-                                        SongInfoViewModel(label: "AuthorAuthorAuthor", values: ["Will Will Will Jeng Jeng Jeng", "Titus Titus Titus Ting Ting Ting"])]
+                                        SongInfoViewModel(type: .author, values: ["Will Will Will Jeng Jeng Jeng", "Titus Titus Titus Ting Ting Ting"])]
         let longValues = SongInfoDialogView(viewModel: longValuesViewModel)
         return Group {
             dialog.toPreviews()
             longValues.previewLayout(.sizeThatFits).previewDisplayName("long values")
         }
     }
-}
-#endif
+ }
+ #endif

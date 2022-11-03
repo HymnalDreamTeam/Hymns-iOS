@@ -10,40 +10,68 @@ class BrowseResultsListViewModel: ObservableObject {
     private let backgroundQueue: DispatchQueue
     private let dataStore: HymnDataStore
     private let mainQueue: DispatchQueue
-    private let resultsType: ResultsType
+    private let resultType: HymnAttribute
     private let songbaseStore: SongbaseStore
     private let tagStore: TagStore
 
     private var disposables = Set<AnyCancellable>()
 
     convenience init(tag: UiTag) {
-        self.init(resultsType: .tag(tag: tag))
+        self.init(resultType: .tag(tag: tag))
     }
 
     convenience init(subcategory: String, hymnType: HymnType? = nil) {
-        self.init(resultsType: .subcategory(subcategory: subcategory, hymnType: hymnType))
+        self.init(resultType: .subcategory(subcategory: subcategory, hymnType: hymnType))
     }
 
     convenience init(category: String, subcategory: String? = nil, hymnType: HymnType? = nil) {
         if let subcategory = subcategory {
-            self.init(resultsType: .subcategory(category: category, subcategory: subcategory, hymnType: hymnType))
+            self.init(resultType: .subcategory(category: category, subcategory: subcategory, hymnType: hymnType))
         } else {
-            self.init(resultsType: .category(category: category, hymnType: hymnType))
+            self.init(resultType: .category(category: category, hymnType: hymnType))
         }
     }
 
-    convenience init(hymnType: HymnType) {
-        self.init(resultsType: .hymnType(hymnType: hymnType))
+    convenience init(author: String) {
+        self.init(resultType: .author(author))
     }
 
-    private init(resultsType: ResultsType,
+    convenience init(composer: String) {
+        self.init(resultType: .composer(composer))
+    }
+
+    convenience init(key: String) {
+        self.init(resultType: .key(key))
+    }
+
+    convenience init(time: String) {
+        self.init(resultType: .time(time))
+    }
+
+    convenience init(meter: String) {
+        self.init(resultType: .meter(meter))
+    }
+
+    convenience init(scriptures: String) {
+        self.init(resultType: .scriptures(scriptures))
+    }
+
+    convenience init(hymnCode: String) {
+        self.init(resultType: .hymnCode(hymnCode))
+    }
+
+    convenience init(hymnType: HymnType) {
+        self.init(resultType: .hymnType(hymnType))
+    }
+
+    private init(resultType: HymnAttribute,
                  backgroundQueue: DispatchQueue = Resolver.resolve(name: "background"),
                  dataStore: HymnDataStore = Resolver.resolve(),
                  mainQueue: DispatchQueue = Resolver.resolve(name: "main"),
                  songbaseStore: SongbaseStore = Resolver.resolve(),
                  tagStore: TagStore = Resolver.resolve()) {
-        self.title = resultsType.title
-        self.resultsType = resultsType
+        self.title = resultType.title
+        self.resultType = resultType
         self.backgroundQueue = backgroundQueue
         self.dataStore = dataStore
         self.mainQueue = mainQueue
@@ -51,8 +79,9 @@ class BrowseResultsListViewModel: ObservableObject {
         self.tagStore = tagStore
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func fetchResults() {
-        switch resultsType {
+        switch resultType {
         case .tag(let tag):
             subscribeToPublisher(tagStore.getSongsByTag(tag))
         case .category(let category, let hymnType):
@@ -75,6 +104,20 @@ class BrowseResultsListViewModel: ObservableObject {
                 // both hymn type and category are nil
                 subscribeToPublisher(dataStore.getResultsBy(subcategory: subcategory))
             }
+        case .author(let author):
+            subscribeToPublisher(dataStore.getResultsBy(author: author))
+        case .composer(let composer):
+            subscribeToPublisher(dataStore.getResultsBy(composer: composer))
+        case .key(let key):
+            subscribeToPublisher(dataStore.getResultsBy(key: key))
+        case .time(let time):
+            subscribeToPublisher(dataStore.getResultsBy(time: time))
+        case .meter(let meter):
+            subscribeToPublisher(dataStore.getResultsBy(meter: meter))
+        case .scriptures(let scriptures):
+            subscribeToPublisher(dataStore.getResultsBy(scriptures: scriptures))
+        case .hymnCode(let hymnCode):
+            subscribeToPublisher(dataStore.getResultsBy(hymnCode: hymnCode))
         case .hymnType(let hymnType):
             fetchByHymnType(hymnType)
         }
@@ -146,35 +189,8 @@ class BrowseResultsListViewModel: ObservableObject {
     }
 }
 
-private enum ResultsType {
-    case category(category: String, hymnType: HymnType? = nil)
-    case subcategory(category: String? = nil, subcategory: String, hymnType: HymnType? = nil)
-    case hymnType(hymnType: HymnType)
-    case tag(tag: UiTag)
-
-    var label: String {
-        switch self {
-        case .category:
-            return NSLocalizedString("Category", comment: "Label for 'Category'.")
-        case .subcategory:
-            return NSLocalizedString("Subcategory", comment: "Label for 'Subcategory'.")
-        case .hymnType:
-            return NSLocalizedString("Hymn Type", comment: "Label for 'Hymn Type'.")
-        case .tag:
-            return NSLocalizedString("Tags", comment: "Label for 'Tags'.")
-        }
-    }
-
-    var title: String {
-        switch self {
-        case .category(let category, _):
-            return category
-        case .subcategory(_, let subcategory, _):
-            return subcategory
-        case .hymnType(let hymnType):
-            return hymnType.displayTitle
-        case .tag(let tag):
-            return String(format: NSLocalizedString("Songs tagged with \"%@\"", comment: "Title of a list of songs tagged with a particular tag."), tag.title)
-        }
+extension BrowseResultsListViewModel: Equatable {
+    static func == (lhs: BrowseResultsListViewModel, rhs: BrowseResultsListViewModel) -> Bool {
+        lhs.title == rhs.title && lhs.resultType == rhs.resultType
     }
 }

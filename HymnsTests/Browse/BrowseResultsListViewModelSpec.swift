@@ -1,3 +1,4 @@
+// swiftlint:disable file_length
 import Combine
 import Mockingbird
 import Nimble
@@ -103,11 +104,11 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                 context("category and subcategory") {
                     beforeEach {
                         given(dataStore.getResultsBy(category: "category", subcategory: "subcategory")) ~>
-                            Just([SongResultEntity(hymnType: .classic, hymnNumber: "44", queryParams: nil, title: "classic44"),
-                                  SongResultEntity(hymnType: .newSong, hymnNumber: "99", queryParams: nil, title: "newSong99")])
-                                .mapError({ _ -> ErrorType in
-                                    // This will never be triggered.
-                                }).eraseToAnyPublisher()
+                        Just([SongResultEntity(hymnType: .classic, hymnNumber: "44", queryParams: nil, title: "classic44"),
+                              SongResultEntity(hymnType: .newSong, hymnNumber: "99", queryParams: nil, title: "newSong99")])
+                        .mapError({ _ -> ErrorType in
+                            // This will never be triggered.
+                        }).eraseToAnyPublisher()
                         target = BrowseResultsListViewModel(category: "category", subcategory: "subcategory", hymnType: nil)
                         target.fetchResults()
                         testQueue.sync {}
@@ -128,13 +129,13 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                 context("data store error") {
                     beforeEach {
                         given(dataStore.getResultsBy(category: "category", subcategory: "subcategory", hymnType: .newTune)) ~>
-                            Just([SongResultEntity]())
-                                .tryMap({ _ -> [SongResultEntity] in
-                                    throw URLError(.badServerResponse)
-                                })
-                                .mapError({ _ -> ErrorType in
-                                    ErrorType.data(description: "forced data error")
-                                }).eraseToAnyPublisher()
+                        Just([SongResultEntity]())
+                            .tryMap({ _ -> [SongResultEntity] in
+                                throw URLError(.badServerResponse)
+                            })
+                            .mapError({ _ -> ErrorType in
+                                ErrorType.data(description: "forced data error")
+                            }).eraseToAnyPublisher()
                         target = BrowseResultsListViewModel(category: "category", subcategory: "subcategory", hymnType: .newTune)
                         target.fetchResults()
                         testQueue.sync {}
@@ -196,6 +197,163 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                     }
                 }
             }
+            describe("getting results by author") {
+                beforeEach {
+                    given(dataStore.getResultsBy(author: "author")) ~> { _  in
+                        Just([SongResultEntity(hymnType: .classic, hymnNumber: "993", title: "Song title")]).mapError({ _ -> ErrorType in
+                            // This will never be triggered.
+                        }).eraseToAnyPublisher()
+                    }
+
+                    target = BrowseResultsListViewModel(author: "author")
+                    target.fetchResults()
+                    testQueue.sync {}
+                    testQueue.sync {}
+                    testQueue.sync {}
+                    testQueue.sync {}
+                }
+                it("should set the title using the author") {
+                    expect(target.title).to(equal("Songs written by \"author\""))
+                }
+                it("should have an empty result list") {
+                    expect(target.songResults).to(haveCount(1))
+                    expect(target.songResults![0].stableId).to(equal("hymnType: h, hymnNumber: 993, queryParams: "))
+                    expect(target.songResults![0].title).to(equal("Song title"))
+                    expect(target.songResults![0].label).to(equal("Hymn 993"))
+                }
+            }
+            describe("getting results by composer") {
+                beforeEach {
+                    given(dataStore.getResultsBy(composer: "composer")) ~> { _  in
+                        Just([SongResultEntity]()).mapError({ _ -> ErrorType in
+                            // This will never be triggered.
+                        }).eraseToAnyPublisher()
+                    }
+
+                    target = BrowseResultsListViewModel(composer: "composer")
+                    target.fetchResults()
+                    testQueue.sync {}
+                    testQueue.sync {}
+                    testQueue.sync {}
+                    testQueue.sync {}
+                }
+                it("should set the title using the composer") {
+                    expect(target.title).to(equal("Songs composed by \"composer\""))
+                }
+                it("should have an empty result list") {
+                    expect(target.songResults).to(beEmpty())
+                }
+            }
+            describe("getting results by key") {
+                beforeEach {
+                    given(dataStore.getResultsBy(key: "key")) ~> { _  in
+                        Just([SongResultEntity]()).mapError({ _ -> ErrorType in
+                            // This will never be triggered.
+                        }).eraseToAnyPublisher()
+                    }
+
+                    target = BrowseResultsListViewModel(key: "key")
+                    target.fetchResults()
+                    testQueue.sync {}
+                    testQueue.sync {}
+                    testQueue.sync {}
+                    testQueue.sync {}
+                }
+                it("should set the title using the key") {
+                    expect(target.title).to(equal("Songs with the key \"key\""))
+                }
+                it("should have an empty result list") {
+                    expect(target.songResults).to(beEmpty())
+                }
+            }
+            describe("getting results by time") {
+                beforeEach {
+                    given(dataStore.getResultsBy(time: "time")) ~> { _  in
+                        Just([SongResultEntity]()).mapError({ _ -> ErrorType in
+                            // This will never be triggered.
+                        }).eraseToAnyPublisher()
+                    }
+
+                    target = BrowseResultsListViewModel(time: "time")
+                    target.fetchResults()
+                    testQueue.sync {}
+                    testQueue.sync {}
+                    testQueue.sync {}
+                    testQueue.sync {}
+                }
+                it("should set the title using the time") {
+                    expect(target.title).to(equal("Songs with the time \"time\""))
+                }
+                it("should have an empty result list") {
+                    expect(target.songResults).to(beEmpty())
+                }
+            }
+            describe("getting results by meter") {
+                beforeEach {
+                    given(dataStore.getResultsBy(meter: "meter")) ~> { _  in
+                        Just([SongResultEntity]()).mapError({ _ -> ErrorType in
+                            // This will never be triggered.
+                        }).eraseToAnyPublisher()
+                    }
+
+                    target = BrowseResultsListViewModel(meter: "meter")
+                    target.fetchResults()
+                    testQueue.sync {}
+                    testQueue.sync {}
+                    testQueue.sync {}
+                    testQueue.sync {}
+                }
+                it("should set the title using the meter") {
+                    expect(target.title).to(equal("Songs with the meter \"meter\""))
+                }
+                it("should have an empty result list") {
+                    expect(target.songResults).to(beEmpty())
+                }
+            }
+            describe("getting results by scriptures") {
+                beforeEach {
+                    given(dataStore.getResultsBy(scriptures: "scriptures")) ~> { _  in
+                        Just([SongResultEntity]()).mapError({ _ -> ErrorType in
+                            // This will never be triggered.
+                        }).eraseToAnyPublisher()
+                    }
+
+                    target = BrowseResultsListViewModel(scriptures: "scriptures")
+                    target.fetchResults()
+                    testQueue.sync {}
+                    testQueue.sync {}
+                    testQueue.sync {}
+                    testQueue.sync {}
+                }
+                it("should set the title using the scriptures") {
+                    expect(target.title).to(equal("scriptures"))
+                }
+                it("should have an empty result list") {
+                    expect(target.songResults).to(beEmpty())
+                }
+            }
+            describe("getting results by hymn code") {
+                beforeEach {
+                    given(dataStore.getResultsBy(hymnCode: "hymn code")) ~> { _  in
+                        Just([SongResultEntity]()).mapError({ _ -> ErrorType in
+                            // This will never be triggered.
+                        }).eraseToAnyPublisher()
+                    }
+
+                    target = BrowseResultsListViewModel(hymnCode: "hymn code")
+                    target.fetchResults()
+                    testQueue.sync {}
+                    testQueue.sync {}
+                    testQueue.sync {}
+                    testQueue.sync {}
+                }
+                it("should set the title using the hymn code") {
+                    expect(target.title).to(equal("hymn code"))
+                }
+                it("should have an empty result list") {
+                    expect(target.songResults).to(beEmpty())
+                }
+            }
             describe("getting results by tag") {
                 context("empty results") {
                     beforeEach {
@@ -223,9 +381,9 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                         given(tagStore.getSongsByTag(UiTag(title: "FanIntoFlames", color: .none))) ~> { _ in
                             Just([SongResultEntity(hymnType: .classic, hymnNumber: "123", queryParams: nil, title: "classic123"),
                                   SongResultEntity(hymnType: .dutch, hymnNumber: "55", queryParams: nil, title: "dutch55")])
-                                .mapError({ _ -> ErrorType in
-                                    // This will never be triggered.
-                                }).eraseToAnyPublisher()
+                            .mapError({ _ -> ErrorType in
+                                // This will never be triggered.
+                            }).eraseToAnyPublisher()
                         }
                         target = BrowseResultsListViewModel(tag: UiTag(title: "FanIntoFlames", color: .none))
                         target.fetchResults()
@@ -252,7 +410,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                     throw URLError(.badServerResponse)
                                 })
                                 .mapError({ _ -> ErrorType in
-                                    .data(description: "forced data error")
+                                        .data(description: "forced data error")
                                 }).eraseToAnyPublisher()
                         }
                         target = BrowseResultsListViewModel(tag: UiTag(title: "FanIntoFlames", color: .none))
@@ -304,9 +462,9 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                       SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "5", queryParams: nil, title: "should not be filtered out"),
                                       SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "-9", queryParams: nil, title: "negative hymn numbers should be filtered out"),
                                       SongResultEntity(hymnType: .chinese, hymnNumber: "3", queryParams: nil, title: "should not be filtered out")])
-                                    .mapError({ _ -> ErrorType in
-                                        // This will never be triggered.
-                                    }).eraseToAnyPublisher()
+                                .mapError({ _ -> ErrorType in
+                                    // This will never be triggered.
+                                }).eraseToAnyPublisher()
                             }
                             target = BrowseResultsListViewModel(hymnType: .chinese)
                             target.fetchResults()
@@ -337,9 +495,9 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                       SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "5", queryParams: [String: String](), title: "should be filtered out"),
                                       SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "5", queryParams: nil, title: "should not be filtered out"),
                                       SongResultEntity(hymnType: .chinese, hymnNumber: "3", queryParams: nil, title: "should not be filtered out")])
-                                    .mapError({ _ -> ErrorType in
-                                        // This will never be triggered.
-                                    }).eraseToAnyPublisher()
+                                .mapError({ _ -> ErrorType in
+                                    // This will never be triggered.
+                                }).eraseToAnyPublisher()
                             }
                             target = BrowseResultsListViewModel(hymnType: .cebuano)
                             target.fetchResults()
@@ -367,9 +525,9 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                       SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "5", queryParams: [String: String](), title: "should be filtered out"),
                                       SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "5", queryParams: nil, title: "should not be filtered out"),
                                       SongResultEntity(hymnType: .chinese, hymnNumber: "3", queryParams: nil, title: "should not be filtered out")])
-                                    .mapError({ _ -> ErrorType in
-                                        // This will never be triggered.
-                                    }).eraseToAnyPublisher()
+                                .mapError({ _ -> ErrorType in
+                                    // This will never be triggered.
+                                }).eraseToAnyPublisher()
                             }
                             target = BrowseResultsListViewModel(hymnType: .german)
                             target.fetchResults()
@@ -392,9 +550,9 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                             given(songbaseStore.getAllSongs()) ~> {
                                 Just([SongbaseResultEntity(bookId: 1, bookIndex: 1, title: "First Songbase song"),
                                       SongbaseResultEntity(bookId: 1, bookIndex: 2, title: "Second Songbase song")])
-                                    .mapError({ _ -> ErrorType in
-                                        // This will never be triggered.
-                                    }).eraseToAnyPublisher()
+                                .mapError({ _ -> ErrorType in
+                                    // This will never be triggered.
+                                }).eraseToAnyPublisher()
                             }
                             target = BrowseResultsListViewModel(hymnType: .songbase)
                             target.fetchResults()
@@ -417,13 +575,13 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                 context("data store error") {
                     beforeEach {
                         given(dataStore.getAllSongs(hymnType: .newTune)) ~>
-                            Just([SongResultEntity]())
-                                .tryMap({ _ -> [SongResultEntity] in
-                                    throw URLError(.badServerResponse)
-                                })
-                                .mapError({ _ -> ErrorType in
-                                    ErrorType.data(description: "forced data error")
-                                }).eraseToAnyPublisher()
+                        Just([SongResultEntity]())
+                            .tryMap({ _ -> [SongResultEntity] in
+                                throw URLError(.badServerResponse)
+                            })
+                            .mapError({ _ -> ErrorType in
+                                ErrorType.data(description: "forced data error")
+                            }).eraseToAnyPublisher()
                         target = BrowseResultsListViewModel(hymnType: .newTune)
                         target.fetchResults()
                         testQueue.sync {}

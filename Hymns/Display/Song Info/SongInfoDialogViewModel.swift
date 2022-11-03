@@ -27,43 +27,43 @@ class SongInfoDialogViewModel: ObservableObject {
         var songInfo = [SongInfoViewModel]()
 
         if let category = hymn.category, !category.isEmpty {
-            songInfo.append(createSongInfoViewModel(label: NSLocalizedString("Category", comment: "Song info label for 'Category'."), compositeValue: category))
+            songInfo.append(createSongInfoViewModel(type: .category, compositeValue: category))
         }
         if let subcategory = hymn.subcategory, !subcategory.isEmpty {
-            songInfo.append(createSongInfoViewModel(label: NSLocalizedString("Subcategory", comment: "Song info label for 'Subcategory'."), compositeValue: subcategory))
+            songInfo.append(createSongInfoViewModel(type: .subcategory, compositeValue: subcategory))
         }
         if let author = hymn.author, !author.isEmpty {
-            songInfo.append(createSongInfoViewModel(label: NSLocalizedString("Author", comment: "Song info label for 'Author'."), compositeValue: author))
+            songInfo.append(createSongInfoViewModel(type: .author, compositeValue: author))
         }
         if let composer = hymn.composer, !composer.isEmpty {
-            songInfo.append(createSongInfoViewModel(label: NSLocalizedString("Composer", comment: "Song info label for 'Composer'."), compositeValue: composer))
+            songInfo.append(createSongInfoViewModel(type: .composer, compositeValue: composer))
         }
         if let key = hymn.key, !key.isEmpty {
-            songInfo.append(createSongInfoViewModel(label: NSLocalizedString("Key", comment: "Song info label for 'Key'."), compositeValue: key))
+            songInfo.append(createSongInfoViewModel(type: .key, compositeValue: key))
         }
         if let time = hymn.time, !time.isEmpty {
-            songInfo.append(createSongInfoViewModel(label: NSLocalizedString("Time", comment: "Song info label for 'Time'."), compositeValue: time))
+            songInfo.append(createSongInfoViewModel(type: .time, compositeValue: time))
         }
         if let meter = hymn.meter, !meter.isEmpty {
-            songInfo.append(createSongInfoViewModel(label: NSLocalizedString("Meter", comment: "Song info label for 'Meter'."), compositeValue: meter))
+            songInfo.append(createSongInfoViewModel(type: .meter, compositeValue: meter))
         }
         if let scriptures = hymn.scriptures, !scriptures.isEmpty {
-            songInfo.append(createSongInfoViewModel(label: NSLocalizedString("Scriptures", comment: "Song info label for 'Scriptures'."), compositeValue: scriptures))
+            songInfo.append(createSongInfoViewModel(type: .scriptures, compositeValue: scriptures))
         }
         if let hymnCode = hymn.hymnCode, !hymnCode.isEmpty {
-            songInfo.append(createSongInfoViewModel(label: NSLocalizedString("Hymn Code", comment: "Song info label for 'Hymn Code'."), compositeValue: hymnCode))
+            songInfo.append(createSongInfoViewModel(type: .hymnCode, compositeValue: hymnCode))
         }
         return songInfo
     }
 
-    private func createSongInfoViewModel(label: String, compositeValue: String) -> SongInfoViewModel {
+    private func createSongInfoViewModel(type: SongInfoType, compositeValue: String) -> SongInfoViewModel {
         let values = compositeValue.components(separatedBy: ";").compactMap { value -> String? in
             guard !value.trim().isEmpty else {
                 return nil
             }
             return value.trim()
         }
-        return SongInfoViewModel(label: label, values: values)
+        return SongInfoViewModel(type: type, values: values)
     }
 }
 

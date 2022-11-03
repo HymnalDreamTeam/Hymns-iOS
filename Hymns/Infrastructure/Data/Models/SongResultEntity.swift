@@ -7,6 +7,13 @@ struct SongResultEntity: Decodable, Equatable {
     let queryParams: [String: String]?
     let title: String
 
+    init(hymnType: HymnType, hymnNumber: String, queryParams: [String: String]? = nil, title: String) {
+        self.hymnType = hymnType
+        self.hymnNumber = hymnNumber
+        self.queryParams = queryParams
+        self.title = title
+    }
+
     enum CodingKeys: String, CodingKey {
         case hymnType = "HYMN_TYPE"
         case hymnNumber = "HYMN_NUMBER"
