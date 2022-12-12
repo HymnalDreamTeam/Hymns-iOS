@@ -107,10 +107,10 @@ struct SearchView: View {
                             NavigationLink(destination: songResult.destinationView, tag: songResult, selection: self.$resultToShow) {
                                 EmptyView()
                             }.frame(width: 0, height: 0).padding(.trailing)
-                        }.onAppear {
+                        }.listRowSeparator(.hidden).onAppear {
                             self.viewModel.loadMore(at: songResult)
                         }.maxWidth()
-                    }.listStyle(PlainListStyle()).resignKeyboardOnDragGesture()
+                    }.listStyle(.plain).resignKeyboardOnDragGesture()
                 }
             }
         }.onAppear {

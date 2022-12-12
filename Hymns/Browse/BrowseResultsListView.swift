@@ -33,8 +33,8 @@ struct BrowseResultsListView: View {
                 return List(songResults, id: \.stableId) { songResult in
                     NavigationLink(destination: songResult.destinationView) {
                         SongResultView(viewModel: songResult)
-                    }
-                }.listStyle(PlainListStyle()).resignKeyboardOnDragGesture().eraseToAnyView()
+                    }.listRowSeparator(.hidden)
+                }.listStyle(.plain).resignKeyboardOnDragGesture().eraseToAnyView()
             }
         }.onAppear {
             self.viewModel.fetchResults()

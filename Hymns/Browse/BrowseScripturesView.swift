@@ -22,8 +22,8 @@ struct BrowseScripturesView: View {
             }
 
             return List(scriptures) { scriptureViewModel in
-                ScriptureView(viewModel: scriptureViewModel)
-            }.listStyle(PlainListStyle()).eraseToAnyView()
+                ScriptureView(viewModel: scriptureViewModel).listRowSeparator(.hidden)
+            }.listStyle(.plain).eraseToAnyView()
         }.background(Color(.systemBackground))
     }
 }
@@ -47,9 +47,9 @@ struct BrowseScripturesView_Previews: PreviewProvider {
                                   scriptureSongs: [ScriptureSongViewModel(reference: "13:5", title: "White horse?", hymnIdentifier: PreviewHymnIdentifiers.hymn40)])]
         let results = BrowseScripturesView(viewModel: resultsViewModel)
         return Group {
-            error
-            loading
-            results
+            error.previewDisplayName("Error")
+            loading.previewDisplayName("Loading")
+            results.previewDisplayName("Results")
         }
     }
 }
