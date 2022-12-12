@@ -44,7 +44,7 @@ struct TagListView: View {
                                    tag: tag, selection: self.$tagToShow) {
                         EmptyView()
                     }.frame(width: 0, height: 0).padding(.trailing)
-                }.maxWidth()
+                }.listRowSeparator(.hidden).maxWidth()
             }.listStyle(PlainListStyle()).padding(.top).eraseToAnyView()
         }.onAppear {
             self.viewModel.fetchUniqueTags()

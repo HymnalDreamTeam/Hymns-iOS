@@ -36,8 +36,8 @@ struct FavoritesView: View {
                         NavigationLink(destination: favorite.destinationView, tag: favorite, selection: self.$favoriteToShow) {
                             EmptyView()
                         }.frame(width: 0, height: 0).padding(.trailing)
-                    }.maxWidth()
-                }.listStyle(PlainListStyle()).id(viewModel.favorites).resignKeyboardOnDragGesture().eraseToAnyView()
+                    }.listRowSeparator(.hidden).maxWidth()
+                }.listStyle(.plain).id(viewModel.favorites).resignKeyboardOnDragGesture().eraseToAnyView()
             }
         }.onAppear {
             let params: [String: Any] = [

@@ -17,8 +17,8 @@ struct BrowseCategoriesView: View {
             }
 
             return List(categories) { category in
-                CategoryView(viewModel: category)
-            }.listStyle(PlainListStyle()).id(viewModel.categories).eraseToAnyView() // https://stackoverflow.com/questions/56533511/how-update-a-swiftui-list-without-animation
+                CategoryView(viewModel: category).listRowSeparator(.hidden)
+            }.listStyle(.plain).id(viewModel.categories).eraseToAnyView() // https://stackoverflow.com/questions/56533511/how-update-a-swiftui-list-without-animation
         }.background(Color(.systemBackground))
     }
 }
@@ -45,9 +45,9 @@ struct BrowseCategoriesView_Previews: PreviewProvider {
                                                  SubcategoryViewModel(subcategory: "Subcategory 3", count: 1)])]
         let results = BrowseCategoriesView(viewModel: resultsViewModel)
         return Group {
-            error
-            loading
-            results
+            error.previewDisplayName("Error")
+            loading.previewDisplayName("Loading")
+            results.previewDisplayName("Results")
         }
     }
 }

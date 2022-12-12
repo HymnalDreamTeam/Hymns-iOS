@@ -83,8 +83,8 @@ public struct InlineChordsView: View {
         let guitarUrl = InlineChordsView(viewModel: guitarUrlViewModel)
 
         return Group {
-            noGuitarUrl
-            guitarUrl
+            noGuitarUrl.previewDisplayName("No Guitar")
+            guitarUrl.previewDisplayName("Guitar")
         }
     }
  }
