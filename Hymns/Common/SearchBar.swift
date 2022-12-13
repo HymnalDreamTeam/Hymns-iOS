@@ -4,7 +4,6 @@ import SwiftUI
  * Custom search bar that will animate in a `Cancel` button when activated/selected.
  * https://stackoverflow.com/questions/56490963/how-to-display-a-search-bar-with-swiftui
  */
-@available(iOS 15, *)
 struct SearchBar: View {
 
     @Binding var searchText: String
@@ -83,14 +82,12 @@ struct SearchBar: View {
     }
 }
 
-@available(iOS 15, *)
 enum SearchMode: Int {
     case keyword
     case number
 }
 
 #if DEBUG
-@available(iOS 15, *)
 struct SearchBar_Previews: PreviewProvider {
     static var previews: some View {
         let placeholderText = "Search by numbers or words"

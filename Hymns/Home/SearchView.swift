@@ -18,63 +18,33 @@ struct SearchView: View {
                     .transition(AnyTransition.move(edge: .top).combined(with: .opacity))
             }
 
-            if #available(iOS 15.0, *) {
-                SearchBar(
-                    searchText: $viewModel.searchParameter,
-                    searchActive: $viewModel.searchActive,
-                    placeholderText: NSLocalizedString("Search by number or keyword", comment: "Search bar hint text."))
-                    .padding(.horizontal)
-                    .padding(.top, viewModel.searchActive ? nil : .zero)
-                    .alignmentGuide(.toolTipHorizontalAlignment, computeValue: { dimens -> CGFloat in
-                        dimens[HorizontalAlignment.center] // align tool tip to the end of the view
-                    })
-                    .alignmentGuide(.toolTipVerticalAlignment, computeValue: { dimens -> CGFloat in
-                        dimens[.bottom] // align tool tip to bottom of the view
-                    }).overlay(
-                        self.viewModel.showSearchByTypeToolTip ?
-                        ToolTipView(tapAction: {
-                            self.viewModel.hasSeenSearchByTypeTooltip = true
-                        }, label: {
-                            HStack(alignment: .center, spacing: CGFloat.zero) {
-                                Image(systemName: "xmark").padding()
-                                Text("Try searching by hymn type (e.g. ns151, ch1, s3)", comment: "Tooltip showing the user how to best utilize search.").font(.caption).padding(.trailing)
-                            }
-                        }, configuration:
-                                        ToolTipConfiguration(cornerRadius: 10,
-                                                             arrowPosition: ToolTipConfiguration.ArrowPosition(midX: 0.5, alignmentType: .percentage),
-                                                             arrowHeight: 7)).alignmentGuide(.toolTipHorizontalAlignment, computeValue: { dimens -> CGFloat in
-                                                                 dimens[HorizontalAlignment.center]
-                                                             }).eraseToAnyView() : EmptyView().eraseToAnyView(),
-                        alignment: .toolTipAlignment).zIndex(1)
-            } else {
-                OldSearchBar(
-                    searchText: $viewModel.searchParameter,
-                    searchActive: $viewModel.searchActive,
-                    placeholderText: NSLocalizedString("Search by number or keyword", comment: "Search bar hint text."))
-                    .padding(.horizontal)
-                    .padding(.top, viewModel.searchActive ? nil : .zero)
-                    .alignmentGuide(.toolTipHorizontalAlignment, computeValue: { dimens -> CGFloat in
-                        dimens[HorizontalAlignment.center] // align tool tip to the end of the view
-                    })
-                    .alignmentGuide(.toolTipVerticalAlignment, computeValue: { dimens -> CGFloat in
-                        dimens[.bottom] // align tool tip to bottom of the view
-                    }).overlay(
-                        self.viewModel.showSearchByTypeToolTip ?
-                        ToolTipView(tapAction: {
-                            self.viewModel.hasSeenSearchByTypeTooltip = true
-                        }, label: {
-                            HStack(alignment: .center, spacing: CGFloat.zero) {
-                                Image(systemName: "xmark").padding()
-                                Text("Try searching by hymn type (e.g. ns151, ch1, s3)").font(.caption).padding(.trailing)
-                            }
-                        }, configuration:
-                                        ToolTipConfiguration(cornerRadius: 10,
-                                                             arrowPosition: ToolTipConfiguration.ArrowPosition(midX: 0.5, alignmentType: .percentage),
-                                                             arrowHeight: 7)).alignmentGuide(.toolTipHorizontalAlignment, computeValue: { dimens -> CGFloat in
-                                                                 dimens[HorizontalAlignment.center]
-                                                             }).eraseToAnyView() : EmptyView().eraseToAnyView(),
-                        alignment: .toolTipAlignment).zIndex(1)
-            }
+            SearchBar(
+                searchText: $viewModel.searchParameter,
+                searchActive: $viewModel.searchActive,
+                placeholderText: NSLocalizedString("Search by number or keyword", comment: "Search bar hint text."))
+            .padding(.horizontal)
+            .padding(.top, viewModel.searchActive ? nil : .zero)
+            .alignmentGuide(.toolTipHorizontalAlignment, computeValue: { dimens -> CGFloat in
+                dimens[HorizontalAlignment.center] // align tool tip to the end of the view
+            })
+            .alignmentGuide(.toolTipVerticalAlignment, computeValue: { dimens -> CGFloat in
+                dimens[.bottom] // align tool tip to bottom of the view
+            }).overlay(
+                self.viewModel.showSearchByTypeToolTip ?
+                ToolTipView(tapAction: {
+                    self.viewModel.hasSeenSearchByTypeTooltip = true
+                }, label: {
+                    HStack(alignment: .center, spacing: CGFloat.zero) {
+                        Image(systemName: "xmark").padding()
+                        Text("Try searching by hymn type (e.g. ns151, ch1, s3)", comment: "Tooltip showing the user how to best utilize search.").font(.caption).padding(.trailing)
+                    }
+                }, configuration:
+                                ToolTipConfiguration(cornerRadius: 10,
+                                                     arrowPosition: ToolTipConfiguration.ArrowPosition(midX: 0.5, alignmentType: .percentage),
+                                                     arrowHeight: 7)).alignmentGuide(.toolTipHorizontalAlignment, computeValue: { dimens -> CGFloat in
+                                                         dimens[HorizontalAlignment.center]
+                                                     }).eraseToAnyView() : EmptyView().eraseToAnyView(),
+                alignment: .toolTipAlignment).zIndex(1)
 
             viewModel.label.map {
                 Text($0).fontWeight(.bold).padding(.top).padding(.leading).foregroundColor(Color("darkModeSubtitle"))
