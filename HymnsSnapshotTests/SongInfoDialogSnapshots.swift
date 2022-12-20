@@ -16,8 +16,8 @@ class SongInfoDialogSnapshots: XCTestCase {
 
     func test_songInfo() {
         viewModel.songInfo = [SongInfoViewModel(type: .category, values: ["Worship of the Father"]),
-                              SongInfoViewModel(type: .category, values: ["As the Source of Life"]),
-                              SongInfoViewModel(type: .category, values: ["Will Jeng", "Titus Ting"])]
+                              SongInfoViewModel(type: .subcategory, values: ["As the Source of Life"]),
+                              SongInfoViewModel(type: .author, values: ["Will Jeng", "Titus Ting"])]
         assertVersionedSnapshot(
             matching: SongInfoDialogView(viewModel: viewModel).ignoresSafeArea(),
             as: .swiftUiImage())
