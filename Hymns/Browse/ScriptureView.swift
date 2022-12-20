@@ -7,7 +7,7 @@ struct ScriptureView: View {
     let viewModel: ScriptureViewModel
 
     var body: some View {
-        VStack(alignment: .leading) {
+        Section {
             HStack {
                 Text(viewModel.book.bookName)
                 Spacer()
@@ -16,11 +16,11 @@ struct ScriptureView: View {
                 self.isExpanded.toggle()
             }.foregroundColor(isExpanded ? .accentColor : .primary)
             if isExpanded {
-                List(viewModel.scriptureSongs, id: \.self) { scriptureSong in
+                ForEach(viewModel.scriptureSongs, id: \.self) { scriptureSong in
                     NavigationLink(destination: DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: scriptureSong.hymnIdentifier))) {
                         ScriptureSongView(viewModel: scriptureSong)
                     }
-                }.listStyle(PlainListStyle()).frame(height: CGFloat(viewModel.scriptureSongs.count * 45))
+                }
             }
         }
     }

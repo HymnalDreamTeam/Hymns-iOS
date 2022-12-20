@@ -7,7 +7,7 @@ struct CategoryView: View {
     let viewModel: CategoryViewModel
 
     var body: some View {
-        VStack(alignment: .leading) {
+        Section {
             HStack {
                 Text(viewModel.category).fixedSize(horizontal: false, vertical: true)
                 Spacer()
@@ -16,13 +16,11 @@ struct CategoryView: View {
                 self.isExpanded.toggle()
             }.foregroundColor(isExpanded ? .accentColor : .primary)
             if isExpanded {
-                List {
-                    ForEach(viewModel.subcategories) { subcategory in
-                        NavigationLink(destination: BrowseResultsListView(viewModel: BrowseResultsListViewModel(category: self.viewModel.category, subcategory: subcategory.subcategory, hymnType: self.viewModel.hymnType))) {
-                            SubcategoryView(viewModel: subcategory)
-                        }
+                ForEach(viewModel.subcategories) { subcategory in
+                    NavigationLink(destination: BrowseResultsListView(viewModel: BrowseResultsListViewModel(category: self.viewModel.category, subcategory: subcategory.subcategory, hymnType: self.viewModel.hymnType))) {
+                        SubcategoryView(viewModel: subcategory)
                     }
-                }.frame(height: CGFloat(viewModel.subcategories.count * 45)).listStyle(PlainListStyle())
+                }
             }
         }
     }
