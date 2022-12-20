@@ -32,6 +32,6 @@ class BrowseTagsSnapshots: XCTestCase {
                           UiTag(title: "tag 3", color: .none)]
         assertVersionedSnapshot(
             matching: TagListView(viewModel: viewModel).ignoresSafeArea(),
-            as: .swiftUiImage())
+            as: .swiftUiImage(size: CGSize(width: 300, height: 600)))
     }
 }

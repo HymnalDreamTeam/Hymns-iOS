@@ -16,7 +16,7 @@ class TagSheetSnapshots: XCTestCase {
         viewModel = TagSheetViewModel(hymnToDisplay: cupOfChrist_identifier)
         assertVersionedSnapshot(
             matching: TagSheetView(viewModel: viewModel, sheet: Binding.constant(.tags)).ignoresSafeArea(),
-            as: .swiftUiImage())
+            as: .swiftUiImage(size: CGSize(width: 300, height: 600)))
     }
 
     func test_oneTag() {
@@ -24,7 +24,7 @@ class TagSheetSnapshots: XCTestCase {
         viewModel.tags = [UiTag(title: "Lord's table", color: .green)]
         assertVersionedSnapshot(
             matching: TagSheetView(viewModel: viewModel, sheet: Binding.constant(.tags)).ignoresSafeArea(),
-            as: .swiftUiImage())
+            as: .swiftUiImage(size: CGSize(width: 300, height: 600)))
     }
 
     func test_manyTags() {
@@ -37,18 +37,18 @@ class TagSheetSnapshots: XCTestCase {
                           UiTag(title: "Tag 3", color: .blue)]
         assertVersionedSnapshot(
             matching: TagSheetView(viewModel: viewModel, sheet: Binding.constant(.tags)).ignoresSafeArea(),
-            as: .swiftUiImage())
+            as: .swiftUiImage(size: CGSize(width: 300, height: 600)))
     }
 
     func test_colorSeletor_unselected() {
         assertVersionedSnapshot(
             matching: ColorSelectorView(tagColor: .constant(.none)).ignoresSafeArea(),
-            as: .swiftUiImage())
+            as: .swiftUiImage(size: CGSize(width: 300, height: 100)))
     }
 
     func test_colorSeletor_blueSelected() {
         assertVersionedSnapshot(
             matching: ColorSelectorView(tagColor: .constant(.blue)).ignoresSafeArea(),
-            as: .swiftUiImage())
+            as: .swiftUiImage(size: CGSize(width: 300, height: 100)))
     }
 }

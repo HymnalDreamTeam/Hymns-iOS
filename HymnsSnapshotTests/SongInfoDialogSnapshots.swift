@@ -20,7 +20,7 @@ class SongInfoDialogSnapshots: XCTestCase {
                               SongInfoViewModel(type: .author, values: ["Will Jeng", "Titus Ting"])]
         assertVersionedSnapshot(
             matching: SongInfoDialogView(viewModel: viewModel).ignoresSafeArea(),
-            as: .swiftUiImage())
+            as: .swiftUiImage(size: CGSize(width: 300, height: 150)))
     }
 
     func test_longValues() {
@@ -29,6 +29,6 @@ class SongInfoDialogSnapshots: XCTestCase {
                               SongInfoViewModel(type: .author, values: ["Will Will Will Jeng Jeng Jeng", "Titus Titus Titus Ting Ting Ting"])]
         assertVersionedSnapshot(
             matching: SongInfoDialogView(viewModel: viewModel).ignoresSafeArea(),
-            as: .swiftUiImage())
+            as: .swiftUiImage(size: CGSize(width: 400, height: 150)))
     }
 }

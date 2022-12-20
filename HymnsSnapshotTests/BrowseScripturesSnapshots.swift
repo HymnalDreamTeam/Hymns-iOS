@@ -17,13 +17,13 @@ class BrowseScripturesSnapshots: XCTestCase {
         viewModel.scriptures = nil
         assertVersionedSnapshot(
             matching: BrowseScripturesView(viewModel: viewModel).ignoresSafeArea(),
-            as: .swiftUiImage())
+            as: .image(layout: .sizeThatFits))
     }
 
     func test_loading() {
         assertVersionedSnapshot(
             matching: BrowseScripturesView(viewModel: viewModel).ignoresSafeArea(),
-            as: .swiftUiImage())
+            as: .image(layout: .sizeThatFits))
     }
 
     func test_scriptures() {
@@ -35,7 +35,7 @@ class BrowseScripturesSnapshots: XCTestCase {
                                   scriptureSongs: [ScriptureSongViewModel(reference: "13:5", title: "White horse?", hymnIdentifier: hymn40_identifier)])]
         assertVersionedSnapshot(
             matching: BrowseScripturesView(viewModel: viewModel).ignoresSafeArea(),
-            as: .swiftUiImage())
+            as: .image(layout: .sizeThatFits))
     }
 
     func test_scripture_song() {
@@ -45,21 +45,21 @@ class BrowseScripturesSnapshots: XCTestCase {
             matching: ScriptureSongView(viewModel: viewModel)
                 .environment(\.sizeCategory, .medium)
                 .ignoresSafeArea(),
-            as: .swiftUiImage())
+            as: .swiftUiImage(size: CGSize(width: 400, height: 200)))
         assertVersionedSnapshot(
             matching: ScriptureSongView(viewModel: viewModel)
                 .environment(\.sizeCategory, .extraExtraExtraLarge)
                 .ignoresSafeArea(),
-            as: .swiftUiImage())
+            as: .swiftUiImage(size: CGSize(width: 400, height: 200)))
         assertVersionedSnapshot(
             matching: ScriptureSongView(viewModel: viewModel)
                 .environment(\.sizeCategory, .accessibilityMedium)
                 .ignoresSafeArea(),
-            as: .swiftUiImage())
+            as: .swiftUiImage(size: CGSize(width: 400, height: 200)))
         assertVersionedSnapshot(
             matching: ScriptureSongView(viewModel: viewModel)
                 .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
                 .ignoresSafeArea(),
-            as: .swiftUiImage())
+            as: .swiftUiImage(size: CGSize(width: 400, height: 200)))
     }
 }

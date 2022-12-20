@@ -18,7 +18,7 @@ class ToastSnapshots: XCTestCase {
                     Text("Toast text").padding()
                         .eraseToAnyView()
         }.ignoresSafeArea()
-        assertVersionedSnapshot(matching: toast, as: .swiftUiImage())
+        assertVersionedSnapshot(matching: toast, as: .image(layout: .sizeThatFits))
     }
 
     func test_center() {
@@ -32,7 +32,7 @@ class ToastSnapshots: XCTestCase {
                     }.padding()
                         .eraseToAnyView()
         }.ignoresSafeArea()
-        assertVersionedSnapshot(matching: toast, as: .swiftUiImage())
+        assertVersionedSnapshot(matching: toast, as: .image(layout: .sizeThatFits))
     }
 
     func test_bottom() {
@@ -46,7 +46,7 @@ class ToastSnapshots: XCTestCase {
                     }
                     .eraseToAnyView()
         }.ignoresSafeArea()
-        assertVersionedSnapshot(matching: toast, as: .swiftUiImage())
+        assertVersionedSnapshot(matching: toast, as: .image(layout: .sizeThatFits))
     }
 
     func test_bottomWithoutBackdrop() {
@@ -60,7 +60,7 @@ class ToastSnapshots: XCTestCase {
                     }
                     .eraseToAnyView()
         }.ignoresSafeArea()
-        assertVersionedSnapshot(matching: toast, as: .swiftUiImage())
+        assertVersionedSnapshot(matching: toast, as: .image(layout: .sizeThatFits))
     }
 
     func test_darkMode() {
@@ -74,7 +74,7 @@ class ToastSnapshots: XCTestCase {
                     }
                     .eraseToAnyView()
         }.ignoresSafeArea().background(Color(.systemBackground)).environment(\.colorScheme, .dark)
-        assertVersionedSnapshot(matching: toast, as: .swiftUiImage())
+        assertVersionedSnapshot(matching: toast, as: .image(layout: .sizeThatFits))
     }
 
     func test_darkModeWithoutBackdrop() {
@@ -88,6 +88,6 @@ class ToastSnapshots: XCTestCase {
                     }
                     .eraseToAnyView()
             }.ignoresSafeArea().background(Color(.systemBackground)).environment(\.colorScheme, .dark)
-        assertVersionedSnapshot(matching: toast, as: .swiftUiImage())
+        assertVersionedSnapshot(matching: toast, as: .image(layout: .sizeThatFits))
     }
 }

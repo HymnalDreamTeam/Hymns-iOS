@@ -30,7 +30,7 @@ class BottomBarSnapshots: XCTestCase {
         let bottomBar = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
             get: {self.dialog},
             set: {self.dialog = $0}), viewModel: viewModel).padding().ignoresSafeArea()
-        assertVersionedSnapshot(matching: bottomBar, as: .image)
+        assertVersionedSnapshot(matching: bottomBar, as: .image(layout: .sizeThatFits))
     }
 
     func test_twoButtons() {
@@ -39,7 +39,7 @@ class BottomBarSnapshots: XCTestCase {
         let bottomBar = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
             get: {self.dialog},
             set: {self.dialog = $0}), viewModel: viewModel).padding().ignoresSafeArea()
-        assertVersionedSnapshot(matching: bottomBar, as: .swiftUiImage())
+        assertVersionedSnapshot(matching: bottomBar, as: .image(layout: .sizeThatFits))
     }
 
     func test_maximumButtons() {
@@ -57,7 +57,7 @@ class BottomBarSnapshots: XCTestCase {
         let bottomBar = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
             get: {self.dialog},
             set: {self.dialog = $0}), viewModel: viewModel).padding().ignoresSafeArea()
-        assertVersionedSnapshot(matching: bottomBar, as: .image(precision: 0.99))
+        assertVersionedSnapshot(matching: bottomBar, as: .image(layout: .sizeThatFits))
     }
 
     func test_overflowMenu() {
@@ -79,7 +79,7 @@ class BottomBarSnapshots: XCTestCase {
         let bottomBar = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
             get: {self.dialog},
             set: {self.dialog = $0}), viewModel: viewModel).padding().ignoresSafeArea()
-        assertVersionedSnapshot(matching: bottomBar.referenceFrame(width: 600, height: 100), as: .image)
+        assertVersionedSnapshot(matching: bottomBar, as: .image(layout: .sizeThatFits))
     }
 
     func test_fontSize_selected() {
