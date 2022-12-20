@@ -125,10 +125,15 @@ struct AudioView_Previews: PreviewProvider {
         bufferingViewModel.songDuration = 20
         let buffering = AudioPlayer(viewModel: bufferingViewModel)
 
+        let noSpeedAdjusterViewModel = AudioPlayerViewModel(url: URL(string: "url")!)
+        noSpeedAdjusterViewModel.showSpeedAdjuster = false
+        let noSpeedAdjuster = AudioPlayer(viewModel: noSpeedAdjusterViewModel)
+
         return Group {
             currentlyPlaying.previewDisplayName("currently playing")
             stopped.previewDisplayName("stopped")
             buffering.previewDisplayName("buffering")
+            noSpeedAdjuster.previewDisplayName("no speed adjuster")
         }.padding().previewLayout(.sizeThatFits)
     }
 }
