@@ -13,6 +13,10 @@ extension String {
         return Int(self)
     }
 
+    var toFloat: CGFloat? {
+        return CGFloat((self as NSString).floatValue)
+    }
+
     /**
      * - Returns: string with leading whitespace and new lines trimmed out.
      */

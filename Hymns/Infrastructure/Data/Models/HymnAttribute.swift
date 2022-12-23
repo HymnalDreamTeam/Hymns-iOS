@@ -41,7 +41,7 @@ enum HymnAttribute {
     }
 }
 
-extension HymnAttribute: Equatable {
+extension HymnAttribute: Hashable {
     // swiftlint:disable:next cyclomatic_complexity
     static func == (lhs: HymnAttribute, rhs: HymnAttribute) -> Bool {
         switch (lhs, rhs) {
@@ -69,6 +69,37 @@ extension HymnAttribute: Equatable {
             return lhsTag == rhsTag
         default:
             return false
+        }
+    }
+
+    // swiftlint:disable:next cyclomatic_complexity
+    func hash(into hasher: inout Hasher) {
+        switch self {
+        case .category(let category, let hymnType):
+            hasher.combine(category)
+            hasher.combine(hymnType)
+        case .subcategory(let category, let subcategory, let hymnType):
+            hasher.combine(category)
+            hasher.combine(subcategory)
+            hasher.combine(hymnType)
+        case .author(let author):
+            hasher.combine(author)
+        case .composer(let composer):
+            hasher.combine(composer)
+        case .key(let key):
+            hasher.combine(key)
+        case .time(let time):
+            hasher.combine(time)
+        case .meter(let meter):
+            hasher.combine(meter)
+        case .scriptures(let scriptures):
+            hasher.combine(scriptures)
+        case .hymnCode(let hymnCode):
+            hasher.combine(hymnCode)
+        case .hymnType(let hymnType):
+            hasher.combine(hymnType)
+        case .tag(let tag):
+            hasher.combine(tag)
         }
     }
 }

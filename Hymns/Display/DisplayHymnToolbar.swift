@@ -1,18 +1,21 @@
 import SwiftUI
+import Resolver
 
+@available(iOS 16, *)
 struct DisplayHymnToolbar: View {
 
-    @Environment(\.presentationMode) var presentationMode
     @ObservedObject private var viewModel: DisplayHymnViewModel
+    @ObservedObject private var coordinator: NavigationCoordinator
 
-    init(viewModel: DisplayHymnViewModel) {
+    init(viewModel: DisplayHymnViewModel, coordinator: NavigationCoordinator = Resolver.resolve()) {
+        self.coordinator = coordinator
         self.viewModel = viewModel
     }
 
     var body: some View {
         HStack {
             Button(action: {
-                self.presentationMode.wrappedValue.dismiss()
+                coordinator.goBack()
             }, label: {
                 Image(systemName: "chevron.left")
                     .accessibility(label: Text("Go back", comment: "A11y label for going back."))
@@ -21,22 +24,32 @@ struct DisplayHymnToolbar: View {
             Spacer()
             Text(viewModel.title).fontWeight(.bold)
             Spacer()
-            viewModel.isFavorited.map { isFavorited in
+            HStack {
                 Button(action: {
-                    self.viewModel.toggleFavorited()
+                    coordinator.jumpBackToRoot()
                 }, label: {
-                    isFavorited ?
-                    Image(systemName: "heart.fill")
-                        .accessibility(label: Text("Unmark song as a favorite", comment: "A11y label for unmarking a song as favorite.")).accentColor(.accentColor) :
-                    Image(systemName: "heart")
-                        .accessibility(label: Text("Mark song as a favorite", comment: "A11y label for marking a song as favorite.")).accentColor(.primary)
-                }).padding()
-            }
+                    Image(systemName: "xmark")
+                        .accessibility(label: Text("Close", comment: "A11y label for closing the song and going back direclty to the home screen from a hymn page."))
+                        .accentColor(.primary)
+                })
+                viewModel.isFavorited.map { isFavorited in
+                    Button(action: {
+                        self.viewModel.toggleFavorited()
+                    }, label: {
+                        isFavorited ?
+                        Image(systemName: "heart.fill")
+                            .accessibility(label: Text("Unmark song as a favorite", comment: "A11y label for unmarking a song as favorite.")).accentColor(.accentColor) :
+                        Image(systemName: "heart")
+                            .accessibility(label: Text("Mark song as a favorite", comment: "A11y label for marking a song as favorite.")).accentColor(.primary)
+                    }).padding(.leading)
+                }
+            }.padding(.vertical).padding(.trailing)
         }
     }
 }
 
 #if DEBUG
+@available(iOS 16, *)
 struct DisplayHymnToolbar_Previews: PreviewProvider {
     static var previews: some View {
         let loading = DisplayHymnToolbar(viewModel: DisplayHymnViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151))

@@ -14,16 +14,31 @@ class FavoritesSnapshots: XCTestCase {
     }
 
     func test_loading() {
-        assertVersionedSnapshot(matching: FavoritesView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
+        assertSnapshot(viewModel: viewModel)
     }
 
     func test_noFavorites() {
         viewModel.favorites = [SongResultViewModel]()
-        assertVersionedSnapshot(matching: FavoritesView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
+        assertSnapshot(viewModel: viewModel)
     }
 
     func test_searchActive() {
         viewModel.favorites = [cupOfChrist_songResult, hymn1151_songResult, joyUnspeakable_songResult, sinfulPast_songResult]
-        assertVersionedSnapshot(matching: FavoritesView(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage())
+        assertSnapshot(viewModel: viewModel)
+    }
+
+    private func assertSnapshot(viewModel: FavoritesViewModel,
+                                file: StaticString = #file,
+                                testName: String = #function,
+                                line: UInt = #line) {
+        if #available(iOS 16, *) {
+            let view = NavigationStack {
+                FavoritesView(viewModel: viewModel).ignoresSafeArea()
+            }
+            assertVersionedSnapshot(matching: view.ignoresSafeArea(), as: .image(layout: .sizeThatFits), file: file, testName: testName, line: line)
+        } else {
+            let view = FavoritesView(viewModel: viewModel).ignoresSafeArea()
+            assertVersionedSnapshot(matching: view, as: .swiftUiImage(), file: file, testName: testName, line: line)
+        }
     }
 }

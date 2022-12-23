@@ -1,11 +1,14 @@
 import SwiftUI
+import Resolver
 
 struct BrowseResultsListView: View {
 
     @Environment(\.presentationMode) var presentationMode
+    @ObservedObject private var coordinator: NavigationCoordinator
     @ObservedObject private var viewModel: BrowseResultsListViewModel
 
-    init(viewModel: BrowseResultsListViewModel) {
+    init(viewModel: BrowseResultsListViewModel, coordinator: NavigationCoordinator = Resolver.resolve()) {
+        self.coordinator = coordinator
         self.viewModel = viewModel
     }
 
@@ -13,7 +16,11 @@ struct BrowseResultsListView: View {
         VStack {
             HStack {
                 Button(action: {
-                    self.presentationMode.wrappedValue.dismiss()
+                    if #available(iOS 16, *) {
+                        self.coordinator.goBack()
+                    } else {
+                        self.presentationMode.wrappedValue.dismiss()
+                    }
                 }, label: {
                     Image(systemName: "chevron.left")
                         .accessibility(label: Text("Go back", comment: "A11y label for going back."))
@@ -31,9 +38,15 @@ struct BrowseResultsListView: View {
                     return ErrorView().maxSize().eraseToAnyView()
                 }
                 return List(songResults, id: \.stableId) { songResult in
-                    NavigationLink(destination: songResult.destinationView) {
-                        SongResultView(viewModel: songResult)
-                    }.listRowSeparator(.hidden)
+                    if #available(iOS 16, *) {
+                        NavigationLink(value: Route.songResult(songResult)) {
+                            SongResultView(viewModel: songResult)
+                        }.listRowSeparator(.hidden)
+                    } else {
+                        NavigationLink(destination: songResult.destinationView) {
+                            SongResultView(viewModel: songResult)
+                        }.listRowSeparator(.hidden)
+                    }
                 }.listStyle(.plain).resignKeyboardOnDragGesture().eraseToAnyView()
             }
         }.onAppear {

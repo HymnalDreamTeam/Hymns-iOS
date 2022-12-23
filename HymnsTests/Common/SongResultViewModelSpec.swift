@@ -29,7 +29,33 @@ class SongResultViewModelSpec: QuickSpec {
                 expect(viewModel1).to(equal(viewModel2))
             }
         }
-
+        describe("vertical padding") {
+            var systemUtil: SystemUtilMock!
+            var target: SongResultViewModel!
+            beforeEach {
+                systemUtil = mock(SystemUtil.self)
+                target = SongResultViewModel(stableId: "stableid", title: "title",
+                                             destinationView: EmptyView().eraseToAnyView(), systemUtil: systemUtil)
+            }
+            context("version is higher than iOS 16") {
+                beforeEach {
+                    given(systemUtil.isIOS16Plus()) ~> true
+                }
+                let expectedPadding: CGFloat = 0
+                it("should return \(expectedPadding)") {
+                    expect(target.getVerticalPadding()).to(equal(expectedPadding))
+                }
+            }
+            context("version is lower than iOS 16") {
+                beforeEach {
+                    given(systemUtil.isIOS16Plus()) ~> false
+                }
+                let expectedPadding: CGFloat = 4
+                it("should return \(expectedPadding)") {
+                    expect(target.getVerticalPadding()).to(equal(expectedPadding))
+                }
+            }
+        }
         describe("hasher") {
             it("hashes title and stable id") {
                 let viewModel1 = SongResultViewModel(stableId: "empty title 1 view", title: "title 1", destinationView: EmptyView().eraseToAnyView())

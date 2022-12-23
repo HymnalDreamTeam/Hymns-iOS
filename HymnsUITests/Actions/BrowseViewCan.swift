@@ -40,8 +40,6 @@ public class BrowseViewCan: BaseViewCan {
                     let label = cell.descendants(matching: .image).element(boundBy: 0).label
                     if #available(iOS 15.0, *) {
                         XCTAssertEqual(label, chevronUp ? "Go Up" : "Go Down")
-                    } else if #available(iOS 14.5, *) {
-                        XCTAssertEqual(label, chevronUp ? "go up" : "go down")
                     } else {
                         XCTAssertEqual(label, chevronUp ? "chevron.up" : "chevron.down")
                     }

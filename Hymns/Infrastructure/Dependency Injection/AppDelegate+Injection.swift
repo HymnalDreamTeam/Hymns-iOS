@@ -25,6 +25,7 @@ extension Resolver: ResolverRegistering {
             encoder.nonConformingFloatEncodingStrategy = .throw
             return encoder
         })
+        register {NavigationCoordinator()}.scope(.application)
         register {URLSession.shared}.scope(.application)
         register {UserDefaultsManager()}.scope(.application)
         register {AnalyticsLogger()}

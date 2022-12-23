@@ -11,9 +11,15 @@ struct AllSongsView: View {
 
     var body: some View {
         List(viewModel.hymnTypes, id: \.self) { hymnType in
-            NavigationLink(destination: BrowseResultsListView(viewModel: BrowseResultsListViewModel(hymnType: hymnType))) {
-                Text(hymnType.displayTitle)
-            }.listRowSeparator(.hidden)
+            if #available(iOS 16, *) {
+                NavigationLink(value: Route.browseResults(BrowseResultsListViewModel(hymnType: hymnType))) {
+                    Text(hymnType.displayTitle)
+                }.listRowSeparator(.hidden)
+            } else {
+                NavigationLink(destination: BrowseResultsListView(viewModel: BrowseResultsListViewModel(hymnType: hymnType))) {
+                    Text(hymnType.displayTitle)
+                }.listRowSeparator(.hidden)
+            }
         }.padding(.top).background(Color(.systemBackground)).listStyle(PlainListStyle())
     }
 }

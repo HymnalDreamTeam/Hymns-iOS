@@ -48,29 +48,17 @@ public class HomeViewCan: BaseViewCan {
     }
 
     public func verifyClearTextExists() -> HomeViewCan {
-        if #available(iOS 14.5, *) {
-            XCTAssertTrue(app.buttons["Close"].exists)
-        } else {
-            XCTAssertTrue(app.buttons["xmark.circle.fill"].exists)
-        }
+        XCTAssertTrue(app.buttons["Close"].exists)
         return self
     }
 
     public func verifyClearTextNotExists() -> HomeViewCan {
-        if #available(iOS 14.5, *) {
-            XCTAssertFalse(app.buttons["Close"].exists)
-        } else {
-            XCTAssertFalse(app.buttons["xmark.circle.fill"].exists)
-        }
+        XCTAssertFalse(app.buttons["Close"].exists)
         return self
     }
 
     public func clearText() -> HomeViewCan {
-        if #available(iOS 14.5, *) {
-            app.buttons["Close"].tap()
-        } else {
-            app.buttons["xmark.circle.fill"].tap()
-        }
+        app.buttons["Close"].tap()
         return self
     }
 

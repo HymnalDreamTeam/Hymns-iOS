@@ -14,7 +14,7 @@ struct SongResultView: View {
                 Text(label).font(.caption).fontWeight(.bold).foregroundColor(.gray)
             }
             Text(viewModel.title)
-        }.padding(.vertical, 4)
+        }.padding(.vertical, viewModel.getVerticalPadding())
     }
 }
 

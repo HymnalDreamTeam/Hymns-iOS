@@ -1,25 +1,19 @@
+import Foundation
 import SwiftUI
 import Resolver
 
-@available(iOS 16, *)
-struct HomeContainerView: View {
+/// Home container for devices running iOS 15 and earlier. This was primarily because NavigationStack was introduced in iOS 16, so it and its components cannot be used with anything less than iOS 16.
+struct HomeContainerView15: View {
 
-    private let searchView = SearchView()
+    private let searchView = SearchView15()
     private let browseView = BrowseView()
     private let favoritesView = FavoritesView()
     private let settingsView = SettingsView()
 
-    @State private var selectedTab: HomeTab
-
-    @ObservedObject var coordinator: NavigationCoordinator
-
-    init(coordinator: NavigationCoordinator = Resolver.resolve(), selectedTab: HomeTab = .none) {
-        self.coordinator = coordinator
-        self.selectedTab = selectedTab
-    }
+    @State var selectedTab: HomeTab = .none
 
     var body: some View {
-        NavigationStack(path: $coordinator.stack) {
+        NavigationView {
             VStack {
                 ZStack {
                     if selectedTab == .search {
@@ -37,44 +31,41 @@ struct HomeContainerView: View {
                     .padding([.horizontal, .bottom])
                     .frame(width: .none, height: 80, alignment: .top)
                     .background(Color(red: 0.7, green: 0.7, blue: 0.7).opacity(0.1))
-            }.navigationDestination(for: Route.self) { route in
-                coordinator.route(route)
             }.hideNavigationBar().edgesIgnoringSafeArea(.bottom)
         }.onAppear {
             // App crashes on startup without this
             if self.selectedTab == .none {
                 self.selectedTab = .search
             }
-        }
+        }.navigationViewStyle(StackNavigationViewStyle())
     }
 }
 
 #if DEBUG
-@available(iOS 16, *)
-struct HomeContainerView_Previews: PreviewProvider {
+struct HomeContainerView15_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             // preview all tabs
-            HomeContainerView(selectedTab: .search).previewDisplayName("Home tab")
-            HomeContainerView(selectedTab: .browse).previewDisplayName("Browse tab")
-            HomeContainerView(selectedTab: .favorites).previewDisplayName("Favorites tab")
-            HomeContainerView(selectedTab: .settings).previewDisplayName("Settings tab")
+            HomeContainerView15(selectedTab: .search).previewDisplayName("Home tab")
+            HomeContainerView15(selectedTab: .browse).previewDisplayName("Browse tab")
+            HomeContainerView15(selectedTab: .favorites).previewDisplayName("Favorites tab")
+            HomeContainerView15(selectedTab: .settings).previewDisplayName("Settings tab")
             // preview localization
-            HomeContainerView().environment(\.locale, .init(identifier: "de")).previewDisplayName("German")
-            HomeContainerView().environment(\.locale, .init(identifier: "es")).previewDisplayName("Spanish")
+            HomeContainerView15().environment(\.locale, .init(identifier: "de")).previewDisplayName("German")
+            HomeContainerView15().environment(\.locale, .init(identifier: "es")).previewDisplayName("Spanish")
             // preview different sizes
-            HomeContainerView()
+            HomeContainerView15()
                 .previewDevice("iPhone 13")
                 .previewDisplayName("iPhone 13")
-            HomeContainerView()
+            HomeContainerView15()
                 .previewDevice("iPhone XS Max")
                 .previewDisplayName("iPhone XS Max")
-            HomeContainerView()
+            HomeContainerView15()
                 .previewLayout(.device)
                 .previewDevice("iPad Air 2")
                 .previewDisplayName("iPad Air 2")
             // preview dark mode
-            HomeContainerView().environment(\.colorScheme, .dark).previewDisplayName("Dark mode")
+            HomeContainerView15().environment(\.colorScheme, .dark).previewDisplayName("Dark mode")
         }
     }
 }

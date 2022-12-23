@@ -7,7 +7,7 @@ class FavoritesScenarios: BaseTestCase {
         app.launch()
         _ = HomeViewCan(app, testCase: self)
             .goToFavorites()
-            .waitForButtons("Hymn 40, classic40", "Hymn 2, classic2")
+            .waitForButtons("Hymn 40, classic40", "Hymn 2, classic2", "Hymn 1151, classic1151")
     }
 
     func test_goToFavorite() {

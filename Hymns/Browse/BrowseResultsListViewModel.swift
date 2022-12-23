@@ -189,8 +189,13 @@ class BrowseResultsListViewModel: ObservableObject {
     }
 }
 
-extension BrowseResultsListViewModel: Equatable {
+extension BrowseResultsListViewModel: Hashable {
     static func == (lhs: BrowseResultsListViewModel, rhs: BrowseResultsListViewModel) -> Bool {
         lhs.title == rhs.title && lhs.resultType == rhs.resultType
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(title)
+        hasher.combine(resultType)
     }
 }

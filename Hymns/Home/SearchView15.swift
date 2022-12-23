@@ -2,8 +2,8 @@ import FirebaseAnalytics
 import Resolver
 import SwiftUI
 
-@available(iOS 16, *)
-struct SearchView: View {
+/// Search view for devices running iOS 15 and earlier. This was primarily because NavigationStack was introduced in iOS 16, so it and its components cannot be used with anything less than iOS 16.
+struct SearchView15: View {
 
     @ObservedObject private var viewModel: SearchViewModel
     @State private var resultToShow: SongResultViewModel?
@@ -37,7 +37,8 @@ struct SearchView: View {
                 }, label: {
                     HStack(alignment: .center, spacing: CGFloat.zero) {
                         Image(systemName: "xmark").padding()
-                        Text("Try searching by hymn type (e.g. ns151, ch1, s3)", comment: "Tooltip showing the user how to best utilize search.").font(.caption).padding(.trailing)
+                        Text("Try searching by hymn type (e.g. ns151, ch1, s3)", comment: "Tooltip showing the user how to best utilize search.")
+                            .font(.caption).padding(.trailing)
                     }
                 }, configuration:
                                 ToolTipConfiguration(cornerRadius: 10,
@@ -54,7 +55,8 @@ struct SearchView: View {
             if viewModel.state == .loading {
                 ActivityIndicator().maxSize()
             } else if viewModel.state == .empty {
-                Text("Did not find any songs matching:\n\"\(viewModel.searchParameter)\".\nPlease try a different request", comment: "Empty state for the search screen.")
+                Text("Did not find any songs matching:\n\"\(viewModel.searchParameter)\".\nPlease try a different request",
+                     comment: "Empty state for the search screen.")
                     .padding().multilineTextAlignment(.center).maxSize(alignment: .center)
             } else {
                 if viewModel.songResults.isEmpty {
@@ -67,11 +69,20 @@ struct SearchView: View {
                     Spacer()
                 } else {
                     List(viewModel.songResults, id: \.stableId) { songResult in
-                        NavigationLink(value: Route.songResult(songResult)) {
-                            SongResultView(viewModel: songResult).padding(.trailing)
-                        }.onAppear {
+                        HStack(alignment: .center) {
+                            Button(action: {
+                                self.viewModel.tearDown()
+                                self.resultToShow = songResult
+                            }, label: {
+                                SongResultView(viewModel: songResult).padding(.trailing)
+                            })
+                            Spacer()
+                            NavigationLink(destination: songResult.destinationView, tag: songResult, selection: self.$resultToShow) {
+                                EmptyView()
+                            }.frame(width: 0, height: 0).padding(.trailing)
+                        }.listRowSeparator(.hidden).onAppear {
                             self.viewModel.loadMore(at: songResult)
-                        }.listRowSeparator(.hidden).maxWidth()
+                        }.maxWidth()
                     }.listStyle(.plain).resignKeyboardOnDragGesture()
                 }
             }
@@ -86,8 +97,7 @@ struct SearchView: View {
 }
 
 #if DEBUG
-@available(iOS 16, *)
-struct SearchView_Previews: PreviewProvider {
+struct SearchView15_Previews: PreviewProvider {
     static var previews: some View {
         let defaultViewModel = SearchViewModel()
 
@@ -120,19 +130,19 @@ struct SearchView_Previews: PreviewProvider {
         noResultsViewModel.searchParameter = "She loves me not"
 
         return Group {
-            SearchView(viewModel: defaultViewModel)
+            SearchView15(viewModel: defaultViewModel)
                 .previewDisplayName("Default state")
-            SearchView(viewModel: recentSongsViewModel)
+            SearchView15(viewModel: recentSongsViewModel)
                 .previewDisplayName("Recent songs")
-            SearchView(viewModel: recentSongsEmptyViewModel)
+            SearchView15(viewModel: recentSongsEmptyViewModel)
                 .previewDisplayName("No recent songs")
-            SearchView(viewModel: searchActiveViewModel)
+            SearchView15(viewModel: searchActiveViewModel)
                 .previewDisplayName("Active search without recent songs")
-            SearchView(viewModel: loadingViewModel)
+            SearchView15(viewModel: loadingViewModel)
                 .previewDisplayName("Active search loading")
-            SearchView(viewModel: searchResults)
+            SearchView15(viewModel: searchResults)
                 .previewDisplayName("Search results")
-            SearchView(viewModel: noResultsViewModel)
+            SearchView15(viewModel: noResultsViewModel)
                 .previewDisplayName("No results")
         }
     }

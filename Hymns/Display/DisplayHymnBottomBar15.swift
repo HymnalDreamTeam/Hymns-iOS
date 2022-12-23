@@ -1,18 +1,21 @@
 import Resolver
 import SwiftUI
 
-@available(iOS 16, *)
-struct DisplayHymnBottomBar: View {
+/// Display hymn bottom bar for devices running iOS 15 and earlier. This was primarily because NavigationStack was introduced in iOS 16, so it and its components cannot be used with anything less than iOS 16.
+struct DisplayHymnBottomBar15: View {
 
     @Binding var dialogModel: DialogViewModel<AnyView>?
     @State private var actionSheet: ActionSheetItem?
     @State private var sheet: DisplayHymnSheet?
 
+    // Navigating out of an action sheet requires another state variable
+    // https://stackoverflow.com/questions/59454407/how-to-navigate-out-of-a-actionsheet
+    @State private var resultToShow: SongResultViewModel?
+
     @State var audioPlayer: AudioPlayerViewModel?
     @State var soundCloudPlayer: SoundCloudPlayerViewModel?
     @State var fontPicker: FontPickerViewModel?
 
-    @ObservedObject var coordinator: NavigationCoordinator = Resolver.resolve()
     @ObservedObject var viewModel: DisplayHymnBottomBarViewModel
     @Environment(\.sizeCategory) var sizeCategory: ContentSizeCategory
 
@@ -66,6 +69,11 @@ struct DisplayHymnBottomBar: View {
                     })
                 }
             }
+            resultToShow.map { viewModel in
+                NavigationLink(destination: viewModel.destinationView,
+                               tag: viewModel,
+                               selection: $resultToShow) { EmptyView() }
+            }
         }.actionSheet(item: $actionSheet) { item -> ActionSheet in
             switch item {
             case .languages(let viewModels):
@@ -75,7 +83,7 @@ struct DisplayHymnBottomBar: View {
                         message: Text("Change to another language", comment: "Message for the languages action sheet."),
                         buttons: viewModels.map({ viewModel -> Alert.Button in
                             .default(Text(viewModel.title), action: {
-                                coordinator.showSongResult(viewModel)
+                                self.resultToShow = viewModel
                             })
                         }) + [.cancel()])
             case .relevant(let viewModels):
@@ -85,7 +93,7 @@ struct DisplayHymnBottomBar: View {
                         message: Text("Change to a relevant hymn", comment: "Message for the relevant songs action sheet."),
                         buttons: viewModels.map({ viewModel -> Alert.Button in
                             .default(Text(viewModel.title), action: {
-                                coordinator.showSongResult(viewModel)
+                                self.resultToShow = viewModel
                             })
                         }) + [.cancel()])
             case .overflow(let buttons):
@@ -167,44 +175,27 @@ extension ActionSheetItem: Identifiable {
     }
 }
 
-enum DisplayHymnSheet {
-    case share(String)
-    case tags
-}
-
-extension DisplayHymnSheet: Identifiable {
-    var id: Int {
-        switch self {
-        case .share:
-            return 0
-        case .tags:
-            return 1
-        }
-    }
-}
-
 #if DEBUG
-@available(iOS 16, *)
-struct DisplayHymnBottomBar_Previews: PreviewProvider {
+struct DisplayHymnBottomBar15_Previews: PreviewProvider {
     static var previews: some View {
         var dialogModel: DialogViewModel<AnyView>?
         let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [Verse]())
 
         let noButtonsViewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151, hymn: hymn)
         noButtonsViewModel.buttons = []
-        let noButtons = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
+        let noButtons = DisplayHymnBottomBar15(dialogModel: Binding<DialogViewModel<AnyView>?>(
             get: {dialogModel},
             set: {dialogModel = $0}), viewModel: noButtonsViewModel)
 
         let oneButtonViewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151, hymn: hymn)
         oneButtonViewModel.buttons = [.tags]
-        let oneButton = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
+        let oneButton = DisplayHymnBottomBar15(dialogModel: Binding<DialogViewModel<AnyView>?>(
             get: {dialogModel},
             set: {dialogModel = $0}), viewModel: oneButtonViewModel)
 
         let twoButtonsViewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151, hymn: hymn)
         twoButtonsViewModel.buttons = [.tags, .fontSize(FontPickerViewModel())]
-        let twoButtons = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
+        let twoButtons = DisplayHymnBottomBar15(dialogModel: Binding<DialogViewModel<AnyView>?>(
             get: {dialogModel},
             set: {dialogModel = $0}), viewModel: twoButtonsViewModel)
 
@@ -218,7 +209,7 @@ struct DisplayHymnBottomBar_Previews: PreviewProvider {
             .songInfo(SongInfoDialogViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151,
                                               hymn: UiHymn(hymnIdentifier: PreviewHymnIdentifiers.hymn1151, title: "", lyrics: nil, author: "MC"))!)
         ]
-        let maximum = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
+        let maximum = DisplayHymnBottomBar15(dialogModel: Binding<DialogViewModel<AnyView>?>(
             get: {dialogModel},
             set: {dialogModel = $0}), viewModel: maximumViewModel)
 
@@ -237,7 +228,7 @@ struct DisplayHymnBottomBar_Previews: PreviewProvider {
             .songInfo(SongInfoDialogViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151,
                                               hymn: UiHymn(hymnIdentifier: PreviewHymnIdentifiers.hymn1151, title: "", lyrics: nil, author: "MC"))!)
         ]
-        let overflow = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
+        let overflow = DisplayHymnBottomBar15(dialogModel: Binding<DialogViewModel<AnyView>?>(
             get: {dialogModel},
             set: {dialogModel = $0}), viewModel: overflowViewModel)
 
