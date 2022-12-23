@@ -12,8 +12,14 @@ struct SongInfoView: View {
                     Text(viewModel.type.label).font(.callout).bold()
                     VStack(alignment: .leading) {
                         ForEach(viewModel.values, id: \.self) { value in
-                            NavigationLink(destination: BrowseResultsListView(viewModel: viewModel.createSongInfoItem(value))) {
-                                Text(value).font(.callout)
+                            if #available(iOS 16, *) {
+                                NavigationLink(value: Route.browseResults(viewModel.createSongInfoItem(value))) {
+                                    Text(value).font(.callout)
+                                }
+                            } else {
+                                NavigationLink(destination: BrowseResultsListView(viewModel: viewModel.createSongInfoItem(value))) {
+                                    Text(value).font(.callout)
+                                }
                             }
                         }
                     }
@@ -23,8 +29,14 @@ struct SongInfoView: View {
                     Text(viewModel.type.label).font(.callout).bold()
                     VStack(alignment: .leading) {
                         ForEach(viewModel.values, id: \.self) { value in
-                            NavigationLink(destination: BrowseResultsListView(viewModel: viewModel.createSongInfoItem(value))) {
-                                Text(value).font(.callout)
+                            if #available(iOS 16, *) {
+                                NavigationLink(value: Route.browseResults(viewModel.createSongInfoItem(value))) {
+                                    Text(value).font(.callout)
+                                }
+                            } else {
+                                NavigationLink(destination: BrowseResultsListView(viewModel: viewModel.createSongInfoItem(value))) {
+                                    Text(value).font(.callout)
+                                }
                             }
                         }
                     }

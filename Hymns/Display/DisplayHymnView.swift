@@ -17,7 +17,11 @@ struct DisplayHymnView: View {
                 ActivityIndicator().maxSize()
             } else {
                 VStack(spacing: 0) {
-                    DisplayHymnToolbar(viewModel: viewModel)
+                    if #available(iOS 16, *) {
+                        DisplayHymnToolbar(viewModel: viewModel)
+                    } else {
+                        DisplayHymnToolbar15(viewModel: viewModel)
+                    }
                     if viewModel.tabItems.count > 1 {
                         GeometryReader { geometry in
                             IndicatorTabView(geometry: geometry,
@@ -28,8 +32,14 @@ struct DisplayHymnView: View {
                     } else {
                         viewModel.currentTab.content
                     }
-                    viewModel.bottomBar.map { viewModel in
-                        DisplayHymnBottomBar(dialogModel: self.$dialogModel, viewModel: viewModel).maxWidth()
+                    if #available(iOS 16, *) {
+                        viewModel.bottomBar.map { viewModel in
+                            DisplayHymnBottomBar(dialogModel: self.$dialogModel, viewModel: viewModel).maxWidth()
+                        }
+                    } else {
+                        viewModel.bottomBar.map { viewModel in
+                            DisplayHymnBottomBar15(dialogModel: self.$dialogModel, viewModel: viewModel).maxWidth()
+                        }
                     }
                 }
                 Dialog(viewModel: $dialogModel).map { dialog in

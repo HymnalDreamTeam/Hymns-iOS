@@ -27,7 +27,11 @@ struct LaunchRouterView: View {
                         }
                 }.eraseToAnyView()
             } else {
-                return HomeContainerView().eraseToAnyView()
+                if #available(iOS 16, *) {
+                    return HomeContainerView().eraseToAnyView()
+                } else {
+                    return HomeContainerView15().eraseToAnyView()
+                }
             }
         }
     }

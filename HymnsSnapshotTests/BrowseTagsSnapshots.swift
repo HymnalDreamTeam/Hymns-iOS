@@ -30,8 +30,15 @@ class BrowseTagsSnapshots: XCTestCase {
         viewModel.tags = [UiTag(title: "tag 1", color: .blue),
                           UiTag(title: "tag 1", color: .green),
                           UiTag(title: "tag 3", color: .none)]
-        assertVersionedSnapshot(
-            matching: TagListView(viewModel: viewModel).ignoresSafeArea(),
-            as: .swiftUiImage(size: CGSize(width: 300, height: 600)))
+        if #available(iOS 16, *) {
+            let view = NavigationStack {
+                TagListView(viewModel: viewModel).ignoresSafeArea()
+            }
+            assertVersionedSnapshot(matching: view.ignoresSafeArea(), as: .image(layout: .sizeThatFits))
+        } else {
+            assertVersionedSnapshot(
+                matching: TagListView(viewModel: viewModel).ignoresSafeArea(),
+                as: .swiftUiImage(size: CGSize(width: 300, height: 600)))
+        }
     }
 }

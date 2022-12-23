@@ -92,11 +92,11 @@ class BrowseScenarios: BaseTestCase {
             .goToAllSongs()
             .waitForButtons("Howard Higashi Songs")
             .tapHymnType("Howard Higashi Songs")
-            .waitForButtons("1. Higashi title 1", timeout: 10)
+            .waitForButtons("1. Higashi title 1")
             .tapResult("2. Higashi title 2")
             .waitForStaticTexts("howard higashi verse 1 line 2")
             .goBackToBrowseResults()
-            .waitForButtons("1. Higashi title 1", timeout: 10)
+            .waitForButtons("1. Higashi title 1")
             .goBackToBrowse()
             .waitForButtons("Classic Hymns", "New Songs", "Children's Songs", "Howard Higashi Songs")
     }

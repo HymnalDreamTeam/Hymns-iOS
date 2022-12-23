@@ -32,22 +32,29 @@ struct TagListView: View {
                 }.eraseToAnyView()
             }
             return List(tags, id: \.self) { tag in
-                HStack(alignment: .center) {
-                    Button(action: {
-                        self.viewModel.tearDown()
-                        self.tagToShow = tag
-                    }, label: {
+                if #available(iOS 16, *) {
+                    NavigationLink(value: Route.browseResults(BrowseResultsListViewModel(tag: tag))) {
                         Text(tag.title).tagPill(backgroundColor: tag.color.background, foregroundColor: tag.color.foreground)
-                    })
-                    Spacer()
-                    NavigationLink(destination: BrowseResultsListView(viewModel: BrowseResultsListViewModel(tag: tag)),
-                                   tag: tag, selection: self.$tagToShow) {
-                        EmptyView()
-                    }.frame(width: 0, height: 0).padding(.trailing)
-                }.listRowSeparator(.hidden).maxWidth()
+                    }.listRowSeparator(.hidden).maxWidth()
+                } else {
+                    HStack(alignment: .center) {
+                        Button(action: {
+                            self.tagToShow = tag
+                        }, label: {
+                            Text(tag.title).tagPill(backgroundColor: tag.color.background, foregroundColor: tag.color.foreground)
+                        })
+                        Spacer()
+                        NavigationLink(destination: BrowseResultsListView(viewModel: BrowseResultsListViewModel(tag: tag)),
+                                       tag: tag, selection: self.$tagToShow) {
+                            EmptyView()
+                        }.frame(width: 0, height: 0).padding(.trailing)
+                    }.listRowSeparator(.hidden).maxWidth()
+                }
             }.listStyle(PlainListStyle()).padding(.top).eraseToAnyView()
         }.onAppear {
             self.viewModel.fetchUniqueTags()
+        }.onDisappear {
+            self.viewModel.tearDown()
         }.background(Color(.systemBackground))
     }
 }

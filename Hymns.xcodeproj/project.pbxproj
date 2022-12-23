@@ -162,6 +162,12 @@
 		3BAC029424F608DC005A96E9 /* RepeatChorusViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAC029324F608DC005A96E9 /* RepeatChorusViewModel.swift */; };
 		3BADB42524822BDB008CEDAB /* BrowseTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BADB42424822BDB008CEDAB /* BrowseTab.swift */; };
 		3BADB429248461D1008CEDAB /* chineseSupplement216.json in Resources */ = {isa = PBXBuildFile; fileRef = 3BADB428248461D1008CEDAB /* chineseSupplement216.json */; };
+		3BB1474A29551E8A0021494E /* SearchView15.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB1474929551E8A0021494E /* SearchView15.swift */; };
+		3BB1474E295523310021494E /* HomeContainerView15.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB1474D295523310021494E /* HomeContainerView15.swift */; };
+		3BB14750295524660021494E /* DisplayHymnToolbar15.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB1474F295524660021494E /* DisplayHymnToolbar15.swift */; };
+		3BB1475629552B3E0021494E /* NavigationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB1475529552B3E0021494E /* NavigationCoordinator.swift */; };
+		3BB1475A2955408C0021494E /* DisplayHymnBottomBar15.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB147592955408C0021494E /* DisplayHymnBottomBar15.swift */; };
+		3BB1475C2955965D0021494E /* NavigationScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB1475B2955965D0021494E /* NavigationScenarios.swift */; };
 		3BB1928324A3EDB600E5F9FA /* SongInfoDialogSnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB1928224A3EDB600E5F9FA /* SongInfoDialogSnapshots.swift */; };
 		3BB1DCAE244D03DE0011169D /* TabItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB1DCAB244D03DD0011169D /* TabItem.swift */; };
 		3BB1DCAF244D03DE0011169D /* TabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB1DCAC244D03DD0011169D /* TabBar.swift */; };
@@ -483,6 +489,12 @@
 		3BAC029324F608DC005A96E9 /* RepeatChorusViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatChorusViewModel.swift; sourceTree = "<group>"; };
 		3BADB42424822BDB008CEDAB /* BrowseTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseTab.swift; sourceTree = "<group>"; };
 		3BADB428248461D1008CEDAB /* chineseSupplement216.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = chineseSupplement216.json; sourceTree = "<group>"; };
+		3BB1474929551E8A0021494E /* SearchView15.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView15.swift; sourceTree = "<group>"; };
+		3BB1474D295523310021494E /* HomeContainerView15.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeContainerView15.swift; sourceTree = "<group>"; };
+		3BB1474F295524660021494E /* DisplayHymnToolbar15.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayHymnToolbar15.swift; sourceTree = "<group>"; };
+		3BB1475529552B3E0021494E /* NavigationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationCoordinator.swift; sourceTree = "<group>"; };
+		3BB147592955408C0021494E /* DisplayHymnBottomBar15.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayHymnBottomBar15.swift; sourceTree = "<group>"; };
+		3BB1475B2955965D0021494E /* NavigationScenarios.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationScenarios.swift; sourceTree = "<group>"; };
 		3BB1928224A3EDB600E5F9FA /* SongInfoDialogSnapshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongInfoDialogSnapshots.swift; sourceTree = "<group>"; };
 		3BB1DCAB244D03DD0011169D /* TabItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TabItem.swift; path = Hymns/Common/TabView/TabItem.swift; sourceTree = SOURCE_ROOT; };
 		3BB1DCAC244D03DD0011169D /* TabBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TabBar.swift; path = Hymns/Common/TabView/TabBar.swift; sourceTree = SOURCE_ROOT; };
@@ -843,6 +855,7 @@
 				3BE31A4024A5BFF700B1A038 /* HomeScenarios.swift */,
 				3B6DA63E24A87B3400A9277F /* SettingsScenarios.swift */,
 				3B1B90392429CF57009FDCC5 /* Info.plist */,
+				3BB1475B2955965D0021494E /* NavigationScenarios.swift */,
 			);
 			path = HymnsUITests;
 			sourceTree = "<group>";
@@ -851,6 +864,7 @@
 			isa = PBXGroup;
 			children = (
 				3B22187E247910C3009202B0 /* UserDefaultsManager.swift */,
+				3BB1475529552B3E0021494E /* NavigationCoordinator.swift */,
 			);
 			path = Application;
 			sourceTree = "<group>";
@@ -955,9 +969,11 @@
 				3B020E7E251DCD0C007B7EBB /* DisplayHymnContainerView.swift */,
 				3B020E84251DCD32007B7EBB /* DisplayHymnContainerViewModel.swift */,
 				3B43717E24764BEF000B42AC /* DisplayHymnBottomBar.swift */,
+				3BB147592955408C0021494E /* DisplayHymnBottomBar15.swift */,
 				3BBA15ED24CCF88F0010EEC8 /* DisplayHymnBottomBarButton.swift */,
 				3BA4612E24773A040068F269 /* DisplayHymnBottomBarViewModel.swift */,
 				3B11E2A52465211200F27E73 /* DisplayHymnToolbar.swift */,
+				3BB1474F295524660021494E /* DisplayHymnToolbar15.swift */,
 				3BD4AE9C27D8A09900B4040A /* InlineChordsView.swift */,
 				3BD4AE9E27D8A0A500B4040A /* InlineChordsViewModel.swift */,
 				B5C35EF9247AA4D600EF6AA9 /* ShareSheet.swift */,
@@ -1158,8 +1174,10 @@
 			isa = PBXGroup;
 			children = (
 				5CA784A3242D1CF800B57903 /* SearchView.swift */,
+				3BB1474929551E8A0021494E /* SearchView15.swift */,
 				3B45B8FE243BE87300D38BEF /* SearchViewModel.swift */,
 				3BC1329624385A580082A274 /* HomeContainerView.swift */,
+				3BB1474D295523310021494E /* HomeContainerView15.swift */,
 				3BD768C52757646300FA4C6C /* HomeTabView.swift */,
 				3BC1329824385C420082A274 /* HomeTab.swift */,
 				B5915C6124CE8F8400342D7E /* LaunchRouterView.swift */,
@@ -1640,6 +1658,7 @@
 		};
 		3A115107F985DDD10E6D54DC /* Clean Mockingbird Mocks */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -1755,6 +1774,7 @@
 		};
 		5E43F543CF316F97414F0E04 /* Generate Mockingbird Mocks */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -1903,8 +1923,10 @@
 				3B909698245F78D8000229A2 /* HymnDataStore.swift in Sources */,
 				3B50B972243E450500EABDE4 /* RegexUtil.swift in Sources */,
 				B51BA5C92430075300CA52F7 /* DisplayHymnView.swift in Sources */,
+				3BB1475629552B3E0021494E /* NavigationCoordinator.swift in Sources */,
 				B5915C6224CE8F8400342D7E /* LaunchRouterView.swift in Sources */,
 				B595A4A824438CC2005F7A14 /* DisplayHymnViewModel.swift in Sources */,
+				3BB1474E295523310021494E /* HomeContainerView15.swift in Sources */,
 				3BE9EE98244AB8650098699E /* PrivacyPolicySettingView.swift in Sources */,
 				3BD4AE8F27D69DE500B4040A /* HymnTab.swift in Sources */,
 				3BDDC02027CC8E2D004307D4 /* SongbaseStore.swift in Sources */,
@@ -1921,6 +1943,7 @@
 				5CA784A0242D1A3200B57903 /* BrowseView.swift in Sources */,
 				3BA4612724771EAD0068F269 /* SongInfoView.swift in Sources */,
 				3B8DD373249F2AC2001C6A7F /* HistoryStoreTestImpl.swift in Sources */,
+				3BB1475A2955408C0021494E /* DisplayHymnBottomBar15.swift in Sources */,
 				3B369CEE246D08A50068A29C /* PDFPreloader.swift in Sources */,
 				3B203690248C131B00D90DF5 /* NonFatal.swift in Sources */,
 				3B11E2A42464AA3400F27E73 /* HymnalNetService.swift in Sources */,
@@ -1932,6 +1955,7 @@
 				3B58D2102480D0EA00C66445 /* BrowseCategoriesView.swift in Sources */,
 				3B1B90132429CF55009FDCC5 /* AppDelegate.swift in Sources */,
 				3BAC029424F608DC005A96E9 /* RepeatChorusViewModel.swift in Sources */,
+				3BB1474A29551E8A0021494E /* SearchView15.swift in Sources */,
 				3BC5B15C247F7B0400F5D63A /* CategoryEntity.swift in Sources */,
 				B582E4432493235E00329DA5 /* TagSheetView.swift in Sources */,
 				3B1AF92B24C38B1D0082C27B /* Toast.swift in Sources */,
@@ -1980,6 +2004,7 @@
 				3BB931A724E37F3B00E0C873 /* LottieView.swift in Sources */,
 				3B7B55A724AE863B00566808 /* BrowseViewModel.swift in Sources */,
 				3B5935A22435685400E6993C /* Verse.swift in Sources */,
+				3BB14750295524660021494E /* DisplayHymnToolbar15.swift in Sources */,
 				3B87B82A2449497A00AEC7E9 /* SettingsViewModel.swift in Sources */,
 				3BBCC20924DE4C6C00977961 /* DialogViewModel.swift in Sources */,
 				B5A77A57247DA0D900447008 /* AudioPlayerViewModel.swift in Sources */,
@@ -2082,6 +2107,7 @@
 				3BD4AE9927D74F5900B4040A /* DisplayHymnMusicScenarios.swift in Sources */,
 				3B6DA64324A87E6400A9277F /* BrowseScenarios.swift in Sources */,
 				3BE210F4249B41A000D4E417 /* DisplayHymnScenarios.swift in Sources */,
+				3BB1475C2955965D0021494E /* NavigationScenarios.swift in Sources */,
 				3B6DA64724A88CAA00A9277F /* BrowseResultsViewCan.swift in Sources */,
 				3BE31A4724A6D85100B1A038 /* FavoritesViewCan.swift in Sources */,
 				3BE210F7249B421000D4E417 /* HomeViewCan.swift in Sources */,

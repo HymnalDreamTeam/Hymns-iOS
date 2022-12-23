@@ -41,7 +41,7 @@ class DisplayHymnScenarios: BaseTestCase {
             .openSongInfo()
             .waitForStaticTexts("Category", "Subcategory")
             .waitForButtons("song's category", "song's subcategory")
-            .pressButton("song's category")
+            .openCategory("song's category")
             .waitForStaticTexts("song's category", "Hymn 1151", "Click me!", "New tune 37", "Don't click!", "Hymn 883", "Don't click either!")
     }
 
@@ -82,6 +82,8 @@ class DisplayHymnScenarios: BaseTestCase {
             .openLanguages()
             .pressButton("诗歌(简)")
             .waitForStaticTexts("Chinese Supplement 216", "chinese verse 1 chinese line 1")
+            .goBack()
+            .waitForStaticTexts("verse 1 line 1")
     }
 
     func test_relevant() {
@@ -98,16 +100,18 @@ class DisplayHymnScenarios: BaseTestCase {
     }
 
     func test_favorite() {
-        _ = DisplayHymnViewCan(app, testCase: self)
+        app.launch()
+        _ = HomeViewCan(app, testCase: self)
+            .tapResult("Hymn 3, classic3")
+            .waitForStaticTexts("classic hymn 3 verse 1")
             .favoriteSong()
             .goBackToHome()
             .goToFavorites()
-            .waitForButtons("Hymn 1151, Minoru's song")
-            .tapFavorite("Hymn 1151, Minoru's song")
-            .waitForStaticTexts("verse 1 line 1")
+            .tapFavorite("Hymn 3, Classic 3")
+            .waitForStaticTexts("classic hymn 3 verse 1")
             .unfavoriteSong()
             .goBackToFavorites()
-            .verifyButtonsNotExist("Hymn 1151, Minoru's song")
+            .verifyButtonsNotExist("Hymn 3, Classic 3")
     }
 
     func test_swipeBetweenHymns() {

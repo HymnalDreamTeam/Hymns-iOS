@@ -25,18 +25,24 @@ struct FavoritesView: View {
                     }.maxSize().offset(y: -25).eraseToAnyView()
                 }
                 return List(favorites, id: \.stableId) { favorite in
-                    HStack(alignment: .center) {
-                        Button(action: {
-                            self.viewModel.tearDown()
-                            self.favoriteToShow = favorite
-                        }, label: {
-                            SongResultView(viewModel: favorite).padding(.trailing)
-                        })
-                        Spacer()
-                        NavigationLink(destination: favorite.destinationView, tag: favorite, selection: self.$favoriteToShow) {
-                            EmptyView()
-                        }.frame(width: 0, height: 0).padding(.trailing)
-                    }.listRowSeparator(.hidden).maxWidth()
+                    if #available(iOS 16, *) {
+                        NavigationLink(value: Route.songResult(favorite)) {
+                            SongResultView(viewModel: favorite)
+                        }.padding(.trailing).listRowSeparator(.hidden).maxWidth()
+                    } else {
+                        HStack(alignment: .center) {
+                            Button(action: {
+                                self.viewModel.tearDown()
+                                self.favoriteToShow = favorite
+                            }, label: {
+                                SongResultView(viewModel: favorite).padding(.trailing)
+                            })
+                            Spacer()
+                            NavigationLink(destination: favorite.destinationView, tag: favorite, selection: self.$favoriteToShow) {
+                                EmptyView()
+                            }.frame(width: 0, height: 0).padding(.trailing)
+                        }.listRowSeparator(.hidden).maxWidth()
+                    }
                 }.listStyle(.plain).id(viewModel.favorites).resignKeyboardOnDragGesture().eraseToAnyView()
             }
         }.onAppear {

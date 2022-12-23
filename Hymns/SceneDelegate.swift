@@ -22,9 +22,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Add `@Environment(\.managedObjectContext)` in the views that will need the context.
 
         #if DEBUG
-        let isTesting = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil || CommandLine.arguments.contains(AppDelegate.uiTestingFlag)
+        var rootView = LaunchRouterView().environment(\.managedObjectContext, context).eraseToAnyView()
 
-        let rootView = isTesting ? HomeContainerView().environment(\.managedObjectContext, context).eraseToAnyView() : LaunchRouterView().environment(\.managedObjectContext, context).eraseToAnyView()
+        let isTesting = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil || CommandLine.arguments.contains(AppDelegate.uiTestingFlag)
+        // If we are in a test, then we go straight to the home container and we skip the launcher
+        if isTesting {
+            if #available(iOS 16, *) {
+                rootView = HomeContainerView().environment(\.managedObjectContext, context).eraseToAnyView()
+            } else {
+                rootView = HomeContainerView15().environment(\.managedObjectContext, context).eraseToAnyView()
+            }
+        }
+
         if isTesting, let appDomain = Bundle.main.bundleIdentifier {
             UserDefaults.standard.removePersistentDomain(forName: appDomain)
         }

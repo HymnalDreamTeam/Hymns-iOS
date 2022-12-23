@@ -7,23 +7,49 @@ public class DisplayHymnViewCan: BaseViewCan {
         super.init(app, testCase: testCase)
     }
 
-    public func goBackToHome() -> HomeViewCan {
+    public func goBack() -> DisplayHymnViewCan {
         _ = pressButton("Go back")
+        return DisplayHymnViewCan(app, testCase: testCase)
+    }
+
+    public func close() -> DisplayHymnViewCan {
+        _ = pressButton("Close")
+        return DisplayHymnViewCan(app, testCase: testCase)
+    }
+
+    public func goBackToHome() -> HomeViewCan {
+        _ = goBack()
+        return switchToHome()
+    }
+
+    public func switchToHome() -> HomeViewCan {
         return HomeViewCan(app, testCase: testCase)
     }
 
     public func goBackToBrowse() -> BrowseViewCan {
-        _ = pressButton("Go back")
+        _ = goBack()
+        return switchToBrowse()
+    }
+
+    public func switchToBrowse() -> BrowseViewCan {
         return BrowseViewCan(app, testCase: testCase)
     }
 
     public func goBackToFavorites() -> FavoritesViewCan {
-        _ = pressButton("Go back")
+        _ = goBack()
+        return switchToFavorites()
+    }
+
+    public func switchToFavorites() -> FavoritesViewCan {
         return FavoritesViewCan(app, testCase: testCase)
     }
 
     public func goBackToBrowseResults() -> BrowseResultsViewCan {
         _ = pressButton("Go back")
+        return switchToBrowseResults()
+    }
+
+    public func switchToBrowseResults() -> BrowseResultsViewCan {
         return BrowseResultsViewCan(app, testCase: testCase)
     }
 
@@ -142,8 +168,6 @@ public class DisplayHymnViewCan: BaseViewCan {
     public func waitForPlayButton() -> DisplayHymnViewCan {
         if #available(iOS 15.0, *) {
             return waitForButtons("Play")
-        } else if #available(iOS 14.5, *) {
-            return waitForButtons("play")
         } else {
             return waitForButtons("play.circle")
         }
@@ -152,8 +176,6 @@ public class DisplayHymnViewCan: BaseViewCan {
     public func verifyPlayButtonNotExists() -> DisplayHymnViewCan {
         if #available(iOS 15.0, *) {
             return verifyButtonsNotExist("Play")
-        } else if #available(iOS 14.5, *) {
-            return verifyButtonsNotExist("play")
         } else {
             return verifyButtonsNotExist("play.circle")
         }
@@ -170,8 +192,6 @@ public class DisplayHymnViewCan: BaseViewCan {
     public func waitForSpeedPickerButtons() -> DisplayHymnViewCan {
         if #available(iOS 15.0, *) {
             return waitForButtons("Remove", "Add")
-        } else if #available(iOS 14.5, *) {
-            return waitForButtons("remove", "add")
         } else {
             return waitForButtons("minus", "plus")
         }
@@ -195,6 +215,11 @@ public class DisplayHymnViewCan: BaseViewCan {
 
     public func openSongInfo() -> DisplayHymnViewCan {
         return pressButton("Song Info")
+    }
+
+    public func openCategory(_ category: String) -> BrowseResultsViewCan {
+        _ = pressButton(category)
+        return BrowseResultsViewCan(app, testCase: testCase)
     }
 
     public func openOverflowMenu() -> DisplayHymnViewCan {
