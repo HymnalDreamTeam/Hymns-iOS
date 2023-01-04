@@ -7,6 +7,7 @@ import UIKit
 class SettingsViewModel: ObservableObject {
 
     let historyStore: HistoryStore = Resolver.resolve()
+    let navigationCoordinator: NavigationCoordinator = Resolver.resolve()
 
     @Published var settings: [SettingsModel]? = [SettingsModel]()
 
@@ -21,10 +22,19 @@ class SettingsViewModel: ObservableObject {
             }
         })
 
-        #if DEBUG
-        settings = [.repeatChorus(repeatChorusViewModel), .clearHistory(clearHistoryViewModel), .aboutUs, .feedback(result), .privacyPolicy, .clearUserDefaults]
-        #else
         settings = [.repeatChorus(RepeatChorusViewModel()), .clearHistory(clearHistoryViewModel), .aboutUs, .feedback(result), .privacyPolicy]
+
+        if #available(iOS 16, *) {
+            let versionViewModel = SimpleSettingViewModel(title: NSLocalizedString("Version information",
+                                                                                   comment: "Displaying information about the app's version and device's version."),
+                                                          action: {
+                self.navigationCoordinator.showVersionInformation()
+            })
+            settings?.append(.version(versionViewModel))
+        }
+
+        #if DEBUG
+        settings?.append(.clearUserDefaults)
         #endif
     }
 }
@@ -36,6 +46,7 @@ enum SettingsModel {
     case feedback(Binding<Result<SettingsToastItem, Error>?>)
     case privacyPolicy
     case clearUserDefaults
+    case version(SimpleSettingViewModel)
 }
 
 extension SettingsModel {
@@ -54,6 +65,8 @@ extension SettingsModel {
             return PrivacyPolicySettingView().eraseToAnyView()
         case .clearUserDefaults:
             return ClearUserDefaultsView().eraseToAnyView()
+        case .version(let viewModel):
+            return SimpleSettingView(viewModel: viewModel).eraseToAnyView()
         }
     }
 }
@@ -73,6 +86,8 @@ extension SettingsModel: Identifiable {
             return 4
         case .clearUserDefaults:
             return 5
+        case .version:
+            return 6
         }
     }
 }

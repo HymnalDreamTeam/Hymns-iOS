@@ -49,7 +49,6 @@ class SearchViewModel: ObservableObject {
         backgroundQueue.async {
             let _: HymnDataStore = Resolver.resolve()
         }
-        // Search is active
         self.showSearchByTypeToolTip = !self.hasSeenSearchByTypeTooltip
     }
 

@@ -17,7 +17,10 @@ class SettingsViewModelSpec: QuickSpec {
                     target.populateSettings(result: .constant(nil))
                 }
 
-                let settingsSize = 6 // Change this value as we add more settings.
+                var settingsSize = 6
+                if #available(iOS 16, *) { // iOS 16+ has "version information", which is the 7th item
+                    settingsSize = 7
+                }
                 it("should contain exactly \(settingsSize) item") {
                     expect(target.settings).to(haveCount(settingsSize))
                 }

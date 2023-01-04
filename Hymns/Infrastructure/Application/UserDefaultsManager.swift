@@ -19,6 +19,7 @@ class UserDefaultsManager {
     @AppStorage("show_splash_animation") var showSplashAnimation = true
     @AppStorage("repeat_chorus") var shouldRepeatChorus = false
     @AppStorage("has_seen_soundcloud_minimize_tooltip") var hasSeenSoundCloudMinimizeTooltip = false
+    @AppStorage("has_seen_display_hymn_close_tool_tip") var hasSeenDisplayHymnCloseToolTip = false
 
     init() {
         // Migrate font size to be a float instead of a string

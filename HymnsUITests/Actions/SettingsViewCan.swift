@@ -39,6 +39,12 @@ public class SettingsHymnViewCan: BaseViewCan {
         return self
     }
 
+    public func tapVersionInformation() -> SettingsHymnViewCan {
+        app.buttons["Version information"].tap()
+        let abced = app.staticTexts
+        return self
+    }
+
     public func returnToHome() -> HomeViewCan {
         return HomeViewCan(app, testCase: testCase)
     }

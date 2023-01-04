@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct AboutUsButtonView: View {
+
     @State var isShowingInfo = false
 
     var body: some View {

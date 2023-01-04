@@ -1,3 +1,4 @@
+import Foundation
 import XCTest
 
 class SettingsScenarios: BaseTestCase {
@@ -42,5 +43,14 @@ class SettingsScenarios: BaseTestCase {
             .verifyAboutUsDialogExists()
             .cancelAboutUs()
             .verifyAboutUsDialogNotExists()
+    }
+
+    func test_goToVersionInformation() {
+        if #available(iOS 16, *) {
+            _ = HomeViewCan(app, testCase: self)
+                .goToSettings()
+                .tapVersionInformation()
+                .waitForStaticTexts("Version information", "Release version", "Build version", "iOS version")
+        }
     }
 }

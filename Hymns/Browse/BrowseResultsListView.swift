@@ -14,21 +14,7 @@ struct BrowseResultsListView: View {
 
     var body: some View {
         VStack {
-            HStack {
-                Button(action: {
-                    if #available(iOS 16, *) {
-                        self.coordinator.goBack()
-                    } else {
-                        self.presentationMode.wrappedValue.dismiss()
-                    }
-                }, label: {
-                    Image(systemName: "chevron.left")
-                        .accessibility(label: Text("Go back", comment: "A11y label for going back."))
-                        .accentColor(.primary).padding()
-                })
-                Text(viewModel.title).font(.body).fontWeight(.bold)
-                Spacer()
-            }
+            TitleWithBackButton(viewModel.title)
 
             Group { () -> AnyView in
                 guard let songResults = self.viewModel.songResults else {

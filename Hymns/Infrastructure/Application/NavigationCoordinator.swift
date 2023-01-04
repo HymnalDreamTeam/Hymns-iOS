@@ -18,6 +18,8 @@ class NavigationCoordinator: ObservableObject {
             return BrowseResultsListView(viewModel: viewModel).eraseToAnyView()
         case .songResult(let viewModel):
             return viewModel.destinationView
+        case .versionInformation:
+            return VersionView().eraseToAnyView()
         }
     }
 
@@ -32,6 +34,10 @@ class NavigationCoordinator: ObservableObject {
     func goBack() {
         stack.removeLast()
     }
+
+    func showVersionInformation() {
+        stack.append(.versionInformation)
+    }
 }
 
 enum Route: Hashable {
@@ -39,4 +45,5 @@ enum Route: Hashable {
     case display(DisplayHymnContainerViewModel)
     case browseResults(BrowseResultsListViewModel)
     case songResult(SongResultViewModel)
+    case versionInformation
 }
