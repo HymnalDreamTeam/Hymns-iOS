@@ -41,7 +41,6 @@ public class SettingsHymnViewCan: BaseViewCan {
 
     public func tapVersionInformation() -> SettingsHymnViewCan {
         app.buttons["Version information"].tap()
-        let abced = app.staticTexts
         return self
     }
 
