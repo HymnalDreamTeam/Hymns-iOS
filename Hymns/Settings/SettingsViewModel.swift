@@ -1,15 +1,24 @@
 import Foundation
 import MessageUI
 import Resolver
+import StoreKit
 import SwiftUI
 import UIKit
 
 class SettingsViewModel: ObservableObject {
 
-    let historyStore: HistoryStore = Resolver.resolve()
-    let navigationCoordinator: NavigationCoordinator = Resolver.resolve()
+    let historyStore: HistoryStore
+    let navigationCoordinator: NavigationCoordinator
+    let systemUtil: SystemUtil
 
     @Published var settings: [SettingsModel]? = [SettingsModel]()
+
+    init(historyStore: HistoryStore = Resolver.resolve(), navigationCoordinator: NavigationCoordinator = Resolver.resolve(),
+         systemUtil: SystemUtil = Resolver.resolve()) {
+        self.historyStore = historyStore
+        self.navigationCoordinator = navigationCoordinator
+        self.systemUtil = systemUtil
+    }
 
     func populateSettings(result: Binding<Result<SettingsToastItem, Error>?>) {
         let repeatChorusViewModel = RepeatChorusViewModel()
@@ -22,7 +31,11 @@ class SettingsViewModel: ObservableObject {
             }
         })
 
-        settings = [.repeatChorus(RepeatChorusViewModel()), .clearHistory(clearHistoryViewModel), .aboutUs, .feedback(result), .privacyPolicy]
+        settings = [.repeatChorus(repeatChorusViewModel), .clearHistory(clearHistoryViewModel), .aboutUs, .feedback(result), .privacyPolicy]
+
+        if systemUtil.isNetworkAvailable() {
+            settings?.append(.donate(result))
+        }
 
         if #available(iOS 16, *) {
             let versionViewModel = SimpleSettingViewModel(title: NSLocalizedString("Version information",
@@ -47,6 +60,7 @@ enum SettingsModel {
     case privacyPolicy
     case clearUserDefaults
     case version(SimpleSettingViewModel)
+    case donate(Binding<Result<SettingsToastItem, Error>?>)
 }
 
 extension SettingsModel {
@@ -67,6 +81,8 @@ extension SettingsModel {
             return ClearUserDefaultsView().eraseToAnyView()
         case .version(let viewModel):
             return SimpleSettingView(viewModel: viewModel).eraseToAnyView()
+        case .donate(let result):
+            return DonationButtonView(result: result).eraseToAnyView()
         }
     }
 }
@@ -88,6 +104,8 @@ extension SettingsModel: Identifiable {
             return 5
         case .version:
             return 6
+        case .donate:
+            return 7
         }
     }
 }

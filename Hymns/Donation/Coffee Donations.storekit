@@ -1,0 +1,35 @@
+{
+  "identifier" : "9FB9FED7",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "4.99",
+      "familyShareable" : false,
+      "internalID" : "6445529101",
+      "localizations" : [
+        {
+          "description" : "Buy us 1 cup of coffee",
+          "displayName" : "1 Coffee",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "donation_coffee_1",
+      "referenceName" : "Donation Coffee 1",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "1510007574",
+    "_developerTeamID" : "VBX3S26MR4",
+    "_lastSynchronizedDate" : 696462221.40194201
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 2,
+    "minor" : 0
+  }
+}
