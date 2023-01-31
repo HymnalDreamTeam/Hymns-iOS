@@ -158,6 +158,10 @@
 		3BA91ED624EDF95700294830 /* AllSongsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA91ED524EDF95700294830 /* AllSongsViewModel.swift */; };
 		3BA91ED824EDF98600294830 /* AllSongsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA91ED724EDF98600294830 /* AllSongsView.swift */; };
 		3BA91EDA24EE106A00294830 /* BrowseAllSongsSnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA91ED924EE106A00294830 /* BrowseAllSongsSnapshots.swift */; };
+		3BAA65AE2983299200B5CE3A /* DonationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAA65AD2983299200B5CE3A /* DonationViewModel.swift */; };
+		3BAA65B029832B8A00B5CE3A /* Coffee Donations.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 3BAA65AF29832B8A00B5CE3A /* Coffee Donations.storekit */; };
+		3BAA65B229833A1100B5CE3A /* DonationButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAA65B129833A1100B5CE3A /* DonationButtonView.swift */; };
+		3BAA65B42983401C00B5CE3A /* DonationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAA65B32983401C00B5CE3A /* DonationView.swift */; };
 		3BAC029224F608AD005A96E9 /* RepeatChorusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAC029124F608AD005A96E9 /* RepeatChorusView.swift */; };
 		3BAC029424F608DC005A96E9 /* RepeatChorusViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAC029324F608DC005A96E9 /* RepeatChorusViewModel.swift */; };
 		3BADB42524822BDB008CEDAB /* BrowseTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BADB42424822BDB008CEDAB /* BrowseTab.swift */; };
@@ -488,6 +492,10 @@
 		3BA91ED524EDF95700294830 /* AllSongsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllSongsViewModel.swift; sourceTree = "<group>"; };
 		3BA91ED724EDF98600294830 /* AllSongsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllSongsView.swift; sourceTree = "<group>"; };
 		3BA91ED924EE106A00294830 /* BrowseAllSongsSnapshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseAllSongsSnapshots.swift; sourceTree = "<group>"; };
+		3BAA65AD2983299200B5CE3A /* DonationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonationViewModel.swift; sourceTree = "<group>"; };
+		3BAA65AF29832B8A00B5CE3A /* Coffee Donations.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Coffee Donations.storekit"; sourceTree = "<group>"; };
+		3BAA65B129833A1100B5CE3A /* DonationButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonationButtonView.swift; sourceTree = "<group>"; };
+		3BAA65B32983401C00B5CE3A /* DonationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonationView.swift; sourceTree = "<group>"; };
 		3BAC029124F608AD005A96E9 /* RepeatChorusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatChorusView.swift; sourceTree = "<group>"; };
 		3BAC029324F608DC005A96E9 /* RepeatChorusViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatChorusViewModel.swift; sourceTree = "<group>"; };
 		3BADB42424822BDB008CEDAB /* BrowseTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseTab.swift; sourceTree = "<group>"; };
@@ -800,6 +808,7 @@
 				3BC5B15A247F7AEA00F5D63A /* Browse */,
 				3B45B900243BE8BB00D38BEF /* Common */,
 				3BE210F0249B3E4700D4E417 /* Debug Implementations */,
+				3BAA65AC2983208D00B5CE3A /* Donation */,
 				3B59359824353D8500E6993C /* Display */,
 				B5809DF8244F60D300EF0C63 /* Favorites */,
 				3B25C0E624503B4E00C435E1 /* History */,
@@ -1103,6 +1112,7 @@
 		3B87B82424493F5300AEC7E9 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				3BAA65B129833A1100B5CE3A /* DonationButtonView.swift */,
 				3B87B82524493F7F00AEC7E9 /* SimpleSettingView.swift */,
 				3B87B82724493F9200AEC7E9 /* SimpleSettingViewModel.swift */,
 				3BE9EE97244AB8650098699E /* PrivacyPolicySettingView.swift */,
@@ -1147,6 +1157,16 @@
 				3B451048291394AD0091017D /* SongInfoViewModelSpec.swift */,
 			);
 			path = "Song Info";
+			sourceTree = "<group>";
+		};
+		3BAA65AC2983208D00B5CE3A /* Donation */ = {
+			isa = PBXGroup;
+			children = (
+				3BAA65AF29832B8A00B5CE3A /* Coffee Donations.storekit */,
+				3BAA65B32983401C00B5CE3A /* DonationView.swift */,
+				3BAA65AD2983299200B5CE3A /* DonationViewModel.swift */,
+			);
+			path = Donation;
 			sourceTree = "<group>";
 		};
 		3BB1DCAA244D03AE0011169D /* TabView */ = {
@@ -1561,6 +1581,7 @@
 				3BB931A924E3801500E0C873 /* soundCloudPlayingAnimation.json in Resources */,
 				3BF2045C2800EE1200BA13B3 /* hymnaldb-v19.sqlite in Resources */,
 				B5E61B34242E613D00EF497D /* Localizable.strings in Resources */,
+				3BAA65B029832B8A00B5CE3A /* Coffee Donations.storekit in Resources */,
 				3BADB429248461D1008CEDAB /* chineseSupplement216.json in Resources */,
 				B5915C6424CE900100342D7E /* firstLaunchAnimation.json in Resources */,
 				3B055C4A280A4016008D575F /* songbasedb-v3.sqlite in Resources */,
@@ -1915,9 +1936,11 @@
 				3B5935A424357CA000E6993C /* HymnType.swift in Sources */,
 				3BBCC21B24E1048400977961 /* ToolTip.swift in Sources */,
 				3B203688248B864E00D90DF5 /* ScriptureResult.swift in Sources */,
+				3BAA65B42983401C00B5CE3A /* DonationView.swift in Sources */,
 				3BBCC21724E0D3FD00977961 /* SoundCloudView.swift in Sources */,
 				3B9ED1C02486296000BD004E /* BrowseResultsListViewModel.swift in Sources */,
 				3B58D20E2480A01100C66445 /* CategoryView.swift in Sources */,
+				3BAA65B229833A1100B5CE3A /* DonationButtonView.swift in Sources */,
 				5CA7849C242D14BA00B57903 /* SettingsView.swift in Sources */,
 				3BC1329924385C420082A274 /* HomeTab.swift in Sources */,
 				3BDA53FB24906ECC008A5A21 /* BrowseScripturesView.swift in Sources */,
@@ -1987,6 +2010,7 @@
 				3BE44369248AC12C00763B3C /* ScriptureSongView.swift in Sources */,
 				B582E449249331A600329DA5 /* AboutUsButtonView.swift in Sources */,
 				3BF93B6327DC1F1800EE95CA /* ChordViews.swift in Sources */,
+				3BAA65AE2983299200B5CE3A /* DonationViewModel.swift in Sources */,
 				B5DC935C248EBD1C00BF90A5 /* MailFeedbackView.swift in Sources */,
 				3BFA66342495A453009CB0BB /* TagPillModifier.swift in Sources */,
 				3BE44363248ABBED00763B3C /* Book.swift in Sources */,

@@ -1,6 +1,7 @@
 import FirebaseAnalytics
 import MessageUI
 import Resolver
+import StoreKit
 import SwiftUI
 
 struct SettingsView: View {
@@ -32,10 +33,10 @@ struct SettingsView: View {
                     }
                 }.eraseToAnyView()
         }.onAppear {
-            self.viewModel.populateSettings(result: self.$result)
             let params: [String: Any] = [
                 AnalyticsParameterScreenName: "SettingsView"]
             Analytics.logEvent(AnalyticsEventScreenView, parameters: params)
+            self.viewModel.populateSettings(result: self.$result)
         }.toast(item: $result, options: ToastOptions(alignment: .bottom, disappearAfter: 5)) { result -> AnyView in
             switch result {
             case .success(let success):
@@ -58,6 +59,13 @@ struct SettingsView: View {
                     }
                 case .clearHistory:
                     return Text("Recent songs cleared", comment: "Toast message for when recent songs are cleared.").padding().eraseToAnyView()
+                case .donate(let purchaseResult):
+                    switch purchaseResult {
+                    case .success:
+                        return Text("Thank you for keeping us caffeinated! 🤩", comment: "Toast message for when the donation was successful.").padding().eraseToAnyView()
+                    default:
+                        return Text("Something went wrong with your donation. No worries, you haven't been charged!", comment: "Toast message for when the donation was unsuccessful.").eraseToAnyView()
+                    }
                 }
             case .failure:
                 return Text("Oops! Something went wrong. Please try again", comment: "Generic error toast.").padding().eraseToAnyView()
@@ -69,6 +77,7 @@ struct SettingsView: View {
 public enum SettingsToastItem {
     case clearHistory
     case feedback(MFMailComposeResult)
+    case donate(DonationResult)
 }
 
 #if DEBUG
