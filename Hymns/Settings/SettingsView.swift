@@ -64,7 +64,7 @@ struct SettingsView: View {
                     case .success:
                         return Text("Thank you for keeping us caffeinated! 🤩", comment: "Toast message for when the donation was successful.").padding().eraseToAnyView()
                     default:
-                        return Text("Something went wrong with your donation. No worries, you haven't been charged!", comment: "Toast message for when the donation was unsuccessful.").eraseToAnyView()
+                        return Text("Something went wrong with your donation. No worries, you haven't been charged!", comment: "Toast message for when the donation was unsuccessful.").padding().eraseToAnyView()
                     }
                 }
             case .failure:
