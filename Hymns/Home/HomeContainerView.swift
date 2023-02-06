@@ -9,8 +9,9 @@ struct HomeContainerView: View {
     private let favoritesView = FavoritesView()
     private let settingsView = SettingsView()
 
-    @State private var selectedTab: HomeTab
+    @State private var selectedTab: HomeTab = .none
 
+    @Environment(\.colorScheme) private var colorScheme
     @ObservedObject var coordinator: NavigationCoordinator
 
     init(coordinator: NavigationCoordinator = Resolver.resolve(), selectedTab: HomeTab = .none) {
@@ -36,7 +37,9 @@ struct HomeContainerView: View {
                 HomeTabView(selectedTab: $selectedTab)
                     .padding([.horizontal, .bottom])
                     .frame(width: .none, height: 80, alignment: .top)
-                    .background(Color(red: 0.7, green: 0.7, blue: 0.7).opacity(0.1))
+                    .background(Color(red: colorScheme == .light ? 0.95 : 0.05,
+                                      green: colorScheme == .light ? 0.95 : 0.05,
+                                      blue: colorScheme == .light ? 0.95 : 0.05))
             }.navigationDestination(for: Route.self) { route in
                 coordinator.route(route)
             }.hideNavigationBar().edgesIgnoringSafeArea(.bottom)
