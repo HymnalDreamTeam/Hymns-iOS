@@ -33,9 +33,9 @@ class SettingsViewModel: ObservableObject {
 
         settings = [.repeatChorus(repeatChorusViewModel), .clearHistory(clearHistoryViewModel), .aboutUs, .feedback(result), .privacyPolicy]
 
-//        if systemUtil.isNetworkAvailable() {
-//            settings?.append(.donate(result))
-//        }
+        if systemUtil.isNetworkAvailable() {
+            settings?.append(.donate(result))
+        }
 
         if #available(iOS 16, *) {
             let versionViewModel = SimpleSettingViewModel(title: NSLocalizedString("Version information",
