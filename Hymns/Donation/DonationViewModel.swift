@@ -6,10 +6,10 @@ import StoreKit
 import SwiftUI
 
 // TODO unit test here: https://www.appcoda.com/storekit-testing/
-
 class DonationViewModel: ObservableObject {
 
     @Published var coffeeDonations: [Product]?
+    @Published var errorText: String = ""
     @Binding var result: Result<SettingsToastItem, Error>?
 
     init(result: Binding<Result<SettingsToastItem, Error>?>) {
@@ -22,6 +22,7 @@ class DonationViewModel: ObservableObject {
         do {
             coffeeDonations = try await Product.products(for: ["donation_coffee_1", "donation_coffee_5"])
         } catch {
+            errorText = error.localizedDescription
             Crashlytics.crashlytics().record(error: error)
             coffeeDonations = [Product]()
         }

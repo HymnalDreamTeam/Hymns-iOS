@@ -18,7 +18,7 @@ struct DonationView: View {
                 return ActivityIndicator().maxSize().eraseToAnyView()
             }
             guard !coffeeDonations.isEmpty else {
-                return ErrorView().maxSize().eraseToAnyView()
+                return Text(viewModel.errorText).maxSize().eraseToAnyView()
             }
             return ScrollView {
                 VStack(alignment: .leading) {
