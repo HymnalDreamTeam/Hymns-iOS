@@ -10,20 +10,45 @@
       "internalID" : "6445529101",
       "localizations" : [
         {
+          "description" : "給我們買一杯咖啡!",
+          "displayName" : "一杯咖啡",
+          "locale" : "zh_CN"
+        },
+        {
           "description" : "Buy us 1 cup of coffee",
           "displayName" : "1 Coffee",
           "locale" : "en_US"
         }
       ],
       "productID" : "donation_coffee_1",
-      "referenceName" : "Donation Coffee 1",
+      "referenceName" : "1 Coffee",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "24.99",
+      "familyShareable" : false,
+      "internalID" : "6445662477",
+      "localizations" : [
+        {
+          "description" : "Buy us 5 cups of coffee",
+          "displayName" : "5 Coffees",
+          "locale" : "en_US"
+        },
+        {
+          "description" : "给我们买五杯咖啡!",
+          "displayName" : "五杯咖啡",
+          "locale" : "zh_CN"
+        }
+      ],
+      "productID" : "donation_coffee_5",
+      "referenceName" : "5 Coffees",
       "type" : "Consumable"
     }
   ],
   "settings" : {
     "_applicationInternalID" : "1510007574",
     "_developerTeamID" : "VBX3S26MR4",
-    "_lastSynchronizedDate" : 696462221.40194201
+    "_lastSynchronizedDate" : 697656978.51746202
   },
   "subscriptionGroups" : [
 

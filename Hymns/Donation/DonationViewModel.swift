@@ -5,6 +5,8 @@ import Resolver
 import StoreKit
 import SwiftUI
 
+// TODO unit test here: https://www.appcoda.com/storekit-testing/
+
 class DonationViewModel: ObservableObject {
 
     @Published var coffeeDonations: [Product]?
@@ -18,10 +20,10 @@ class DonationViewModel: ObservableObject {
     @MainActor
     func fetchProduct() async {
         do {
-            coffeeDonations = try await Product.products(for: ["donation_coffee_1"])
+            coffeeDonations = try await Product.products(for: ["donation_coffee_1", "donation_coffee_5"])
         } catch {
             Crashlytics.crashlytics().record(error: error)
-            coffeeDonations = nil
+            coffeeDonations = [Product]()
         }
     }
 

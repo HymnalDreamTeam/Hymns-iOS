@@ -15,11 +15,10 @@ struct DonationView: View {
     var body: some View {
         Group { () -> AnyView in
             guard let coffeeDonations = viewModel.coffeeDonations else {
-                return ErrorView().maxSize().eraseToAnyView()
-            }
-
-            guard !coffeeDonations.isEmpty else {
                 return ActivityIndicator().maxSize().eraseToAnyView()
+            }
+            guard !coffeeDonations.isEmpty else {
+                return ErrorView().maxSize().eraseToAnyView()
             }
             return ScrollView {
                 VStack(alignment: .leading) {
