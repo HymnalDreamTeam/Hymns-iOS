@@ -104,7 +104,6 @@ extension Object: _RealmCollectionValueInsideOptional {
         RLMInitializeWithValue(self, value, .partialPrivateShared())
     }
 
-
     // MARK: Properties
 
     /// The Realm which manages the object, or `nil` if the object is unmanaged.
@@ -134,7 +133,7 @@ extension Object: _RealmCollectionValueInsideOptional {
      It is not considered part of the public API.
      :nodoc:
      */
-    public override final class func _getProperties() -> [RLMProperty] {
+    @MainActor public override final class func _getProperties() -> [RLMProperty] {
         return ObjectUtil.getSwiftProperties(self)
     }
 
@@ -178,6 +177,56 @@ extension Object: _RealmCollectionValueInsideOptional {
      - returns: An array of property names.
      */
     @objc open class func indexedProperties() -> [String] { return [] }
+
+    /**
+     Override this method to specify a map of public-private property names.
+     This will set a different persisted property name on the Realm, and allows using the public name
+     for any operation with the property. (Ex: Queries, Sorting, ...).
+     This very helpful if you need to map property names from your `Device Sync` JSON schema
+     to local property names.
+
+     ```swift
+     class Person: Object {
+         @Persisted var firstName: String
+         @Persisted var birthDate: Date
+         @Persisted var age: Int
+
+         override class public func propertiesMapping() -> [String : String] {
+             ["firstName": "first_name",
+              "birthDate": "birth_date"]
+         }
+     }
+     ```
+
+     - note: Only property that have a different column name have to be added to the properties mapping
+     dictionary.
+     - note: In a migration block, when enumerating an old property with a public/private name, you will have to use
+     the old column name instead of the public one to retrieve the property value.
+
+     ```swift
+     let migrationBlock = { migration, oldSchemaVersion in
+         migration.enumerateObjects(ofType: "Person", { oldObj, newObj in
+            let oldPropertyValue = oldObj!["first_name"] as! String
+            // Use this value in migration
+         })
+     }
+     ```
+     This has to be done as well when renaming a property.
+     ```swift
+     let migrationBlock = { migration, oldSchemaVersion in
+         migration.renameProperty(onType: "Person", from: "first_name", to: "complete_name")
+     }
+     ```
+
+
+
+     - returns: A dictionary of public-private property names.
+     */
+    @objc open override class func propertiesMapping() -> [String: String] { return [:] }
+
+    /// :nodoc:
+    @available(*, unavailable, renamed: "propertiesMapping", message: "`_realmColumnNames` private API is unavailable in our Swift SDK, please use the override `.propertiesMapping()` instead.")
+    @objc open override class func _realmColumnNames() -> [String: String] { return [:] }
 
     // MARK: Key-Value Coding & Subscripting
 
@@ -518,11 +567,8 @@ extension Object: ThreadConfined {
  */
 @frozen public enum ObjectChange<T> {
     /**
-     If an error occurs, notification blocks are called one time with a `.error`
-     result and an `NSError` containing details about the error. Currently the
-     only errors which can occur are when opening the Realm on a background
-     worker thread to calculate the change set. The callback will never be
-     called again after `.error` is delivered.
+     Errors can no longer occur. This case is unused and will be removed in the
+     next major version.
      */
     case error(_ error: NSError)
     /**

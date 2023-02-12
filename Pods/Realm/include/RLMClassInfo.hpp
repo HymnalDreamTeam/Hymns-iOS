@@ -16,7 +16,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////
 
-#import <Foundation/Foundation.h>
+#import <Realm/RLMConstants.h>
 
 #import <realm/table_ref.hpp>
 #import <realm/util/optional.hpp>
@@ -35,7 +35,7 @@ namespace realm {
 class RLMObservationInfo;
 @class RLMRealm, RLMSchema, RLMObjectSchema, RLMProperty;
 
-NS_ASSUME_NONNULL_BEGIN
+RLM_HEADER_AUDIT_BEGIN(nullability, sendability)
 
 namespace std {
 // Add specializations so that NSString can be used as the key for hash containers
@@ -127,7 +127,7 @@ public:
     // Look up by name, throwing if it's not present
     RLMClassInfo& operator[](NSString *name);
     // Look up by table key, return none if its not present.
-    RLMClassInfo* operator[](realm::TableKey const& tableKey);
+    RLMClassInfo* operator[](realm::TableKey tableKey);
 
     // Emplaces a locally derived object schema into RLMSchemaInfo. This is used
     // when creating objects dynamically that are not registered in the Cocoa schema.
@@ -145,4 +145,4 @@ private:
     std::unordered_map<NSString *, RLMClassInfo> m_objects;
 };
 
-NS_ASSUME_NONNULL_END
+RLM_HEADER_AUDIT_END(nullability, sendability)

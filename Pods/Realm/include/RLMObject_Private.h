@@ -18,7 +18,7 @@
 
 #import <Realm/RLMObjectBase_Dynamic.h>
 
-NS_ASSUME_NONNULL_BEGIN
+RLM_HEADER_AUDIT_BEGIN(nullability, sendability)
 
 @class RLMProperty, RLMArray;
 typedef NS_ENUM(int32_t, RLMPropertyType);
@@ -37,6 +37,9 @@ FOUNDATION_EXTERN void RLMInitializeWithValue(RLMObjectBase *, id, RLMSchema *);
 
 + (nullable NSArray<RLMProperty *> *)_getProperties;
 + (bool)_realmIgnoreClass;
+
+// This enables to override the propertiesMapping in Swift, it is not to be used in Objective-C API.
++ (NSDictionary<NSString *, NSString *> *)propertiesMapping;
 
 @end
 
@@ -96,4 +99,4 @@ FOUNDATION_EXTERN uint64_t RLMObjectBaseGetCombineId(RLMObjectBase *);
 + (void)set:(RLMProperty *)property on:(RLMObjectBase *)parent to:(id)value;
 @end
 
-NS_ASSUME_NONNULL_END
+RLM_HEADER_AUDIT_END(nullability, sendability)

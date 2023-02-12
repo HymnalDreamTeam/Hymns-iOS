@@ -1,9 +1,10 @@
 #ifndef REALM_SYNC_CLIENT_BASE_HPP
 #define REALM_SYNC_CLIENT_BASE_HPP
 
-#include <realm/db.hpp>
+#include <realm/transaction.hpp>
 #include <realm/sync/config.hpp>
 #include <realm/sync/protocol.hpp>
+#include <realm/sync/socket_provider.hpp>
 #include <realm/util/functional.hpp>
 
 namespace realm::sync {
@@ -58,10 +59,11 @@ class SessionWrapper;
 /// either void async_wait_for_download_completion(WaitOperCompletionHandler) or
 /// bool wait_for_download_complete_or_client_stopped().
 struct ClientReset {
-    bool discard_local = false;
+    realm::ClientResyncMode mode;
     DBRef fresh_copy;
-    util::UniqueFunction<void(std::string path)> notify_before_client_reset;
-    util::UniqueFunction<void(std::string path, VersionID before_version)> notify_after_client_reset;
+    bool recovery_is_allowed = true;
+    util::UniqueFunction<void(VersionID)> notify_before_client_reset;
+    util::UniqueFunction<void(VersionID before_version, bool did_recover)> notify_after_client_reset;
 };
 
 /// \brief Protocol errors discovered by the client.
@@ -131,6 +133,9 @@ static constexpr milliseconds_type default_fast_reconnect_limit = 60000;    // 1
 using RoundtripTimeHandler = void(milliseconds_type roundtrip_time);
 
 struct ClientConfig {
+    ///
+    /// DEPRECATED - Will be removed in a future release
+    ///
     /// An optional custom platform description to be sent to server as part
     /// of a user agent description (HTTP `User-Agent` header).
     ///
@@ -138,6 +143,9 @@ struct ClientConfig {
     /// by util::get_platform_info().
     std::string user_agent_platform_info;
 
+    ///
+    /// DEPRECATED - Will be removed in a future release
+    ///
     /// Optional information about the application to be added to the user
     /// agent description as sent to the server. The intention is that the
     /// application describes itself using the following (rough) syntax:
@@ -171,7 +179,11 @@ struct ClientConfig {
     /// client does not require a thread-safe logger, and it guarantees that
     /// all logging happens either on behalf of the constructor or on behalf
     /// of the invocation of run().
-    util::Logger* logger = nullptr;
+    std::shared_ptr<util::Logger> logger;
+
+    // The SyncSocket instance used by the Sync Client for event synchronization
+    // and creating WebSockets. If not provided the default implementation will be used.
+    std::shared_ptr<sync::SyncSocketProvider> socket_provider;
 
     /// Use ports 80 and 443 by default instead of 7800 and 7801
     /// respectively. Ideally, these default ports should have been made
@@ -289,6 +301,14 @@ struct ClientConfig {
     ///
     /// Testing/debugging feature. Should never be enabled in production.
     bool disable_sync_to_disk = false;
+
+    /// The sync client supports tables without primary keys by synthesizing a
+    /// pk using the client file ident, which means that all changesets waiting
+    /// to be uploaded need to be rewritten with the correct ident the first time
+    /// we connect to the server. The modern server doesn't support this and
+    /// requires pks for all tables, so this is now only applicable to old sync
+    /// tests and so is disabled by default.
+    bool fix_up_object_ids = false;
 };
 
 /// \brief Information about an error causing a session to be temporarily
@@ -317,10 +337,23 @@ struct ClientConfig {
 /// sufficient.
 ///
 /// \sa set_connection_state_change_listener().
-struct SessionErrorInfo {
+struct SessionErrorInfo : public ProtocolErrorInfo {
+    SessionErrorInfo(const ProtocolErrorInfo& info, const std::error_code& ec)
+        : ProtocolErrorInfo(info)
+        , error_code(ec)
+    {
+    }
+    SessionErrorInfo(const std::error_code& ec, bool try_again)
+        : ProtocolErrorInfo(ec.value(), ec.message(), try_again)
+        , error_code(ec)
+    {
+    }
+    SessionErrorInfo(const std::error_code& ec, const std::string& msg, bool try_again)
+        : ProtocolErrorInfo(ec.value(), msg, try_again)
+        , error_code(ec)
+    {
+    }
     std::error_code error_code;
-    bool is_fatal;
-    const std::string& detailed_message;
 };
 
 enum class ConnectionState { disconnected, connecting, connected };

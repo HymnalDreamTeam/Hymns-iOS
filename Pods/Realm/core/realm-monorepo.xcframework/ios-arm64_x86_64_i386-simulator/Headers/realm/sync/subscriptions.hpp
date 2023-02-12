@@ -19,15 +19,16 @@
 #pragma once
 
 #include "realm/db.hpp"
-#include "realm/list.hpp"
 #include "realm/obj.hpp"
 #include "realm/query.hpp"
 #include "realm/timestamp.hpp"
 #include "realm/util/future.hpp"
 #include "realm/util/functional.hpp"
 #include "realm/util/optional.hpp"
+#include "realm/util/tagged_bool.hpp"
 
 #include <list>
+#include <set>
 #include <string_view>
 
 namespace realm::sync {
@@ -40,40 +41,33 @@ class SubscriptionStore;
 // send to the server in a QUERY or IDENT message.
 class Subscription {
 public:
-    // Returns the unique ID for this subscription.
-    ObjectId id() const;
+    // The unique ID for this subscription.
+    ObjectId id;
 
-    // Returns the timestamp of when this subscription was originally created.
-    Timestamp created_at() const;
+    // The timestamp of when this subscription was originally created.
+    Timestamp created_at;
 
-    // Returns the timestamp of the last time this subscription was updated by calling update_query.
-    Timestamp updated_at() const;
+    // The timestamp of the last time this subscription was updated by calling update_query.
+    Timestamp updated_at;
 
-    // Returns whether the subscription was created as an anonymous subscription or a named subscription.
-    bool has_name() const;
+    // The name of the subscription that was set when it was created, or util::none if it was created without a name.
+    util::Optional<std::string> name;
 
-    // Returns the name of the subscription that was set when it was created.
-    std::string_view name() const;
+    // The name of the object class of the query for this subscription.
+    std::string object_class_name;
 
-    // Returns the name of the object class of the query for this subscription.
-    std::string_view object_class_name() const;
+    // A stringified version of the query associated with this subscription.
+    std::string query_string;
 
-    // Returns a stringified version of the query associated with this subscription.
-    std::string_view query_string() const;
+    // Returns whether the 2 subscriptions passed have the same id.
+    friend bool operator==(const Subscription& lhs, const Subscription& rhs)
+    {
+        return lhs.id == rhs.id;
+    }
 
-private:
-    friend class SubscriptionSet;
-    friend class MutableSubscriptionSet;
-
+    Subscription() = default;
     Subscription(const SubscriptionStore* parent, Obj obj);
     Subscription(util::Optional<std::string> name, std::string object_class_name, std::string query_str);
-
-    ObjectId m_id;
-    Timestamp m_created_at;
-    Timestamp m_updated_at;
-    util::Optional<std::string> m_name;
-    std::string m_object_class_name;
-    std::string m_query_string;
 };
 
 // SubscriptionSets contain a set of unique queries by either name or Query object that will be constructed into a
@@ -83,16 +77,16 @@ public:
     /*
      * State diagram:
      *
-     *                    ┌───────────┬─────────►Error─────────┐
-     *                    │           │                        │
-     *                    │           │                        ▼
-     *   Uncommitted──►Pending──►Bootstrapping──►Complete───►Superseded
-     *                    │                                    ▲
-     *                    │                                    │
-     *                    └────────────────────────────────────┘
+     *                    ┌───────────┬─────────►Error──────────────────────────┐
+     *                    │           │                                         │
+     *                    │           │                                         ▼
+     *   Uncommitted──►Pending──►Bootstrapping──►AwaitingMark──►Complete───►Superseded
+     *                    │                            ▲
+     *                    │                            │
+     *                    └────────────────────────────┘
      *
      */
-    enum class State : int64_t {
+    enum class State {
         // This subscription set has not been persisted and has not been sent to the server. This state is only valid
         // for MutableSubscriptionSets
         Uncommitted = 0,
@@ -107,7 +101,12 @@ public:
         // The server responded to a later subscription set to this one and this one has been trimmed from the
         // local storage of subscription sets.
         Superseded,
+        // The last bootstrap message containing the initial state for this subscription set has been received. The
+        // client is awaiting a mark message to mark this subscription as fully caught up to history.
+        AwaitingMark,
     };
+
+    static constexpr int64_t EmptyVersion = int64_t(-1);
 
     // Used in tests.
     inline friend std::ostream& operator<<(std::ostream& o, State state)
@@ -122,6 +121,9 @@ public:
             case State::Bootstrapping:
                 o << "Bootstrapping";
                 break;
+            case State::AwaitingMark:
+                o << "AwaitingMark";
+                break;
             case State::Complete:
                 o << "Complete";
                 break;
@@ -135,8 +137,8 @@ public:
         return o;
     }
 
-    using iterator = std::vector<Subscription>::iterator;
     using const_iterator = std::vector<Subscription>::const_iterator;
+    using iterator = const_iterator; // Note: no mutable access provided through iterators.
 
     // This will make a copy of this subscription set with the next available version number and return it as
     // a mutable SubscriptionSet to be updated. The new SubscriptionSet's state will be Uncommitted. This
@@ -148,9 +150,14 @@ public:
     // set to skip a state (i.e. go from Pending to Complete or Pending to Superseded), and the future value
     // will the the state it actually reached.
     util::Future<State> get_state_change_notification(State notify_when) const;
+    void get_state_change_notification(
+        State notify_when, util::UniqueFunction<void(util::Optional<State>, util::Optional<Status>)> callback) const;
 
     // The query version number used in the sync wire protocol to identify this subscription set to the server.
     int64_t version() const;
+
+    // The database version that this subscription set was created at or -1 if Uncommitted.
+    DB::version_type snapshot_version() const;
 
     // The current state of this subscription set
     State state() const;
@@ -161,16 +168,16 @@ public:
     // Returns the number of subscriptions in the set.
     size_t size() const;
 
-    // A const_iterator interface for finding/working with individual subscriptions.
-    const_iterator begin() const;
-    const_iterator end() const;
+    // An iterator interface for finding/working with individual subscriptions.
+    iterator begin() const;
+    iterator end() const;
 
-    Subscription at(size_t index) const;
+    const Subscription& at(size_t index) const;
 
-    // Returns a const_iterator to the query matching either the name or Query object, or end() if no such
+    // Returns a pointer to the Subscription matching either the name or Query object, or nullptr if no such
     // subscription exists.
-    const_iterator find(StringData name) const;
-    const_iterator find(const Query& query) const;
+    const Subscription* find(StringData name) const;
+    const Subscription* find(const Query& query) const;
 
     // Returns this query set as extended JSON in a form suitable for transmitting to the server.
     std::string to_ext_json() const;
@@ -183,11 +190,13 @@ protected:
     friend class SubscriptionStore;
     struct SupersededTag {
     };
+    using MakingMutableCopy = util::TaggedBool<class MakingMutableCopyTag>;
 
     explicit SubscriptionSet(std::weak_ptr<const SubscriptionStore> mgr, int64_t version, SupersededTag);
-    explicit SubscriptionSet(std::weak_ptr<const SubscriptionStore> mgr, TransactionRef tr, Obj obj);
+    explicit SubscriptionSet(std::weak_ptr<const SubscriptionStore> mgr, const Transaction& tr, Obj obj,
+                             MakingMutableCopy making_mutable_copy = MakingMutableCopy(false));
 
-    void load_from_database(TransactionRef tr, Obj obj);
+    void load_from_database(Obj obj);
 
     // Get a reference to the SubscriptionStore. It may briefly extend the lifetime of the store.
     std::shared_ptr<const SubscriptionStore> get_flx_subscription_store() const;
@@ -198,7 +207,7 @@ protected:
     int64_t m_version = 0;
     State m_state = State::Uncommitted;
     std::string m_error_str;
-    DB::version_type m_snapshot_version;
+    DB::version_type m_snapshot_version = -1;
     std::vector<Subscription> m_subs;
 };
 
@@ -206,9 +215,6 @@ class MutableSubscriptionSet : public SubscriptionSet {
 public:
     // Erases all subscriptions in the subscription set.
     void clear();
-
-    iterator begin();
-    iterator end();
 
     // Inserts a new subscription into the set if one does not exist already - returns an iterator to the
     // subscription and a bool that is true if a new subscription was actually created. The SubscriptionSet
@@ -232,10 +238,16 @@ public:
     // will have
     std::pair<iterator, bool> insert_or_assign(const Query& query);
 
+    void import(const SubscriptionSet&);
+
     // Erases a subscription pointed to by an iterator. Returns the "next" iterator in the set - to provide
     // STL compatibility. The SubscriptionSet must be in the Uncommitted state to call this - otherwise
     // this will throw.
-    iterator erase(const_iterator it);
+    iterator erase(iterator it);
+
+    // Erases the subscription identified by the argument, if any. Returns true if anything was removed.
+    bool erase(StringData name);
+    bool erase(const Query& query);
 
     // Updates the state of the transaction and optionally updates its error information.
     //
@@ -247,16 +259,14 @@ public:
     void update_state(State state, util::Optional<std::string_view> error_str = util::none);
 
     // This commits any changes to the subscription set and returns an this subscription set as an immutable view
-    // from after the commit.
-    //
-    // This must be called as an r-value, like this:
-    //     auto sub_set = std::move(mut_sub_set).commit();
-    SubscriptionSet commit() &&;
+    // from after the commit. This MutableSubscriptionSet object must not be used after calling commit().
+    SubscriptionSet commit();
 
 protected:
     friend class SubscriptionStore;
 
-    MutableSubscriptionSet(std::weak_ptr<const SubscriptionStore> mgr, TransactionRef tr, Obj obj);
+    MutableSubscriptionSet(std::weak_ptr<const SubscriptionStore> mgr, TransactionRef tr, Obj obj,
+                           MakingMutableCopy making_mutable_copy = MakingMutableCopy{false});
 
     void insert_sub(const Subscription& sub);
 
@@ -300,9 +310,14 @@ public:
     // zero.
     SubscriptionSet get_active() const;
 
+    struct VersionInfo {
+        int64_t latest;
+        int64_t active;
+        int64_t pending_mark;
+    };
     // Returns the version number of the current active and latest subscription sets. This function guarantees
     // that the versions will be read from the same underlying transaction and will thus be consistent.
-    std::pair<int64_t, int64_t> get_active_and_latest_versions() const;
+    VersionInfo get_version_info() const;
 
     // To be used internally by the sync client. This returns a mutable view of a subscription set by its
     // version ID. If there is no SubscriptionSet with that version ID, this throws KeyNotFound.
@@ -312,6 +327,16 @@ public:
     // version ID. If there is no SubscriptionSet with that version ID, this throws KeyNotFound.
     SubscriptionSet get_by_version(int64_t version_id) const;
 
+    // Fulfill all previous subscriptions by superceding them. This does not
+    // affect the mutable subscription identified by the parameter.
+    void supercede_all_except(MutableSubscriptionSet& mut_sub) const;
+
+    // Returns true if there have been commits to the DB since the given version
+    bool would_refresh(DB::version_type version) const noexcept;
+
+    using TableSet = std::set<std::string, std::less<>>;
+    TableSet get_tables_for_latest(const Transaction& tr) const;
+
     struct PendingSubscription {
         int64_t query_version;
         DB::version_type snapshot_version;
@@ -319,6 +344,7 @@ public:
 
     util::Optional<PendingSubscription> get_next_pending_version(int64_t last_query_version,
                                                                  DB::version_type after_client_version) const;
+    std::vector<SubscriptionSet> get_pending_subscriptions() const;
 
 private:
     using std::enable_shared_from_this<SubscriptionStore>::weak_from_this;
@@ -326,24 +352,6 @@ private:
 
 protected:
     explicit SubscriptionStore(DBRef db, util::UniqueFunction<void(int64_t)> on_new_subscription_set);
-
-    struct SubscriptionKeys {
-        TableKey table;
-        ColKey id;
-        ColKey created_at;
-        ColKey updated_at;
-        ColKey name;
-        ColKey object_class_name;
-        ColKey query_str;
-    };
-
-    struct SubscriptionSetKeys {
-        TableKey table;
-        ColKey snapshot_version;
-        ColKey state;
-        ColKey error_str;
-        ColKey subscriptions;
-    };
 
     struct NotificationRequest {
         NotificationRequest(int64_t version, util::Promise<SubscriptionSet::State> promise,
@@ -368,9 +376,22 @@ protected:
     friend class Subscription;
     friend class SubscriptionSet;
 
+    TableKey m_sub_table;
+    ColKey m_sub_id;
+    ColKey m_sub_created_at;
+    ColKey m_sub_updated_at;
+    ColKey m_sub_name;
+    ColKey m_sub_object_class_name;
+    ColKey m_sub_query_str;
+
+    TableKey m_sub_set_table;
+    ColKey m_sub_set_version_num;
+    ColKey m_sub_set_snapshot_version;
+    ColKey m_sub_set_state;
+    ColKey m_sub_set_error_str;
+    ColKey m_sub_set_subscriptions;
+
     util::UniqueFunction<void(int64_t)> m_on_new_subscription_set;
-    std::unique_ptr<SubscriptionSetKeys> m_sub_set_keys;
-    std::unique_ptr<SubscriptionKeys> m_sub_keys;
 
     mutable std::mutex m_pending_notifications_mutex;
     mutable std::condition_variable m_pending_notifications_cv;

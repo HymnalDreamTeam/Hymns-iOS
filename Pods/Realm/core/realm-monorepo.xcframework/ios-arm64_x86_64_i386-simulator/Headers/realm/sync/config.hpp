@@ -22,6 +22,7 @@
 #include <realm/db.hpp>
 #include <realm/util/assert.hpp>
 #include <realm/util/optional.hpp>
+#include <realm/sync/protocol.hpp>
 
 #include <functional>
 #include <memory>
@@ -35,44 +36,44 @@ namespace realm {
 class SyncUser;
 class SyncSession;
 class Realm;
+class ThreadSafeReference;
 
 namespace bson {
 class Bson;
 }
 
-enum class SimplifiedProtocolError {
-    ConnectionIssue,
-    UnexpectedInternalIssue,
-    SessionIssue,
-    BadAuthentication,
-    PermissionDenied,
-    ClientResetRequested,
-};
-
 namespace sync {
 using port_type = std::uint_fast16_t;
 enum class ProtocolError;
-}
-
-SimplifiedProtocolError get_simplified_error(sync::ProtocolError err);
+} // namespace sync
 
 struct SyncError {
-
     std::error_code error_code;
-    std::string message;
     bool is_fatal;
+    /// A consolidated explanation of the error, including a link to the server logs if applicable.
+    std::string message;
+    // Just the minimal error message, without any log URL.
+    std::string_view simple_message;
+    // The URL to the associated server log if any. If not supplied by the server, this will be `empty()`.
+    std::string_view logURL;
+    /// A dictionary of extra user information associated with this error.
+    /// If this is a client reset error, the keys for c_original_file_path_key and c_recovery_file_path_key will be
+    /// populated with the relevant filesystem paths.
     std::unordered_map<std::string, std::string> user_info;
     /// The sync server may send down an error that the client does not recognize,
     /// whether because of a version mismatch or an oversight. It is still valuable
     /// to expose these errors so that users can do something about them.
     bool is_unrecognized_by_client = false;
+    // the server may explicitly send down an action the client should take as part of an error (i.e, client reset)
+    // if this is set, it overrides the clients interpretation of the error
+    sync::ProtocolErrorInfo::Action server_requests_action = sync::ProtocolErrorInfo::Action::NoAction;
+    // If this error resulted from a compensating write, this vector will contain information about each object
+    // that caused a compensating write and why the write was illegal.
+    std::vector<sync::CompensatingWriteErrorInfo> compensating_writes_info;
 
-    SyncError(std::error_code error_code, std::string message, bool is_fatal)
-        : error_code(std::move(error_code))
-        , message(std::move(message))
-        , is_fatal(is_fatal)
-    {
-    }
+    SyncError(std::error_code error_code, std::string msg, bool is_fatal,
+              util::Optional<std::string> serverLog = util::none,
+              std::vector<sync::CompensatingWriteErrorInfo> compensating_writes = {});
 
     static constexpr const char c_original_file_path_key[] = "ORIGINAL_FILE_PATH";
     static constexpr const char c_recovery_file_path_key[] = "RECOVERY_FILE_PATH";
@@ -92,21 +93,14 @@ struct SyncError {
 
 using SyncSessionErrorHandler = void(std::shared_ptr<SyncSession>, SyncError);
 
-enum class ClientResyncMode : unsigned char {
-    // Fire a client reset error
-    Manual,
-    // Discard local changes, without disrupting accessors or closing the Realm
-    DiscardLocal,
-};
-
 enum class ReconnectMode {
-    /// This is the mode that should always be used in production. In this
+    /// This is the mode that should always be used by SDKs. In this
     /// mode the client uses a scheme for determining a reconnect delay that
     /// prevents it from creating too many connection requests in a short
     /// amount of time (i.e., a server hammering protection mechanism).
     normal,
 
-    /// For testing purposes only.
+    /// For internal sync-client testing purposes only.
     ///
     /// Never reconnect automatically after the connection is closed due to
     /// an error. Allow immediate reconnect if the connection was closed
@@ -125,6 +119,40 @@ enum class SyncSessionStopPolicy {
     AfterChangesUploaded, // Once all Realms/Sessions go out of scope, wait for uploads to complete and stop.
 };
 
+enum class ClientResyncMode : unsigned char {
+    // Fire a client reset error
+    Manual,
+    // Discard local changes, without disrupting accessors or closing the Realm
+    DiscardLocal,
+    // Attempt to recover unsynchronized but committed changes.
+    Recover,
+    // Attempt recovery and if that fails, discard local.
+    RecoverOrDiscard,
+};
+
+enum class SyncClientHookEvent {
+    DownloadMessageReceived,
+    DownloadMessageIntegrated,
+    BootstrapMessageProcessed,
+    BootstrapProcessed,
+    ErrorMessageReceived,
+};
+
+enum class SyncClientHookAction {
+    NoAction,
+    EarlyReturn,
+    SuspendWithRetryableError,
+};
+
+struct SyncClientHookData {
+    SyncClientHookEvent event;
+    sync::SyncProgress progress;
+    int64_t query_version;
+    sync::DownloadBatchState batch_state;
+    size_t num_changesets;
+    const sync::ProtocolErrorInfo* error_info = nullptr;
+};
+
 struct SyncConfig {
     struct FLXSyncEnabled {
     };
@@ -140,27 +168,50 @@ struct SyncConfig {
 
     std::shared_ptr<SyncUser> user;
     std::string partition_value;
-    bool flx_sync_requested = false;
     SyncSessionStopPolicy stop_policy = SyncSessionStopPolicy::AfterChangesUploaded;
     std::function<SyncSessionErrorHandler> error_handler;
+    bool flx_sync_requested = false;
+
+    // When integrating a flexible sync bootstrap, process this many bytes of changeset data in a single integration
+    // attempt. This many bytes of changesets will be uncompressed and held in memory while being applied.
+    size_t flx_bootstrap_batch_size_bytes = 1024 * 1024;
+
+    // {@
+    /// DEPRECATED - Will be removed in a future release
+    // The following parameters are only used by the default SyncSocket implementation. Custom SyncSocket
+    // implementations must handle these directly, if these features are supported.
+    util::Optional<std::string> authorization_header_name; // not used
+    std::map<std::string, std::string> custom_http_headers;
     bool client_validate_ssl = true;
     util::Optional<std::string> ssl_trust_certificate_path;
     std::function<SSLVerifyCallback> ssl_verify_callback;
     util::Optional<ProxyConfig> proxy_config;
+    // @}
 
     // If true, upload/download waits are canceled on any sync error and not just fatal ones
     bool cancel_waits_on_nonfatal_error = false;
 
-    util::Optional<std::string> authorization_header_name;
-    std::map<std::string, std::string> custom_http_headers;
+    // If false, changesets incoming from the server are discarded without
+    // applying them to the Realm file. This is required when writing objects
+    // directly to replication, and will break horribly otherwise
+    bool apply_server_changes = true;
 
     // The name of the directory which Realms should be backed up to following
     // a client reset in ClientResyncMode::Manual mode
     util::Optional<std::string> recovery_directory;
     ClientResyncMode client_resync_mode = ClientResyncMode::Manual;
     std::function<void(std::shared_ptr<Realm> before_frozen)> notify_before_client_reset;
-    std::function<void(std::shared_ptr<Realm> before_frozen, std::shared_ptr<Realm> after)> notify_after_client_reset;
+    std::function<void(std::shared_ptr<Realm> before_frozen, ThreadSafeReference after, bool did_recover)>
+        notify_after_client_reset;
 
+    // Used by core testing to hook into the sync client when various events occur and maybe inject
+    // errors/disconnects deterministically.
+    std::function<SyncClientHookAction(std::weak_ptr<SyncSession>, const SyncClientHookData&)>
+        on_sync_client_event_hook;
+
+    bool simulate_integration_error = false;
+
+    SyncConfig() = default;
     explicit SyncConfig(std::shared_ptr<SyncUser> user, bson::Bson partition);
     explicit SyncConfig(std::shared_ptr<SyncUser> user, std::string partition);
     explicit SyncConfig(std::shared_ptr<SyncUser> user, const char* partition);

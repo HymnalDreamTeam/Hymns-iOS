@@ -16,8 +16,6 @@
 //
 ////////////////////////////////////////////////////////////////////////////
 
-#import <Foundation/Foundation.h>
-
 #import <Realm/RLMRealm.h>
 
 /**
@@ -25,7 +23,7 @@
  */
 typedef NS_ENUM(NSUInteger, RLMSyncSessionState) {
     /// The sync session is actively communicating or attempting to communicate
-    /// with MongoDB Realm. A session is considered Active even if
+    /// with Atlas App Services. A session is considered Active even if
     /// it is not currently connected. Check the connection state instead if you
     /// wish to know if the connection is currently online.
     RLMSyncSessionStateActive,
@@ -45,9 +43,9 @@ typedef NS_ENUM(NSUInteger, RLMSyncConnectionState) {
     /// to connect, either because the session is inactive or because it is
     /// waiting to retry after a failed connection.
     RLMSyncConnectionStateDisconnected,
-    /// The sync session is attempting to connect to MongoDB Realm.
+    /// The sync session is attempting to connect to Atlas App Services.
     RLMSyncConnectionStateConnecting,
-    /// The sync session is currently connected to MongoDB Realm.
+    /// The sync session is currently connected to Atlas App Services.
     RLMSyncConnectionStateConnected,
 };
 
@@ -101,7 +99,7 @@ typedef NS_ENUM(NSUInteger, RLMSyncProgressMode) {
  */
 typedef void(^RLMProgressNotificationBlock)(NSUInteger transferredBytes, NSUInteger transferrableBytes);
 
-NS_ASSUME_NONNULL_BEGIN
+RLM_HEADER_AUDIT_BEGIN(nullability, sendability)
 
 /**
  A token object corresponding to a progress notification block on a session object.
@@ -109,18 +107,20 @@ NS_ASSUME_NONNULL_BEGIN
  To stop notifications manually, call `-invalidate` on it. Notifications should be stopped before
  the token goes out of scope or is destroyed.
  */
+RLM_SWIFT_SENDABLE RLM_FINAL // is internally thread-safe
 @interface RLMProgressNotificationToken : RLMNotificationToken
 @end
 
 /**
- An object encapsulating a MongoDB Realm "session". Sessions represent the
+ An object encapsulating an Atlas App Services "session". Sessions represent the
  communication between the client (and a local Realm file on disk), and the server
- (and a remote Realm with a given partition value stored on MongoDB Realm).
+ (and a remote Realm with a given partition value stored on Atlas App Services).
 
  Sessions are always created by the SDK and vended out through various APIs. The
  lifespans of sessions associated with Realms are managed automatically. Session
  objects can be accessed from any thread.
  */
+RLM_SWIFT_SENDABLE RLM_FINAL // is internally thread-safe
 @interface RLMSyncSession : NSObject
 
 /// The session's current state.
@@ -147,13 +147,13 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  Temporarily suspend syncronization and disconnect from the server.
 
- The session will not attempt to connect to MongoDB Realm until `resume`
+ The session will not attempt to connect to Atlas App Services until `resume`
  is called or the Realm file is closed and re-opened.
  */
 - (void)suspend;
 
 /**
- Resume syncronization and reconnect to MongoDB Realm after suspending.
+ Resume syncronization and reconnect to Atlas App Services after suspending.
 
  This is a no-op if the session was already active or if the session is invalid.
  Newly created sessions begin in the Active state and do not need to be resumed.
@@ -240,6 +240,7 @@ NS_REFINED_FOR_SWIFT;
  session as the sync session itself is created asynchronously, and may not exist
  yet when -[RLMRealm asyncOpenWithConfiguration:completion:] returns.
  */
+RLM_SWIFT_SENDABLE RLM_FINAL // is internally thread-safe
 @interface RLMAsyncOpenTask : NSObject
 /**
  Register a progress notification block.
@@ -272,4 +273,4 @@ NS_REFINED_FOR_SWIFT;
 - (void)cancel;
 @end
 
-NS_ASSUME_NONNULL_END
+RLM_HEADER_AUDIT_END(nullability, sendability)

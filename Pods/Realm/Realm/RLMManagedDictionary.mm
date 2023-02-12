@@ -62,20 +62,7 @@ struct DictionaryCallbackWrapper {
 
     }
 
-    void operator()(realm::DictionaryChangeSet const& changes, std::exception_ptr err) {
-        if (err) {
-            previousTransaction->end_read();
-            try {
-                rethrow_exception(err);
-            }
-            catch (...) {
-                NSError *error = nil;
-                RLMRealmTranslateException(&error);
-                block(nil, nil, error);
-                return;
-            }
-        }
-
+    void operator()(realm::DictionaryChangeSet const& changes) {
         if (changes.deletions.empty() &&
             changes.insertions.empty() &&
             changes.modifications.empty()) {
@@ -635,12 +622,14 @@ static RLMNotificationToken *RLMAddNotificationBlock(RLMManagedDictionary *colle
     auto token = [[RLMCancellationToken alloc] init];
 
     RLMClassInfo *info = collection.objectInfo;
-    realm::KeyPathArray keyPathArray = RLMKeyPathArrayFromStringArray(realm, info, keyPaths);
+    auto keyPathArray = RLMKeyPathArrayFromStringArray(realm, info, keyPaths);
 
     if (!queue) {
         [realm verifyNotificationsAreSupported:true];
         token->_realm = realm;
-        token->_token = RLMGetBackingCollection(collection).add_key_based_notification_callback(DictionaryCallbackWrapper{block, collection}, std::move(keyPathArray));
+        token->_token = RLMGetBackingCollection(collection)
+            .add_key_based_notification_callback(DictionaryCallbackWrapper{block, collection},
+                                                 std::move(keyPathArray));
         return token;
     }
 
@@ -659,7 +648,9 @@ static RLMNotificationToken *RLMAddNotificationBlock(RLMManagedDictionary *colle
             return;
         }
         RLMManagedDictionary *collection = [realm resolveThreadSafeReference:tsr];
-        token->_token = RLMGetBackingCollection(collection).add_key_based_notification_callback(DictionaryCallbackWrapper{block, collection}, std::move(keyPathArray));
+        token->_token = RLMGetBackingCollection(collection)
+            .add_key_based_notification_callback(DictionaryCallbackWrapper{block, collection},
+                                                 std::move(keyPathArray));
     });
     return token;
 }

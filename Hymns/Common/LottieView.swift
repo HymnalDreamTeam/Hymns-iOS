@@ -14,8 +14,8 @@ struct LottieView: UIViewRepresentable {
 
     func makeUIView(context: UIViewRepresentableContext<LottieView>) -> UIView {
         let view = UIView()
-        let animation = Animation.named(fileName)
-        let animationView = AnimationView()
+        let animation = LottieAnimation.named(fileName)
+        let animationView = LottieAnimationView()
         animationView.animation = animation
         animationView.contentMode = .scaleAspectFit
         animationView.loopMode = loop ? .loop : .playOnce

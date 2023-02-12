@@ -188,7 +188,6 @@ public final class MutableSet<Element: RealmCollectionValue>: RLMSwiftCollection
         rlmSet.union(other.rlmSet)
     }
 
-    // swiftlint:disable:next identifier_name
     @objc class func _unmanagedCollection() -> RLMSet<AnyObject> {
         if let type = Element.self as? ObjectBase.Type {
             return RLMSet(objectClassName: type.className())
@@ -214,6 +213,11 @@ public final class MutableSet<Element: RealmCollectionValue>: RLMSwiftCollection
 
     @objc private func descriptionWithMaxDepth(_ depth: UInt) -> String {
         return RLMDescriptionWithMaxDepth("MutableSet", rlmSet, depth)
+    }
+
+    /// :nodoc:
+    public func makeIterator() -> RLMIterator<Element> {
+        return RLMIterator(collection: collection)
     }
 
     /// :nodoc:

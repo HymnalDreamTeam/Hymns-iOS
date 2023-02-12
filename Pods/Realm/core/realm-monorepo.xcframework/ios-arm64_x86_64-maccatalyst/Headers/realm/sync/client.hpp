@@ -11,8 +11,8 @@
 
 #include <realm/util/buffer.hpp>
 #include <realm/util/functional.hpp>
-#include <realm/util/logger.hpp>
 #include <realm/sync/client_base.hpp>
+#include <realm/sync/socket_provider.hpp>
 #include <realm/sync/subscriptions.hpp>
 
 namespace realm::sync {
@@ -41,7 +41,7 @@ public:
     /// Run the internal event-loop of the client. At most one thread may
     /// execute run() at any given time. The call will not return until somebody
     /// calls stop().
-    void run();
+    void run() noexcept;
 
     /// See run().
     ///
@@ -130,7 +130,7 @@ class BadServerUrl; // Exception
 /// their bound state), as long as they are associated with the same client
 /// object, or with two different client objects that do not overlap in
 /// time. This means, in particular, that it is an error to create two bound
-/// session objects for the same local Realm file, it they are associated with
+/// session objects for the same local Realm file, if they are associated with
 /// two different client objects that overlap in time, even if the session
 /// objects do not overlap in time (in their bound state). It is the
 /// responsibility of the application to ensure that these rules are adhered
@@ -209,12 +209,18 @@ public:
         /// change in the C++ mock server.
         std::string service_identifier = "";
 
+        ///
+        /// DEPRECATED - Will be removed in a future release
+        ///
         /// authorization_header_name is the name of the HTTP header containing
         /// the Realm access token. The value of the HTTP header is "Bearer <token>".
         /// authorization_header_name does not participate in session
         /// multiplexing partitioning.
         std::string authorization_header_name = "Authorization";
 
+        ///
+        /// DEPRECATED - Will be removed in a future release
+        ///
         /// custom_http_headers is a map of custom HTTP headers. The keys of the map
         /// are HTTP header names, and the values are the corresponding HTTP
         /// header values.
@@ -222,10 +228,16 @@ public:
         /// authorization_header_name must be set to anther value.
         std::map<std::string, std::string> custom_http_headers;
 
+        ///
+        /// DEPRECATED - Will be removed in a future release
+        ///
         /// Controls whether the server certificate is verified for SSL
         /// connections. It should generally be true in production.
         bool verify_servers_ssl_certificate = true;
 
+        ///
+        /// DEPRECATED - Will be removed in a future release
+        ///
         /// ssl_trust_certificate_path is the path of a trust/anchor
         /// certificate used by the client to verify the server certificate.
         /// ssl_trust_certificate_path is only used if the protocol is ssl and
@@ -243,6 +255,9 @@ public:
         /// store is used otherwise.
         util::Optional<std::string> ssl_trust_certificate_path;
 
+        ///
+        /// DEPRECATED - Will be removed in a future release
+        ///
         /// If Client::Config::ssl_verify_callback is set, that function is called
         /// to verify the certificate, unless verify_servers_ssl_certificate is
         /// false.
@@ -305,13 +320,22 @@ public:
         using ClientReset = sync::ClientReset;
         util::Optional<ClientReset> client_reset_config;
 
+        ///
+        /// DEPRECATED - Will be removed in a future release
+        ///
         util::Optional<SyncConfig::ProxyConfig> proxy_config;
+
+        /// When integrating a flexible sync bootstrap, process this many bytes of
+        /// changeset data in a single integration attempt.
+        size_t flx_bootstrap_batch_size_bytes = 1024 * 1024;
 
         /// Set to true to cause the integration of the first received changeset
         /// (in a DOWNLOAD message) to fail.
         ///
         /// This feature exists exclusively for testing purposes at this time.
         bool simulate_integration_error = false;
+
+        std::function<SyncClientHookAction(const SyncClientHookData&)> on_sync_client_event_hook;
     };
 
     /// \brief Start a new session for the specified client-side Realm.
@@ -458,8 +482,7 @@ public:
     /// under Session for more on this.
     void set_progress_handler(util::UniqueFunction<ProgressHandler>);
 
-
-    using ConnectionStateChangeListener = void(ConnectionState, const SessionErrorInfo*);
+    using ConnectionStateChangeListener = void(ConnectionState, util::Optional<SessionErrorInfo>);
 
     /// \brief Install a connection state change listener.
     ///
@@ -498,7 +521,7 @@ public:
 
     //@{
     /// Deprecated! Use set_connection_state_change_listener() instead.
-    using ErrorHandler = void(std::error_code, bool is_fatal, const std::string& detailed_message);
+    using ErrorHandler = void(const SessionErrorInfo&);
     void set_error_handler(util::UniqueFunction<ErrorHandler>);
     //@}
 
@@ -710,6 +733,8 @@ public:
 
     void on_new_flx_sync_subscription(int64_t new_version);
 
+    util::Future<std::string> send_test_command(std::string command_body);
+
 private:
     SessionWrapper* m_impl = nullptr;
 
@@ -761,14 +786,12 @@ inline void Session::detach() noexcept
 
 inline void Session::set_error_handler(util::UniqueFunction<ErrorHandler> handler)
 {
-    auto handler_2 = [handler = std::move(handler)](ConnectionState state, const SessionErrorInfo* error_info) {
+    auto handler_2 = [handler = std::move(handler)](ConnectionState state,
+                                                    const util::Optional<SessionErrorInfo>& error_info) {
         if (state != ConnectionState::disconnected)
             return;
         REALM_ASSERT(error_info);
-        std::error_code ec = error_info->error_code;
-        bool is_fatal = error_info->is_fatal;
-        const std::string& detailed_message = error_info->detailed_message;
-        handler(ec, is_fatal, detailed_message); // Throws
+        handler(*error_info); // Throws
     };
     set_connection_state_change_listener(std::move(handler_2)); // Throws
 }

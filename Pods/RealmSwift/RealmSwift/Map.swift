@@ -522,7 +522,7 @@ public final class Map<Key: _MapKey, Value: RealmCollectionValue>: RLMSwiftColle
             // ...
          case .update:
             // This case is hit:
-            // - after the token is intialized
+            // - after the token is initialized
             // - when the name property of an object in the
             // collection is modified
             // - when an element is inserted or removed
@@ -642,7 +642,6 @@ public final class Map<Key: _MapKey, Value: RealmCollectionValue>: RLMSwiftColle
         return Map(objc: rlmDictionary.thaw())
     }
 
-    // swiftlint:disable:next identifier_name
     @objc class func _unmanagedCollection() -> RLMDictionary<AnyObject, AnyObject> {
         if let type = Value.self as? HasClassName.Type ?? Value.PersistedType.self as? HasClassName.Type {
             return RLMDictionary(objectClassName: type.className(), keyType: Key._rlmType)
@@ -754,11 +753,8 @@ extension Map {
     case update(Collection, deletions: [Collection.Key], insertions: [Collection.Key], modifications: [Collection.Key])
 
     /**
-     If an error occurs, notification blocks are called one time with a `.error`
-     result and an `NSError` containing details about the error. This can only
-     currently happen if opening the Realm on a background thread to calcuate
-     the change set fails. The callback will never be called again after it is
-     invoked with a .error value.
+     Errors can no longer occur. This case is unused and will be removed in the
+     next major version.
      */
     case error(Error)
 

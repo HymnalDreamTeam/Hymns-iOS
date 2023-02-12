@@ -571,7 +571,7 @@ static KeyPath keyPathFromString(RLMRealm *realm,
         TableKey tk = info->objectSchema->table_key;
         ColKey ck;
         if (property.type == RLMPropertyTypeObject) {
-            ck = info->tableColumn(property.columnName);
+            ck = info->tableColumn(property.name);
             info = &realm->_info[property.objectClassName];
             rlmObjectSchema = schema[property.objectClassName];
         } else if (property.type == RLMPropertyTypeLinkingObjects) {
@@ -579,7 +579,7 @@ static KeyPath keyPathFromString(RLMRealm *realm,
             info = &realm->_info[property.objectClassName];
             rlmObjectSchema = schema[property.objectClassName];
         } else {
-            ck = info->tableColumn(property.columnName);
+            ck = info->tableColumn(property.name);
         }
 
         keyPairs.push_back(std::make_pair(tk, ck));
@@ -587,12 +587,16 @@ static KeyPath keyPathFromString(RLMRealm *realm,
     return keyPairs;
 }
 
-KeyPathArray RLMKeyPathArrayFromStringArray(RLMRealm *realm,
-                                            RLMClassInfo *info,
-                                            NSArray<NSString *> *keyPaths) {
-    KeyPathArray keyPathArray;
-    for (NSString *keyPath in keyPaths) {
-        keyPathArray.push_back(keyPathFromString(realm , realm.schema, info, info->rlmObjectSchema, keyPath));
+std::optional<KeyPathArray> RLMKeyPathArrayFromStringArray(RLMRealm *realm,
+                                                           RLMClassInfo *info,
+                                                           NSArray<NSString *> *keyPaths) {
+    std::optional<KeyPathArray> keyPathArray;
+    if (keyPaths.count) {
+        keyPathArray.emplace();
+        for (NSString *keyPath in keyPaths) {
+            keyPathArray->push_back(keyPathFromString(realm , realm.schema, info,
+                                                      info->rlmObjectSchema, keyPath));
+        }
     }
     return keyPathArray;
 }

@@ -11,19 +11,32 @@ public func equal<T1: Equatable, T2: Equatable>(
 }
 
 public func ==<T1: Equatable, T2: Equatable>(
-    lhs: Expectation<(T1, T2)>,
+    lhs: SyncExpectation<(T1, T2)>,
+    rhs: (T1, T2)?
+) {
+    lhs.to(equal(rhs))
+}
+
+public func ==<T1: Equatable, T2: Equatable>(
+    lhs: AsyncExpectation<(T1, T2)>,
     rhs: (T1, T2)?
 ) {
     lhs.to(equal(rhs))
 }
 
 public func !=<T1: Equatable, T2: Equatable>(
-    lhs: Expectation<(T1, T2)>,
+    lhs: SyncExpectation<(T1, T2)>,
     rhs: (T1, T2)?
 ) {
     lhs.toNot(equal(rhs))
 }
 
+public func !=<T1: Equatable, T2: Equatable>(
+    lhs: AsyncExpectation<(T1, T2)>,
+    rhs: (T1, T2)?
+) {
+    lhs.toNot(equal(rhs))
+}
 
 // MARK: Tuple3
 
@@ -36,14 +49,29 @@ public func equal<T1: Equatable, T2: Equatable, T3: Equatable>(
 }
 
 public func ==<T1: Equatable, T2: Equatable, T3: Equatable>(
-    lhs: Expectation<(T1, T2, T3)>,
+    lhs: SyncExpectation<(T1, T2, T3)>,
     rhs: (T1, T2, T3)?
 ) {
     lhs.to(equal(rhs))
 }
 
+public func ==<T1: Equatable, T2: Equatable, T3: Equatable>(
+    lhs: AsyncExpectation<(T1, T2, T3)>,
+    rhs: (T1, T2, T3)?
+) {
+    lhs.to(equal(rhs))
+}
+
+
 public func !=<T1: Equatable, T2: Equatable, T3: Equatable>(
-    lhs: Expectation<(T1, T2, T3)>,
+    lhs: SyncExpectation<(T1, T2, T3)>,
+    rhs: (T1, T2, T3)?
+) {
+    lhs.toNot(equal(rhs))
+}
+
+public func !=<T1: Equatable, T2: Equatable, T3: Equatable>(
+    lhs: AsyncExpectation<(T1, T2, T3)>,
     rhs: (T1, T2, T3)?
 ) {
     lhs.toNot(equal(rhs))
@@ -61,14 +89,28 @@ public func equal<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable>(
 }
 
 public func ==<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable>(
-    lhs: Expectation<(T1, T2, T3, T4)>,
+    lhs: SyncExpectation<(T1, T2, T3, T4)>,
+    rhs: (T1, T2, T3, T4)?
+) {
+    lhs.to(equal(rhs))
+}
+
+public func ==<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable>(
+    lhs: AsyncExpectation<(T1, T2, T3, T4)>,
     rhs: (T1, T2, T3, T4)?
 ) {
     lhs.to(equal(rhs))
 }
 
 public func !=<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable>(
-    lhs: Expectation<(T1, T2, T3, T4)>,
+    lhs: SyncExpectation<(T1, T2, T3, T4)>,
+    rhs: (T1, T2, T3, T4)?
+) {
+    lhs.toNot(equal(rhs))
+}
+
+public func !=<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable>(
+    lhs: AsyncExpectation<(T1, T2, T3, T4)>,
     rhs: (T1, T2, T3, T4)?
 ) {
     lhs.toNot(equal(rhs))
@@ -86,14 +128,29 @@ public func equal<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5
 }
 
 public func ==<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: Equatable>(
-    lhs: Expectation<(T1, T2, T3, T4, T5)>,
+    lhs: SyncExpectation<(T1, T2, T3, T4, T5)>,
     rhs: (T1, T2, T3, T4, T5)?
 ) {
     lhs.to(equal(rhs))
 }
 
+public func ==<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: Equatable>(
+    lhs: AsyncExpectation<(T1, T2, T3, T4, T5)>,
+    rhs: (T1, T2, T3, T4, T5)?
+) {
+    lhs.to(equal(rhs))
+}
+
+
 public func !=<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: Equatable>(
-    lhs: Expectation<(T1, T2, T3, T4, T5)>,
+    lhs: SyncExpectation<(T1, T2, T3, T4, T5)>,
+    rhs: (T1, T2, T3, T4, T5)?
+) {
+    lhs.toNot(equal(rhs))
+}
+
+public func !=<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: Equatable>(
+    lhs: AsyncExpectation<(T1, T2, T3, T4, T5)>,
     rhs: (T1, T2, T3, T4, T5)?
 ) {
     lhs.toNot(equal(rhs))
@@ -111,14 +168,28 @@ public func equal<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5
 }
 
 public func ==<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: Equatable, T6: Equatable>(
-    lhs: Expectation<(T1, T2, T3, T4, T5, T6)>,
+    lhs: SyncExpectation<(T1, T2, T3, T4, T5, T6)>,
+    rhs: (T1, T2, T3, T4, T5, T6)?
+) {
+    lhs.to(equal(rhs))
+}
+
+public func ==<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: Equatable, T6: Equatable>(
+    lhs: AsyncExpectation<(T1, T2, T3, T4, T5, T6)>,
     rhs: (T1, T2, T3, T4, T5, T6)?
 ) {
     lhs.to(equal(rhs))
 }
 
 public func !=<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: Equatable, T6: Equatable>(
-    lhs: Expectation<(T1, T2, T3, T4, T5, T6)>,
+    lhs: SyncExpectation<(T1, T2, T3, T4, T5, T6)>,
+    rhs: (T1, T2, T3, T4, T5, T6)?
+) {
+    lhs.toNot(equal(rhs))
+}
+
+public func !=<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: Equatable, T6: Equatable>(
+    lhs: AsyncExpectation<(T1, T2, T3, T4, T5, T6)>,
     rhs: (T1, T2, T3, T4, T5, T6)?
 ) {
     lhs.toNot(equal(rhs))

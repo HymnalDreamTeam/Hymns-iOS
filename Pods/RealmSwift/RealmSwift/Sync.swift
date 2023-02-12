@@ -24,7 +24,7 @@ import Combine
 #endif
 
 /**
- An object representing a MongoDB Realm user.
+ An object representing an Atlas App Services user.
 
  - see: `RLMUser`
  */
@@ -48,7 +48,7 @@ public extension User {
 }
 
 /**
- A manager which configures and manages MongoDB Realm synchronization-related
+ A manager which configures and manages Atlas App Services synchronization-related
  functionality.
 
  - see: `RLMSyncManager`
@@ -149,16 +149,29 @@ extension SyncError {
     public func deleteRealmUserInfo() -> SyncError.ActionToken? {
         return _nsError.__rlmSync_errorActionToken()
     }
+
+    /**
+     Sync errors which originate from the server also produce server-side logs
+     which may contain useful information. When applicable, this field contains
+     the url of those logs, and `nil` otherwise.
+     */
+    public var serverLogURL: URL? {
+        (userInfo[RLMServerLogURLKey] as? String).flatMap(URL.init)
+    }
 }
 
 /**
- An error associated with network requests made to the authentication server. This type of error
- may be returned in the callback block to `SyncUser.logIn()` upon certain types of failed login
- attempts (for example, if the request is malformed or if the server is experiencing an issue).
-
- - see: `RLMSyncAuthError`
+ An error which occurred when making a request to Atlas App Services. Most User
+ and App functions which can fail report errors of this type.
  */
-public typealias SyncAuthError = RLMSyncAuthError
+public typealias AppError = RLMAppError
+
+extension AppError {
+    /// When applicable, the HTTP status code which resulted in this error.
+    var httpStatusCode: Int? {
+        userInfo[RLMHTTPStatusCodeKey] as? Int
+    }
+}
 
 /**
  An enum which can be used to specify the level of logging.
@@ -169,77 +182,54 @@ public typealias SyncLogLevel = RLMSyncLogLevel
 
 /**
  A data type whose values represent different authentication providers that can be used with
- MongoDB Realm.
+ Atlas App Services.
 
  - see: `RLMIdentityProvider`
  */
 public typealias Provider = RLMIdentityProvider
 
 /**
- * How the Realm client should validate the identity of the server for secure connections.
- *
- * By default, when connecting to MongoDB Realm over HTTPS, Realm will
- * validate the server's HTTPS certificate using the system trust store and root
- * certificates. For additional protection against man-in-the-middle (MITM)
- * attacks and similar vulnerabilities, you can pin a certificate or public key,
- * and reject all others, even if they are signed by a trusted CA.
- */
-@frozen public enum ServerValidationPolicy {
-    /// Perform no validation and accept potentially invalid certificates.
-    ///
-    /// - warning: DO NOT USE THIS OPTION IN PRODUCTION.
-    case none
-
-    /// Use the default server trust evaluation based on the system-wide CA
-    /// store. Any certificate signed by a trusted CA will be accepted.
-    case system
-
-    /// Use a specific pinned certificate to validate the server identify.
-    ///
-    /// This will only connect to a server if one of the server certificates
-    /// matches the certificate stored at the given local path and that
-    /// certificate has a valid trust chain.
-    ///
-    /// On macOS, the certificate files may be in any of the formats supported
-    /// by SecItemImport(), including PEM and .cer (see SecExternalFormat for a
-    /// complete list of possible formats). On iOS and other platforms, only
-    /// DER .cer files are supported.
-    case pinCertificate(path: URL)
-}
-
-/**
  An enum used to determines file recovery behavior in the event of a client reset.
+ Defaults to ``.recoverUnsyncedChanges``.
 
  - see: `RLMClientResetMode`
  - see: https://docs.mongodb.com/realm/sync/error-handling/client-resets/
 */
-public enum ClientResetMode {
-    /// - see: `RLMClientResetModeManual`
-    case manual
-    /// - see: `RLMClientResetModeDiscardLocal` for more details on `.discardLocal` behavior
+@frozen public enum ClientResetMode {
+    /// All unsynchronized local changes are automatically discarded and the local state is
+    /// automatically reverted to the most recent state from the server. Unsynchronized changes
+    /// can then be recovered in the post-client-reset callback block.
     ///
-    /// The first `.discardLocal` function argument notifies prior to a client reset occurring.
-    /// The `Realm` argument contains a frozen copy of the Realm state prior to client reset.
+    /// If ``.discardLocal`` is enabled but the client reset operation is unable to complete
+    /// then the client reset process reverts to manual mode. Example: During a destructive schema change this
+    /// mode will fail and invoke the manual client reset handler.
+    ///
+    /// - parameter beforeReset: a function invoked prior to a client reset occurring.
+    /// - parameter before: a frozen copy of the local Realm state prior to client reset.
+    /// - seeAlso ``RLMClientResetBeforeBlock``
+
+    /// Example Usage
     /// ```
-    /// user.configuration(partitionValue: "myPartition", clientResetMode: .discardLocal({ beforeRealm in
+    /// user.configuration(partitionValue: "myPartition", clientResetMode: .discardUnsyncedChanges({ before in
     ///    var recoveryConfig = Realm.Configuration()
     ///    recoveryConfig.fileURL = myRecoveryPath
     ///    do {
-    ///        beforeRealm.writeCopy(configuration: recoveryConfig)
+    ///        before.writeCopy(configuration: recoveryConfig)
     ///        // The copied realm could be used later for recovery, debugging, reporting, etc.
     ///    } catch {
     ///        // handle error
     ///    }
     /// }, nil))
     /// ```
-    ///  For more details on ((Realm) -> Void)? = nil,
-    /// - see: `RLMClientResetBeforeBlock`
     ///
-    /// The second `.discardLocal` function argument notifies after a client reset has occurred.
-    /// - Within this function, the first `Realm` argument contains a frozen copy of the local Realm state prior to client reset.
-    /// - Within this function, the second `Realm` argument contains the Realm state after client reset.
+    /// - parameter afterReset: a function invoked  after the client reset reset process has occurred.
+    /// - parameter before: a frozen copy of the local Realm state prior to client reset.
+    /// - parameter after: a live instance of the realm after client reset.
+    /// - seeAlso ``RLMClientResetAfterBlock``
+    ///
+    /// Example Usage
     /// ```
-    /// user.configuration(partitionValue: "myPartition", clientResetMode: .discardLocal( nil, { beforeRealm, afterRealm in
+    /// user.configuration(partitionValue: "myPartition", clientResetMode: .discardUnsyncedChanges( nil, { before, after in
     /// // This block could be used to add custom recovery logic, back-up a realm file, send reporting, etc.
     /// for object in before.objects(myClass.self) {
     ///     let res = after.objects(myClass.self)
@@ -251,45 +241,227 @@ public enum ClientResetMode {
     /// }
     /// }))
     /// ```
-    ///  For more details on the second block: ((Realm, Realm) -> Void)? = nil,
-    /// - see: `RLMClientResetAfterBlock`
-    case discardLocal(((Realm) -> Void)? = nil, ((Realm, Realm) -> Void)? = nil)
+    @available(*, deprecated, message: "Use discardUnsyncedChanges")
+    @preconcurrency
+    case discardLocal(beforeReset: (@Sendable (_ before: Realm) -> Void)? = nil,
+                      afterReset: (@Sendable (_ before: Realm, _ after: Realm) -> Void)? = nil)
+    /// All unsynchronized local changes are automatically discarded and the local state is
+    /// automatically reverted to the most recent state from the server. Unsynchronized changes
+    /// can then be recovered in the post-client-reset callback block.
+    ///
+    /// If ``.discardUnsyncedChanges`` is enabled but the client reset operation is unable to complete
+    /// then the client reset process reverts to manual mode. Example: During a destructive schema change this
+    /// mode will fail and invoke the manual client reset handler.
+    ///
+    /// - parameter beforeReset: a function invoked prior to a client reset occurring.
+    /// - parameter before: a frozen copy of the local Realm state prior to client reset.
+    /// - seeAlso ``RLMClientResetBeforeBlock``
+
+    /// Example Usage
+    /// ```
+    /// user.configuration(partitionValue: "myPartition", clientResetMode: .discardUnsyncedChanges({ before in
+    ///    var recoveryConfig = Realm.Configuration()
+    ///    recoveryConfig.fileURL = myRecoveryPath
+    ///    do {
+    ///        before.writeCopy(configuration: recoveryConfig)
+    ///        // The copied realm could be used later for recovery, debugging, reporting, etc.
+    ///    } catch {
+    ///        // handle error
+    ///    }
+    /// }, nil))
+    /// ```
+    ///
+    /// - parameter afterReset: a function invoked  after the client reset reset process has occurred.
+    /// - parameter before: a frozen copy of the local Realm state prior to client reset.
+    /// - parameter after: a live instance of the realm after client reset.
+    /// - seeAlso ``RLMClientResetAfterBlock``
+    ///
+    /// Example Usage
+    /// ```
+    /// user.configuration(partitionValue: "myPartition", clientResetMode: .discardUnsyncedChanges( nil, { before, after in
+    /// // This block could be used to add custom recovery logic, back-up a realm file, send reporting, etc.
+    /// for object in before.objects(myClass.self) {
+    ///     let res = after.objects(myClass.self)
+    ///     if (res.filter("primaryKey == %@", object.primaryKey).first != nil) {
+    ///         // ...custom recovery logic...
+    ///     } else {
+    ///         // ...custom recovery logic...
+    ///     }
+    /// }
+    /// }))
+    /// ```
+    @preconcurrency
+    case discardUnsyncedChanges(beforeReset: (@Sendable (_ before: Realm) -> Void)? = nil,
+                                afterReset: (@Sendable (_ before: Realm, _ after: Realm) -> Void)? = nil)
+    /// The client device will download a realm realm which reflects the latest
+    /// state of the server after a client reset. A recovery process is run locally in
+    /// an attempt to integrate the server version with any local changes from
+    /// before the client reset occurred.
+    ///
+    /// The changes are integrated with the following rules:
+    /// 1. Objects created locally that were not synced before client reset will be integrated.
+    /// 2. If an object has been deleted on the server, but was modified on the client, the delete takes precedence and the update is discarded
+    /// 3. If an object was deleted on the client, but not the server, then the client delete instruction is applied.
+    /// 4. In the case of conflicting updates to the same field, the client update is applied.
+    ///
+    /// If the recovery integration fails, the client reset process falls back to ``ClientResetMode.manual``.
+    /// The recovery integration will fail if the "Client Recovery" setting is not enabled on the server.
+    /// Integration may also fail in the event of an incompatible schema change.
+    ///
+    /// - parameter beforeReset: a function invoked prior to a client reset occurring.
+    /// - parameter before: a frozen copy of the local Realm state prior to client reset.
+    /// - seeAlso ``RLMClientResetBeforeBlock``
+
+    /// Example Usage
+    /// ```
+    /// user.configuration(partitionValue: "myPartition", clientResetMode: .discardUnsyncedChanges({ before in
+    ///    var recoveryConfig = Realm.Configuration()
+    ///    recoveryConfig.fileURL = myRecoveryPath
+    ///    do {
+    ///        before.writeCopy(configuration: recoveryConfig)
+    ///        // The copied realm could be used later for recovery, debugging, reporting, etc.
+    ///    } catch {
+    ///        // handle error
+    ///    }
+    /// }, nil))
+    /// ```
+    ///
+    /// - parameter afterReset: a function invoked  after the client reset reset process has occurred.
+    /// - parameter before: a frozen copy of the local Realm state prior to client reset.
+    /// - parameter after: a live instance of the realm after client reset.
+    /// - seeAlso ``RLMClientResetAfterBlock``
+    ///
+    /// Example Usage
+    /// ```
+    /// user.configuration(partitionValue: "myPartition", clientResetMode: .discardUnsyncedChanges( nil, { before, after in
+    /// // This block could be used to add custom recovery logic, back-up a realm file, send reporting, etc.
+    /// for object in before.objects(myClass.self) {
+    ///     let res = after.objects(myClass.self)
+    ///     if (res.filter("primaryKey == %@", object.primaryKey).first != nil) {
+    ///         // ...custom recovery logic...
+    ///     } else {
+    ///         // ...custom recovery logic...
+    ///     }
+    /// }
+    /// }))
+    /// ```
+    @preconcurrency
+    case recoverUnsyncedChanges(beforeReset: (@Sendable (_ before: Realm) -> Void)? = nil,
+                                afterReset: (@Sendable (_ before: Realm, _ after: Realm) -> Void)? = nil)
+    /// The client device will download a realm with objects reflecting the latest version of the server. A recovery
+    /// process is run locally in an attempt to integrate the server version with any local changes from before the
+    /// client reset occurred.
+    ///
+    /// The changes are integrated with the following rules:
+    /// 1. Objects created locally that were not synced before client reset will be integrated.
+    /// 2. If an object has been deleted on the server, but was modified on the client, the delete takes precedence and the update is discarded
+    /// 3. If an object was deleted on the client, but not the server, then the client delete instruction is applied.
+    /// 4. In the case of conflicting updates to the same field, the client update is applied.
+    ///
+    /// If the recovery integration fails, the client reset process falls back to ``ClientResetMode.discardUnsyncedChanges``.
+    /// The recovery integration will fail if the "Client Recovery" setting is not enabled on the server.
+    /// Integration may also fail in the event of an incompatible schema change.
+    ///
+    /// - parameter beforeReset: a function invoked prior to a client reset occurring.
+    /// - parameter before: a frozen copy of the local Realm state prior to client reset.
+    /// - seeAlso ``RLMClientResetBeforeBlock``
+
+    /// Example Usage
+    /// ```
+    /// user.configuration(partitionValue: "myPartition", clientResetMode: .discardUnsyncedChanges({ before in
+    ///    var recoveryConfig = Realm.Configuration()
+    ///    recoveryConfig.fileURL = myRecoveryPath
+    ///    do {
+    ///        before.writeCopy(configuration: recoveryConfig)
+    ///        // The copied realm could be used later for recovery, debugging, reporting, etc.
+    ///    } catch {
+    ///        // handle error
+    ///    }
+    /// }, nil))
+    /// ```
+    ///
+    /// - parameter afterReset: a function invoked  after the client reset reset process has occurred.
+    /// - parameter before: a frozen copy of the local Realm state prior to client reset.
+    /// - parameter after: a live instance of the realm after client reset.
+    /// - seeAlso ``RLMClientResetAfterBlock``
+    ///
+    /// Example Usage
+    /// ```
+    /// user.configuration(partitionValue: "myPartition", clientResetMode: .discardUnsyncedChanges( nil, { before, after in
+    /// // This block could be used to add custom recovery logic, back-up a realm file, send reporting, etc.
+    /// for object in before.objects(myClass.self) {
+    ///     let res = after.objects(myClass.self)
+    ///     if (res.filter("primaryKey == %@", object.primaryKey).first != nil) {
+    ///         // ...custom recovery logic...
+    ///     } else {
+    ///         // ...custom recovery logic...
+    ///     }
+    /// }
+    /// }))
+    /// ```
+    @preconcurrency
+    case recoverOrDiscardUnsyncedChanges(beforeReset: (@Sendable (_ before: Realm) -> Void)? = nil,
+                                         afterReset: (@Sendable (_ before: Realm, _ after: Realm) -> Void)? = nil)
+    /// - seeAlso: ``RLMClientResetModeManual``
+    ///
+    /// The manual client reset mode handler can be set in two places:
+    /// 1. As an ErrorReportingBlock argument in the ClientResetMode enum (``ErrorReportingBlock?` = nil`).
+    /// 2. As an ErrorReportingBlock in the ``SyncManager.errorHandler`` property.
+    /// - seeAlso: ``RLMSyncManager.errorHandler``
+    ///
+    /// During an ``RLMSyncErrorClientResetError`` the block executed is determined by the following rules
+    /// - If an error reporting block is set in ``ClientResetMode`` and the ``SyncManager``, the ``ClientResetMode`` block will be executed.
+    /// - If an error reporting block is set in either the ``ClientResetMode`` or the ``SyncManager``, but not both, the single block will execute.
+    /// - If no block is set in either location, the client reset will not be handled. The application will likely need to be restarted and unsynced local changes may be lost.
+    /// - note: The ``SyncManager.errorHandler`` is still invoked under all ``RLMSyncError``s *other than* ``RLMSyncErrorClientResetError``.
+    /// - seeAlso ``RLMSyncError`` for an exhaustive list.
+    @preconcurrency
+    case manual(errorHandler: ErrorReportingBlock? = nil)
 }
 
 /**
  A `SyncConfiguration` represents configuration parameters for Realms intended to sync with
- MongoDB Realm.
+ Atlas App Services.
  */
-@frozen public struct SyncConfiguration {
+@frozen public struct SyncConfiguration: Sendable {
     /// The `SyncUser` who owns the Realm that this configuration should open.
-    public let user: User
+    public var user: User {
+        config.user
+    }
 
     /**
      The value this Realm is partitioned on. The partition key is a property defined in
-     MongoDB Realm. All classes with a property with this value will be synchronized to the
+     Atlas App Services. All classes with a property with this value will be synchronized to the
      Realm.
      */
-    public let partitionValue: AnyBSON?
+    public var partitionValue: AnyBSON? {
+        ObjectiveCSupport.convert(object: config.partitionValue)
+    }
 
     /**
-     A policy that determines what should happen when all references to Realms opened by this
-     configuration go out of scope.
-     */
-    internal let stopPolicy: RLMSyncStopPolicy
+     An enum which determines file recovery behavior in the event of a client reset.
+     - note: Defaults to ``.recoverUnsyncedChanges``
 
-    /**
-     An enum which determines file recovery behvaior in the event of a client reset.
-     - note: Defaults to `.manual`
-
-     - see: `ClientResetMode` and `RLMClientResetMode`
+     - see: ``ClientResetMode`` and ``RLMClientResetMode``
      - see: https://docs.mongodb.com/realm/sync/error-handling/client-resets/
     */
-    public let clientResetMode: ClientResetMode
-
-    /**
-     Determines if the sync configuration is flexible sync or not
-     */
-    internal let isFlexibleSync: Bool
+    public var clientResetMode: ClientResetMode {
+        switch config.clientResetMode {
+        case .manual:
+            return .manual(errorHandler: config.manualClientResetHandler)
+        case  .discardUnsyncedChanges, .discardLocal:
+            return .discardUnsyncedChanges(beforeReset: ObjectiveCSupport.convert(object: config.beforeClientReset),
+                                           afterReset: ObjectiveCSupport.convert(object: config.afterClientReset))
+        case .recoverUnsyncedChanges:
+            return .recoverUnsyncedChanges(beforeReset: ObjectiveCSupport.convert(object: config.beforeClientReset),
+                                           afterReset: ObjectiveCSupport.convert(object: config.afterClientReset))
+        case .recoverOrDiscardUnsyncedChanges:
+            return .recoverOrDiscardUnsyncedChanges(beforeReset: ObjectiveCSupport.convert(object: config.beforeClientReset),
+                                                    afterReset: ObjectiveCSupport.convert(object: config.afterClientReset))
+        @unknown default:
+            fatalError()
+        }
+    }
 
     /**
      By default, Realm.asyncOpen() swallows non-fatal connection errors such as
@@ -297,53 +469,17 @@ public enum ClientResetMode {
      this is set to `true`, instead the error will be reported to the callback
      and the async open will be cancelled.
      */
-    public let cancelAsyncOpenOnNonFatalErrors: Bool
-
-    internal init(config: RLMSyncConfiguration) {
-        self.user = config.user
-        self.stopPolicy = config.stopPolicy
-        self.partitionValue = ObjectiveCSupport.convert(object: config.partitionValue)
-        self.cancelAsyncOpenOnNonFatalErrors = config.cancelAsyncOpenOnNonFatalErrors
-        self.isFlexibleSync = config.enableFlexibleSync
-        switch config.clientResetMode {
-        case .manual:
-            self.clientResetMode = .manual
-        case .discardLocal:
-            self.clientResetMode = .discardLocal(ObjectiveCSupport.convert(object: config.beforeClientReset), ObjectiveCSupport.convert(object: config.afterClientReset))
-        @unknown default:
-            fatalError("what's best in this case?")
-        }
+    public var cancelAsyncOpenOnNonFatalErrors: Bool {
+        config.cancelAsyncOpenOnNonFatalErrors
     }
 
-    func asConfig() -> RLMSyncConfiguration {
-        let syncConfiguration: RLMSyncConfiguration
-        if isFlexibleSync {
-            syncConfiguration = RLMSyncConfiguration(user: user, stopPolicy: stopPolicy, enableFlexibleSync: isFlexibleSync)
-        } else {
-            switch clientResetMode {
-            case .manual:
-                syncConfiguration = RLMSyncConfiguration(user: user,
-                                                         partitionValue: partitionValue.map(ObjectiveCSupport.convertBson),
-                                                         stopPolicy: stopPolicy,
-                                                         clientResetMode: .manual,
-                                                         notifyBeforeReset: nil,
-                                                         notifyAfterReset: nil)
-            case .discardLocal(let before, let after):
-                syncConfiguration = RLMSyncConfiguration(user: user,
-                                                         partitionValue: partitionValue.map(ObjectiveCSupport.convertBson),
-                                                         stopPolicy: stopPolicy,
-                                                         clientResetMode: .discardLocal,
-                                                         notifyBeforeReset: ObjectiveCSupport.convert(object: before),
-                                                         notifyAfterReset: ObjectiveCSupport.convert(object: after))
-            }
-
-        }
-        syncConfiguration.cancelAsyncOpenOnNonFatalErrors = cancelAsyncOpenOnNonFatalErrors
-        return syncConfiguration
+    @Unchecked internal var config: RLMSyncConfiguration
+    internal init(config: RLMSyncConfiguration) {
+        self.config = config
     }
 }
 
-/// Structure providing an interface to call a MongoDB Realm function with the provided name and arguments.
+/// Structure providing an interface to call an Atlas App Services function with the provided name and arguments.
 ///
 ///     user.functions.sum([1, 2, 3, 4, 5]) { sum, error in
 ///         guard case let .int64(value) = sum else {
@@ -456,78 +592,60 @@ public extension User {
     /**
      Create a sync configuration instance.
 
-     Additional settings can be optionally specified. Descriptions of these
-     settings follow.
-
-     `ClientResetMode` is `.manual` by default.
-
-     - warning: NEVER disable SSL validation for a system running in production.
-     */
-    func configuration<T: BSON>(partitionValue: T) -> Realm.Configuration {
-        let config = self.__configuration(withPartitionValue: ObjectiveCSupport.convert(object: AnyBSON(partitionValue)))
-        return ObjectiveCSupport.convert(object: config)
-    }
-
-    /**
-     Create a sync configuration instance.
-
      - parameter partitionValue: The `BSON` value the Realm is partitioned on.
-     - parameter clientResetMode: Determines file recovery behavior during a client reset.
-     - parameter notifyBeforeClientReset: A callback which notifies prior to a client reset occurring. See: `notifyBeforeClientReset`.
-     - parameter notifyAfterClientReset: A callback which notifies after a client reset has occurred. See: `notifyAfterClientReset`.
+     - parameter clientResetMode: Determines file recovery behavior during a client reset. `.recoverUnsyncedChanges` by default.
+     - parameter cancelAsyncOpenOnNonFatalErrors: By default, Realm.asyncOpen()
+     swallows non-fatal connection errors such as a connection attempt timing
+     out and simply retries until it succeeds. If this is set to `true`, instead
+     the error will be reported to the callback and the async open will be
+     cancelled.
      */
+    @preconcurrency
     func configuration<T: BSON>(partitionValue: T,
-                                clientResetMode: ClientResetMode) -> Realm.Configuration {
-        var config: RLMRealmConfiguration
-        switch clientResetMode {
-        case .manual:
-            config = self.__configuration(withPartitionValue: ObjectiveCSupport.convert(object: AnyBSON(partitionValue)),
-                                              clientResetMode: .manual)
-        case .discardLocal(let beforeClientReset, let afterClientReset):
-            config = self.__configuration(withPartitionValue: ObjectiveCSupport.convert(object: AnyBSON(partitionValue)),
-                                              clientResetMode: .discardLocal,
-                                              notifyBeforeReset: ObjectiveCSupport.convert(object: beforeClientReset),
-                                              notifyAfterReset: ObjectiveCSupport.convert(object: afterClientReset))
-        }
-        return ObjectiveCSupport.convert(object: config)
+                                clientResetMode: ClientResetMode = .recoverUnsyncedChanges(beforeReset: nil, afterReset: nil),
+                                cancelAsyncOpenOnNonFatalErrors: Bool = false) -> Realm.Configuration {
+        return configuration(partitionValue: AnyBSON(partitionValue),
+                             clientResetMode: clientResetMode,
+                             cancelAsyncOpenOnNonFatalErrors: cancelAsyncOpenOnNonFatalErrors)
     }
 
     /**
      Create a sync configuration instance.
 
      - parameter partitionValue: Takes `nil` as a partition value.
+     - parameter clientResetMode: Determines file recovery behavior during a client reset. `.recoverUnsyncedChanges` by default.
      - parameter cancelAsyncOpenOnNonFatalErrors: By default, Realm.asyncOpen()
      swallows non-fatal connection errors such as a connection attempt timing
      out and simply retries until it succeeds. If this is set to `true`, instead
      the error will be reported to the callback and the async open will be
      cancelled.
-
-     - warning: NEVER disable SSL validation for a system running in production.
      */
+    @preconcurrency
     func configuration(partitionValue: AnyBSON,
+                       clientResetMode: ClientResetMode = .recoverUnsyncedChanges(beforeReset: nil, afterReset: nil),
                        cancelAsyncOpenOnNonFatalErrors: Bool = false) -> Realm.Configuration {
-        let config = self.__configuration(withPartitionValue: ObjectiveCSupport.convert(object: partitionValue))
-        let syncConfig = config.syncConfiguration!
-        syncConfig.cancelAsyncOpenOnNonFatalErrors = cancelAsyncOpenOnNonFatalErrors
-        config.syncConfiguration = syncConfig
-        return ObjectiveCSupport.convert(object: config)
-    }
-
-    /**
-     Create a sync configuration instance.
-
-     - parameter partitionValue: The `BSON` value the Realm is partitioned on.
-     - parameter cancelAsyncOpenOnNonFatalErrors: By default, Realm.asyncOpen()
-     swallows non-fatal connection errors such as a connection attempt timing
-     out and simply retries until it succeeds. If this is set to `true`, instead
-     the error will be reported to the callback and the async open will be
-     cancelled.
-
-     - warning: NEVER disable SSL validation for a system running in production.
-     */
-    func configuration<T: BSON>(partitionValue: T,
-                                cancelAsyncOpenOnNonFatalErrors: Bool = false) -> Realm.Configuration {
-        let config = self.__configuration(withPartitionValue: ObjectiveCSupport.convert(object: AnyBSON(partitionValue)))
+        var config: RLMRealmConfiguration
+        switch clientResetMode {
+        case .manual(let manualClientReset):
+            config = self.__configuration(withPartitionValue: ObjectiveCSupport.convert(object: partitionValue),
+                                          clientResetMode: .manual,
+                                          manualClientResetHandler: manualClientReset)
+        case .discardUnsyncedChanges(let beforeClientReset, let afterClientReset), .discardLocal(let beforeClientReset, let afterClientReset):
+            config = self.__configuration(withPartitionValue: ObjectiveCSupport.convert(object: partitionValue),
+                                          clientResetMode: .discardUnsyncedChanges,
+                                          notifyBeforeReset: ObjectiveCSupport.convert(object: beforeClientReset),
+                                          notifyAfterReset: ObjectiveCSupport.convert(object: afterClientReset))
+        case .recoverUnsyncedChanges(let beforeClientReset, let afterClientReset):
+            config = self.__configuration(withPartitionValue: ObjectiveCSupport.convert(object: partitionValue),
+                                          clientResetMode: .recoverUnsyncedChanges,
+                                          notifyBeforeReset: ObjectiveCSupport.convert(object: beforeClientReset),
+                                          notifyAfterReset: ObjectiveCSupport.convert(object: afterClientReset))
+        case .recoverOrDiscardUnsyncedChanges(let beforeClientReset, let afterClientReset):
+            config = self.__configuration(withPartitionValue: ObjectiveCSupport.convert(object: partitionValue),
+                                          clientResetMode: .recoverOrDiscardUnsyncedChanges,
+                                          notifyBeforeReset: ObjectiveCSupport.convert(object: beforeClientReset),
+                                          notifyAfterReset: ObjectiveCSupport.convert(object: afterClientReset))
+        }
         let syncConfig = config.syncConfiguration!
         syncConfig.cancelAsyncOpenOnNonFatalErrors = cancelAsyncOpenOnNonFatalErrors
         config.syncConfiguration = syncConfig
@@ -536,7 +654,7 @@ public extension User {
 
     /**
      The custom data of the user.
-     This is configured in your MongoDB Realm App.
+     This is configured in your Atlas App Services app.
     */
     var customData: Document {
         guard let rlmCustomData = self.__customData as RLMBSON?,
@@ -555,7 +673,7 @@ public extension User {
         return self.__mongoClient(withServiceName: serviceName)
     }
 
-    /// Call a MongoDB Realm function with the provided name and arguments.
+    /// Call an Atlas App Services function with the provided name and arguments.
     ///
     ///     user.functions.sum([1, 2, 3, 4, 5]) { sum, error in
     ///         guard case let .int64(value) = sum else {
@@ -706,9 +824,10 @@ public extension SyncSession {
 
      - see: `ProgressDirection`, `Progress`, `ProgressNotificationToken`
      */
+    @preconcurrency
     func addProgressNotification(for direction: ProgressDirection,
                                  mode: ProgressMode,
-                                 block: @escaping (Progress) -> Void) -> ProgressNotificationToken? {
+                                 block: @Sendable @escaping (Progress) -> Void) -> ProgressNotificationToken? {
         return __addProgressNotification(for: (direction == .upload ? .upload : .download),
                                          mode: (mode == .reportIndefinitely
                                             ? .reportIndefinitely
@@ -785,7 +904,7 @@ public extension User {
         }
     }
 
-    /// Permanently deletes this user from your MongoDB Realm app.
+    /// Permanently deletes this user from your Atlas App Services app.
     /// The users state will be set to `Removed` and the session will be destroyed.
     /// If the delete request fails, the local authentication state will be untouched.
     /// @returns A publisher that eventually return `Result.success` or `Error`.
@@ -866,6 +985,8 @@ extension User: ObservableObject {
 #endif
 
 public extension User {
+    // NEXT-MAJOR: This function returns the incorrect type. It should be Document
+    // rather than `[AnyHashable: Any]`
     /// Refresh a user's custom data. This will, in effect, refresh the user's auth session.
     /// @completion A completion that eventually return `Result.success(Dictionary)` with user's data or `Result.failure(Error)`.
     func refreshCustomData(_ completion: @escaping (Result<[AnyHashable: Any], Error>) -> Void) {
@@ -879,7 +1000,7 @@ public extension User {
     }
 }
 
-#if swift(>=5.6) && canImport(_Concurrency)
+#if canImport(_Concurrency)
 @available(macOS 10.15, tvOS 13.0, iOS 13.0, watchOS 6.0, *)
 public extension User {
     /// Links the currently authenticated user with a new identity, where the identity is defined by the credential
@@ -895,7 +1016,7 @@ public extension User {
     }
 }
 
-@available(macOS 12.0, tvOS 15.0, iOS 15.0, watchOS 8.0, *)
+@available(macOS 10.15, tvOS 13.0, iOS 13.0, watchOS 6.0, *)
 extension FunctionCallable {
     /// The implementation of @dynamicMemberLookup that allows  for `async await` callable return.
     ///
@@ -916,7 +1037,7 @@ extension FunctionCallable {
         }
     }
 }
-#endif // swift(>=5.5)
+#endif // swift(>=5.6)
 
 extension User {
     /**
@@ -927,10 +1048,107 @@ extension User {
      a realm with a flexible sync configuration, you won't be able to open a realm with a PBS configuration
      and the other way around.
 
-     @return A `Realm.Configuration` instance with a flexible sync configuration.
+     - parameter clientResetMode: Determines file recovery behavior during a client reset. `.recoverUnsyncedChanges` by default.
+     - parameter cancelAsyncOpenOnNonFatalErrors: By default, Realm.asyncOpen()
+     swallows non-fatal connection errors such as a connection attempt timing
+     out and simply retries until it succeeds. If this is set to `true`, instead
+     the error will be reported to the callback and the async open will be
+     cancelled.
+
+     - returns A `Realm.Configuration` instance with a flexible sync configuration.
      */
-    public func flexibleSyncConfiguration() -> Realm.Configuration {
-        let config = self.__flexibleSyncConfiguration()
+    public func flexibleSyncConfiguration(clientResetMode: ClientResetMode = .recoverUnsyncedChanges(),
+                                          cancelAsyncOpenOnNonFatalErrors: Bool = false) -> Realm.Configuration {
+        var config: RLMRealmConfiguration
+        switch clientResetMode {
+        case .manual(let block):
+            config = __flexibleSyncConfiguration(with: .manual, manualClientResetHandler: block)
+        case .discardUnsyncedChanges(let beforeBlock, let afterBlock),
+                .discardLocal(let beforeBlock, let afterBlock):
+            config = __flexibleSyncConfiguration(with: .discardUnsyncedChanges,
+                                                 notifyBeforeReset: ObjectiveCSupport.convert(object: beforeBlock),
+                                                 notifyAfterReset: ObjectiveCSupport.convert(object: afterBlock))
+        case .recoverUnsyncedChanges(let beforeBlock, let afterBlock):
+            config = __flexibleSyncConfiguration(with: .recoverUnsyncedChanges,
+                                                 notifyBeforeReset: ObjectiveCSupport.convert(object: beforeBlock),
+                                                 notifyAfterReset: ObjectiveCSupport.convert(object: afterBlock))
+        case .recoverOrDiscardUnsyncedChanges(let beforeBlock, let afterBlock):
+            config = __flexibleSyncConfiguration(with: .recoverOrDiscardUnsyncedChanges,
+                                                 notifyBeforeReset: ObjectiveCSupport.convert(object: beforeBlock),
+                                                 notifyAfterReset: ObjectiveCSupport.convert(object: afterBlock))
+        }
+        let syncConfig = config.syncConfiguration!
+        syncConfig.cancelAsyncOpenOnNonFatalErrors = cancelAsyncOpenOnNonFatalErrors
+        config.syncConfiguration = syncConfig
+        return ObjectiveCSupport.convert(object: config)
+    }
+
+    /**
+     Create a flexible sync configuration instance, which can be used to open a realm  which
+     supports flexible sync.
+
+     It won't be possible to combine flexible and partition sync in the same app, which means if you open
+     a realm with a flexible sync configuration, you won't be able to open a realm with a PBS configuration
+     and the other way around.
+
+     Using `rerunOnOpen` covers the cases where you want to re-run dynamic queries, for example time ranges.
+     ```
+     var config = user.flexibleSyncConfiguration(initialSubscriptions: { subscriptions in
+         subscriptions.append(QuerySubscription<User>() {
+             $0.birthdate < Date() && $0.birthdate > Calendar.current.date(byAdding: .year, value: 21)!
+         })
+     }, rerunOnOpen: true)
+     ```
+
+     - parameter clientResetMode: Determines file recovery behavior during a client reset. `.recoverUnsyncedChanges` by default.
+     - parameter initialSubscriptions: A block which receives a subscription set instance, that can be used to add an
+                                       initial set of subscriptions which will be executed when the Realm is first opened.
+     - parameter rerunOnOpen:          If true, allows to run the initial set of subscriptions specified, on every app startup.
+                                       This can be used to re-run dynamic time ranges and other queries that require a
+                                       re-computation of a static variable.
+     - parameter cancelAsyncOpenOnNonFatalErrors: By default, Realm.asyncOpen()
+     swallows non-fatal connection errors such as a connection attempt timing
+     out and simply retries until it succeeds. If this is set to `true`, instead
+     the error will be reported to the callback and the async open will be
+     cancelled.
+
+
+     - returns A `Realm.Configuration` instance with a flexible sync configuration.
+     */
+    @preconcurrency
+    public func flexibleSyncConfiguration(clientResetMode: ClientResetMode = .recoverUnsyncedChanges(),
+                                          cancelAsyncOpenOnNonFatalErrors: Bool = false,
+                                          initialSubscriptions: @escaping @Sendable (SyncSubscriptionSet) -> Void,
+                                          rerunOnOpen: Bool = false) -> Realm.Configuration {
+        var config: RLMRealmConfiguration
+        switch clientResetMode {
+        case .manual(let block):
+            config = self.__flexibleSyncConfiguration(initialSubscriptions: ObjectiveCSupport.convert(block: initialSubscriptions),
+                                                      rerunOnOpen: rerunOnOpen,
+                                                      clientResetMode: .manual,
+                                                      manualClientResetHandler: block)
+        case .discardUnsyncedChanges(let beforeBlock, let afterBlock), .discardLocal(let beforeBlock, let afterBlock):
+            config = self.__flexibleSyncConfiguration(initialSubscriptions: ObjectiveCSupport.convert(block: initialSubscriptions),
+                                                      rerunOnOpen: rerunOnOpen,
+                                                      clientResetMode: .discardUnsyncedChanges,
+                                                      notifyBeforeReset: ObjectiveCSupport.convert(object: beforeBlock),
+                                                      notifyAfterReset: ObjectiveCSupport.convert(object: afterBlock))
+        case .recoverUnsyncedChanges(let beforeBlock, let afterBlock):
+            config = self.__flexibleSyncConfiguration(initialSubscriptions: ObjectiveCSupport.convert(block: initialSubscriptions),
+                                                      rerunOnOpen: rerunOnOpen,
+                                                      clientResetMode: .recoverUnsyncedChanges,
+                                                      notifyBeforeReset: ObjectiveCSupport.convert(object: beforeBlock),
+                                                      notifyAfterReset: ObjectiveCSupport.convert(object: afterBlock))
+        case .recoverOrDiscardUnsyncedChanges(let beforeBlock, let afterBlock):
+            config = self.__flexibleSyncConfiguration(initialSubscriptions: ObjectiveCSupport.convert(block: initialSubscriptions),
+                                                      rerunOnOpen: rerunOnOpen,
+                                                      clientResetMode: .recoverOrDiscardUnsyncedChanges,
+                                                      notifyBeforeReset: ObjectiveCSupport.convert(object: beforeBlock),
+                                                      notifyAfterReset: ObjectiveCSupport.convert(object: afterBlock))
+        }
+        let syncConfig = config.syncConfiguration!
+        syncConfig.cancelAsyncOpenOnNonFatalErrors = cancelAsyncOpenOnNonFatalErrors
+        config.syncConfiguration = syncConfig
         return ObjectiveCSupport.convert(object: config)
     }
 }

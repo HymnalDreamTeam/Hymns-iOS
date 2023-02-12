@@ -22,16 +22,14 @@
 #include <string>
 #include <vector>
 
+#include <realm/object-store/object_schema.hpp>
 #include <realm/util/features.h>
 
 namespace realm {
-class ObjectSchema;
 class SchemaChange;
 class StringData;
 struct TableKey;
 struct Property;
-
-enum SchemaValidationMode : uint64_t { Basic = 0, Sync = 1, RejectEmbeddedOrphans = 2 };
 
 // How to handle update_schema() being called on a file which has
 // already been initialized with a different schema
@@ -107,7 +105,7 @@ enum class SchemaMode : uint8_t {
     // is not linked from any top level object types is included.
     AdditiveExplicit,
 
-    // Verify that the schema version has increased, call the migraiton
+    // Verify that the schema version has increased, call the migration
     // function, and then verify that the schema now matches.
     // The migration function is mandatory for this mode.
     //
@@ -115,6 +113,43 @@ enum class SchemaMode : uint8_t {
     // file use identical schemata.
     Manual
 };
+
+// Options for how to handle the schema when the file has classes and/or
+// properties not in the schema.
+//
+// Most schema modes allow the requested schema to be a subset of the actual
+// schema of the Realm file. By default, any properties or object types not in
+// the requested schema are simply ignored entirely and the Realm's in-memory
+// schema will always exactly match the requested one.
+struct SchemaSubsetMode {
+    // Add additional tables present in the Realm file to the schema. This is
+    // applicable to all schema modes except for Manual and ResetFile.
+    bool include_types : 1;
+
+    // Add additional columns in the tables present in the Realm file to the
+    // object schema for those types. The additional properties are always
+    // added to the end of persisted_properties. This is only applicable to
+    // Additive and ReadOnly schema modes.
+    bool include_properties : 1;
+
+    // The reported schema will always exactly match the requested one.
+    static const SchemaSubsetMode Strict;
+    // Additional object classes present in the Realm file are added to the
+    // requested schema, but all object types present in the requested schema
+    // will always exactly match even if there are additional columns in the
+    // tables.
+    static const SchemaSubsetMode AllClasses;
+    // Additional properties present in the Realm file are added to the
+    // requested schema, but tables not present in the schema are ignored.
+    static const SchemaSubsetMode AllProperties;
+    // Always report the complete schema.
+    static const SchemaSubsetMode Complete;
+};
+
+inline constexpr SchemaSubsetMode SchemaSubsetMode::Strict = {false, false};
+inline constexpr SchemaSubsetMode SchemaSubsetMode::AllClasses = {true, false};
+inline constexpr SchemaSubsetMode SchemaSubsetMode::AllProperties = {false, true};
+inline constexpr SchemaSubsetMode SchemaSubsetMode::Complete = {true, true};
 
 
 class Schema : private std::vector<ObjectSchema> {
@@ -147,13 +182,13 @@ public:
 
     // Verify that this schema is internally consistent (i.e. all properties are
     // valid, links link to types that actually exist, etc.)
-    void validate(uint64_t validation_mode = SchemaValidationMode::Basic) const;
+    void validate(SchemaValidationMode validation_mode = SchemaValidationMode::Basic) const;
 
     // Get the changes which must be applied to this schema to produce the passed-in schema
     std::vector<SchemaChange> compare(Schema const&, SchemaMode = SchemaMode::Automatic,
                                       bool include_removals = false) const;
 
-    void copy_keys_from(Schema const&) noexcept;
+    void copy_keys_from(Schema const&, SchemaSubsetMode subset_mode);
 
     friend bool operator==(Schema const&, Schema const&) noexcept;
     friend bool operator!=(Schema const& a, Schema const& b) noexcept
@@ -170,7 +205,9 @@ public:
 
 private:
     template <typename T, typename U, typename Func>
-    static void zip_matching(T&& a, U&& b, Func&& func) noexcept;
+    static void zip_matching(T&& a, U&& b, Func&& func);
+    // sort all the classes by name in order to speed up find(StringData name)
+    void sort_schema();
 };
 
 namespace schema_change {
@@ -184,6 +221,8 @@ struct RemoveTable {
 
 struct ChangeTableType {
     const ObjectSchema* object;
+    const ObjectSchema::ObjectType* old_table_type;
+    const ObjectSchema::ObjectType* new_table_type;
 };
 
 struct AddInitialProperties {
@@ -219,6 +258,7 @@ struct MakePropertyRequired {
 struct AddIndex {
     const ObjectSchema* object;
     const Property* property;
+    IndexType type;
 };
 
 struct RemoveIndex {
