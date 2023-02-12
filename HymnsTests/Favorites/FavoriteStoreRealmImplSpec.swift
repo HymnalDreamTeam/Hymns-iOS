@@ -6,6 +6,8 @@ import RealmSwift
 @testable import Hymns
 
 class FavoriteStoreRealmImplSpec: QuickSpec {
+
+    @MainActor
     override func spec() {
         describe("using an in-memory realm") {
             var inMemoryRealm: Realm!
@@ -24,7 +26,6 @@ class FavoriteStoreRealmImplSpec: QuickSpec {
                 }
                 inMemoryRealm.invalidate()
             }
-
             context("store a few favorites") {
                 beforeEach {
                     target.storeFavorite(FavoriteEntity(hymnIdentifier: classic1151, songTitle: "Hymn 1151"))

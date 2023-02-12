@@ -4,49 +4,13 @@ import XCTest
 #if SWIFT_PACKAGE
 
 open class QuickConfiguration: NSObject {
-    open class func configure(_ configuration: Configuration) {}
+    open class func configure(_ configuration: QCKConfiguration) {}
 }
 
 #endif
 
 extension QuickConfiguration {
-    #if !canImport(Darwin)
     private static var configurationSubclasses: [QuickConfiguration.Type] = []
-    #endif
-
-    /// Finds all direct subclasses of QuickConfiguration and passes them to the block provided.
-    /// The classes are iterated over in the order that objc_getClassList returns them.
-    ///
-    /// - parameter block: A block that takes a QuickConfiguration.Type.
-    ///                    This block will be executed once for each subclass of QuickConfiguration.
-    private static func enumerateSubclasses(_ block: (QuickConfiguration.Type) -> Void) {
-        #if canImport(Darwin)
-        let classesCount = objc_getClassList(nil, 0)
-
-        guard classesCount > 0 else {
-            return
-        }
-
-        let classes = UnsafeMutablePointer<AnyClass?>.allocate(capacity: Int(classesCount))
-        defer { free(classes) }
-
-        objc_getClassList(AutoreleasingUnsafeMutablePointer(classes), classesCount)
-
-        var configurationSubclasses: [QuickConfiguration.Type] = []
-        for index in 0..<classesCount {
-            guard
-                let subclass = classes[Int(index)],
-                let superclass = class_getSuperclass(subclass),
-                superclass is QuickConfiguration.Type
-                else { continue }
-
-            // swiftlint:disable:next force_cast
-            configurationSubclasses.append(subclass as! QuickConfiguration.Type)
-        }
-        #endif
-
-        configurationSubclasses.forEach(block)
-    }
 
     #if canImport(Darwin)
     @objc
@@ -69,7 +33,8 @@ extension QuickConfiguration {
 
         // Perform all configurations (ensures that shared examples have been discovered)
         world.configure { configuration in
-            enumerateSubclasses { configurationClass in
+            (allSubclasses(ofType: QuickConfiguration.self) + configurationSubclasses)
+                .forEach { (configurationClass: QuickConfiguration.Type) in
                 configurationClass.configure(configuration)
             }
         }

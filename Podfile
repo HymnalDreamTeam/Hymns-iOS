@@ -47,8 +47,7 @@ target 'Hymns' do
 
     # Quick & Nimble
     # https://github.com/Quick/Quick
-    # Lock quick at 4.0.0 until https://github.com/Quick/Quick/issues/1139 is fixed
-    pod 'Quick', '4.0.0'
+    pod 'Quick'
     # https://github.com/Quick/Nimble
     pod 'Nimble'
   end
