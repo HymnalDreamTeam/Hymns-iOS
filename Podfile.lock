@@ -110,7 +110,7 @@ PODS:
   - nanopb/encode (2.30909.0)
   - Nimble (11.2.1)
   - PromisesObjC (2.1.1)
-  - Quick (4.0.0)
+  - Quick (6.1.0)
   - Realm (10.35.1):
     - Realm/Headers (= 10.35.1)
   - Realm/Headers (10.35.1)
@@ -131,7 +131,7 @@ DEPENDENCIES:
   - lottie-ios
   - MockingbirdFramework
   - Nimble
-  - Quick (= 4.0.0)
+  - Quick
   - RealmSwift
   - Resolver
   - SnapshotTesting
@@ -187,7 +187,7 @@ SPEC CHECKSUMS:
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   Nimble: 516ac503a0fafaa8e41dbb4a70a61be421fa893a
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
-  Quick: 6473349e43b9271a8d43839d9ba1c442ed1b7ac4
+  Quick: 6676ffb409bf04abba2ff23902af2407bfc6ac90
   Realm: ee5a67274a2c338dec50f5e01a811b6b8d657a10
   RealmSwift: 82f822142caa1e6ab96d3ea30bc83233e3d78ea3
   Resolver: 68984624572763018fd8ec7b8e3e8df0e3b6bba5
@@ -196,6 +196,6 @@ SPEC CHECKSUMS:
   SwiftLint: 77f7cb2b9bb81ab4a12fcc86448ba3f11afa50c6
   SwiftUIPager: b314d8923bef0bde743c904bb74fcc7a05fd3422
 
-PODFILE CHECKSUM: fd591aa243c2c06f96cf0a164c20b2d8dd46e3f2
+PODFILE CHECKSUM: b0146d4312ab259882c8108f8628cd5dfd2387d3
 
 COCOAPODS: 1.11.3
