@@ -21,10 +21,10 @@
 
 // Do not use `cmakedefine` here, as certain versions can be 0, which CMake
 // interprets as being undefined.
-#define REALM_VERSION_MAJOR 11
-#define REALM_VERSION_MINOR 14
+#define REALM_VERSION_MAJOR 13
+#define REALM_VERSION_MINOR 4
 #define REALM_VERSION_PATCH 0
 #define REALM_VERSION_EXTRA ""
-#define REALM_VERSION_STRING "11.14.0"
+#define REALM_VERSION_STRING "13.4.0"
 
 #endif // REALM_VERSION_NUMBERS_HPP

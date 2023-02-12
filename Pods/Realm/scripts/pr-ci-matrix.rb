@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # A script to generate the .jenkins.yml file for the CI pull request job
-XCODE_VERSIONS = %w(12.4 12.5.1 13.1 13.2.1 13.3)
+XCODE_VERSIONS = %w(13.4.1 14.0.1 14.1 14.2)
 
 all = ->(v) { true }
 latest_only = ->(v) { v == XCODE_VERSIONS.last }
@@ -11,9 +11,7 @@ def minimum_version(major)
 end
 
 targets = {
-  # Switch back to latest_only once jazzy supports Swift 5.6
-  # https://github.com/realm/jazzy/pull/1298
-  'docs' => ->(v) { v == "13.2.1" },
+  'docs' => latest_only,
   'swiftlint' => latest_only,
 
   'osx' => all,
@@ -24,7 +22,7 @@ targets = {
   'swiftpm-debug' => all,
   'swiftpm-address' => latest_only,
   'swiftpm-thread' => latest_only,
-  'swiftpm-ios' => latest_only,
+  'swiftpm-ios' => all,
 
   'ios-static' => oldest_and_latest,
   'ios-dynamic' => oldest_and_latest,

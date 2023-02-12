@@ -112,9 +112,10 @@ static id validatedObjectForProperty(__unsafe_unretained id const obj,
     }
     if (prop.type == RLMPropertyTypeObject) {
         Class objectClass = schema[prop.objectClassName].objectClass;
+        id enumerable = RLMAsFastEnumeration(obj);
         if (prop.dictionary) {
             NSMutableDictionary *ret = [[NSMutableDictionary alloc] init];
-            for (id key in obj) {
+            for (id key in enumerable) {
                 id val = RLMCoerceToNil(obj[key]);
                 if (val) {
                     val = coerceToObjectType(obj[key], objectClass, schema);
@@ -125,7 +126,7 @@ static id validatedObjectForProperty(__unsafe_unretained id const obj,
         }
         else if (prop.collection) {
             NSMutableArray *ret = [[NSMutableArray alloc] init];
-            for (id el in obj) {
+            for (id el in enumerable) {
                 [ret addObject:coerceToObjectType(el, objectClass, schema)];
             }
             return ret;
@@ -354,6 +355,15 @@ id RLMCreateManagedAccessor(Class cls, RLMClassInfo *info) {
 
 + (bool)isEmbedded {
     return false;
+}
+
++ (bool)isAsymmetric {
+    return false;
+}
+
+// This enables to override the propertiesMapping in Swift, it is not to be used in Objective-C API.
++ (NSDictionary *)propertiesMapping {
+    return @{};
 }
 
 - (id)mutableArrayValueForKey:(NSString *)key {
@@ -623,19 +633,6 @@ struct ObjectChangeCallbackWrapper {
             oldValues = nil;
         }
     }
-
-    void error(std::exception_ptr err) {
-        @autoreleasepool {
-            try {
-                rethrow_exception(err);
-            }
-            catch (...) {
-                NSError *error = nil;
-                RLMRealmTranslateException(&error);
-                block(nil, nil, nil, nil, error);
-            }
-        }
-    }
 };
 } // anonymous namespace
 
@@ -683,7 +680,7 @@ struct ObjectChangeCallbackWrapper {
 - (void)addNotificationBlock:(RLMObjectNotificationCallback)block
          threadSafeReference:(RLMThreadSafeReference *)tsr
                       config:(RLMRealmConfiguration *)config
-                    keyPaths:(KeyPathArray)keyPaths
+                    keyPaths:(std::optional<KeyPathArray>)keyPaths
                        queue:(dispatch_queue_t)queue {
     std::lock_guard<std::mutex> lock(_mutex);
     if (!_realm) {
@@ -703,7 +700,9 @@ struct ObjectChangeCallbackWrapper {
     _token = _object.add_notification_callback(ObjectChangeCallbackWrapper{block, obj}, std::move(keyPaths));
 }
 
-- (void)addNotificationBlock:(RLMObjectNotificationCallback)block object:(RLMObjectBase *)obj keyPaths:(KeyPathArray)keyPaths {
+- (void)addNotificationBlock:(RLMObjectNotificationCallback)block
+                      object:(RLMObjectBase *)obj
+                    keyPaths:(std::optional<KeyPathArray>&&)keyPaths {
     _object = realm::Object(obj->_realm->_realm, *obj->_info->objectSchema, obj->_row);
     _realm = obj->_realm;
     _token = _object.add_notification_callback(ObjectChangeCallbackWrapper{block, obj}, std::move(keyPaths));
@@ -717,7 +716,7 @@ RLMNotificationToken *RLMObjectBaseAddNotificationBlock(RLMObjectBase *obj,
         @throw RLMException(@"Only objects which are managed by a Realm support change notifications");
     }
 
-    KeyPathArray keyPathArray = RLMKeyPathArrayFromStringArray(obj.realm, obj->_info, keyPaths);
+    auto keyPathArray = RLMKeyPathArrayFromStringArray(obj.realm, obj->_info, keyPaths);
 
     if (!queue) {
         [obj->_realm verifyNotificationsAreSupported:true];
@@ -733,7 +732,7 @@ RLMNotificationToken *RLMObjectBaseAddNotificationBlock(RLMObjectBase *obj,
     RLMRealmConfiguration *config = obj->_realm.configuration;
     dispatch_async(queue, ^{
         @autoreleasepool {
-            [token addNotificationBlock:block threadSafeReference:tsr config:config keyPaths:std::move(keyPathArray) queue:queue];
+            [token addNotificationBlock:block threadSafeReference:tsr config:config keyPaths:keyPathArray queue:queue];
         }
     });
     return token;
@@ -787,5 +786,15 @@ uint64_t RLMObjectBaseGetCombineId(__unsafe_unretained RLMObjectBase *const obj)
 @implementation RealmSwiftEmbeddedObject
 + (BOOL)accessInstanceVariablesDirectly {
     return NO;
+}
+@end
+
+@implementation RealmSwiftAsymmetricObject
++ (BOOL)accessInstanceVariablesDirectly {
+    return NO;
+}
+
++ (bool)isAsymmetric {
+    return YES;
 }
 @end

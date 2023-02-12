@@ -18,30 +18,14 @@
 
 #import <Realm/RLMSyncUtil.h>
 
-#import <Realm/RLMProperty.h>
-#import <Realm/RLMRealmConfiguration.h>
-#import <Realm/RLMCredentials.h>
-
-typedef NS_ENUM(NSUInteger, RLMSyncSystemErrorKind) {
-    // Specific
-    RLMSyncSystemErrorKindClientReset,
-    RLMSyncSystemErrorKindPermissionDenied,
-    // General
-    RLMSyncSystemErrorKindClient,
-    RLMSyncSystemErrorKindConnection,
-    RLMSyncSystemErrorKindSession,
-    RLMSyncSystemErrorKindUser,
-    RLMSyncSystemErrorKindUnknown,
-};
-
-@class RLMUser;
+#import <Realm/RLMSyncSession.h>
 
 typedef void(^RLMSyncCompletionBlock)(NSError * _Nullable, NSDictionary * _Nullable);
 typedef void(^RLMSyncBasicErrorReportingBlock)(NSError * _Nullable);
 
 typedef NSString* RLMServerPath;
 
-NS_ASSUME_NONNULL_BEGIN
+RLM_HEADER_AUDIT_BEGIN(nullability)
 
 extern NSString *const kRLMSyncErrorStatusCodeKey;
 extern NSString *const kRLMSyncUnderlyingErrorKey;
@@ -50,4 +34,8 @@ extern NSString *const kRLMSyncUnderlyingErrorKey;
 - (instancetype)init __attribute__((unavailable("This type cannot be created directly"))); \
 + (instancetype)new __attribute__((unavailable("This type cannot be created directly")));
 
-NS_ASSUME_NONNULL_END
+@interface RLMSyncSession ()
++ (dispatch_queue_t)notificationsQueue;
+@end
+
+RLM_HEADER_AUDIT_END(nullability)

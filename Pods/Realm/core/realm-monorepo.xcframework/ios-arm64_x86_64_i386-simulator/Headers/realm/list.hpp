@@ -144,8 +144,15 @@ public:
     template <typename Func>
     void find_all(value_type value, Func&& func) const
     {
-        if (update())
+        if (update()) {
+            if constexpr (std::is_same_v<T, Mixed>) {
+                if (value.is_null()) {
+                    // if value is null then we find also all the unresolved links with a O(n lg n) scan
+                    find_all_mixed_unresolved_links(std::forward<Func>(func));
+                }
+            }
             m_tree->find_all(value, std::forward<Func>(func));
+        }
     }
 
     inline const BPlusTree<T>& get_tree() const
@@ -258,6 +265,31 @@ protected:
         m_tree->create();
         REALM_ASSERT(m_tree->is_attached());
         return true;
+    }
+
+    template <class Func>
+    void find_all_mixed_unresolved_links(Func&& func) const
+    {
+        for (size_t i = 0; i < m_tree->size(); ++i) {
+            auto mixed = m_tree->get(i);
+            if (mixed.is_unresolved_link()) {
+                func(i);
+            }
+        }
+    }
+
+private:
+    template <class U>
+    static U unresolved_to_null(U value) noexcept
+    {
+        return value;
+    }
+
+    static Mixed unresolved_to_null(Mixed value) noexcept
+    {
+        if (value.is_type(type_TypedLink) && value.is_unresolved_link())
+            return Mixed{};
+        return value;
     }
 };
 
@@ -396,11 +428,6 @@ public:
     void swap(size_t ndx1, size_t ndx2) final;
 
     // Overriding members of ObjList:
-    bool is_obj_valid(size_t) const noexcept final
-    {
-        // A link list cannot contain null values
-        return true;
-    }
     Obj get_object(size_t ndx) const final
     {
         ObjKey key = this->get(ndx);
@@ -602,7 +629,6 @@ inline void Lst<T>::do_clear()
     m_tree->clear();
 }
 
-
 template <typename U>
 inline Lst<U> Obj::get_list(ColKey col_key) const
 {
@@ -655,7 +681,8 @@ inline T Lst<T>::get(size_t ndx) const
     if (ndx >= current_size) {
         throw std::out_of_range("Index out of range");
     }
-    return m_tree->get(ndx);
+
+    return unresolved_to_null(m_tree->get(ndx));
 }
 
 template <class T>
@@ -663,6 +690,18 @@ inline size_t Lst<T>::find_first(const T& value) const
 {
     if (!update())
         return not_found;
+
+    if constexpr (std::is_same_v<T, Mixed>) {
+        if (value.is_null()) {
+            auto ndx = m_tree->find_first(value);
+            auto size = ndx == not_found ? m_tree->size() : ndx;
+            for (size_t i = 0; i < size; ++i) {
+                if (m_tree->get(i).is_unresolved_link())
+                    return i;
+            }
+            return ndx;
+        }
+    }
     return m_tree->find_first(value);
 }
 
@@ -846,9 +885,17 @@ T Lst<T>::set(size_t ndx, T value)
     if (Replication* repl = this->m_obj.get_replication()) {
         repl->list_set(*this, ndx, value);
     }
-    if (old != value) {
-        do_set(ndx, value);
-        bump_content_version();
+    if constexpr (std::is_same_v<T, Mixed>) {
+        if (!(old.is_same_type(value) && old == value)) {
+            do_set(ndx, value);
+            bump_content_version();
+        }
+    }
+    else {
+        if (old != value) {
+            do_set(ndx, value);
+            bump_content_version();
+        }
     }
     return old;
 }
@@ -1008,8 +1055,14 @@ inline size_t LnkLst::find_any(Mixed value) const
     if (value.is_null()) {
         return find_first(ObjKey());
     }
-    else if (value.get_type() == type_Link) {
+    if (value.get_type() == type_Link) {
         return find_first(value.get<ObjKey>());
+    }
+    else if (value.get_type() == type_TypedLink) {
+        auto link = value.get_link();
+        if (link.get_table_key() == get_target_table()->get_key()) {
+            return find_first(link.get_obj_key());
+        }
     }
     return realm::not_found;
 }

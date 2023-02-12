@@ -211,8 +211,8 @@ extension Pager: Buildable {
 
     /// Returns a horizontal pager
     ///
-    /// - Parameter swipeDirection: direction of the swipe. Defaults to `.leftToRight`
-    public func horizontal(_ swipeDirection: HorizontalSwipeDirection = .leftToRight) -> Self {
+    /// - Parameter swipeDirection: direction of the swipe. Defaults to `.startToEnd`
+    public func horizontal(_ swipeDirection: HorizontalSwipeDirection = .startToEnd) -> Self {
         mutating(keyPath: \.isHorizontal, value: true)
             .mutating(keyPath: \.horizontalSwipeDirection, value: swipeDirection)
     }
@@ -351,7 +351,7 @@ extension Pager: Buildable {
 
     /// Sets some padding on the non-scroll axis
     ///
-    /// - Parameter lenght: padding
+    /// - Parameter length: padding
     public func padding(_ length: CGFloat) -> Self {
         padding(.all, length)
     }
@@ -370,7 +370,7 @@ extension Pager: Buildable {
     /// or `.horizontal` for a horizontal `Pager`.
     ///
     /// - Parameter edges: edges the padding should be applied along. Defaults to `.all`
-    /// - Parameter lenght: padding to be applied. Default to `8`.
+    /// - Parameter length: padding to be applied. Default to `8`.
     public func padding(_ edges: Edge.Set = .all, _ length: CGFloat? = nil) -> Self {
         guard preferredItemSize == nil else { return self }
         let allowedEdges: Edge.Set = isHorizontal ? .vertical : .horizontal

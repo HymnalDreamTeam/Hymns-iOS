@@ -253,7 +253,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## FirebaseAnalytics
 
-Copyright 2021 Google
+Copyright 2022 Google
 
 ## FirebaseCore
 
@@ -461,7 +461,7 @@ Copyright 2021 Google
    limitations under the License.
 
 
-## FirebaseCoreDiagnostics
+## FirebaseCoreInternal
 
 
                                  Apache License
@@ -1144,7 +1144,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ## GoogleAppMeasurement
 
-Copyright 2021 Google
+Copyright 2022 Google
 
 ## GoogleDataTransport
 
@@ -1811,13 +1811,6 @@ Fuller's blog</a>
 
 ## Realm
 
-TABLE OF CONTENTS
-
-1. Apache License version 2.0
-2. Export Compliance
-
-1. -------------------------------------------------------------------------------
-
                                  Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -1993,39 +1986,12 @@ TABLE OF CONTENTS
       incurred by, or claims asserted against, such Contributor by reason
       of your accepting any such warranty or additional liability.
 
-2. -------------------------------------------------------------------------------
+   END OF TERMS AND CONDITIONS
 
-EXPORT COMPLIANCE
-
-You understand that the Software may contain cryptographic functions that may be
-subject to export restrictions, and you represent and warrant that you are not
-(i) located in a jurisdiction that is subject to United States economic
-sanctions (“Prohibited Jurisdiction”), including Cuba, Iran, North Korea,
-Sudan, Syria or the Crimea region, (ii) a person listed on any U.S. government
-blacklist (to include the List of Specially Designated Nationals and Blocked
-Persons or the Consolidated Sanctions List administered by the U.S. Department
-of the Treasury’s Office of Foreign Assets Control, or the Denied Persons List
-or Entity List administered by the U.S. Department of Commerce)
-(“Sanctioned Person”), or (iii) controlled or 50% or more owned by a Sanctioned
-Person.
-
-You agree to comply with all export, re-export and import restrictions and
-regulations of the U.S. Department of Commerce or other agency or authority of
-the United States or other applicable countries. You also agree not to transfer,
-or authorize the transfer of, directly or indirectly, of the Software to any
-Prohibited Jurisdiction, or otherwise in violation of any such restrictions or
-regulations.
 
 
 ## RealmSwift
 
-TABLE OF CONTENTS
-
-1. Apache License version 2.0
-2. Export Compliance
-
-1. -------------------------------------------------------------------------------
-
                                  Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -2201,28 +2167,8 @@ TABLE OF CONTENTS
       incurred by, or claims asserted against, such Contributor by reason
       of your accepting any such warranty or additional liability.
 
-2. -------------------------------------------------------------------------------
+   END OF TERMS AND CONDITIONS
 
-EXPORT COMPLIANCE
-
-You understand that the Software may contain cryptographic functions that may be
-subject to export restrictions, and you represent and warrant that you are not
-(i) located in a jurisdiction that is subject to United States economic
-sanctions (“Prohibited Jurisdiction”), including Cuba, Iran, North Korea,
-Sudan, Syria or the Crimea region, (ii) a person listed on any U.S. government
-blacklist (to include the List of Specially Designated Nationals and Blocked
-Persons or the Consolidated Sanctions List administered by the U.S. Department
-of the Treasury’s Office of Foreign Assets Control, or the Denied Persons List
-or Entity List administered by the U.S. Department of Commerce)
-(“Sanctioned Person”), or (iii) controlled or 50% or more owned by a Sanctioned
-Person.
-
-You agree to comply with all export, re-export and import restrictions and
-regulations of the U.S. Department of Commerce or other agency or authority of
-the United States or other applicable countries. You also agree not to transfer,
-or authorize the transfer of, directly or indirectly, of the Software to any
-Prohibited Jurisdiction, or otherwise in violation of any such restrictions or
-regulations.
 
 
 ## Resolver

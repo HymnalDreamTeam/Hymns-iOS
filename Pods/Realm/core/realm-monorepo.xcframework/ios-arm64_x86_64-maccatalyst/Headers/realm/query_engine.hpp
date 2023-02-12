@@ -224,15 +224,9 @@ public:
     virtual size_t aggregate_local(QueryStateBase* st, size_t start, size_t end, size_t local_limit,
                                    ArrayPayload* source_column);
 
-
     virtual std::string validate()
     {
-        if (error_code != "")
-            return error_code;
-        if (m_child == nullptr)
-            return "";
-        else
-            return m_child->validate();
+        return m_child ? m_child->validate() : "";
     }
 
     ParentNode(const ParentNode& from);
@@ -320,7 +314,6 @@ protected:
     ConstTableRef m_table = ConstTableRef();
     const Cluster* m_cluster = nullptr;
     QueryStateBase* m_state = nullptr;
-    std::string error_code;
     static std::vector<ObjKey> s_dummy_keys;
 
     ColumnType get_real_column_type(ColKey key)
@@ -546,7 +539,8 @@ public:
 
     bool has_search_index() const override
     {
-        return this->m_table->has_search_index(IntegerNodeBase<LeafType>::m_condition_column_key);
+        return this->m_table->search_index_type(IntegerNodeBase<LeafType>::m_condition_column_key) ==
+               IndexType::General;
     }
 
     const std::vector<ObjKey>& index_based_keys() override
@@ -1251,7 +1245,7 @@ public:
 
     bool has_search_index() const override
     {
-        return this->m_table->has_search_index(BaseType::m_condition_column_key);
+        return this->m_table->search_index_type(BaseType::m_condition_column_key) == IndexType::General;
     }
 
     size_t find_first_local(size_t start, size_t end) override
@@ -1346,10 +1340,15 @@ public:
     std::string describe(util::serializer::SerialisationState& state) const override
     {
         REALM_ASSERT(m_condition_column_key);
+        std::string value;
+        if (m_value.is_type(type_TypedLink)) {
+            value = util::serializer::print_value(m_value.get<ObjLink>(), state.group);
+        }
+        else {
+            value = util::serializer::print_value(m_value);
+        }
         return state.describe_column(ParentNode::m_table, m_condition_column_key) + " " + this->describe_condition() +
-               " " +
-               (m_value_is_null ? util::serializer::print_value(realm::null())
-                                : util::serializer::print_value(m_value));
+               " " + value;
     }
 
 protected:
@@ -1451,7 +1450,7 @@ public:
 
     void table_changed() override
     {
-        m_has_search_index = m_table.unchecked_ptr()->has_search_index(m_condition_column_key);
+        m_has_search_index = m_table.unchecked_ptr()->search_index_type(m_condition_column_key) == IndexType::General;
     }
 
     bool has_search_index() const override
@@ -1545,7 +1544,7 @@ public:
         REALM_ASSERT(m_condition_column_key);
         StringData sd;
         if (bool(StringNodeBase::m_value)) {
-            sd = StringData(StringNodeBase::m_value.value());
+            sd = StringData(*StringNodeBase::m_value);
         }
         return state.describe_column(ParentNode::m_table, m_condition_column_key) + " " + describe_condition() + " " +
                util::serializer::print_value(sd);
@@ -1582,7 +1581,7 @@ public:
         auto upper = case_map(v, true);
         auto lower = case_map(v, false);
         if (!upper || !lower) {
-            error_code = "Malformed UTF-8: " + std::string(v);
+            throw std::runtime_error(util::format("Malformed UTF-8: %1", v));
         }
         else {
             m_ucase = std::move(*upper);
@@ -1707,7 +1706,7 @@ public:
         auto upper = case_map(v, true);
         auto lower = case_map(v, false);
         if (!upper || !lower) {
-            error_code = "Malformed UTF-8: " + std::string(v);
+            throw query_parser::InvalidQueryError(util::format("Malformed UTF-8: %1", v));
         }
         else {
             m_ucase = std::move(*upper);
@@ -1827,7 +1826,7 @@ protected:
         return BinaryData(s.data(), s.size());
     }
 
-    virtual ObjKey get_key(size_t ndx) = 0;
+    virtual ObjKey get_key(size_t ndx) const = 0;
     virtual void _search_index_init() = 0;
     virtual size_t _find_first_local(size_t start, size_t end) = 0;
 };
@@ -1844,8 +1843,7 @@ public:
     void table_changed() override
     {
         StringNodeBase::table_changed();
-        m_has_search_index = m_table.unchecked_ptr()->has_search_index(m_condition_column_key) ||
-                             m_table.unchecked_ptr()->get_primary_key_column() == m_condition_column_key;
+        m_has_search_index = m_table.unchecked_ptr()->search_index_type(m_condition_column_key) == IndexType::General;
     }
 
     void _search_index_init() override;
@@ -1892,7 +1890,7 @@ public:
 private:
     std::unique_ptr<IntegerColumn> m_index_matches;
 
-    ObjKey get_key(size_t ndx) override
+    ObjKey get_key(size_t ndx) const override
     {
         if (IntegerColumn* vec = m_index_matches.get()) {
             return ObjKey(vec->get(ndx));
@@ -1921,7 +1919,7 @@ public:
         auto upper = case_map(v, true);
         auto lower = case_map(v, false);
         if (!upper || !lower) {
-            error_code = "Malformed UTF-8: " + std::string(v);
+            throw query_parser::InvalidQueryError(util::format("Malformed UTF-8: %1", v));
         }
         else {
             m_ucase = std::move(*upper);
@@ -1938,7 +1936,7 @@ public:
     void table_changed() override
     {
         StringNodeBase::table_changed();
-        m_has_search_index = m_table.unchecked_ptr()->has_search_index(m_condition_column_key);
+        m_has_search_index = m_table.unchecked_ptr()->search_index_type(m_condition_column_key) == IndexType::General;
     }
     void _search_index_init() override;
 
@@ -1970,12 +1968,54 @@ private:
     std::string m_ucase;
     std::string m_lcase;
 
-    ObjKey get_key(size_t ndx) override
+    ObjKey get_key(size_t ndx) const override
     {
         return m_index_matches[ndx];
     }
 
     size_t _find_first_local(size_t start, size_t end) override;
+};
+
+
+class LinkMap;
+class StringNodeFulltext : public StringNodeEqualBase {
+public:
+    StringNodeFulltext(StringData v, ColKey column, std::unique_ptr<LinkMap> lm = {});
+
+    void table_changed() override;
+
+    void _search_index_init() override;
+
+    std::unique_ptr<ParentNode> clone() const override
+    {
+        return std::unique_ptr<ParentNode>(new StringNodeFulltext(*this));
+    }
+
+    virtual std::string describe_condition() const override
+    {
+        return "FULLTEXT";
+    }
+
+    const std::vector<ObjKey>& index_based_keys() override
+    {
+        return m_index_matches;
+    }
+
+private:
+    std::vector<ObjKey> m_index_matches;
+    std::unique_ptr<LinkMap> m_link_map;
+
+    StringNodeFulltext(const StringNodeFulltext&);
+
+    ObjKey get_key(size_t ndx) const override
+    {
+        return m_index_matches[ndx];
+    }
+
+    size_t _find_first_local(size_t, size_t) override
+    {
+        REALM_UNREACHABLE();
+    }
 };
 
 // OR node contains at least two node pointers: Two or more conditions to OR
@@ -2108,12 +2148,10 @@ public:
 
     std::string validate() override
     {
-        if (error_code != "")
-            return error_code;
         if (m_conditions.size() == 0)
-            return "Missing left-hand side of OR";
+            return "Missing both arguments of OR";
         if (m_conditions.size() == 1)
-            return "Missing right-hand side of OR";
+            return "Missing argument of OR";
         std::string s;
         if (m_child != 0)
             s = m_child->validate();
@@ -2166,6 +2204,9 @@ public:
         : m_condition(std::move(condition))
     {
         m_dT = 50.0;
+        if (!m_condition) {
+            throw query_parser::InvalidQueryError("Missing argument to Not");
+        }
     }
 
     void table_changed() override
@@ -2193,23 +2234,6 @@ public:
     }
 
     size_t find_first_local(size_t start, size_t end) override;
-
-    std::string validate() override
-    {
-        if (error_code != "")
-            return error_code;
-        if (m_condition == 0)
-            return "Missing argument to Not";
-        std::string s;
-        if (m_child != 0)
-            s = m_child->validate();
-        if (s != "")
-            return s;
-        s = m_condition->validate();
-        if (s != "")
-            return s;
-        return "";
-    }
 
     std::string describe(util::serializer::SerialisationState& state) const override
     {
@@ -2417,8 +2441,9 @@ public:
         REALM_ASSERT(m_condition_column_key);
         if (m_target_keys.size() > 1)
             throw SerialisationError("Serializing a query which links to multiple objects is currently unsupported.");
+        ObjLink link(m_table->get_opposite_table(m_condition_column_key)->get_key(), m_target_keys[0]);
         return state.describe_column(ParentNode::m_table, m_condition_column_key) + " " + describe_condition() + " " +
-               util::serializer::print_value(m_target_keys[0]);
+               util::serializer::print_value(link, m_table->get_parent_group());
     }
 
 protected:

@@ -18,7 +18,23 @@
 
 #import <Foundation/Foundation.h>
 
-NS_ASSUME_NONNULL_BEGIN
+#ifdef NS_HEADER_AUDIT_BEGIN
+#define RLM_HEADER_AUDIT_BEGIN NS_HEADER_AUDIT_BEGIN
+#define RLM_HEADER_AUDIT_END NS_HEADER_AUDIT_END
+#else
+#define RLM_HEADER_AUDIT_BEGIN(...) NS_ASSUME_NONNULL_BEGIN
+#define RLM_HEADER_AUDIT_END(...) NS_ASSUME_NONNULL_END
+#endif
+
+#ifdef NS_SWIFT_SENDABLE
+#define RLM_SWIFT_SENDABLE NS_SWIFT_SENDABLE
+#else
+#define RLM_SWIFT_SENDABLE
+#endif
+
+#define RLM_FINAL __attribute__((objc_subclassing_restricted))
+
+RLM_HEADER_AUDIT_BEGIN(nullability, sendability)
 
 // Swift 5 considers NS_ENUM to be "open", meaning there could be values present
 // other than the defined cases (which allows adding more cases later without
@@ -46,7 +62,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  `RLMPropertyType` is an enumeration describing all property types supported in Realm models.
 
- For more information, see [Realm Models](https://realm.io/docs/objc/latest/#models).
+ For more information, see [Realm Models](https://www.mongodb.com/docs/realm/sdk/swift/fundamentals/object-models-and-schemas/).
  */
 typedef RLM_CLOSED_ENUM(int32_t, RLMPropertyType) {
 
@@ -75,9 +91,9 @@ typedef RLM_CLOSED_ENUM(int32_t, RLMPropertyType) {
 
 #pragma mark - Linked object types
 
-    /** Realm model objects. See [Realm Models](https://realm.io/docs/objc/latest/#models) for more information. */
+    /** Realm model objects. See [Realm Models](https://www.mongodb.com/docs/realm/sdk/swift/fundamentals/object-models-and-schemas/) for more information. */
     RLMPropertyTypeObject = 7,
-    /** Realm linking objects. See [Realm Models](https://realm.io/docs/objc/latest/#models) for more information. */
+    /** Realm linking objects. See [Realm Models](https://www.mongodb.com/docs/realm/sdk/swift/fundamentals/relationships/#inverse-relationship) for more information. */
     RLMPropertyTypeLinkingObjects = 8,
 
     RLMPropertyTypeObjectId = 10,
@@ -152,9 +168,10 @@ typedef RLM_ERROR_ENUM(NSInteger, RLMError, RLMErrorDomain) {
 
     /// Denotates an error where an input value was invalid.
     RLMErrorInvalidInput = 13,
-};
 
-#pragma mark - Constants
+    /// A subscription was rejected by the server.
+    RLMErrorSubscriptionFailed = 14,
+};
 
 #pragma mark - Notification Constants
 
@@ -213,4 +230,4 @@ extern NSString * const RLMRealmCoreVersionKey;
 /** The corresponding key is the Realm invalidated property name. */
 extern NSString * const RLMInvalidatedKey;
 
-NS_ASSUME_NONNULL_END
+RLM_HEADER_AUDIT_END(nullability, sendability)

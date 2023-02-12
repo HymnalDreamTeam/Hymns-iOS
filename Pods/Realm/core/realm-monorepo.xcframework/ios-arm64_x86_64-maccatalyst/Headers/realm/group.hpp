@@ -25,6 +25,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <chrono>
 
 #include <realm/alloc_slab.hpp>
 #include <realm/exceptions.hpp>
@@ -282,16 +283,19 @@ public:
     bool table_is_public(TableKey key) const;
     static StringData table_name_to_class_name(StringData table_name)
     {
-        REALM_ASSERT(table_name.begins_with(g_class_name_prefix));
-        return table_name.substr(g_class_name_prefix_len);
+        if (table_name.begins_with(g_class_name_prefix)) {
+            return table_name.substr(g_class_name_prefix.size());
+        }
+        return table_name;
     }
+
     using TableNameBuffer = std::array<char, max_table_name_length>;
     static StringData class_name_to_table_name(StringData class_name, TableNameBuffer& buffer)
     {
-        char* p = std::copy_n(g_class_name_prefix, g_class_name_prefix_len, buffer.data());
-        size_t len = std::min(class_name.size(), buffer.size() - g_class_name_prefix_len);
+        char* p = std::copy_n(g_class_name_prefix.data(), g_class_name_prefix.size(), buffer.data());
+        size_t len = std::min(class_name.size(), buffer.size() - g_class_name_prefix.size());
         std::copy_n(class_name.data(), len, p);
-        return StringData(buffer.data(), g_class_name_prefix_len + len);
+        return StringData(buffer.data(), g_class_name_prefix.size() + len);
     }
 
     TableRef get_table(TableKey key);
@@ -304,12 +308,13 @@ public:
     TableRef get_table(StringData name);
     ConstTableRef get_table(StringData name) const;
 
-    TableRef add_table(StringData name);
-    TableRef add_embedded_table(StringData name);
-    TableRef add_table_with_primary_key(StringData name, DataType pk_type, StringData pk_name, bool nullable = false);
-    TableRef get_or_add_table(StringData name, bool* was_added = nullptr);
+    TableRef add_table(StringData name, Table::Type table_type = Table::Type::TopLevel);
+    TableRef add_table_with_primary_key(StringData name, DataType pk_type, StringData pk_name, bool nullable = false,
+                                        Table::Type table_type = Table::Type::TopLevel);
+    TableRef get_or_add_table(StringData name, Table::Type table_type = Table::Type::TopLevel,
+                              bool* was_added = nullptr);
     TableRef get_or_add_table_with_primary_key(StringData name, DataType pk_type, StringData pk_name,
-                                               bool nullable = false);
+                                               bool nullable = false, Table::Type table_type = Table::Type::TopLevel);
 
     void remove_table(TableKey key);
     void remove_table(StringData name);
@@ -523,14 +528,40 @@ public:
 #endif
 
 protected:
+    static constexpr size_t s_table_name_ndx = 0;
+    static constexpr size_t s_table_refs_ndx = 1;
+    static constexpr size_t s_file_size_ndx = 2;
+    static constexpr size_t s_free_pos_ndx = 3;
+    static constexpr size_t s_free_size_ndx = 4;
+    static constexpr size_t s_free_version_ndx = 5;
+    static constexpr size_t s_version_ndx = 6;
+    static constexpr size_t s_hist_type_ndx = 7;
+    static constexpr size_t s_hist_ref_ndx = 8;
+    static constexpr size_t s_hist_version_ndx = 9;
+    static constexpr size_t s_sync_file_id_ndx = 10;
+    static constexpr size_t s_evacuation_point_ndx = 11;
+
+    static constexpr size_t s_group_max_size = 12;
+
     virtual Replication* const* get_repl() const
     {
         return &Table::g_dummy_replication;
     }
 
 private:
-    static constexpr char g_class_name_prefix[] = "class_";
-    static constexpr size_t g_class_name_prefix_len = 6;
+    static constexpr StringData g_class_name_prefix = "class_";
+
+    struct ToDeleteRef {
+        ToDeleteRef(TableKey tk, ObjKey k)
+            : table_key(tk)
+            , obj_key(k)
+            , ttl(std::chrono::steady_clock::now())
+        {
+        }
+        TableKey table_key;
+        ObjKey obj_key;
+        std::chrono::steady_clock::time_point ttl;
+    };
 
     // nullptr, if we're sharing an allocator provided during initialization
     std::unique_ptr<SlabAlloc> m_local_alloc;
@@ -557,6 +588,7 @@ private:
     ///    9th   History ref          (optional)             4
     ///   10th   History version      (optional)             7
     ///   11th   Sync File Id         (optional)            10
+    ///   12th   Evacuation point     (optional)            22
     ///
     /// </pre>
     ///
@@ -596,21 +628,8 @@ private:
     util::UniqueFunction<void(const CascadeNotification&)> m_notify_handler;
     util::UniqueFunction<void()> m_schema_change_handler;
     std::shared_ptr<metrics::Metrics> m_metrics;
+    std::vector<ToDeleteRef> m_objects_to_delete;
     size_t m_total_rows;
-
-    static constexpr size_t s_table_name_ndx = 0;
-    static constexpr size_t s_table_refs_ndx = 1;
-    static constexpr size_t s_file_size_ndx = 2;
-    static constexpr size_t s_free_pos_ndx = 3;
-    static constexpr size_t s_free_size_ndx = 4;
-    static constexpr size_t s_free_version_ndx = 5;
-    static constexpr size_t s_version_ndx = 6;
-    static constexpr size_t s_hist_type_ndx = 7;
-    static constexpr size_t s_hist_ref_ndx = 8;
-    static constexpr size_t s_hist_version_ndx = 9;
-    static constexpr size_t s_sync_file_id_ndx = 10;
-
-    static constexpr size_t s_group_max_size = 11;
 
     Group(SlabAlloc* alloc) noexcept;
     void init_array_parents() noexcept;
@@ -642,7 +661,6 @@ private:
 
     void reset_free_space_tracking();
 
-    void remap(size_t new_file_size);
     void remap_and_update_refs(ref_type new_top_ref, size_t new_file_size, bool writable);
 
     /// Recursively update refs stored in all cached array
@@ -670,7 +688,7 @@ private:
     const Table* do_get_table(size_t ndx) const;
     Table* do_get_table(StringData name);
     const Table* do_get_table(StringData name) const;
-    Table* do_add_table(StringData name, bool is_embedded, bool do_repl = true);
+    Table* do_add_table(StringData name, Table::Type table_type, bool do_repl = true);
 
     void create_and_insert_table(TableKey key, StringData name);
     Table* create_table_accessor(size_t table_ndx);
@@ -768,6 +786,8 @@ private:
     ///  22 Object keys are no longer generated from primary key values. Search index
     ///     reintroduced.
     ///
+    ///  23 Layout of Set and Dictionary changed.
+    ///
     /// IMPORTANT: When introducing a new file format version, be sure to review
     /// the file validity checks in Group::open() and DB::do_open, the file
     /// format selection logic in
@@ -775,7 +795,7 @@ private:
     /// upgrade logic in Group::upgrade_file_format(), AND the lists of accepted
     /// file formats and the version deletion list residing in "backup_restore.cpp"
 
-    static constexpr int g_current_file_format_version = 22;
+    static constexpr int g_current_file_format_version = 23;
 
     int get_file_format_version() const noexcept;
     void set_file_format_version(int) noexcept;
@@ -790,7 +810,7 @@ private:
     static void get_version_and_history_info(const Array& top, _impl::History::version_type& version,
                                              int& history_type, int& history_schema_version) noexcept;
     static ref_type get_history_ref(const Array& top) noexcept;
-
+    static size_t get_logical_file_size(const Array& top) noexcept;
     void clear_history();
     void set_history_schema_version(int version);
     template <class Accessor>
@@ -823,6 +843,7 @@ private:
     friend class Transaction;
     friend class TableKeyIterator;
     friend class CascadeState;
+    friend class SlabAlloc;
 };
 
 class TableKeyIterator {
@@ -968,49 +989,43 @@ inline ConstTableRef Group::get_table(StringData name) const
     return ConstTableRef(table, table ? table->m_alloc.get_instance_version() : 0);
 }
 
-inline TableRef Group::add_table(StringData name)
+inline TableRef Group::add_table(StringData name, Table::Type table_type)
 {
     if (!is_attached())
         throw LogicError(LogicError::detached_accessor);
     check_table_name_uniqueness(name);
-    Table* table = do_add_table(name, false); // Throws
+    Table* table = do_add_table(name, table_type); // Throws
     return TableRef(table, table->m_alloc.get_instance_version());
 }
 
-inline TableRef Group::add_embedded_table(StringData name)
+inline TableRef Group::get_or_add_table(StringData name, Table::Type table_type, bool* was_added)
 {
-    if (!is_attached())
-        throw LogicError(LogicError::detached_accessor);
-    check_table_name_uniqueness(name);
-    Table* table = do_add_table(name, true); // Throws
-    return TableRef(table, table->m_alloc.get_instance_version());
-}
-
-inline TableRef Group::get_or_add_table(StringData name, bool* was_added)
-{
+    REALM_ASSERT(table_type != Table::Type::Embedded);
     if (!is_attached())
         throw LogicError(LogicError::detached_accessor);
     auto table = do_get_table(name);
     if (was_added)
         *was_added = !table;
     if (!table) {
-        table = do_add_table(name, false);
+        table = do_add_table(name, table_type);
     }
     return TableRef(table, table->m_alloc.get_instance_version());
 }
 
 inline TableRef Group::get_or_add_table_with_primary_key(StringData name, DataType pk_type, StringData pk_name,
-                                                         bool nullable)
+                                                         bool nullable, Table::Type table_type)
 {
+    REALM_ASSERT(table_type != Table::Type::Embedded);
     if (TableRef table = get_table(name)) {
         if (!table->get_primary_key_column() || table->get_column_name(table->get_primary_key_column()) != pk_name ||
-            table->is_nullable(table->get_primary_key_column()) != nullable) {
+            table->is_nullable(table->get_primary_key_column()) != nullable ||
+            table->get_table_type() != table_type) {
             throw std::runtime_error("Inconsistent schema");
         }
         return table;
     }
     else {
-        return add_table_with_primary_key(name, pk_type, pk_name, nullable);
+        return add_table_with_primary_key(name, pk_type, pk_name, nullable, table_type);
     }
 }
 
@@ -1074,6 +1089,15 @@ inline ref_type Group::get_history_ref(const Array& top) noexcept
     }
     return 0;
 }
+
+inline size_t Group::get_logical_file_size(const Array& top) noexcept
+{
+    if (top.is_attached() && top.size() > s_file_size_ndx) {
+        return (size_t)top.get_as_ref_or_tagged(s_file_size_ndx).get_as_int();
+    }
+    return 0;
+}
+
 
 inline void Group::set_sync_file_id(uint64_t id)
 {

@@ -126,7 +126,8 @@ class TransformError; // Exception
 class Transformer {
 public:
     class RemoteChangeset;
-    class Reporter;
+
+    using iterator = util::Span<Changeset>::iterator;
 
     /// Produce operationally transformed versions of the specified changesets,
     /// which are assumed to be received from a particular remote peer, P,
@@ -137,7 +138,7 @@ public:
     /// changesets and all causally unrelated changesets in the local history. A
     /// changeset in the local history is causally unrelated if, and only if it
     /// occurs after the local changeset that produced
-    /// `remote_changeset.last_integrated_local_version` and is not a produced
+    /// `remote_changeset.last_integrated_local_version` and it is not produced
     /// by integration of a changeset received from P. This assumes that
     /// `remote_changeset.last_integrated_local_version` is set to the local
     /// version produced by the last local changeset, that was integrated by P
@@ -165,15 +166,20 @@ public:
     /// changeset is of local origin. The specified identifier must never be
     /// zero.
     ///
+    /// \param changeset_applier Called to to apply each transformed changeset.
+    /// Returns true if it can continue applying the changests, false otherwise.
+    ///
+    /// \return The number of changesets that have been transformed and applied.
+    ///
     /// \throw TransformError Thrown if operational transformation fails due to
     /// a problem with the specified changeset.
     ///
     /// FIXME: Consider using std::error_code instead of throwing
     /// TransformError.
-    virtual void transform_remote_changesets(TransformHistory&, file_ident_type local_file_ident,
-                                             version_type current_local_version, Changeset* changesets,
-                                             std::size_t num_changesets, Reporter* = nullptr,
-                                             util::Logger* = nullptr) = 0;
+    virtual size_t transform_remote_changesets(TransformHistory&, file_ident_type local_file_ident,
+                                               version_type current_local_version, util::Span<Changeset> changesets,
+                                               util::UniqueFunction<bool(const Changeset*)> changeset_applier,
+                                               util::Logger&) = 0;
 
     virtual ~Transformer() noexcept {}
 };
@@ -196,8 +202,8 @@ public:
 
     TransformerImpl();
 
-    void transform_remote_changesets(TransformHistory&, file_ident_type, version_type, Changeset*, std::size_t,
-                                     Reporter*, util::Logger*) override;
+    size_t transform_remote_changesets(TransformHistory&, file_ident_type, version_type, util::Span<Changeset>,
+                                       util::UniqueFunction<bool(const Changeset*)>, util::Logger&) override;
 
     struct Side;
     struct MajorSide;
@@ -208,11 +214,10 @@ protected:
                                   std::size_t their_size,
                                   // our_changesets is a pointer-pointer because these changesets
                                   // are held by the reciprocal transform cache.
-                                  Changeset** our_changesets, std::size_t our_size, Reporter* reporter,
-                                  util::Logger* logger);
+                                  Changeset** our_changesets, std::size_t our_size, util::Logger& logger);
 
 private:
-    util::metered::map<version_type, std::unique_ptr<Changeset>> m_reciprocal_transform_cache;
+    std::map<version_type, Changeset> m_reciprocal_transform_cache;
 
     TransactLogParser m_changeset_parser;
 
@@ -278,12 +283,6 @@ public:
 };
 
 
-class Transformer::Reporter {
-public:
-    virtual void on_changesets_merged(long num_merges) = 0;
-};
-
-
 void parse_remote_changeset(const Transformer::RemoteChangeset&, Changeset&);
 
 
@@ -295,11 +294,6 @@ public:
         : std::runtime_error(message)
     {
     }
-};
-
-class SchemaMismatchError : public TransformError {
-public:
-    using TransformError::TransformError;
 };
 
 inline Transformer::RemoteChangeset::RemoteChangeset(version_type rv, version_type lv, ChunkedBinaryData d,
