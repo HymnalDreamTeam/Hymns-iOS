@@ -2,6 +2,7 @@ import Combine
 import Quick
 import Mockingbird
 import Nimble
+import StoreKit
 @testable import Hymns
 
 class SettingsViewModelSpec: QuickSpec {
@@ -10,17 +11,19 @@ class SettingsViewModelSpec: QuickSpec {
         describe("SettingsViewModel") {
             var systemUtil: SystemUtilMock!
             var target: SettingsViewModel!
+            var coffeeDonation: CoffeeDonationMock!
             beforeEach {
+                coffeeDonation = mock(CoffeeDonation.self)
                 systemUtil = mock(SystemUtil.self)
                 target = SettingsViewModel(systemUtil: systemUtil)
             }
             describe("populating settings") {
-                context("network available") {
+                context("donation products available") {
                     beforeEach {
-                        given(systemUtil.isNetworkAvailable()) ~> true
+                        given(systemUtil.donationProducts) ~> [coffeeDonation!]
                     }
                     var settingsSize = 7
-                    if #available(iOS 16, *) { // iOS 16+ has "version information", which is the 7th item
+                    if #available(iOS 16, *) { // iOS 16+ has "version information", which is the 8th item
                         settingsSize = 8
                     }
                     it("should contain exactly \(settingsSize) item") {
@@ -28,9 +31,9 @@ class SettingsViewModelSpec: QuickSpec {
                         expect(target.settings).to(haveCount(settingsSize))
                     }
                 }
-                context("network unavailable") {
+                context("donation products unavailable") {
                     beforeEach {
-                        given(systemUtil.isNetworkAvailable()) ~> false
+                        given(systemUtil.donationProducts) ~> []
                     }
                     var settingsSize = 6
                     if #available(iOS 16, *) { // iOS 16+ has "version information", which is the 7th item

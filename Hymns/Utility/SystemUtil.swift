@@ -1,9 +1,14 @@
+import FirebaseCrashlytics
 import Foundation
 import Network
 import Resolver
+import StoreKit
 import SystemConfiguration
 
 protocol SystemUtil {
+
+    var donationProducts: [any CoffeeDonation] { get }
+
     func isNetworkAvailable() -> Bool
 
     /**
@@ -15,9 +20,13 @@ protocol SystemUtil {
      * Is the current OS version iOS 16 or greater
      */
     func isIOS16Plus() -> Bool
+
+    func loadDonationProducts() async
 }
 
 class SystemUtilImpl: SystemUtil {
+
+    var donationProducts: [any CoffeeDonation] = []
 
     private let reachability = SCNetworkReachabilityCreateWithName(nil, "www.hymnal.net")
 
@@ -38,5 +47,20 @@ class SystemUtilImpl: SystemUtil {
             return false
         }
         return currentOSVersion  >= CGFloat(16)
+    }
+
+    func loadDonationProducts() async {
+        guard isNetworkAvailable() else {
+            donationProducts = []
+            return
+        }
+        do {
+            donationProducts = try await Product.products(for: [DonationViewModel.donationCoffee1Id,
+                                                                DonationViewModel.donationCoffee5Id,
+                                                                DonationViewModel.donationCoffee10Id])
+        } catch {
+            Crashlytics.crashlytics().record(error: error)
+            donationProducts = []
+        }
     }
 }

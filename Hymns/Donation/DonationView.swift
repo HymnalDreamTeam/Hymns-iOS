@@ -14,11 +14,8 @@ struct DonationView: View {
 
     var body: some View {
         Group { () -> AnyView in
-            guard let coffeeDonations = viewModel.coffeeDonations else {
-                return ActivityIndicator().maxSize().eraseToAnyView()
-            }
-            guard !coffeeDonations.isEmpty else {
-                return Text(viewModel.errorText).maxSize().eraseToAnyView()
+            guard !viewModel.coffeeDonations.isEmpty else {
+                return ErrorView().maxSize().eraseToAnyView()
             }
             return ScrollView {
                 VStack(alignment: .leading) {
@@ -32,14 +29,14 @@ struct DonationView: View {
                         Spacer()
                     }.padding().padding(.top).foregroundColor(.primary)
                     Text("All of us have regular day jobs and each of us has volunteered our time and effort to create this app for you to enjoy. While we are committed to keeping this app in tip-top shape, the maintenance costs unfortunately grow with our user base. In addition to the costs of putting the app on the app store, we also maintain an API to ensure you get all the latest songs delivered right to your phone in a seamless way. So far, these costs have been borne by a few folks who want to see it succeed. However, if you feel led to help with some of these costs, feel free to donate a few bucks to keep our team caffeinated! ☕", comment: "'Donation' page greeting.").font(.callout).padding()
-                    ForEach(coffeeDonations) { coffeeDonation in
+                    ForEach(viewModel.coffeeDonations, id: \.self) { coffeeDonation in
                         Button(action: {
                             Task {
-                                await self.viewModel.initiatePurchase(coffeeDonation)
+                                await self.viewModel.initiatePurchase(donationType: coffeeDonation)
                                 self.presentationMode.wrappedValue.dismiss()
                             }
                         }, label: {
-                            Text(coffeeDonation.displayName).padding().foregroundColor(.primary)
+                            Text(.init(coffeeDonation.displayText)).padding().foregroundColor(.primary).multilineTextAlignment(.leading)
                         })
                     }
                     Spacer()
@@ -49,7 +46,6 @@ struct DonationView: View {
             let params: [String: Any] = [
                 AnalyticsParameterScreenName: "DonationView"]
             Analytics.logEvent(AnalyticsEventScreenView, parameters: params)
-            await viewModel.fetchProduct()
         }
     }
 }
@@ -57,16 +53,17 @@ struct DonationView: View {
 #if DEBUG
 struct DonationView_Previews: PreviewProvider {
     static var previews: some View {
-        let loadingViewModel = DonationViewModel(result: .constant(nil))
-        let loading = DonationView(viewModel: loadingViewModel)
-
-        let errorViewModel = DonationViewModel(result: .constant(nil))
-        errorViewModel.coffeeDonations = nil
+        let errorViewModel = DonationViewModel(coffeeDonations: [CoffeeDonation](), resultBinding: .constant(nil))
+        errorViewModel.coffeeDonations = []
         let error = DonationView(viewModel: errorViewModel)
 
+        let donationsViewModel = DonationViewModel(coffeeDonations: [CoffeeDonation](), resultBinding: .constant(nil))
+        donationsViewModel.coffeeDonations = [.donationCoffee1, .donationCoffee5, .donationCoffee10]
+        let donations = DonationView(viewModel: donationsViewModel)
+
         return Group {
-            loading.previewDisplayName("loading")
             error.previewDisplayName("error")
+            donations.previewDisplayName("donations")
         }
     }
 }

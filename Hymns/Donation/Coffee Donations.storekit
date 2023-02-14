@@ -10,18 +10,33 @@
       "internalID" : "6445529101",
       "localizations" : [
         {
-          "description" : "給我們買一杯咖啡!",
-          "displayName" : "一杯咖啡",
-          "locale" : "zh_CN"
-        },
-        {
-          "description" : "Buy us 1 cup of coffee",
+          "description" : "Buy us <b>1 coffee</b> to wake us up!",
           "displayName" : "1 Coffee",
           "locale" : "en_US"
+        },
+        {
+          "description" : "给我们买一杯咖啡!",
+          "displayName" : "一杯咖啡!",
+          "locale" : "zh_CN"
         }
       ],
       "productID" : "donation_coffee_1",
       "referenceName" : "1 Coffee",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "49.99",
+      "familyShareable" : false,
+      "internalID" : "6445712171",
+      "localizations" : [
+        {
+          "description" : "Buy us 10 coffees",
+          "displayName" : "10 Coffees",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "donation_coffee_10",
+      "referenceName" : "10 Coffees",
       "type" : "Consumable"
     },
     {
@@ -30,14 +45,14 @@
       "internalID" : "6445662477",
       "localizations" : [
         {
-          "description" : "Buy us 5 cups of coffee",
-          "displayName" : "5 Coffees",
-          "locale" : "en_US"
-        },
-        {
           "description" : "给我们买五杯咖啡!",
           "displayName" : "五杯咖啡",
           "locale" : "zh_CN"
+        },
+        {
+          "description" : "Buy us 5 coffees",
+          "displayName" : "5 Coffees",
+          "locale" : "en_US"
         }
       ],
       "productID" : "donation_coffee_5",
@@ -47,8 +62,9 @@
   ],
   "settings" : {
     "_applicationInternalID" : "1510007574",
+    "_billingIssuesEnabled" : false,
     "_developerTeamID" : "VBX3S26MR4",
-    "_lastSynchronizedDate" : 697656978.51746202
+    "_lastSynchronizedDate" : 698090689.77475703
   },
   "subscriptionGroups" : [
 

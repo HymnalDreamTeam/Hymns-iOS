@@ -1,10 +1,17 @@
 import FirebaseCrashlytics
+import StoreKit
 import SwiftUI
 
 struct DonationButtonView: View {
 
-    @Binding var result: Result<SettingsToastItem, Error>?
+    private let coffeeDonations: [any CoffeeDonation]
+    @Binding var resultBinding: Result<SettingsToastItem, Error>?
     @State private var showDonationOptions = false
+
+    init(coffeeDonations: [any CoffeeDonation], resultBinding: Binding<Result<SettingsToastItem, Error>?>) {
+        self.coffeeDonations = coffeeDonations
+        self._resultBinding = resultBinding
+    }
 
     var body: some View {
         Button(action: {
@@ -13,7 +20,7 @@ struct DonationButtonView: View {
             Text("Buy us coffee!", comment: "Settings item for making a donation.").font(.callout)
         }).padding().foregroundColor(.primary)
             .sheet(isPresented: $showDonationOptions) {
-                DonationView(viewModel: DonationViewModel(result: self.$result))
+                DonationView(viewModel: DonationViewModel(coffeeDonations: coffeeDonations, resultBinding: self.$resultBinding))
             }
     }
 }
@@ -21,7 +28,7 @@ struct DonationButtonView: View {
 #if DEBUG
 struct DonationButtonView_Previews: PreviewProvider {
     static var previews: some View {
-        DonationButtonView(result: .constant(nil))
+        DonationButtonView(coffeeDonations: [], resultBinding: .constant(nil)).previewLayout(.sizeThatFits)
     }
 }
 #endif
