@@ -4,6 +4,7 @@ import SwiftUI
 struct LaunchRouterView: View {
 
     private let userDefaultsManager: UserDefaultsManager
+    private let systemUtil: SystemUtil
 
     @State var showSplashAnimation: Bool {
         willSet {
@@ -11,8 +12,10 @@ struct LaunchRouterView: View {
         }
     }
 
-    init(userDefaultsManager: UserDefaultsManager = Resolver.resolve()) {
+    init(userDefaultsManager: UserDefaultsManager = Resolver.resolve(),
+         systemUtil: SystemUtil = Resolver.resolve()) {
         self.userDefaultsManager = userDefaultsManager
+        self.systemUtil = systemUtil
         self._showSplashAnimation = .init(initialValue: userDefaultsManager.showSplashAnimation)
     }
 
@@ -33,6 +36,8 @@ struct LaunchRouterView: View {
                     return HomeContainerView15().eraseToAnyView()
                 }
             }
+        }.task {
+            await systemUtil.loadDonationProducts()
         }
     }
 }

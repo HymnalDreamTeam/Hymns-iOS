@@ -29,7 +29,7 @@ extension Resolver: ResolverRegistering {
         register {URLSession.shared}.scope(.application)
         register {UserDefaultsManager()}.scope(.application)
         register {AnalyticsLogger()}
-        register {SystemUtilImpl() as SystemUtil}
+        register {SystemUtilImpl() as SystemUtil}.scope(.application)
         registerPDFLoader()
         registerConverters()
         registerHymnDataStore()

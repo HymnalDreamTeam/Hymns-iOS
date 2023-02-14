@@ -166,6 +166,8 @@
 		3BAC029424F608DC005A96E9 /* RepeatChorusViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAC029324F608DC005A96E9 /* RepeatChorusViewModel.swift */; };
 		3BADB42524822BDB008CEDAB /* BrowseTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BADB42424822BDB008CEDAB /* BrowseTab.swift */; };
 		3BADB429248461D1008CEDAB /* chineseSupplement216.json in Resources */ = {isa = PBXBuildFile; fileRef = 3BADB428248461D1008CEDAB /* chineseSupplement216.json */; };
+		3BB10D77299754AF00E84EB5 /* CoffeeDonation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB10D76299754AF00E84EB5 /* CoffeeDonation.swift */; };
+		3BB10D7A29975BF700E84EB5 /* DonationViewModelSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB10D7929975BF700E84EB5 /* DonationViewModelSpec.swift */; };
 		3BB1474A29551E8A0021494E /* SearchView15.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB1474929551E8A0021494E /* SearchView15.swift */; };
 		3BB1474E295523310021494E /* HomeContainerView15.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB1474D295523310021494E /* HomeContainerView15.swift */; };
 		3BB14750295524660021494E /* DisplayHymnToolbar15.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB1474F295524660021494E /* DisplayHymnToolbar15.swift */; };
@@ -180,6 +182,7 @@
 		3BB7877A24550686003CBEED /* StringExtensionsSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB7877924550686003CBEED /* StringExtensionsSpec.swift */; };
 		3BB7DE4824FCA9D600D4E6FB /* DisplayHymnPdfView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB7DE4724FCA9D600D4E6FB /* DisplayHymnPdfView.swift */; };
 		3BB7DE4A24FCC19500D4E6FB /* PdfLoaderTestImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB7DE4924FCC19500D4E6FB /* PdfLoaderTestImpl.swift */; };
+		3BB7FCEC299B6E6A00E52E75 /* DonationSnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB7FCEB299B6E6A00E52E75 /* DonationSnapshots.swift */; };
 		3BB9319F24E1E65D00E0C873 /* ToolTipSnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB9319E24E1E65D00E0C873 /* ToolTipSnapshots.swift */; };
 		3BB931A524E23DF200E0C873 /* ClearUserDefaultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB931A424E23DF200E0C873 /* ClearUserDefaultsView.swift */; };
 		3BB931A724E37F3B00E0C873 /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB931A624E37F3A00E0C873 /* LottieView.swift */; };
@@ -501,6 +504,8 @@
 		3BAC029324F608DC005A96E9 /* RepeatChorusViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatChorusViewModel.swift; sourceTree = "<group>"; };
 		3BADB42424822BDB008CEDAB /* BrowseTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseTab.swift; sourceTree = "<group>"; };
 		3BADB428248461D1008CEDAB /* chineseSupplement216.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = chineseSupplement216.json; sourceTree = "<group>"; };
+		3BB10D76299754AF00E84EB5 /* CoffeeDonation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoffeeDonation.swift; sourceTree = "<group>"; };
+		3BB10D7929975BF700E84EB5 /* DonationViewModelSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonationViewModelSpec.swift; sourceTree = "<group>"; };
 		3BB1474929551E8A0021494E /* SearchView15.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView15.swift; sourceTree = "<group>"; };
 		3BB1474D295523310021494E /* HomeContainerView15.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeContainerView15.swift; sourceTree = "<group>"; };
 		3BB1474F295524660021494E /* DisplayHymnToolbar15.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayHymnToolbar15.swift; sourceTree = "<group>"; };
@@ -515,6 +520,7 @@
 		3BB7877924550686003CBEED /* StringExtensionsSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensionsSpec.swift; sourceTree = "<group>"; };
 		3BB7DE4724FCA9D600D4E6FB /* DisplayHymnPdfView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayHymnPdfView.swift; sourceTree = "<group>"; };
 		3BB7DE4924FCC19500D4E6FB /* PdfLoaderTestImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PdfLoaderTestImpl.swift; sourceTree = "<group>"; };
+		3BB7FCEB299B6E6A00E52E75 /* DonationSnapshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonationSnapshots.swift; sourceTree = "<group>"; };
 		3BB9319E24E1E65D00E0C873 /* ToolTipSnapshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolTipSnapshots.swift; sourceTree = "<group>"; };
 		3BB931A424E23DF200E0C873 /* ClearUserDefaultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearUserDefaultsView.swift; sourceTree = "<group>"; };
 		3BB931A624E37F3A00E0C873 /* LottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieView.swift; sourceTree = "<group>"; };
@@ -845,6 +851,7 @@
 				3BCC243C24B24ADD00B8B8AB /* Common */,
 				B5C0A5992489C0440048FA46 /* Favorites */,
 				3B7555C62437C22300DA17F6 /* Display */,
+				3BB10D7829975BE100E84EB5 /* Donation */,
 				3B14B872244E9C560027D7AA /* Home */,
 				3B25C0EB2450B6B200C435E1 /* History */,
 				3B09F895243C527F00252C15 /* Infrastructure */,
@@ -1164,8 +1171,17 @@
 			isa = PBXGroup;
 			children = (
 				3BAA65AF29832B8A00B5CE3A /* Coffee Donations.storekit */,
+				3BB10D76299754AF00E84EB5 /* CoffeeDonation.swift */,
 				3BAA65B32983401C00B5CE3A /* DonationView.swift */,
 				3BAA65AD2983299200B5CE3A /* DonationViewModel.swift */,
+			);
+			path = Donation;
+			sourceTree = "<group>";
+		};
+		3BB10D7829975BE100E84EB5 /* Donation */ = {
+			isa = PBXGroup;
+			children = (
+				3BB10D7929975BF700E84EB5 /* DonationViewModelSpec.swift */,
 			);
 			path = Donation;
 			sourceTree = "<group>";
@@ -1301,9 +1317,10 @@
 				3B77655324B05D260081D917 /* BottomSheetSnapshots.swift */,
 				3B45F01524A14EBE00479FE6 /* BrowseTagsSnapshots.swift */,
 				3BE31A3C24A4674900B1A038 /* BrowseResultsListSnapshots.swift */,
-				3BDD870B249DEB42006288C8 /* DisplayHymnSnapshots.swift */,
-				3BB9E98D27DD7A6F00BD01C9 /* InlineChordsSnapshots.swift */,
 				3B52698D24A01E7E006E72E1 /* DisplayHymnPdfSnapshots.swift */,
+				3BDD870B249DEB42006288C8 /* DisplayHymnSnapshots.swift */,
+				3BB7FCEB299B6E6A00E52E75 /* DonationSnapshots.swift */,
+				3BB9E98D27DD7A6F00BD01C9 /* InlineChordsSnapshots.swift */,
 				3BDD8707249DBD33006288C8 /* FavoritesSnapshots.swift */,
 				3BD4AE9A27D8105800B4040A /* HymnMusicSnapshots.swift */,
 				3BD4AE9627D6D4A000B4040A /* IndicatorTabSnapshots.swift */,
@@ -1974,6 +1991,7 @@
 				3B2E84B3246FA87D00EA4329 /* SearchResultEntity.swift in Sources */,
 				B5C0A5982489BD140048FA46 /* FavoriteStore.swift in Sources */,
 				3BA91ED024ECD65100294830 /* MarqueeView.swift in Sources */,
+				3BB10D77299754AF00E84EB5 /* CoffeeDonation.swift in Sources */,
 				3B04D2FC24898137008C7E5E /* TagEntity.swift in Sources */,
 				3B369CEC246D07580068A29C /* PDFViewer.swift in Sources */,
 				5CA784A0242D1A3200B57903 /* BrowseView.swift in Sources */,
@@ -2121,6 +2139,7 @@
 				3B7555C82437C24F00DA17F6 /* HymnLyricsViewModelSpec.swift in Sources */,
 				3B87B831244988B100AEC7E9 /* SettingsViewModelSpec.swift in Sources */,
 				3BF3BDC42467B9F40046228C /* HymnsRepositoryImpl_dbUninitializedTests.swift in Sources */,
+				3BB10D7A29975BF700E84EB5 /* DonationViewModelSpec.swift in Sources */,
 				3B451049291394AD0091017D /* SongInfoViewModelSpec.swift in Sources */,
 				3BA1F8A727B894BC004410D0 /* DisplayHymnPdfViewModelSpec.swift in Sources */,
 				3BC53646243EDB8100DA728F /* TestConstants.swift in Sources */,
@@ -2169,6 +2188,7 @@
 				3BBCC21324DFDF6400977961 /* SoundCloudSnapshots.swift in Sources */,
 				3BBFFF5527D32ED900AE60C5 /* WrappedHStackSnapshots.swift in Sources */,
 				3B45F01624A14EBE00479FE6 /* BrowseTagsSnapshots.swift in Sources */,
+				3BB7FCEC299B6E6A00E52E75 /* DonationSnapshots.swift in Sources */,
 				3BB1928324A3EDB600E5F9FA /* SongInfoDialogSnapshots.swift in Sources */,
 				3BCC54CB24C80B2100F0D6FC /* ToastSnapshots.swift in Sources */,
 				3BE7C91C249CAB2700B04A1F /* SearchSnapshots.swift in Sources */,

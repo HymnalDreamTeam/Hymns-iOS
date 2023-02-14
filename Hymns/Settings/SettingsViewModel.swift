@@ -33,8 +33,8 @@ class SettingsViewModel: ObservableObject {
 
         settings = [.repeatChorus(repeatChorusViewModel), .clearHistory(clearHistoryViewModel), .aboutUs, .feedback(result), .privacyPolicy]
 
-        if systemUtil.isNetworkAvailable() {
-            settings?.append(.donate(result))
+        if !systemUtil.donationProducts.isEmpty {
+            settings?.append(.donate(coffeeDonations: systemUtil.donationProducts, resultBinding: result))
         }
 
         if #available(iOS 16, *) {
@@ -60,7 +60,7 @@ enum SettingsModel {
     case privacyPolicy
     case clearUserDefaults
     case version(SimpleSettingViewModel)
-    case donate(Binding<Result<SettingsToastItem, Error>?>)
+    case donate(coffeeDonations: [any CoffeeDonation], resultBinding: Binding<Result<SettingsToastItem, Error>?>)
 }
 
 extension SettingsModel {
@@ -81,8 +81,8 @@ extension SettingsModel {
             return ClearUserDefaultsView().eraseToAnyView()
         case .version(let viewModel):
             return SimpleSettingView(viewModel: viewModel).eraseToAnyView()
-        case .donate(let result):
-            return DonationButtonView(result: result).eraseToAnyView()
+        case .donate(let coffeeDonations, let resultBinding):
+            return DonationButtonView(coffeeDonations: coffeeDonations, resultBinding: resultBinding).eraseToAnyView()
         }
     }
 }
