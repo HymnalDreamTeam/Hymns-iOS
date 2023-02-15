@@ -10,7 +10,7 @@
       "internalID" : "6445529101",
       "localizations" : [
         {
-          "description" : "Buy us <b>1 coffee</b> to wake us up!",
+          "description" : "Buy us 1 coffee",
           "displayName" : "1 Coffee",
           "locale" : "en_US"
         },
@@ -29,6 +29,11 @@
       "familyShareable" : false,
       "internalID" : "6445712171",
       "localizations" : [
+        {
+          "description" : "给我们买十杯咖啡!",
+          "displayName" : "十杯咖啡",
+          "locale" : "zh_CN"
+        },
         {
           "description" : "Buy us 10 coffees",
           "displayName" : "10 Coffees",
@@ -64,7 +69,7 @@
     "_applicationInternalID" : "1510007574",
     "_billingIssuesEnabled" : false,
     "_developerTeamID" : "VBX3S26MR4",
-    "_lastSynchronizedDate" : 698090689.77475703
+    "_lastSynchronizedDate" : 698139094.67540097
   },
   "subscriptionGroups" : [
 
