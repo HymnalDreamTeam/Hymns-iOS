@@ -85,14 +85,14 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                             expect(target.buttons[0]).to(equal(.share("verse 1 line 1\nverse 1 line 2\nchorus line 1\nchorus line 2\nverse 2 line 1\nverse 2 line 2\nverse 3 line 1\nverse 3 line 2")))
                             expect(target.buttons[1]).to(equal(.fontSize(FontPickerViewModel())))
                             expect(target.buttons[2]).to(equal(.languages([
-                                SongResultViewModel(stableId: "hymnType: ht, hymnNumber: 1151, queryParams: ", title: "Tagalog",
+                                SongResultViewModel(stableId: "hymnType: ht, hymnNumber: 1151", title: "Tagalog",
                                                     destinationView: EmptyView().eraseToAnyView()),
-                                SongResultViewModel(stableId: "hymnType: tsx, hymnNumber: 216, queryParams: ?gb=1", title: "诗歌(简)",
+                                SongResultViewModel(stableId: "hymnType: tsx, hymnNumber: 216", title: "诗歌(简)",
                                                     destinationView: EmptyView().eraseToAnyView())])))
                             expect(target.buttons[3]).to(equal(.relevant([
-                                    SongResultViewModel(stableId: "hymnType: nt, hymnNumber: 1151, queryParams: ", title: "New Tune",
+                                    SongResultViewModel(stableId: "hymnType: nt, hymnNumber: 1151", title: "New Tune",
                                                         destinationView: EmptyView().eraseToAnyView()),
-                                    SongResultViewModel(stableId: "hymnType: ns, hymnNumber: 216, queryParams: ", title: "Cool other song",
+                                    SongResultViewModel(stableId: "hymnType: ns, hymnNumber: 216", title: "Cool other song",
                                                         destinationView: EmptyView().eraseToAnyView())])))
                             expect(target.buttons[4]).to(equal(.tags))
                             expect(target.buttons[5]).to(equal(.songInfo(SongInfoDialogViewModel(hymnToDisplay: classic1151, hymn: populatedHymn)!)))
@@ -113,14 +113,14 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                             expect(target.buttons[0]).to(equal(.share("verse 1 line 1\nverse 1 line 2\nchorus line 1\nchorus line 2\nverse 2 line 1\nverse 2 line 2\nverse 3 line 1\nverse 3 line 2")))
                             expect(target.buttons[1]).to(equal(.fontSize(FontPickerViewModel())))
                             expect(target.buttons[2]).to(equal(.languages([
-                                SongResultViewModel(stableId: "hymnType: ht, hymnNumber: 1151, queryParams: ", title: "Tagalog",
+                                SongResultViewModel(stableId: "hymnType: ht, hymnNumber: 1151", title: "Tagalog",
                                                     destinationView: EmptyView().eraseToAnyView()),
-                                SongResultViewModel(stableId: "hymnType: tsx, hymnNumber: 216, queryParams: ?gb=1", title: "诗歌(简)",
+                                SongResultViewModel(stableId: "hymnType: tsx, hymnNumber: 216", title: "诗歌(简)",
                                                     destinationView: EmptyView().eraseToAnyView())])))
                             expect(target.buttons[3]).to(equal(.relevant([
-                                SongResultViewModel(stableId: "hymnType: nt, hymnNumber: 1151, queryParams: ", title: "New Tune",
+                                SongResultViewModel(stableId: "hymnType: nt, hymnNumber: 1151", title: "New Tune",
                                                     destinationView: EmptyView().eraseToAnyView()),
-                                SongResultViewModel(stableId: "hymnType: ns, hymnNumber: 216, queryParams: ", title: "Cool other song",
+                                SongResultViewModel(stableId: "hymnType: ns, hymnNumber: 216", title: "Cool other song",
                                                     destinationView: EmptyView().eraseToAnyView())])))
                             expect(target.overflowButtons).toNot(beNil())
                             expect(target.overflowButtons!).to(haveCount(2))
@@ -181,15 +181,15 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                             expect(target.buttons[0]).to(equal(.share("verse 1 line 1\nverse 1 line 2\nchorus line 1\nchorus line 2\nverse 2 line 1\nverse 2 line 2\nverse 3 line 1\nverse 3 line 2")))
                             expect(target.buttons[1]).to(equal(.fontSize(FontPickerViewModel())))
                             expect(target.buttons[2]).to(equal(.languages([
-                                SongResultViewModel(stableId: "hymnType: ht, hymnNumber: 1151, queryParams: ", title: "Tagalog",
+                                SongResultViewModel(stableId: "hymnType: ht, hymnNumber: 1151", title: "Tagalog",
                                                     destinationView: EmptyView().eraseToAnyView()),
-                                SongResultViewModel(stableId: "hymnType: tsx, hymnNumber: 216, queryParams: ?gb=1", title: "诗歌(简)",
+                                SongResultViewModel(stableId: "hymnType: tsx, hymnNumber: 216", title: "诗歌(简)",
                                                     destinationView: EmptyView().eraseToAnyView())])))
                             expect(target.buttons[3]).to(equal(.musicPlayback(AudioPlayerViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=mp3")!))))
                             expect(target.buttons[4]).to(equal(.relevant([
-                                    SongResultViewModel(stableId: "hymnType: nt, hymnNumber: 1151, queryParams: ", title: "New Tune",
+                                    SongResultViewModel(stableId: "hymnType: nt, hymnNumber: 1151", title: "New Tune",
                                                         destinationView: EmptyView().eraseToAnyView()),
-                                    SongResultViewModel(stableId: "hymnType: ns, hymnNumber: 216, queryParams: ", title: "Cool other song",
+                                    SongResultViewModel(stableId: "hymnType: ns, hymnNumber: 216", title: "Cool other song",
                                                         destinationView: EmptyView().eraseToAnyView())])))
                             expect(target.overflowButtons!).to(haveCount(4))
                             expect(target.overflowButtons![0]).to(equal(.tags))

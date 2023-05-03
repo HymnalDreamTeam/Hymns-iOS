@@ -217,7 +217,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                 }
                 it("should have an empty result list") {
                     expect(target.songResults).to(haveCount(1))
-                    expect(target.songResults![0].stableId).to(equal("hymnType: h, hymnNumber: 993, queryParams: "))
+                    expect(target.songResults![0].stableId).to(equal("hymnType: h, hymnNumber: 993"))
                     expect(target.songResults![0].title).to(equal("Song title"))
                     expect(target.songResults![0].label).to(equal("Hymn 993"))
                 }
