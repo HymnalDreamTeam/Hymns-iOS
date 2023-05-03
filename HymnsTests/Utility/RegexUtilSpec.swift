@@ -93,10 +93,40 @@ class RegexUtilSpec: QuickSpec {
                     expect(RegexUtil.getHymnType(path: manyLetters)).to(equal(HymnType.classic))
                 }
             }
+            let chinese = "/en/hymn/ch/13"
+            context("from \(chinese)") {
+                it("should be chinese") {
+                    expect(RegexUtil.getHymnType(path: chinese)).to(equal(HymnType.chinese))
+                }
+            }
+            let chineseSimplified = "/en/hymn/ch/13?gb=1"
+            context("from \(chineseSimplified)") {
+                it("should be chinese simplified") {
+                    expect(RegexUtil.getHymnType(path: chineseSimplified)).to(equal(HymnType.chineseSimplified))
+                }
+            }
+            let chineseSupplement = "/en/hymn/ts/1"
+            context("from \(chineseSupplement)") {
+                it("should be chinese supplement") {
+                    expect(RegexUtil.getHymnType(path: chineseSupplement)).to(equal(HymnType.chineseSupplement))
+                }
+            }
+            let chineseSupplementSimplified = "/en/hymn/ts/1?gb=1"
+            context("from \(chineseSupplementSimplified)") {
+                it("should be chinese simplified") {
+                    expect(RegexUtil.getHymnType(path: chineseSupplementSimplified)).to(equal(HymnType.chineseSupplementSimplified))
+                }
+            }
+            let multipleQueryParams = "/en/hymn/ts/1?q1=4&q2=abc&gb=1"
+            context("from \(multipleQueryParams)") {
+                it("should be chinese simplified") {
+                    expect(RegexUtil.getHymnType(path: multipleQueryParams)).to(equal(HymnType.chineseSupplementSimplified))
+                }
+            }
             let queryParams = "/en/hymn/h/594?gb=1&query=3"
             context("from \(queryParams)") {
-                it("should be classic") {
-                    expect(RegexUtil.getHymnType(path: queryParams)).to(equal(HymnType.classic))
+                it("should be nil") {
+                    expect(RegexUtil.getHymnType(path: queryParams)).to(beNil())
                 }
             }
         }

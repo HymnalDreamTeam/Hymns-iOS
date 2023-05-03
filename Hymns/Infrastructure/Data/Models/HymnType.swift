@@ -12,7 +12,9 @@ import Foundation
     case dutch
     case german
     case chinese
+    case chineseSimplified
     case chineseSupplement
+    case chineseSupplementSimplified
     case cebuano
     case tagalog
     case french
@@ -80,8 +82,12 @@ extension HymnType {
             return "de"
         case .chinese:
             return "ch"
+        case .chineseSimplified:
+            return "chx"
         case .chineseSupplement:
             return "ts"
+        case .chineseSupplementSimplified:
+            return "tsx"
         case .cebuano:
             return "cb"
         case .tagalog:
@@ -163,9 +169,9 @@ extension HymnType {
             return NSLocalizedString("Dutch Songs", comment: "Display name of 'Dutch Songs'. Usually appears just by itself (i.e. as a title).")
         case .german:
             return NSLocalizedString("German Songs", comment: "Display name of 'German Songs'. Usually appears just by itself (i.e. as a title).")
-        case .chinese:
+        case .chinese, .chineseSimplified:
             return NSLocalizedString("Chinese Songs", comment: "Display name of 'Chinese Songs'. Usually appears just by itself (i.e. as a title).")
-        case .chineseSupplement:
+        case .chineseSupplement, .chineseSupplementSimplified:
             return NSLocalizedString("Chinese Supplemental Songs", comment: "Display name of 'Chinese Supplemental Songs'. Usually appears just by itself (i.e. as a title).")
         case .cebuano:
             return NSLocalizedString("Cebuano Songs", comment: "Display name of 'Cebuano Songs'. Usually appears just by itself (i.e. as a title).")
@@ -206,9 +212,9 @@ extension HymnType {
             return NSLocalizedString("Dutch %@", comment: "Will appear in conjunction with something else (e.g. Dutch 7).")
         case .german:
             return NSLocalizedString("German %@", comment: "Will appear in conjunction with something else (e.g. German 7).")
-        case .chinese:
+        case .chinese, .chineseSimplified:
             return NSLocalizedString("Chinese %@", comment: "Will appear in conjunction with something else (e.g. Chinese 7).")
-        case .chineseSupplement:
+        case .chineseSupplement, .chineseSupplementSimplified:
             return NSLocalizedString("Chinese Supplement %@", comment: "Will appear in conjunction with something else (e.g. Chinese Supplement 7).")
         case .cebuano:
             return NSLocalizedString("Cebuano %@", comment: "Will appear in conjunction with something else (e.g. Cebuano 7).")

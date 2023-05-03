@@ -1,3 +1,4 @@
+import FirebaseCrashlytics
 import Foundation
 
 public class RegexUtil {
@@ -89,9 +90,25 @@ public class RegexUtil {
         let regex = NSRegularExpression(songPathFormat, options: .caseInsensitive)
         let pathWithoutQueryParams = removeQueryParams(path: path)
 
-        if let match = regex.firstMatch(in: pathWithoutQueryParams, options: [], range: NSRange(location: 0, length: pathWithoutQueryParams.utf16.count)) {
-            if let hymnTypeRange = Range(match.range(at: 1), in: pathWithoutQueryParams) {
-                return HymnType.fromAbbreviatedValue(String(pathWithoutQueryParams[hymnTypeRange]))
+        if let match = regex.firstMatch(in: pathWithoutQueryParams, options: [], range: NSRange(location: 0, length: pathWithoutQueryParams.utf16.count)),
+           let hymnTypeRange = Range(match.range(at: 1), in: pathWithoutQueryParams),
+           let hymnType = HymnType.fromAbbreviatedValue(String(pathWithoutQueryParams[hymnTypeRange])) {
+
+            guard let queryParams = getQueryParams(path: path),
+                  // swiftlint:disable:next identifier_name
+                  let gb = queryParams["gb"] else {
+                return hymnType
+            }
+
+            if gb == "1" {
+                if hymnType == .chinese {
+                    return .chineseSimplified
+                } else if hymnType == .chineseSupplement {
+                    return .chineseSupplementSimplified
+                } else {
+                    Crashlytics.crashlytics().record(error: NonFatal(localizedDescription: "Path \(path) is expected to be a Chinese song"))
+                    return nil
+                }
             }
         }
         return nil

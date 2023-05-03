@@ -124,15 +124,18 @@ class ConverterSpec: QuickSpec {
                 }
             }
             describe("toSongResultEntities") {
-                let classic594 = SongResult(name: "classic594", path: "/en/hymn/h/594?gb=1&query=3")
+                let classic594 = SongResult(name: "classic594", path: "/en/hymn/h/594?query=3")
+                let classic595 = SongResult(name: "classic595", path: "/en/hymn/h/595?gb=1&query=3")
                 let noHymnType = SongResult(name: "noHymnType", path: "")
                 let newTune7 = SongResult(name: "newTune7", path: "/en/hymn/nt/7")
                 let noHymnNumber = SongResult(name: "noHymnNumber", path: "/en/hymn/h/a")
                 context("valid and invalid song results") {
                     it("convert the valid results and drop the invalid ones") {
-                        let expectedEntities = [SongResultEntity(hymnType: .classic, hymnNumber: "594", queryParams: ["gb": "1", "query": "3"], title: "classic594"),
+                        let expectedEntities = [SongResultEntity(hymnType: .classic, hymnNumber: "594", queryParams: ["query": "3"], title: "classic594"),
                                                 SongResultEntity(hymnType: .newTune, hymnNumber: "7", queryParams: nil, title: "newTune7")]
-                        let (entities, hasMorePages) = target.toSongResultEntities(songResultsPage: SongResultsPage(results: [classic594, noHymnType, newTune7, noHymnNumber], hasMorePages: false))
+                        let (entities, hasMorePages) = target.toSongResultEntities(songResultsPage: SongResultsPage(results: [classic594, classic595,
+                                                                                                                              noHymnType, newTune7, noHymnNumber],
+                                                                                                                    hasMorePages: false))
                         expect(entities).to(equal(expectedEntities))
                         expect(hasMorePages).to(beFalse())
                     }
