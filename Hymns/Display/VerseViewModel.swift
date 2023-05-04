@@ -13,11 +13,11 @@ class VerseLineViewModel: Hashable, ObservableObject {
 
     private var disposables = Set<AnyCancellable>()
 
-    init(verseNumber: String?, verseText: String, transliteration: String?,
+    init(verseNumber: String? = nil, lineEntity: LineEntity,
          userDefaultsManager: UserDefaultsManager = Resolver.resolve()) {
         self.verseNumber = verseNumber
-        self.verseText = verseText
-        self.transliteration = transliteration
+        self.verseText = lineEntity.lineContent
+        self.transliteration = lineEntity.transliteration
         self.fontSize = userDefaultsManager.fontSize
         userDefaultsManager
             .fontSizeSubject
@@ -42,16 +42,8 @@ class VerseLineViewModel: Hashable, ObservableObject {
 }
 
 extension VerseLineViewModel {
-    convenience init(verseText: String) {
-        self.init(verseNumber: nil, verseText: verseText, transliteration: nil)
-    }
-
-    convenience init(verseNumber: String, verseText: String) {
-        self.init(verseNumber: verseNumber, verseText: verseText, transliteration: nil)
-    }
-
-    convenience init(verseText: String, transliteration: String) {
-        self.init(verseNumber: nil, verseText: verseText, transliteration: transliteration)
+    convenience init(verseNumber: String? = nil, verseText: String, transliteration: String? = nil) {
+        self.init(verseNumber: verseNumber, lineEntity: LineEntity(lineContent: verseText, transliteration: transliteration))
     }
 }
 
@@ -65,11 +57,18 @@ class VerseViewModel {
 
     let verseLines: [VerseLineViewModel]
 
-    init(verseNumber: String, verseLines: [String], transliteration: [String]? = nil, shouldTransliterate: Binding<Bool>? = nil) {
-        self.verseLines = verseLines.enumerated().map { (index, line) -> VerseLineViewModel in
-            let transliteration = transliteration?[index]
-            return VerseLineViewModel(verseNumber: index == 0 ? verseNumber : nil, verseText: line, transliteration: transliteration)
+    init(verseNumber: String, verseLines: [LineEntity], shouldTransliterate: Binding<Bool>? = nil) {
+        self.verseLines = verseLines.enumerated().map { (index, lineEntity) -> VerseLineViewModel in
+            return VerseLineViewModel(verseNumber: index == 0 ? verseNumber : nil, lineEntity: lineEntity)
         }
+    }
+}
+
+extension VerseViewModel {
+    convenience init(verseNumber: String, verseLines: [String], shouldTransliterate: Binding<Bool>? = nil) {
+        self.init(verseNumber: verseNumber, verseLines: verseLines.map({ lineContent in
+            LineEntity(lineContent: lineContent)
+        }), shouldTransliterate: shouldTransliterate)
     }
 }
 

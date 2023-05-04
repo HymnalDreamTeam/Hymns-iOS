@@ -19,14 +19,15 @@ class HymnLyricsViewModelSpec: QuickSpec {
             }
             context("with empty lyrics") {
                 beforeEach {
-                    target = HymnLyricsViewModel(hymnToDisplay: classic1151, lyrics: [Verse]())
+                    target = HymnLyricsViewModel(hymnToDisplay: classic1151, lyrics: [VerseEntity]())
                 }
                 it("should return nil view model") {
                     expect(target).to(beNil())
                 }
             }
             context("without transliterable lyrics") {
-                let verses = [Verse(verseType: .verse, verseContent: ["line 1", "line 2"]), Verse(verseType: .chorus, verseContent: ["chorus 1", "chorus 2"])]
+                let verses = [VerseEntity(verseType: .verse, lineStrings: ["line 1", "line 2"]),
+                              VerseEntity(verseType: .chorus, lineStrings: ["chorus 1", "chorus 2"])]
                 beforeEach {
                     target = HymnLyricsViewModel(hymnToDisplay: classic1151, lyrics: verses)!
                 }
@@ -53,16 +54,18 @@ class HymnLyricsViewModelSpec: QuickSpec {
                 }
             }
             context("with transliterable lyrics") {
-                let verses = [Verse(verseType: .verse, verseContent: ["line 1", "line 2"], transliteration: ["transliteration 1", "transliteration 2"]),
-                              Verse(verseType: .chorus, verseContent: ["chorus 1", "chorus 2"], transliteration: ["chorus transliteration 1", "chorus transliteration 2"])]
+                let verses = [VerseEntity(verseType: .verse, lines: [LineEntity(lineContent: "line 1", transliteration: "transliteration 1"),
+                                                                     LineEntity(lineContent: "line 2", transliteration: "transliteration 2")]),
+                              VerseEntity(verseType: .chorus, lines: [LineEntity(lineContent: "chorus 1", transliteration: "chorus transliteration 1"),
+                                                                      LineEntity(lineContent: "chorus 2", transliteration: "chorus transliteration 2")])]
                 beforeEach {
                     target = HymnLyricsViewModel(hymnToDisplay: classic1151, lyrics: verses)!
                 }
                 it("should display lyrics") {
-                    expect(target.lyrics).to(equal([VerseViewModel(verseNumber: "1", verseLines: ["line 1", "line 2"],
-                                                                   transliteration: ["transliteration 1", "transliteration 2"]),
-                                                    VerseViewModel(verseNumber: "Chorus", verseLines: ["chorus 1", "chorus 2"],
-                                                                   transliteration: ["chorus transliteration 1", "chorus transliteration 2"])]))
+                    expect(target.lyrics).to(equal([VerseViewModel(verseNumber: "1", verseLines: [LineEntity(lineContent: "line 1", transliteration: "transliteration 1"),
+                                                                                                  LineEntity(lineContent: "line 2", transliteration: "transliteration 2")]),
+                                                    VerseViewModel(verseNumber: "Chorus", verseLines: [LineEntity(lineContent: "chorus 1", transliteration: "chorus transliteration 1"),
+                                                                                                       LineEntity(lineContent: "chorus 2", transliteration: "chorus transliteration 2")])]))
                 }
                 describe("formatted string") {
                     context("do not include transliteration") {
@@ -88,10 +91,10 @@ class HymnLyricsViewModelSpec: QuickSpec {
                     UserDefaults.standard.set(true, forKey: "repeat_chorus")
                 }
                 context("no chorus") {
-                    let verses: [Verse] = [
-                        Verse(verseType: .verse, verseContent: ["line 1", "line 2"]),
-                        Verse(verseType: .other, verseContent: ["other 1", "other 2"]),
-                        Verse(verseType: .verse, verseContent: ["line 3", "line 4"])]
+                    let verses: [VerseEntity] = [
+                        VerseEntity(verseType: .verse, lineStrings: ["line 1", "line 2"]),
+                        VerseEntity(verseType: .other, lineStrings: ["other 1", "other 2"]),
+                        VerseEntity(verseType: .verse, lineStrings: ["line 3", "line 4"])]
                     beforeEach {
                         target = HymnLyricsViewModel(hymnToDisplay: classic1151, lyrics: verses)!
                     }
@@ -104,11 +107,11 @@ class HymnLyricsViewModelSpec: QuickSpec {
                     }
                 }
                 context("one chorus") {
-                    let verses: [Verse] = [Verse(verseType: .verse, verseContent: ["line 1", "line 2"]),
-                                           Verse(verseType: .other, verseContent: ["other 1", "other 2"]),
-                                           Verse(verseType: .verse, verseContent: ["line 3", "line 4"]),
-                                           Verse(verseType: .verse, verseContent: ["line 5", "line 6"]),
-                                           Verse(verseType: .chorus, verseContent: ["chorus 1", "chorus 2"])]
+                    let verses = [VerseEntity(verseType: .verse, lineStrings: ["line 1", "line 2"]),
+                                  VerseEntity(verseType: .other, lineStrings: ["other 1", "other 2"]),
+                                  VerseEntity(verseType: .verse, lineStrings: ["line 3", "line 4"]),
+                                  VerseEntity(verseType: .verse, lineStrings: ["line 5", "line 6"]),
+                                  VerseEntity(verseType: .chorus, lineStrings: ["chorus 1", "chorus 2"])]
                     beforeEach {
                         target = HymnLyricsViewModel(hymnToDisplay: classic1151, lyrics: verses)
                     }
@@ -125,11 +128,11 @@ class HymnLyricsViewModelSpec: QuickSpec {
                     }
                 }
                 context("multiple choruses") {
-                    let verses: [Verse] = [Verse(verseType: .verse, verseContent: ["line 1", "line 2"]),
-                                           Verse(verseType: .chorus, verseContent: ["chorus 1", "chorus 2"]),
-                                           Verse(verseType: .chorus, verseContent: ["chorus 3", "chorus 4"]),
-                                           Verse(verseType: .other, verseContent: ["other 1", "other 2"]),
-                                           Verse(verseType: .verse, verseContent: ["line 3", "line 4"])]
+                    let verses = [VerseEntity(verseType: .verse, lineStrings: ["line 1", "line 2"]),
+                                  VerseEntity(verseType: .chorus, lineStrings: ["chorus 1", "chorus 2"]),
+                                  VerseEntity(verseType: .chorus, lineStrings: ["chorus 3", "chorus 4"]),
+                                  VerseEntity(verseType: .other, lineStrings: ["other 1", "other 2"]),
+                                  VerseEntity(verseType: .verse, lineStrings: ["line 3", "line 4"])]
                     beforeEach {
                         target = HymnLyricsViewModel(hymnToDisplay: classic1151, lyrics: verses)
                     }

@@ -37,7 +37,7 @@ class DisplayHymnSnapshots: XCTestCase {
         let lyricsViewModel = HymnLyricsViewModel(hymnToDisplay: hymn40_identifier, lyrics: hymn40_hymn.lyrics)!
         viewModel.currentTab = .lyrics(HymnLyricsView(viewModel: lyricsViewModel).maxSize().eraseToAnyView())
         viewModel.tabItems = [viewModel.currentTab, .music(EmptyView().eraseToAnyView())]
-        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [Verse]())
+        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [VerseEntity]())
         viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn40_identifier, hymn: hymn)
         viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize(FontPickerViewModel()), .tags]
         assertVersionedSnapshot(
@@ -53,7 +53,7 @@ class DisplayHymnSnapshots: XCTestCase {
         let lyricsViewModel = HymnLyricsViewModel(hymnToDisplay: hymn1334_identifier, lyrics: hymn1334_hymn.lyrics)!
         viewModel.currentTab = .lyrics(HymnLyricsView(viewModel: lyricsViewModel).maxSize().eraseToAnyView())
         viewModel.tabItems = [viewModel.currentTab, .music(EmptyView().eraseToAnyView())]
-        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [Verse]())
+        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [VerseEntity]())
         viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1334_identifier, hymn: hymn)
         viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize(FontPickerViewModel()), .tags]
         assertVersionedSnapshot(
@@ -69,7 +69,7 @@ class DisplayHymnSnapshots: XCTestCase {
         let lyricsViewModel = HymnLyricsViewModel(hymnToDisplay: hymn1151_identifier, lyrics: hymn1151_hymn.lyrics)!
         viewModel.currentTab = .lyrics(HymnLyricsView(viewModel: lyricsViewModel).maxSize().eraseToAnyView())
         viewModel.tabItems = [viewModel.currentTab]
-        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [Verse]())
+        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [VerseEntity]())
         viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1151_identifier, hymn: hymn)
         viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize(FontPickerViewModel()), .tags]
         assertVersionedSnapshot(
@@ -85,7 +85,7 @@ class DisplayHymnSnapshots: XCTestCase {
         let lyricsViewModel = HymnLyricsViewModel(hymnToDisplay: hymn1151_identifier, lyrics: hymn1151_hymn.lyrics)!
         viewModel.currentTab = .lyrics(HymnLyricsView(viewModel: lyricsViewModel).maxSize().eraseToAnyView())
         viewModel.tabItems = [HymnTab]()
-        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [Verse]())
+        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [VerseEntity]())
         viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1151_identifier, hymn: hymn)
         viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize(FontPickerViewModel()), .tags]
         assertVersionedSnapshot(
@@ -101,7 +101,7 @@ class DisplayHymnSnapshots: XCTestCase {
         let lyricsViewModel = HymnLyricsViewModel(hymnToDisplay: hymn1151_identifier, lyrics: hymn1151_hymn.lyrics)!
         viewModel.currentTab = .lyrics(HymnLyricsView(viewModel: lyricsViewModel).maxSize().eraseToAnyView())
         viewModel.tabItems = [viewModel.currentTab, .music(EmptyView().eraseToAnyView())]
-        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [Verse]())
+        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [VerseEntity]())
         viewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1151_identifier, hymn: hymn)
         viewModel.bottomBar!.buttons = [.share("lyrics"), .fontSize(FontPickerViewModel()), .tags]
         assertVersionedSnapshot(
@@ -120,7 +120,7 @@ class DisplayHymnSnapshots: XCTestCase {
 
         viewModel.currentTab = .music(HymnMusicView(viewModel: HymnMusicViewModel(musicViews: [.piano(pdfView.eraseToAnyView())])).eraseToAnyView())
         viewModel.tabItems = [.lyrics(EmptyView().eraseToAnyView()), viewModel.currentTab]
-        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [Verse]())
+        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [VerseEntity]())
         let bottomBarViewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1151_identifier, hymn: hymn)
         bottomBarViewModel.buttons = [
             .share("Shareable lyrics"),
@@ -149,7 +149,7 @@ class DisplayHymnSnapshots: XCTestCase {
         let musicView = HymnMusicView(viewModel: musicViewModel).eraseToAnyView()
         viewModel.currentTab = .music(musicView)
         viewModel.tabItems = [.lyrics(EmptyView().eraseToAnyView()), viewModel.currentTab]
-        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [Verse]())
+        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [VerseEntity]())
         let bottomBarViewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: hymn1151_identifier, hymn: hymn)
         bottomBarViewModel.buttons = [
             .share("Shareable lyrics"),

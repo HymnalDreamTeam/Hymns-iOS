@@ -101,9 +101,11 @@ class DisplayHymnBottomBarViewModel: ObservableObject {
         }
     }
 
-    private func convertToOneString(verses: [Verse]) -> String {
+    private func convertToOneString(verses: [VerseEntity]) -> String {
         verses.flatMap { verse in
-            verse.verseContent
+            verse.lines
+        }.compactMap { line in
+            line.lineContent
         }.joined(separator: "\n")
     }
 }

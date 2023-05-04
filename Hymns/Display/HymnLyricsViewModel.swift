@@ -12,14 +12,13 @@ class HymnLyricsViewModel: ObservableObject {
 
     private var disposables = Set<AnyCancellable>()
 
-    init?(hymnToDisplay identifier: HymnIdentifier, lyrics: [Verse]?, userDefaultsManager: UserDefaultsManager = Resolver.resolve()) {
+    init?(hymnToDisplay identifier: HymnIdentifier, lyrics: [VerseEntity]?, userDefaultsManager: UserDefaultsManager = Resolver.resolve()) {
         self.identifier = identifier
         self.userDefaultsManager = userDefaultsManager
 
         guard let lyrics = lyrics else {
             return nil
         }
-
         let viewModels = convertToViewModels(lyrics)
         self.lyrics = viewModels
         self.showTransliterationButton = viewModels.first.flatMap { fisrtVerse in
@@ -33,8 +32,8 @@ class HymnLyricsViewModel: ObservableObject {
         }
     }
 
-    private func convertToViewModels(_ verses: [Verse]) -> [VerseViewModel] {
-        let lyrics: [Verse]
+    private func convertToViewModels(_ verses: [VerseEntity]) -> [VerseViewModel] {
+        let lyrics: [VerseEntity]
         if userDefaultsManager.shouldRepeatChorus {
             lyrics = duplicateChorus(verses)
         } else {
@@ -46,19 +45,19 @@ class HymnLyricsViewModel: ObservableObject {
         for verse in lyrics {
             if verse.verseType == .chorus {
                 verseViewModels.append(VerseViewModel(verseNumber: NSLocalizedString("Chorus", comment: "Indicator that that the verse is of type 'chorus'."),
-                                                      verseLines: verse.verseContent, transliteration: verse.transliteration))
+                                                      verseLines: verse.lines))
             } else if verse.verseType == .other {
                 verseViewModels.append(VerseViewModel(verseNumber: NSLocalizedString("Other", comment: "Indicator that that the verse is of type 'other'."),
-                                                      verseLines: verse.verseContent, transliteration: verse.transliteration))
+                                                      verseLines: verse.lines))
             } else {
                 verseNumber += 1
-                verseViewModels.append(VerseViewModel(verseNumber: "\(verseNumber)", verseLines: verse.verseContent, transliteration: verse.transliteration))
+                verseViewModels.append(VerseViewModel(verseNumber: "\(verseNumber)", verseLines: verse.lines))
             }
         }
         return verseViewModels
     }
 
-    private func duplicateChorus(_ verses: [Verse]) -> [Verse] {
+    private func duplicateChorus(_ verses: [VerseEntity]) -> [VerseEntity] {
         let choruses = verses.filter { verse -> Bool in
             verse.verseType == .chorus
         }
@@ -72,7 +71,7 @@ class HymnLyricsViewModel: ObservableObject {
             return verses
         }
 
-        var newVerses = [Verse]()
+        var newVerses = [VerseEntity]()
         for (index, verse) in verses.enumerated() {
             newVerses.append(verse)
             if verse.verseType != .verse {

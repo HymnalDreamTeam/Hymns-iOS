@@ -12,21 +12,15 @@ protocol Converter {
 class ConverterImpl: Converter {
 
     private let analytics: AnalyticsLogger
-    private let jsonDecoder: JSONDecoder
-    private let jsonEncoder: JSONEncoder
 
-    init(analytics: AnalyticsLogger = Resolver.resolve(),
-         jsonDecoder: JSONDecoder = Resolver.resolve(),
-         jsonEncoder: JSONEncoder = Resolver.resolve()) {
+    init(analytics: AnalyticsLogger = Resolver.resolve()) {
         self.analytics = analytics
-        self.jsonDecoder = jsonDecoder
-        self.jsonEncoder = jsonEncoder
     }
 
     func toHymnEntity(hymnIdentifier: HymnIdentifier, hymn: Hymn) throws -> HymnEntity {
         HymnEntityBuilder(hymnIdentifier: hymnIdentifier)
             .title(hymn.title)
-            .lyricsJson(try jsonEncoder.encode(hymn.lyrics).toString)
+            .lyrics(extractVerseEntities(hymn.lyrics))
             .category(getMetadata(hymn: hymn, metaDatumName: .category))
             .subcategory(getMetadata(hymn: hymn, metaDatumName: .subcategory))
             .author(getMetadata(hymn: hymn, metaDatumName: .author))
@@ -61,28 +55,45 @@ class ConverterImpl: Converter {
         }
         return databaseValue.trim()
     }
-    
+
+    private func extractVerseEntities(_ verses: [Verse]) -> [VerseEntity]? {
+        return verses.map { verse in
+            let verseType = verse.verseType
+            if let transliteration = verse.transliteration, transliteration.count != verse.verseContent.count {
+                Crashlytics.crashlytics().record(error: NonFatal(localizedDescription: "Mismatch in transliteration and verse content size for \(verses)"))
+                // If there is a mismatch, we have no way of knowing which transliteration line refers to which verse
+                // line, so we just skip transliteration altogether.
+                return VerseEntity(verseType: verseType, lines: verse.verseContent.map { LineEntity(lineContent: $0) })
+            }
+            var lines = [LineEntity]()
+            for index in 0 ..< verse.verseContent.count {
+                lines.append(LineEntity(lineContent: verse.verseContent[index], transliteration: verse.transliteration?[index]))
+            }
+            return VerseEntity(verseType: verseType, lines: lines)
+        }
+    }
+
     private func extractValues(_ metaDatum: MetaDatum?) -> [String: String]? {
         guard let metaDatum = metaDatum else {
             return nil
         }
-        
+
         let values = metaDatum.data.reduce(into: [String: String]()) { partialResult, datum in
             partialResult[datum.value] = datum.path
         }
         return !values.isEmpty ? values : nil
     }
-    
+
     private func extractSongLinks(_ metaDatum: MetaDatum?) -> [SongLink]? {
         guard let metaDatum = metaDatum else {
             return nil
         }
-        
+
         let songLinks = metaDatum.data.compactMap { datum -> SongLink? in
             let value = datum.value
             let hymnType = RegexUtil.getHymnType(path: datum.path)
             let hymnNumber = RegexUtil.getHymnNumber(path: datum.path)
-            
+
             guard let hymnType = hymnType, let hymnNumber = hymnNumber else {
                 Crashlytics.crashlytics().record(error: NonFatal(localizedDescription: "Unable to parse \(datum.path) into a valid song link"))
                 return nil
@@ -97,16 +108,13 @@ class ConverterImpl: Converter {
             return nil
         }
 
-        guard let lyrics = hymnEntity.lyricsJson, !lyrics.isEmpty, let lyricsData = lyrics.data(using: .utf8) else {
-            throw TypeConversionError(triggeringError: ErrorType.parsing(description: "lyrics json was empty"))
-        }
-
         // Many hymn titles prepend "Hymn: " to the title. It is unnecessary and takes up screen space, so  we
         // strip it out whenever possible.
         guard let title = hymnEntity.title?.replacingOccurrences(of: "Hymn: ", with: ""), !title.isEmpty else {
             throw TypeConversionError(triggeringError: ErrorType.parsing(description: "title was empty"))
         }
 
+        let lyrics = hymnEntity.lyrics
         let category = hymnEntity.category
         let subcategory = hymnEntity.subcategory
         let author = hymnEntity.author
@@ -120,16 +128,10 @@ class ConverterImpl: Converter {
         let music = hymnEntity.music
         let languages = hymnEntity.languages
         let relevant = hymnEntity.relevant
-
-        do {
-            let verses = try jsonDecoder.decode([Verse].self, from: lyricsData)
-            return UiHymn(hymnIdentifier: hymnIdentifier, title: title, lyrics: verses, pdfSheet: pdfSheet,
-                          category: category, subcategory: subcategory, author: author, composer: composer,
-                          key: key, time: time, meter: meter, scriptures: scriptures, hymnCode: hymnCode,
-                          languages: languages, music: music, relevant: relevant)
-        } catch {
-            throw TypeConversionError(triggeringError: error)
-        }
+        return UiHymn(hymnIdentifier: hymnIdentifier, title: title, lyrics: lyrics, pdfSheet: pdfSheet,
+                      category: category, subcategory: subcategory, author: author, composer: composer,
+                      key: key, time: time, meter: meter, scriptures: scriptures, hymnCode: hymnCode,
+                      languages: languages, music: music, relevant: relevant)
     }
 
     func toSongResultEntities(songResultsPage: SongResultsPage) -> ([SongResultEntity], Bool) {

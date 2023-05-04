@@ -62,10 +62,8 @@ struct VerseLineView_Previews: PreviewProvider {
         let transliterateBinding = Binding<Bool>(
             get: {transliterate}, set: {transliterate = $0}
         )
-        let transliterationViewModels = [VerseLineViewModel(verseNumber: "1", verseText: "喝！从宝座流出",
-                                                            transliteration: "Hē! Cóng bǎozuò liúchū"),
-                                         VerseLineViewModel(verseText: "纯净生命河的水",
-                                                            transliteration: "Chúnjìng shēngmìng hé de shuǐ")]
+        let transliterationViewModels = [VerseLineViewModel(verseNumber: "1", lineEntity: LineEntity(lineContent: "喝！从宝座流出", transliteration: "Hē! Cóng bǎozuò liúchū")),
+                                         VerseLineViewModel(lineEntity: LineEntity(lineContent: "纯净生命河的水", transliteration: "Chúnjìng shēngmìng hé de shuǐ"))]
         let transliteration = VStack(alignment: .leading) {
             VerseLineView(viewModel: transliterationViewModels[0], transliterate: transliterateBinding)
             VerseLineView(viewModel: transliterationViewModels[1], transliterate: transliterateBinding)

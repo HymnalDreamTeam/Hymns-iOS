@@ -89,7 +89,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
                         table.column(HymnEntity.CodingKeys.hymnType.rawValue, .text).notNull()
                         table.column(HymnEntity.CodingKeys.hymnNumber.rawValue, .text).notNull()
                         table.column(HymnEntity.CodingKeys.title.rawValue, .text).notNull()
-                        table.column(HymnEntity.CodingKeys.lyricsJson.rawValue, .text)
+                        table.column(HymnEntity.CodingKeys.lyrics.rawValue, .text)
                         table.column(HymnEntity.CodingKeys.category.rawValue, .text)
                         table.column(HymnEntity.CodingKeys.subcategory.rawValue, .text)
                         table.column(HymnEntity.CodingKeys.author.rawValue, .text)
@@ -130,7 +130,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
                         table.synchronize(withTable: self.tableName)
                         table.tokenizer = .porter
                         table.column(HymnEntity.CodingKeys.title.rawValue)
-                        table.column(HymnEntity.CodingKeys.lyricsJson.rawValue)
+                        table.column(HymnEntity.CodingKeys.lyrics.rawValue)
                     }
                 } catch {
                     databaseInitializedProperly = false

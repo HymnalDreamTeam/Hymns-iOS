@@ -6,7 +6,7 @@ import Foundation
 struct UiHymn: Equatable {
     let hymnIdentifier: HymnIdentifier
     let title: String
-    let lyrics: [Verse]?
+    let lyrics: [VerseEntity]?
     let chords: [ChordLine]?
     let pdfSheet: [String: String]?
     let category: String?
@@ -23,7 +23,7 @@ struct UiHymn: Equatable {
     let relevant: [SongLink]?
     // add more fields as needed
 
-    init(hymnIdentifier: HymnIdentifier, title: String, lyrics: [Verse]? = nil, chords: [ChordLine]? = nil,
+    init(hymnIdentifier: HymnIdentifier, title: String, lyrics: [VerseEntity]? = nil, chords: [ChordLine]? = nil,
          pdfSheet: [String: String]? = nil, category: String? = nil, subcategory: String? = nil, author: String? = nil,
          composer: String? = nil, key: String? = nil, time: String? = nil, meter: String? = nil, scriptures: String? = nil,
          hymnCode: String? = nil, languages: [SongLink]? = nil, music: [String: String]? = nil, relevant: [SongLink]? = nil) {
@@ -70,7 +70,7 @@ class UiHymnBuilder {
 
     private (set) var hymnIdentifier: HymnIdentifier
     private (set) var title: String
-    private (set) var lyrics: [Verse]?
+    private (set) var lyrics: [VerseEntity]?
     private (set) var chords: [ChordLine]?
     private (set) var pdfSheet: [String: String]?
     private (set) var category: String?
@@ -91,7 +91,7 @@ class UiHymnBuilder {
         self.title = title
     }
 
-    public func lyrics(_ lyrics: [Verse]?) -> UiHymnBuilder {
+    public func lyrics(_ lyrics: [VerseEntity]?) -> UiHymnBuilder {
         self.lyrics = lyrics
         return self
     }

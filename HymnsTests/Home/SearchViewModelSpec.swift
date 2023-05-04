@@ -302,7 +302,7 @@ class SearchViewModelSpec: QuickSpec {
                         context("with result") {
                             context("search complete") {
                                 beforeEach {
-                                    let hymn = UiHymn(hymnIdentifier: newTune111, title: "title", lyrics: [Verse]())
+                                    let hymn = UiHymn(hymnIdentifier: newTune111, title: "title", lyrics: [VerseEntity]())
                                     given(hymnsRepository.getHymn(newTune111, makeNetworkRequest: false)) ~> { _, _ in
                                         Just(hymn).assertNoFailure().eraseToAnyPublisher()
                                     }

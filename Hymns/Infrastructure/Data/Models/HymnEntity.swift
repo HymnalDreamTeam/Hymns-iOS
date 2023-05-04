@@ -11,7 +11,7 @@ struct HymnEntity: Equatable {
     let hymnType: String
     let hymnNumber: String
     let title: String?
-    let lyricsJson: String?
+    let lyrics: [VerseEntity]?
     let category: String?
     let subcategory: String?
     let author: String?
@@ -33,7 +33,7 @@ struct HymnEntity: Equatable {
         case hymnType = "HYMN_TYPE"
         case hymnNumber = "HYMN_NUMBER"
         case title = "SONG_TITLE"
-        case lyricsJson = "SONG_LYRICS"
+        case lyrics = "SONG_LYRICS"
         case category = "SONG_META_DATA_CATEGORY"
         case subcategory = "SONG_META_DATA_SUBCATEGORY"
         case author = "SONG_META_DATA_AUTHOR"
@@ -54,7 +54,7 @@ struct HymnEntity: Equatable {
         let hymnTypesEqual = lhs.hymnType == rhs.hymnType
         let hymnNumbersEqual = lhs.hymnNumber == rhs.hymnNumber
         let titlesEqual = lhs.title == rhs.title
-        let lyricsEqual = lhs.lyricsJson == rhs.lyricsJson
+        let lyricsEqual = lhs.lyrics == rhs.lyrics
         let categoriesEqual = lhs.category == rhs.category
         let subcategoriesEqual = lhs.subcategory == rhs.subcategory
         let authorsEqual = lhs.author == rhs.author
@@ -85,7 +85,7 @@ extension HymnEntity: Codable, FetchableRecord, PersistableRecord, MutablePersis
         static let hymnType = Column(CodingKeys.hymnType)
         static let hymnNumber = Column(CodingKeys.hymnNumber)
         static let title = Column(CodingKeys.title)
-        static let lyricsJson = Column(CodingKeys.lyricsJson)
+        static let lyrics = Column(CodingKeys.lyrics)
         static let category = Column(CodingKeys.category)
         static let subcategory = Column(CodingKeys.subcategory)
         static let author = Column(CodingKeys.author)
@@ -108,7 +108,7 @@ class HymnEntityBuilder {
     private (set) var hymnIdentifier: HymnIdentifier
     private (set) var id: Int64?
     private (set) var title: String?
-    private (set) var lyricsJson: String?
+    private (set) var lyrics: [VerseEntity]?
     private (set) var category: String?
     private (set) var subcategory: String?
     private (set) var author: String?
@@ -134,7 +134,7 @@ class HymnEntityBuilder {
         }
         self.hymnIdentifier = HymnIdentifier(hymnType: hymnType, hymnNumber: hymnEntity.hymnNumber)
         self.title = hymnEntity.title
-        self.lyricsJson = hymnEntity.lyricsJson
+        self.lyrics = hymnEntity.lyrics
         self.category = hymnEntity.category
         self.subcategory = hymnEntity.subcategory
         self.author = hymnEntity.author
@@ -166,8 +166,8 @@ class HymnEntityBuilder {
         return self
     }
 
-    public func lyricsJson(_ lyricsJson: String?) -> HymnEntityBuilder {
-        self.lyricsJson = lyricsJson
+    public func lyrics(_ lyrics: [VerseEntity]?) -> HymnEntityBuilder {
+        self.lyrics = lyrics
         return self
     }
 
@@ -246,7 +246,7 @@ class HymnEntityBuilder {
                    hymnType: hymnIdentifier.hymnType.abbreviatedValue,
                    hymnNumber: hymnIdentifier.hymnNumber,
                    title: title,
-                   lyricsJson: lyricsJson,
+                   lyrics: lyrics,
                    category: category,
                    subcategory: subcategory,
                    author: author,

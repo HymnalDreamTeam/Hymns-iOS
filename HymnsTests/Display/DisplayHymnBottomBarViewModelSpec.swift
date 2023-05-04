@@ -12,10 +12,10 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
         describe("DisplayHymnBottomBarViewModel") {
 
             let hymnIdentifier = HymnIdentifier(hymnType: .classic, hymnNumber: "23")
-            let lyrics = [Verse(verseType: .verse, verseContent: ["verse 1 line 1", "verse 1 line 2"]),
-                          Verse(verseType: .chorus, verseContent: ["chorus line 1", "chorus line 2"]),
-                          Verse(verseType: .verse, verseContent: ["verse 2 line 1", "verse 2 line 2"]),
-                          Verse(verseType: .verse, verseContent: ["verse 3 line 1", "verse 3 line 2"])]
+            let lyrics = [VerseEntity(verseType: .verse, lineStrings: ["verse 1 line 1", "verse 1 line 2"]),
+                          VerseEntity(verseType: .chorus, lineStrings: ["chorus line 1", "chorus line 2"]),
+                          VerseEntity(verseType: .verse, lineStrings: ["verse 2 line 1", "verse 2 line 2"]),
+                          VerseEntity(verseType: .verse, lineStrings: ["verse 3 line 1", "verse 3 line 2"])]
             let pdfSheet = ["Guitar": "https://www.hymnal.net/Hymns/Hymnal/svg/e1151_g.svg"]
             let languages = [SongLink(reference: HymnIdentifier(hymnType: .tagalog, hymnNumber: "1151"), name: "Tagalog"),
                              SongLink(reference: HymnIdentifier(hymnType: .chineseSupplementSimplified, hymnNumber: "216"), name: "Tagalog")]
@@ -57,10 +57,10 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                     context("with only lyrics") {
                         let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"),
                                                   title: "title",
-                                                  lyrics: [Verse(verseType: .verse, verseContent: ["verse 1 line 1", "verse 1 line 2"]),
-                                                           Verse(verseType: .chorus, verseContent: ["chorus line 1", "chorus line 2"]),
-                                                           Verse(verseType: .verse, verseContent: ["verse 2 line 1", "verse 2 line 2"]),
-                                                           Verse(verseType: .verse, verseContent: ["verse 3 line 1", "verse 3 line 2"])])
+                                                  lyrics: [VerseEntity(verseType: .verse, lineStrings: ["verse 1 line 1", "verse 1 line 2"]),
+                                                           VerseEntity(verseType: .chorus, lineStrings: ["chorus line 1", "chorus line 2"]),
+                                                           VerseEntity(verseType: .verse, lineStrings: ["verse 2 line 1", "verse 2 line 2"]),
+                                                           VerseEntity(verseType: .verse, lineStrings: ["verse 3 line 1", "verse 3 line 2"])])
                         beforeEach {
                             target = DisplayHymnBottomBarViewModel(hymnToDisplay: classic1151, hymn: hymn, systemUtil: systemUtil)
                         }
@@ -151,10 +151,10 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                     context("with only lyrics") {
                         let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"),
                                                   title: "title",
-                                                  lyrics: [Verse(verseType: .verse, verseContent: ["verse 1 line 1", "verse 1 line 2"]),
-                                                           Verse(verseType: .chorus, verseContent: ["chorus line 1", "chorus line 2"]),
-                                                           Verse(verseType: .verse, verseContent: ["verse 2 line 1", "verse 2 line 2"]),
-                                                           Verse(verseType: .verse, verseContent: ["verse 3 line 1", "verse 3 line 2"])])
+                                                  lyrics: [VerseEntity(verseType: .verse, lineStrings: ["verse 1 line 1", "verse 1 line 2"]),
+                                                           VerseEntity(verseType: .chorus, lineStrings: ["chorus line 1", "chorus line 2"]),
+                                                           VerseEntity(verseType: .verse, lineStrings: ["verse 2 line 1", "verse 2 line 2"]),
+                                                           VerseEntity(verseType: .verse, lineStrings: ["verse 3 line 1", "verse 3 line 2"])])
                         beforeEach {
                             target = DisplayHymnBottomBarViewModel(hymnToDisplay: classic1151, hymn: hymn, systemUtil: systemUtil)
                         }

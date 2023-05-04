@@ -1,5 +1,6 @@
 import Resolver
 import Foundation
+
 /**
  * Registers dependencies to be injected in the app
  */
@@ -18,6 +19,7 @@ extension Resolver: ResolverRegistering {
             decoder.keyDecodingStrategy = .convertFromSnakeCase
             return decoder
         })
+        // TODO get rid of JSONEncoder if it isn't used
         register(JSONEncoder.self, factory: {
             let encoder = JSONEncoder()
             encoder.keyEncodingStrategy = .convertToSnakeCase

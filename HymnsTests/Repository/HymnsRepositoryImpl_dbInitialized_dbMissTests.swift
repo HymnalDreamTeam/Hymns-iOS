@@ -5,9 +5,11 @@ import XCTest
 
 class HymnsRepositoryImpl_dbInitialized_dbMissTests: XCTestCase {
 
-    let databaseResult = HymnEntityBuilder(hymnIdentifier: cebuano123).id(0).title("song title").lyricsJson("[{\"verse_type\":\"verse\",\"verse_content\":[\"line 1\",\"line 2\"]}]").build()
+    let databaseResult = HymnEntityBuilder(hymnIdentifier: cebuano123)
+        .id(0).title("song title")
+        .lyrics([VerseEntity(verseType: .verse, lineStrings: ["line 1", "line 2"])]).build()
     let networkResult = Hymn(title: "song title", metaData: [MetaDatum](), lyrics: [Verse(verseType: .verse, verseContent: ["line 1", "line 2"])])
-    let expected = UiHymn(hymnIdentifier: cebuano123, title: "song title", lyrics: [Verse(verseType: .verse, verseContent: ["line 1", "line 2"])])
+    let expected = UiHymn(hymnIdentifier: cebuano123, title: "song title", lyrics: [VerseEntity(verseType: .verse, lineStrings: ["line 1", "line 2"])])
 
     var backgroundQueue = DispatchQueue.init(label: "background test queue")
     var converter: ConverterMock!

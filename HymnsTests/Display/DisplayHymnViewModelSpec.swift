@@ -9,7 +9,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
 
     override func spec() {
         describe("DisplayHymnViewModel") {
-            let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [Verse]())
+            let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [VerseEntity]())
             let testQueue = DispatchQueue(label: "test_queue")
             var hymnsRepository: HymnsRepositoryMock!
             var favoriteStore: FavoriteStoreMock!
@@ -72,8 +72,11 @@ class DisplayHymnViewModelSpec: QuickSpec {
                                                           hymnToDisplay: classic1151, hymnsRepository: hymnsRepository,
                                                           historyStore: historyStore, mainQueue: testQueue,
                                                           pdfPreloader: pdfLoader, systemUtil: systemUtil, storeInHistoryStore: true)
-                            let hymn = UiHymn(hymnIdentifier: classic1151, title: "title", lyrics: [Verse(verseType: .verse, verseContent: ["verse line"])],
-                                              pdfSheet: ["Piano": "/en/hymn/c/1151/f=ppdf", "Guitar": "/en/hymn/c/1151/f=pdf", "Text": "/en/hymn/c/1151/f=gtpdf"])
+                            let hymn = UiHymn(hymnIdentifier: classic1151, title: "title",
+                                              lyrics: [VerseEntity(verseType: .verse, lineStrings: ["verse line"])],
+                                              pdfSheet: ["Piano": "/en/hymn/c/1151/f=ppdf",
+                                                         "Guitar": "/en/hymn/c/1151/f=pdf",
+                                                         "Text": "/en/hymn/c/1151/f=gtpdf"])
                             given(hymnsRepository.getHymn(classic1151)) ~> { _ in
                                 Just(hymn).assertNoFailure().eraseToAnyPublisher()
                             }
@@ -191,7 +194,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                         context("hymn lacks lyrics but has sheet music") {
                             beforeEach {
                                 let hymnWithHymnColonTitle = UiHymn(hymnIdentifier: newSong145, title: "In my spirit, I can see You as You are",
-                                                                    lyrics: [Verse](),
+                                                                    lyrics: [VerseEntity](),
                                                                     pdfSheet: ["Piano": "/en/hymn/c/1151/f=ppdf",
                                                                                "Guitar": "/en/hymn/c/1151/f=pdf",
                                                                                "Text": "/en/hymn/c/1151/f=gtpdf"])
@@ -235,7 +238,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                         context("hymn contains sheet music") {
                             beforeEach {
                                 let hymnWithHymnColonTitle = UiHymn(hymnIdentifier: newSong145, title: "In my spirit, I can see You as You are",
-                                                                    lyrics: [Verse(verseType: .chorus, verseContent: ["chorus line"])],
+                                                                    lyrics: [VerseEntity(verseType: .chorus, lineStrings: ["chorus line"])],
                                                                     pdfSheet: ["Piano": "/en/hymn/c/1151/f=ppdf", "Guitar": "/en/hymn/c/1151/f=pdf",
                                                                                "Text": "/en/hymn/c/1151/f=gtpdf"])
                                 given(hymnsRepository.getHymn(newSong145)) ~> { _ in
@@ -289,7 +292,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                         context("hymn does not contain sheet music") {
                             beforeEach {
                                 let hymnWithoutSheetMusic = UiHymn(hymnIdentifier: newSong145, title: "In my spirit, I can see You as You are",
-                                                                   lyrics: [Verse(verseType: .verse, verseContent: ["verse content"])])
+                                                                   lyrics: [VerseEntity(verseType: .verse, lineStrings: ["verse content"])])
                                 given(hymnsRepository.getHymn(newSong145)) ~> { _ in
                                     Just(hymnWithoutSheetMusic).assertNoFailure().eraseToAnyPublisher()
                                 }
@@ -313,7 +316,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                         context("network unavailable") {
                             beforeEach {
                                 let hymn = UiHymn(hymnIdentifier: newSong145, title: "title'",
-                                                  lyrics: [Verse(verseType: .verse, verseContent: ["verse content"])],
+                                                  lyrics: [VerseEntity(verseType: .verse, lineStrings: ["verse content"])],
                                                   pdfSheet: ["Piano": "/en/hymn/c/1151/f=ppdf", "Guitar": "/en/hymn/c/1151/f=pdf",
                                                              "Text": "/en/hymn/c/1151/f=gtpdf"])
                                 given(systemUtil.isNetworkAvailable()) ~> false
@@ -482,7 +485,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                                                       hymnToDisplay: classic1151, hymnsRepository: hymnsRepository,
                                                       historyStore: historyStore, mainQueue: testQueue,
                                                       pdfPreloader: pdfLoader, systemUtil: systemUtil, storeInHistoryStore: true)
-                        let hymn = UiHymn(hymnIdentifier: classic1151, title: "title", lyrics: [Verse(verseType: .verse, verseContent: ["verse line"])],
+                        let hymn = UiHymn(hymnIdentifier: classic1151, title: "title", lyrics: [VerseEntity(verseType: .verse, lineStrings: ["verse line"])],
                                           pdfSheet: ["Piano": "/en/hymn/c/1151/f=ppdf", "Guitar": "/en/hymn/c/1151/f=pdf",
                                                      "Text": "/en/hymn/c/1151/f=gtpdf"])
                         let songbaseSong = SongbaseSong(bookId: 2, bookIndex: 1151, title: "Songbase song", language: "english",
@@ -548,7 +551,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                                                       hymnToDisplay: classic1151, hymnsRepository: hymnsRepository,
                                                       historyStore: historyStore, mainQueue: testQueue,
                                                       pdfPreloader: pdfLoader, systemUtil: systemUtil, storeInHistoryStore: true)
-                        let hymn = UiHymn(hymnIdentifier: classic1151, title: "title", lyrics: [Verse(verseType: .verse, verseContent: ["verse line"])],
+                        let hymn = UiHymn(hymnIdentifier: classic1151, title: "title", lyrics: [VerseEntity(verseType: .verse, lineStrings: ["verse line"])],
                                           pdfSheet: ["Piano": "/en/hymn/c/1151/f=ppdf", "Guitar": "/en/hymn/c/1151/f=pdf",
                                                      "Text": "/en/hymn/c/1151/f=gtpdf"])
                         let songbaseSong = SongbaseSong(bookId: 2, bookIndex: 1151, title: "Songbase song", language: "english",

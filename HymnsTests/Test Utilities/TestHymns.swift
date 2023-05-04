@@ -21,7 +21,14 @@ let children_24_json = getJsonString(for: "children_24")
 let children_24_hymn = getHymnFromJson(for: "children_24")
 let children_24_hymn_entity = HymnEntityBuilder(hymnIdentifier: children24)
     .title(Optional("Hymn: He Didn’t Stay Home"))
-    .lyricsJson(Optional("[{\"verse_type\":\"verse\",\"verse_content\":[\"He didn’t stay home;\",\"He went and visited people.\",\"He didn’t stay home;\",\"Jesus taught disciples.\",\"Fed the following crowd outdoors;\",\"Made them glad forevermore;\",\"Serving’s what His life was for;\",\"He didn’t stay home. SO!!!!!\"]},{\"verse_type\":\"verse\",\"verse_content\":[\"Don’t stay home! (go, go!)\",\"Go and visit people!\",\"Don’t stay home! (go, go!)\",\"Go and teach disciples. (GO!)\",\"Fix some food, go out the door;\",\"Make them glad forevermore;\",\"Serving is what life is for,\",\"So DON’T STAY HOME!!\"]},{\"verse_type\":\"other\",\"verse_content\":[\"\\n\",\"© 2012 Bible StorySongs, Inc. Used by permission.\",\"Visit BibleStorySongs.com to order CD’s & Sheet Music.\",\"\\n\"]}]"))
+    .lyrics([VerseEntity(verseType: .verse, lineStrings: ["He didn’t stay home;", "He went and visited people.", "He didn’t stay home;", "Jesus taught disciples.",
+                                                          "Fed the following crowd outdoors;", "Made them glad forevermore;", "Serving’s what His life was for;",
+                                                          "He didn’t stay home. SO!!!!!"]),
+             VerseEntity(verseType: .verse, lineStrings: ["Don’t stay home! (go, go!)", "Go and visit people!", "Don’t stay home! (go, go!)",
+                                                          "Go and teach disciples. (GO!)", "Fix some food, go out the door;", "Make them glad forevermore;",
+                                                          "Serving is what life is for,", "So DON’T STAY HOME!!"]),
+             VerseEntity(verseType: .other, lineStrings: ["\n", "© 2012 Bible StorySongs, Inc. Used by permission.",
+                                                          "Visit BibleStorySongs.com to order CD’s & Sheet Music.", "\n"])])
     .category(Optional("Preaching of the Gospel"))
     .subcategory(Optional("Go Ye!"))
     .author(Optional("P. K.C. R. W."))
@@ -43,11 +50,53 @@ let children_24_hymn_entity = HymnEntityBuilder(hymnIdentifier: children24)
 
 let classic_1151_json = getJsonString(for: "classic_1151")
 let classic_1151_hymn = getHymnFromJson(for: "classic_1151")
-let classic_1151_hymn_entity = HymnEntityBuilder(hymnIdentifier: classic1151).title(Optional("Hymn: Drink! A river pure and clear that's flowing from the throne")).lyricsJson(Optional("[{\"verse_content\": [\"Drink! A river pure and clear that's flowing from the throne;\", \"Eat! The tree of life with fruits abundant, richly grown;\", \"Look! No need of lamp nor sun nor moon to keep it bright, for\", \"Here there is no night!\"], \"verse_type\": \"verse\"}, {\"verse_content\": [\"Do come, oh, do come,\", \"Says Spirit and the Bride:\", \"Do come, oh, do come,\", \"Let him that heareth, cry.\", \"Do come, oh, do come,\", \"Let him who thirsts and will\", \"Take freely the water of life!\"], \"verse_type\": \"chorus\"}, {\"verse_content\": [\"Christ, our river, Christ, our water, springing from within;\", \"Christ, our tree, and Christ, the fruits, to be enjoyed therein,\", \"Christ, our day, and Christ, our light, and Christ, our morningstar:\", \"Christ, our everything!\"], \"verse_type\": \"verse\"}, {\"verse_content\": [\"We are washing all our robes the tree of life to eat;\", \"\"O Lord, Amen, Hallelujah!\"—Jesus is so sweet!\", \"We our spirits exercise, and thus experience Christ.\", \"What a Christ have we!\"], \"verse_type\": \"verse\"}, {\"verse_content\": [\"Now we have a home so bright that outshines the sun,\", \"Where the brothers all unite and truly are one.\", \"Jesus gets us all together, Him we now display\", \"In the local church.\"], \"verse_type\": \"verse\"}]")).build()
+let classic_1151_hymn_entity = HymnEntityBuilder(hymnIdentifier: classic1151)
+    .title(Optional("Hymn: Drink! A river pure and clear that's flowing from the throne"))
+    .lyrics([VerseEntity(verseType: .verse, lineStrings: ["Drink! A river pure and clear that's flowing from the throne;",
+                                                          "Eat! The tree of life with fruits abundant, richly grown;",
+                                                          "Look! No need of lamp nor sun nor moon to keep it bright, for",
+                                                          "Here there is no night!"]),
+             VerseEntity(verseType: .chorus, lineStrings: ["Do come, oh, do come,",
+                                                           "Says Spirit and the Bride:",
+                                                           "Do come, oh, do come,",
+                                                           "Let him that heareth, cry.",
+                                                           "Do come, oh, do come,",
+                                                           "Let him who thirsts and will",
+                                                           "Take freely the water of life!"]),
+             VerseEntity(verseType: .verse, lineStrings: ["Christ, our river, Christ, our water, springing from within;",
+                                                          "Christ, our tree, and Christ, the fruits, to be enjoyed therein,",
+                                                          "Christ, our day, and Christ, our light, and Christ, our morningstar:",
+                                                          "Christ, our everything!"]),
+             VerseEntity(verseType: .verse, lineStrings: ["We are washing all our robes the tree of life to eat;",
+                                                          "\"O Lord, Amen, Hallelujah!\"—Jesus is so sweet!",
+                                                          "We our spirits exercise, and thus experience Christ.",
+                                                          "What a Christ have we!"]),
+             VerseEntity(verseType: .verse, lineStrings: ["Now we have a home so bright that outshines the sun,",
+                                                          "Where the brothers all unite and truly are one.",
+                                                          "Jesus gets us all together, Him we now display",
+                                                          "In the local church."])])
+    .build()
 
 let classic_1109_json = getJsonString(for: "classic_1109")
 let classic_1109_hymn = getHymnFromJson(for: "classic_1109")
-let classic_1109_hymn_entity = HymnEntityBuilder(hymnIdentifier: classic1109).title(Optional("Hymn: Take, drink this cup, His blood")).lyricsJson(Optional("[{\"verse_content\": [\"Take, drink this cup, His blood,\", \"Redemption of our God.\", \"The peace which Christ has made,\", \"Is in this cup displayed.\", \"We fellowship now with the Son:\", \"On Calvary the work was done:\", \"The way is clear, now all can come!\"], \"verse_type\": \"verse\"}, {\"verse_content\": [\"Take, drink this cup, each one,\", \"His death show till He come.\", \"Eat, drink, display this feast:\", \"God in the Lamb released!\", \"Around the table, sup and dine;\", \"We eat the bread and drink the wine.\", \"All blessing in this cup we find.\"], \"verse_type\": \"verse\"}, {\"verse_content\": [\"No blood of cow or goat\", \"Could give us any hope.\", \"Our sins would all remain\", \"Still year by year the same.\", \"A God-man, sinless, He must find\", \"No other offering of His kind,\", \"A spotless lamb for all mankind.\"], \"verse_type\": \"verse\"}, {\"verse_content\": [\"Come! Now enjoy His blood.\", \"What access this to God!\", \"Here wondrous cleansing power\", \"Flows to us, hour by hour.\", \"One sacrifice for all was made,\", \"And peace our conscience does pervade.\", \"Redemption's price is fully paid!\"], \"verse_type\": \"verse\"}, {\"verse_content\": [\"Redeemer! Savior! King!\", \"Of Thy dear blood we sing,\", \"For in it now we see\", \"Thy mercy, boundless, free.\", \"This cup, our portion blessed of God,\", \"Is of the cov'nant in Thy blood—\", \"Dear, precious, precious, priceless blood!\"], \"verse_type\": \"verse\"}]")).build()
+let classic_1109_hymn_entity = HymnEntityBuilder(hymnIdentifier: classic1109)
+    .title(Optional("Hymn: Take, drink this cup, His blood"))
+    .lyrics([VerseEntity(verseType: .verse, lineStrings: ["Take, drink this cup, His blood,", "Redemption of our God.", "The peace which Christ has made,",
+                                                          "Is in this cup displayed.", "We fellowship now with the Son:", "On Calvary the work was done:",
+                                                          "The way is clear, now all can come!"]),
+             VerseEntity(verseType: .verse, lineStrings: ["Take, drink this cup, each one,", "His death show till He come.", "Eat, drink, display this feast:",
+                                                          "God in the Lamb released!", "Around the table, sup and dine;",
+                                                          "We eat the bread and drink the wine.", "All blessing in this cup we find."]),
+             VerseEntity(verseType: .verse, lineStrings: ["No blood of cow or goat", "Could give us any hope.", "Our sins would all remain",
+                                                          "Still year by year the same.", "A God-man, sinless, He must find", "No other offering of His kind,",
+                                                          "A spotless lamb for all mankind."]),
+             VerseEntity(verseType: .verse, lineStrings: ["Come! Now enjoy His blood.", "What access this to God!", "Here wondrous cleansing power",
+                                                          "Flows to us, hour by hour.", "One sacrifice for all was made,",
+                                                          "And peace our conscience does pervade.", "Redemption's price is fully paid!"]),
+             VerseEntity(verseType: .verse, lineStrings: ["Redeemer! Savior! King!", "Of Thy dear blood we sing,", "For in it now we see",
+                                                          "Thy mercy, boundless, free.", "This cup, our portion blessed of God,",
+                                                          "Is of the cov'nant in Thy blood—", "Dear, precious, precious, priceless blood!"])])
+    .build()
 
 let search_drink_json = getJsonString(for: "search_drink")
 let search_drink_song_result_page = getSongResultPageFromJson(for: "search_drink")

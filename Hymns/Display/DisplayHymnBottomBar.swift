@@ -188,7 +188,7 @@ extension DisplayHymnSheet: Identifiable {
 struct DisplayHymnBottomBar_Previews: PreviewProvider {
     static var previews: some View {
         var dialogModel: DialogViewModel<AnyView>?
-        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [Verse]())
+        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [VerseEntity]())
 
         let noButtonsViewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151, hymn: hymn)
         noButtonsViewModel.buttons = []

@@ -69,7 +69,7 @@ struct HymnNotExistsView: View {
 #if DEBUG
 struct DisplayHymnView_Previews: PreviewProvider {
     static var previews: some View {
-        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "sdf", lyrics: [Verse]())
+        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "sdf", lyrics: [VerseEntity]())
 
         let loading = DisplayHymnView(viewModel: DisplayHymnViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151))
 

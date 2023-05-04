@@ -46,7 +46,7 @@ class TagSheetViewModelSpec: QuickSpec {
                 context("with empty title") {
                     beforeEach {
                         given(hymnsRepository.getHymn(cebuano123)) ~> { _ in
-                            Just(UiHymn(hymnIdentifier: cebuano123, title: "", lyrics: [Verse]()))
+                            Just(UiHymn(hymnIdentifier: cebuano123, title: "", lyrics: [VerseEntity]()))
                                 .assertNoFailure().eraseToAnyPublisher()
                         }
                         target.fetchHymn()
@@ -61,7 +61,7 @@ class TagSheetViewModelSpec: QuickSpec {
                 context("with a non-empty title") {
                     beforeEach {
                         given(hymnsRepository.getHymn(cebuano123)) ~> { _ in
-                            Just(UiHymn(hymnIdentifier: cebuano123, title: "title here", lyrics: [Verse]()))
+                            Just(UiHymn(hymnIdentifier: cebuano123, title: "title here", lyrics: [VerseEntity]()))
                                 .assertNoFailure().eraseToAnyPublisher()
                         }
                         target.fetchHymn()
