@@ -1,3 +1,4 @@
+import FirebaseCrashlytics
 import Foundation
 import Resolver
 
@@ -35,11 +36,11 @@ class ConverterImpl: Converter {
             .meter(getMetadata(hymn: hymn, metaDatumName: .meter))
             .hymnCode(getMetadata(hymn: hymn, metaDatumName: .hymnCode))
             .scriptures(getMetadata(hymn: hymn, metaDatumName: .scriptures))
-            .musicJson(hymn.getMetaDatum(name: .music) != nil ? try? jsonEncoder.encode(hymn.getMetaDatum(name: .music)).toString : nil)
-            .svgSheetJson(hymn.getMetaDatum(name: .svgSheet) != nil ? try? jsonEncoder.encode(hymn.getMetaDatum(name: .svgSheet)).toString : nil)
-            .pdfSheetJson(hymn.getMetaDatum(name: .pdfSheet) != nil ? try? jsonEncoder.encode(hymn.getMetaDatum(name: .pdfSheet)).toString : nil)
-            .languagesJson(hymn.getMetaDatum(name: .languages) != nil ? try? jsonEncoder.encode(hymn.getMetaDatum(name: .languages)).toString : nil)
-            .relevantJson(hymn.getMetaDatum(name: .relevant) != nil ? try? jsonEncoder.encode(hymn.getMetaDatum(name: .relevant)).toString : nil)
+            .music(extractValues(hymn.getMetaDatum(name: .music)))
+            .svgSheet(extractValues(hymn.getMetaDatum(name: .svgSheet)))
+            .pdfSheet(extractValues(hymn.getMetaDatum(name: .pdfSheet)))
+            .languages(extractSongLinks(hymn.getMetaDatum(name: .languages)))
+            .relevant(extractSongLinks(hymn.getMetaDatum(name: .relevant)))
             .build()
     }
 
@@ -59,6 +60,36 @@ class ConverterImpl: Converter {
             }
         }
         return databaseValue.trim()
+    }
+    
+    private func extractValues(_ metaDatum: MetaDatum?) -> [String: String]? {
+        guard let metaDatum = metaDatum else {
+            return nil
+        }
+        
+        let values = metaDatum.data.reduce(into: [String: String]()) { partialResult, datum in
+            partialResult[datum.value] = datum.path
+        }
+        return !values.isEmpty ? values : nil
+    }
+    
+    private func extractSongLinks(_ metaDatum: MetaDatum?) -> [SongLink]? {
+        guard let metaDatum = metaDatum else {
+            return nil
+        }
+        
+        let songLinks = metaDatum.data.compactMap { datum -> SongLink? in
+            let value = datum.value
+            let hymnType = RegexUtil.getHymnType(path: datum.path)
+            let hymnNumber = RegexUtil.getHymnNumber(path: datum.path)
+            
+            guard let hymnType = hymnType, let hymnNumber = hymnNumber else {
+                Crashlytics.crashlytics().record(error: NonFatal(localizedDescription: "Unable to parse \(datum.path) into a valid song link"))
+                return nil
+            }
+            return SongLink(reference: HymnIdentifier(hymnType: hymnType, hymnNumber: hymnNumber), name: value)
+        }
+        return !songLinks.isEmpty ? songLinks : nil
     }
 
     func toUiHymn(hymnIdentifier: HymnIdentifier, hymnEntity: HymnEntity?) throws -> UiHymn? {
@@ -85,34 +116,10 @@ class ConverterImpl: Converter {
         let meter = hymnEntity.meter
         let scriptures = hymnEntity.scriptures
         let hymnCode = hymnEntity.hymnCode
-
-        let pdfSheet: MetaDatum?
-        if let pdfData = hymnEntity.pdfSheetJson?.data(using: .utf8) {
-            pdfSheet = try? jsonDecoder.decode(MetaDatum.self, from: pdfData)
-        } else {
-            pdfSheet = nil
-        }
-
-        let music: MetaDatum?
-         if let musicData = hymnEntity.musicJson?.data(using: .utf8) {
-             music = try? jsonDecoder.decode(MetaDatum.self, from: musicData)
-         } else {
-             music = nil
-         }
-
-        let languages: MetaDatum?
-        if let languagesData = hymnEntity.languagesJson?.data(using: .utf8) {
-            languages = try? jsonDecoder.decode(MetaDatum.self, from: languagesData)
-        } else {
-            languages = nil
-        }
-
-        let relevant: MetaDatum?
-        if let relevantData = hymnEntity.relevantJson?.data(using: .utf8) {
-            relevant = try? jsonDecoder.decode(MetaDatum.self, from: relevantData)
-        } else {
-            relevant = nil
-        }
+        let pdfSheet = hymnEntity.pdfSheet
+        let music = hymnEntity.music
+        let languages = hymnEntity.languages
+        let relevant = hymnEntity.relevant
 
         do {
             let verses = try jsonDecoder.decode([Verse].self, from: lyricsData)

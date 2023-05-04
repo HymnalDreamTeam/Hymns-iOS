@@ -73,10 +73,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                                                           historyStore: historyStore, mainQueue: testQueue,
                                                           pdfPreloader: pdfLoader, systemUtil: systemUtil, storeInHistoryStore: true)
                             let hymn = UiHymn(hymnIdentifier: classic1151, title: "title", lyrics: [Verse(verseType: .verse, verseContent: ["verse line"])],
-                                              pdfSheet: Hymns.MetaDatum(name: "Lead Sheet",
-                                                                        data: [Hymns.Datum(value: "Piano", path: "/en/hymn/c/1151/f=ppdf"),
-                                                                               Hymns.Datum(value: "Guitar", path: "/en/hymn/c/1151/f=pdf"),
-                                                                               Hymns.Datum(value: "Text", path: "/en/hymn/c/1151/f=gtpdf")]))
+                                              pdfSheet: ["Piano": "/en/hymn/c/1151/f=ppdf", "Guitar": "/en/hymn/c/1151/f=pdf", "Text": "/en/hymn/c/1151/f=gtpdf"])
                             given(hymnsRepository.getHymn(classic1151)) ~> { _ in
                                 Just(hymn).assertNoFailure().eraseToAnyPublisher()
                             }
@@ -195,10 +192,9 @@ class DisplayHymnViewModelSpec: QuickSpec {
                             beforeEach {
                                 let hymnWithHymnColonTitle = UiHymn(hymnIdentifier: newSong145, title: "In my spirit, I can see You as You are",
                                                                     lyrics: [Verse](),
-                                                                    pdfSheet: Hymns.MetaDatum(name: "Lead Sheet",
-                                                                                              data: [Hymns.Datum(value: "Piano", path: "/en/hymn/c/1151/f=ppdf"),
-                                                                                                     Hymns.Datum(value: "Guitar", path: "/en/hymn/c/1151/f=pdf"),
-                                                                                                     Hymns.Datum(value: "Text", path: "/en/hymn/c/1151/f=gtpdf")]))
+                                                                    pdfSheet: ["Piano": "/en/hymn/c/1151/f=ppdf",
+                                                                               "Guitar": "/en/hymn/c/1151/f=pdf",
+                                                                               "Text": "/en/hymn/c/1151/f=gtpdf"])
                                 given(hymnsRepository.getHymn(newSong145)) ~> { _ in
                                     Just(hymnWithHymnColonTitle).assertNoFailure().eraseToAnyPublisher()
                                 }
@@ -240,10 +236,8 @@ class DisplayHymnViewModelSpec: QuickSpec {
                             beforeEach {
                                 let hymnWithHymnColonTitle = UiHymn(hymnIdentifier: newSong145, title: "In my spirit, I can see You as You are",
                                                                     lyrics: [Verse(verseType: .chorus, verseContent: ["chorus line"])],
-                                                                    pdfSheet: Hymns.MetaDatum(name: "Lead Sheet",
-                                                                                              data: [Hymns.Datum(value: "Piano", path: "/en/hymn/c/1151/f=ppdf"),
-                                                                                                     Hymns.Datum(value: "Guitar", path: "/en/hymn/c/1151/f=pdf"),
-                                                                                                     Hymns.Datum(value: "Text", path: "/en/hymn/c/1151/f=gtpdf")]))
+                                                                    pdfSheet: ["Piano": "/en/hymn/c/1151/f=ppdf", "Guitar": "/en/hymn/c/1151/f=pdf",
+                                                                               "Text": "/en/hymn/c/1151/f=gtpdf"])
                                 given(hymnsRepository.getHymn(newSong145)) ~> { _ in
                                     Just(hymnWithHymnColonTitle).assertNoFailure().eraseToAnyPublisher()
                                 }
@@ -320,10 +314,8 @@ class DisplayHymnViewModelSpec: QuickSpec {
                             beforeEach {
                                 let hymn = UiHymn(hymnIdentifier: newSong145, title: "title'",
                                                   lyrics: [Verse(verseType: .verse, verseContent: ["verse content"])],
-                                                  pdfSheet: Hymns.MetaDatum(name: "Lead Sheet",
-                                                                            data: [Hymns.Datum(value: "Piano", path: "/en/hymn/c/1151/f=ppdf"),
-                                                                                   Hymns.Datum(value: "Guitar", path: "/en/hymn/c/1151/f=pdf"),
-                                                                                   Hymns.Datum(value: "Text", path: "/en/hymn/c/1151/f=gtpdf")]))
+                                                  pdfSheet: ["Piano": "/en/hymn/c/1151/f=ppdf", "Guitar": "/en/hymn/c/1151/f=pdf",
+                                                             "Text": "/en/hymn/c/1151/f=gtpdf"])
                                 given(systemUtil.isNetworkAvailable()) ~> false
                                 given(hymnsRepository.getHymn(newSong145)) ~> { _ in
                                     Just(hymn).assertNoFailure().eraseToAnyPublisher()
@@ -491,10 +483,8 @@ class DisplayHymnViewModelSpec: QuickSpec {
                                                       historyStore: historyStore, mainQueue: testQueue,
                                                       pdfPreloader: pdfLoader, systemUtil: systemUtil, storeInHistoryStore: true)
                         let hymn = UiHymn(hymnIdentifier: classic1151, title: "title", lyrics: [Verse(verseType: .verse, verseContent: ["verse line"])],
-                                          pdfSheet: Hymns.MetaDatum(name: "Lead Sheet",
-                                                                    data: [Hymns.Datum(value: "Piano", path: "/en/hymn/c/1151/f=ppdf"),
-                                                                           Hymns.Datum(value: "Guitar", path: "/en/hymn/c/1151/f=pdf"),
-                                                                           Hymns.Datum(value: "Text", path: "/en/hymn/c/1151/f=gtpdf")]))
+                                          pdfSheet: ["Piano": "/en/hymn/c/1151/f=ppdf", "Guitar": "/en/hymn/c/1151/f=pdf",
+                                                     "Text": "/en/hymn/c/1151/f=gtpdf"])
                         let songbaseSong = SongbaseSong(bookId: 2, bookIndex: 1151, title: "Songbase song", language: "english",
                                                         lyrics: "Songbase lyrics", chords: "[G]Songbase chords")
                         given(hymnsRepository.getHymn(classic1151)) ~> { _ in
@@ -559,10 +549,8 @@ class DisplayHymnViewModelSpec: QuickSpec {
                                                       historyStore: historyStore, mainQueue: testQueue,
                                                       pdfPreloader: pdfLoader, systemUtil: systemUtil, storeInHistoryStore: true)
                         let hymn = UiHymn(hymnIdentifier: classic1151, title: "title", lyrics: [Verse(verseType: .verse, verseContent: ["verse line"])],
-                                          pdfSheet: Hymns.MetaDatum(name: "Lead Sheet",
-                                                                    data: [Hymns.Datum(value: "Piano", path: "/en/hymn/c/1151/f=ppdf"),
-                                                                           Hymns.Datum(value: "Guitar", path: "/en/hymn/c/1151/f=pdf"),
-                                                                           Hymns.Datum(value: "Text", path: "/en/hymn/c/1151/f=gtpdf")]))
+                                          pdfSheet: ["Piano": "/en/hymn/c/1151/f=ppdf", "Guitar": "/en/hymn/c/1151/f=pdf",
+                                                     "Text": "/en/hymn/c/1151/f=gtpdf"])
                         let songbaseSong = SongbaseSong(bookId: 2, bookIndex: 1151, title: "Songbase song", language: "english",
                                                         lyrics: "Songbase lyrics", chords: "Chordsnot found")
                         given(hymnsRepository.getHymn(classic1151)) ~> { _ in

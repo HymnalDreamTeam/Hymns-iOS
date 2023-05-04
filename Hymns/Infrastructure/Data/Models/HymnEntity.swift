@@ -21,11 +21,11 @@ struct HymnEntity: Equatable {
     let meter: String?
     let scriptures: String?
     let hymnCode: String?
-    let musicJson: String?
-    let svgSheetJson: String?
-    let pdfSheetJson: String?
-    let languagesJson: String?
-    let relevantJson: String?
+    let music: [String: String]?
+    let svgSheet: [String: String]?
+    let pdfSheet: [String: String]?
+    let languages: [SongLink]?
+    let relevant: [SongLink]?
 
     // https://developer.apple.com/documentation/foundation/archives_and_serialization/encoding_and_decoding_custom_types
     enum CodingKeys: String, CodingKey {
@@ -43,11 +43,11 @@ struct HymnEntity: Equatable {
         case meter = "SONG_META_DATA_METER"
         case scriptures = "SONG_META_DATA_SCRIPTURES"
         case hymnCode = "SONG_META_DATA_HYMN_CODE"
-        case musicJson = "SONG_META_DATA_MUSIC"
-        case svgSheetJson = "SONG_META_DATA_SVG_SHEET_MUSIC"
-        case pdfSheetJson = "SONG_META_DATA_PDF_SHEET_MUSIC"
-        case languagesJson = "SONG_META_DATA_LANGUAGES"
-        case relevantJson = "SONG_META_DATA_RELEVANT"
+        case music = "SONG_META_DATA_MUSIC"
+        case svgSheet = "SONG_META_DATA_SVG_SHEET_MUSIC"
+        case pdfSheet = "SONG_META_DATA_PDF_SHEET_MUSIC"
+        case languages = "SONG_META_DATA_LANGUAGES"
+        case relevant = "SONG_META_DATA_RELEVANT"
     }
 
     static func == (lhs: HymnEntity, rhs: HymnEntity) -> Bool {
@@ -64,11 +64,11 @@ struct HymnEntity: Equatable {
         let metersEqual = lhs.meter == rhs.meter
         let scripturesEqual = lhs.scriptures == rhs.scriptures
         let hymnCodesEqual = lhs.hymnCode == rhs.hymnCode
-        let musicsEqual = lhs.musicJson == rhs.musicJson
-        let svgsEqual = lhs.svgSheetJson == rhs.svgSheetJson
-        let pdfsEqual = lhs.pdfSheetJson == rhs.pdfSheetJson
-        let languagesEqual = lhs.languagesJson == rhs.languagesJson
-        let relevantsEqual = lhs.relevantJson == rhs.relevantJson
+        let musicsEqual = lhs.music == rhs.music
+        let svgsEqual = lhs.svgSheet == rhs.svgSheet
+        let pdfsEqual = lhs.pdfSheet == rhs.pdfSheet
+        let languagesEqual = lhs.languages == rhs.languages
+        let relevantsEqual = lhs.relevant == rhs.relevant
         return hymnTypesEqual && hymnNumbersEqual && titlesEqual && lyricsEqual && categoriesEqual && subcategoriesEqual
         && authorsEqual && composersEqual && keysEqual && timesEqual && metersEqual && scripturesEqual && hymnCodesEqual && musicsEqual && svgsEqual
         && pdfsEqual && languagesEqual && relevantsEqual
@@ -95,11 +95,11 @@ extension HymnEntity: Codable, FetchableRecord, PersistableRecord, MutablePersis
         static let meter = Column(CodingKeys.meter)
         static let scriptures = Column(CodingKeys.scriptures)
         static let hymnCode = Column(CodingKeys.hymnCode)
-        static let musicJson = Column(CodingKeys.musicJson)
-        static let svgSheetJson = Column(CodingKeys.svgSheetJson)
-        static let pdfSheetJson = Column(CodingKeys.pdfSheetJson)
-        static let languagesJson = Column(CodingKeys.languagesJson)
-        static let relevantJson = Column(CodingKeys.relevantJson)
+        static let music = Column(CodingKeys.music)
+        static let svgSheet = Column(CodingKeys.svgSheet)
+        static let pdfSheet = Column(CodingKeys.pdfSheet)
+        static let languages = Column(CodingKeys.languages)
+        static let relevant = Column(CodingKeys.relevant)
     }
 }
 
@@ -118,11 +118,11 @@ class HymnEntityBuilder {
     private (set) var meter: String?
     private (set) var scriptures: String?
     private (set) var hymnCode: String?
-    private (set) var musicJson: String?
-    private (set) var svgSheetJson: String?
-    private (set) var pdfSheetJson: String?
-    private (set) var languagesJson: String?
-    private (set) var relevantJson: String?
+    private (set) var music: [String: String]?
+    private (set) var svgSheet: [String: String]?
+    private (set) var pdfSheet: [String: String]?
+    private (set) var languages: [SongLink]?
+    private (set) var relevant: [SongLink]?
 
     init(hymnIdentifier: HymnIdentifier) {
         self.hymnIdentifier = hymnIdentifier
@@ -144,11 +144,11 @@ class HymnEntityBuilder {
         self.meter = hymnEntity.meter
         self.scriptures = hymnEntity.scriptures
         self.hymnCode = hymnEntity.hymnCode
-        self.musicJson = hymnEntity.musicJson
-        self.svgSheetJson = hymnEntity.svgSheetJson
-        self.pdfSheetJson = hymnEntity.pdfSheetJson
-        self.languagesJson = hymnEntity.languagesJson
-        self.relevantJson = hymnEntity.relevantJson
+        self.music = hymnEntity.music
+        self.svgSheet = hymnEntity.svgSheet
+        self.pdfSheet = hymnEntity.pdfSheet
+        self.languages = hymnEntity.languages
+        self.relevant = hymnEntity.relevant
     }
 
     public func hymnIdentifier(_ hymnIdentifier: HymnIdentifier) -> HymnEntityBuilder {
@@ -216,28 +216,28 @@ class HymnEntityBuilder {
         return self
     }
 
-    public func musicJson(_ musicJson: String?) -> HymnEntityBuilder {
-        self.musicJson = musicJson
+    public func music(_ music: [String: String]?) -> HymnEntityBuilder {
+        self.music = music
         return self
     }
 
-    public func svgSheetJson(_ svgSheetJson: String?) -> HymnEntityBuilder {
-        self.svgSheetJson = svgSheetJson
+    public func svgSheet(_ svgSheet: [String: String]?) -> HymnEntityBuilder {
+        self.svgSheet = svgSheet
         return self
     }
 
-    public func pdfSheetJson(_ pdfSheetJson: String?) -> HymnEntityBuilder {
-        self.pdfSheetJson = pdfSheetJson
+    public func pdfSheet(_ pdfSheet: [String: String]?) -> HymnEntityBuilder {
+        self.pdfSheet = pdfSheet
         return self
     }
 
-    public func languagesJson(_ languagesJson: String?) -> HymnEntityBuilder {
-        self.languagesJson = languagesJson
+    public func languages(_ languages: [SongLink]?) -> HymnEntityBuilder {
+        self.languages = languages
         return self
     }
 
-    public func relevantJson(_ relevantJson: String?) -> HymnEntityBuilder {
-        self.relevantJson = relevantJson
+    public func relevant(_ relevant: [SongLink]?) -> HymnEntityBuilder {
+        self.relevant = relevant
         return self
     }
 
@@ -256,10 +256,10 @@ class HymnEntityBuilder {
                    meter: meter,
                    scriptures: scriptures,
                    hymnCode: hymnCode,
-                   musicJson: musicJson,
-                   svgSheetJson: svgSheetJson,
-                   pdfSheetJson: pdfSheetJson,
-                   languagesJson: languagesJson,
-                   relevantJson: relevantJson)
+                   music: music,
+                   svgSheet: svgSheet,
+                   pdfSheet: pdfSheet,
+                   languages: languages,
+                   relevant: relevant)
     }
 }

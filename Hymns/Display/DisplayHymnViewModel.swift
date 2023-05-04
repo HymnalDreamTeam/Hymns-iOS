@@ -146,15 +146,11 @@ class DisplayHymnViewModel: ObservableObject {
     private func getHymnMusic(_ hymn: UiHymn) -> HymnMusicView? {
         var hymnMusic = [HymnMusicTab]()
 
-        let chordsPath = hymn.pdfSheet?.data.first(where: { datum -> Bool in
-            datum.value == DatumValue.text.rawValue
-        })?.path
+        let chordsPath = hymn.pdfSheet?[DatumValue.text.rawValue]
         let chordsUrl = chordsPath.flatMap({ path -> URL? in
             HymnalNet.url(path: path)
         })
-        let guitarSheetPath = hymn.pdfSheet?.data.first(where: { datum -> Bool in
-            datum.value == DatumValue.guitar.rawValue
-        })?.path
+        let guitarSheetPath = hymn.pdfSheet?[DatumValue.guitar.rawValue]
         let guitarSheetUrl = guitarSheetPath.flatMap({ path -> URL? in
             HymnalNet.url(path: path)
         })
@@ -170,9 +166,7 @@ class DisplayHymnViewModel: ObservableObject {
         }
 
         if self.systemUtil.isNetworkAvailable() {
-            let pianoPath = hymn.pdfSheet?.data.first(where: { datum -> Bool in
-                datum.value == DatumValue.piano.rawValue
-            })?.path
+            let pianoPath = hymn.pdfSheet?[DatumValue.piano.rawValue]
             if let pianoUrl = pianoPath.flatMap({ path -> URL? in
                 HymnalNet.url(path: path)
             }) {

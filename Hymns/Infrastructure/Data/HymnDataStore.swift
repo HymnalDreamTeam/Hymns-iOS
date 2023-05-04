@@ -99,11 +99,11 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
                         table.column(HymnEntity.CodingKeys.meter.rawValue, .text)
                         table.column(HymnEntity.CodingKeys.scriptures.rawValue, .text)
                         table.column(HymnEntity.CodingKeys.hymnCode.rawValue, .text)
-                        table.column(HymnEntity.CodingKeys.musicJson.rawValue, .text)
-                        table.column(HymnEntity.CodingKeys.svgSheetJson.rawValue, .text)
-                        table.column(HymnEntity.CodingKeys.pdfSheetJson.rawValue, .text)
-                        table.column(HymnEntity.CodingKeys.languagesJson.rawValue, .text)
-                        table.column(HymnEntity.CodingKeys.relevantJson.rawValue, .text)
+                        table.column(HymnEntity.CodingKeys.music.rawValue, .text)
+                        table.column(HymnEntity.CodingKeys.svgSheet.rawValue, .text)
+                        table.column(HymnEntity.CodingKeys.pdfSheet.rawValue, .text)
+                        table.column(HymnEntity.CodingKeys.languages.rawValue, .text)
+                        table.column(HymnEntity.CodingKeys.relevant.rawValue, .text)
                     }
 
                     // CREATE UNIQUE INDEX IF NOT EXISTS index_SONG_DATA_HYMN_TYPE_HYMN_NUMBER ON SONG_DATA (HYMN_TYPE, HYMN_NUMBER)

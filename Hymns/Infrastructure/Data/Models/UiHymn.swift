@@ -8,7 +8,7 @@ struct UiHymn: Equatable {
     let title: String
     let lyrics: [Verse]?
     let chords: [ChordLine]?
-    let pdfSheet: MetaDatum?
+    let pdfSheet: [String: String]?
     let category: String?
     let subcategory: String?
     let author: String?
@@ -18,15 +18,15 @@ struct UiHymn: Equatable {
     let meter: String?
     let scriptures: String?
     let hymnCode: String?
-    let languages: MetaDatum?
-    let music: MetaDatum?
-    let relevant: MetaDatum?
+    let languages: [SongLink]?
+    let music: [String: String]?
+    let relevant: [SongLink]?
     // add more fields as needed
 
     init(hymnIdentifier: HymnIdentifier, title: String, lyrics: [Verse]? = nil, chords: [ChordLine]? = nil,
-         pdfSheet: MetaDatum? = nil, category: String? = nil, subcategory: String? = nil, author: String? = nil,
+         pdfSheet: [String: String]? = nil, category: String? = nil, subcategory: String? = nil, author: String? = nil,
          composer: String? = nil, key: String? = nil, time: String? = nil, meter: String? = nil, scriptures: String? = nil,
-         hymnCode: String? = nil, languages: MetaDatum? = nil, music: MetaDatum? = nil, relevant: MetaDatum? = nil) {
+         hymnCode: String? = nil, languages: [SongLink]? = nil, music: [String: String]? = nil, relevant: [SongLink]? = nil) {
         self.hymnIdentifier = hymnIdentifier
         self.title = title
         self.lyrics = lyrics
@@ -72,7 +72,7 @@ class UiHymnBuilder {
     private (set) var title: String
     private (set) var lyrics: [Verse]?
     private (set) var chords: [ChordLine]?
-    private (set) var pdfSheet: MetaDatum?
+    private (set) var pdfSheet: [String: String]?
     private (set) var category: String?
     private (set) var subcategory: String?
     private (set) var author: String?
@@ -82,9 +82,9 @@ class UiHymnBuilder {
     private (set) var meter: String?
     private (set) var scriptures: String?
     private (set) var hymnCode: String?
-    private (set) var languages: MetaDatum?
-    private (set) var music: MetaDatum?
-    private (set) var relevant: MetaDatum?
+    private (set) var languages: [SongLink]?
+    private (set) var music: [String: String]?
+    private (set) var relevant: [SongLink]?
 
     init(hymnIdentifier: HymnIdentifier, title: String) {
         self.hymnIdentifier = hymnIdentifier
@@ -101,7 +101,7 @@ class UiHymnBuilder {
         return self
     }
 
-    public func pdfSheet(_ pdfSheet: MetaDatum?) -> UiHymnBuilder {
+    public func pdfSheet(_ pdfSheet: [String: String]?) -> UiHymnBuilder {
         self.pdfSheet = pdfSheet
         return self
     }
@@ -151,17 +151,17 @@ class UiHymnBuilder {
         return self
     }
 
-    public func languages(_ languages: MetaDatum?) -> UiHymnBuilder {
+    public func languages(_ languages: [SongLink]?) -> UiHymnBuilder {
         self.languages = languages
         return self
     }
 
-    public func music(_ music: MetaDatum?) -> UiHymnBuilder {
+    public func music(_ music: [String: String]?) -> UiHymnBuilder {
         self.music = music
         return self
     }
 
-    public func relevant(_ relevant: MetaDatum?) -> UiHymnBuilder {
+    public func relevant(_ relevant: [SongLink]?) -> UiHymnBuilder {
         self.relevant = relevant
         return self
     }

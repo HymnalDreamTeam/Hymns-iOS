@@ -36,6 +36,20 @@ extension HymnIdentifier: CustomStringConvertible {
     }
 }
 
+extension HymnIdentifier: Codable {
+
+    enum CodingKeys: String, CodingKey {
+        case hymnType
+        case hymnNumber
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(hymnType.rawValue, forKey: .hymnType)
+        try container.encode(hymnNumber, forKey: .hymnNumber)
+    }
+}
+
 class HymnIdentifierEntity: Object {
     // https://stackoverflow.com/questions/29123245/using-enum-as-property-of-realm-model
     @objc dynamic private var hymnTypeRaw = HymnType.classic.rawValue

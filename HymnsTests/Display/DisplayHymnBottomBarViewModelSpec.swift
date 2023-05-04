@@ -16,16 +16,12 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                           Verse(verseType: .chorus, verseContent: ["chorus line 1", "chorus line 2"]),
                           Verse(verseType: .verse, verseContent: ["verse 2 line 1", "verse 2 line 2"]),
                           Verse(verseType: .verse, verseContent: ["verse 3 line 1", "verse 3 line 2"])]
-            let pdfSheet = MetaDatum(name: "sheet", data: [Datum(value: "Guitar", path: "https://www.hymnal.net/Hymns/Hymnal/svg/e1151_g.svg")])
-            let languages = MetaDatum(name: "lang", data: [Datum(value: "Tagalog", path: "/en/hymn/ht/1151"),
-                                                           Datum(value: "Missing path", path: ""),
-                                                           Datum(value: "Invalid number", path: "/en/hymn/h/13f/f=333/asdf"),
-                                                           Datum(value: "诗歌(简)", path: "/en/hymn/ts/216?gb=1")])
-            let music = MetaDatum(name: "music", data: [Datum(value: "mp3", path: "/en/hymn/h/1151/f=mp3")])
-            let relevant = MetaDatum(name: "relv", data: [Datum(value: "New Tune", path: "/en/hymn/nt/1151"),
-                                                          Datum(value: "Missing path", path: ""),
-                                                          Datum(value: "Invalid number", path: "/en/hymn/h/13f/f=333/asdf"),
-                                                          Datum(value: "Cool other song", path: "/en/hymn/ns/216")])
+            let pdfSheet = ["Guitar": "https://www.hymnal.net/Hymns/Hymnal/svg/e1151_g.svg"]
+            let languages = [SongLink(reference: HymnIdentifier(hymnType: .tagalog, hymnNumber: "1151"), name: "Tagalog"),
+                             SongLink(reference: HymnIdentifier(hymnType: .chineseSupplementSimplified, hymnNumber: "216"), name: "Tagalog")]
+            let music = ["mp3": "/en/hymn/h/1151/f=mp3"]
+            let relevant = [SongLink(reference: HymnIdentifier(hymnType: .newTune, hymnNumber: "1151"), name: "New Tune"),
+                            SongLink(reference: HymnIdentifier(hymnType: .newSong, hymnNumber: "216"), name: "Cool other song")]
             let populatedHymn = UiHymn(hymnIdentifier: hymnIdentifier,
                                        title: "title", lyrics: lyrics, pdfSheet: pdfSheet,
                                        category: "Experience of Christ", subcategory: "As Food and Drink",

@@ -50,9 +50,7 @@ class DisplayHymnBottomBarViewModel: ObservableObject {
             buttons.append(.languages(languages))
         }
 
-        let mp3Path = hymn.music?.data.first(where: { datum -> Bool in
-            datum.value == DatumValue.mp3.rawValue
-        })?.path
+        let mp3Path = hymn.music?[DatumValue.mp3.rawValue]
         if let mp3Url = mp3Path.flatMap({ path -> URL? in
             HymnalNet.url(path: path)
         }), self.systemUtil.isNetworkAvailable() {
@@ -92,19 +90,15 @@ class DisplayHymnBottomBarViewModel: ObservableObject {
         }
     }
 
-    private func convertToSongResults(_ option: MetaDatum?) -> [SongResultViewModel] {
-        option.map { metaDatum -> [SongResultViewModel] in
-            metaDatum.data.compactMap {datum -> SongResultViewModel? in
-                guard let hymnType = RegexUtil.getHymnType(path: datum.path), let hymnNumber = RegexUtil.getHymnNumber(path: datum.path) else {
-                    self.analytics.logError(message: "error happened when trying to parse song language", extraParameters: ["path": datum.path, "value": datum.value])
-                    return nil
-                }
-                let title = datum.value
-                let hymnIdentifier = HymnIdentifier(hymnType: hymnType, hymnNumber: hymnNumber)
-                let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: hymnIdentifier)).eraseToAnyView()
-                return SongResultViewModel(stableId: String(describing: hymnIdentifier), title: title, destinationView: destination)
-            }
-        }  ?? [SongResultViewModel]()
+    private func convertToSongResults(_ songLinks: [SongLink]?) -> [SongResultViewModel] {
+        guard let songLinks = songLinks else {
+            return [SongResultViewModel]()
+        }
+
+        return songLinks.map { songLink in
+            let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: songLink.reference)).eraseToAnyView()
+            return SongResultViewModel(stableId: String(describing: songLink.reference), title: songLink.name, destinationView: destination)
+        }
     }
 
     private func convertToOneString(verses: [Verse]) -> String {

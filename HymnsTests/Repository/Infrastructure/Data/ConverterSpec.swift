@@ -88,19 +88,22 @@ class ConverterSpec: QuickSpec {
                         .meter("This is the meter")
                         .scriptures("This is the scriptures")
                         .hymnCode("This is the hymnCode")
-                        .pdfSheetJson("{\"data\": [{\"path\": \"/en/hymn/h/1151/f=ppdf\", \"value\": \"Piano\"}, {\"path\": \"/en/hymn/h/1151/f=pdf\", \"value\": \"Guitar\"}, {\"path\": \"/en/hymn/h/1151/f=gtpdf\", \"value\": \"Text\"}], \"name\": \"Lead Sheet\"}")
-                        .languagesJson("{\"data\": [{\"path\": \"/en/hymn/cb/1151\", \"value\": \"Cebuano\"}, {\"path\": \"/en/hymn/ts/216?gb=1\", \"value\": \"诗歌(简)\"}, {\"path\": \"/en/hymn/ht/1151\", \"value\": \"Tagalog\"}], \"name\": \"Languages\"}")
-                        .relevantJson("{\"data\": [{\"path\": \"/en/hymn/h/152\", \"value\": \"Original Tune\"}, {\"path\": \"/en/hymn/nt/152\", \"value\": \"New Tune\"}, {\"path\": \"/en/hymn/h/152b\", \"value\": \"Alternate Tune\"}], \"name\": \"Relevant\"}")
+                        .pdfSheet(["Piano": "/en/hymn/h/1151/f=pdf", "Guitar": "/en/hymn/h/1151/f=pdf",
+                                  "Text": "/en/hymn/h/1151/f=gtpdf"])
+//                        .languages[SongLink(reference: HymnIdentifier(hymnType: .cebuano, hymnNumber: "1151"), name: "Cebuano"),
+//                                   SongLink(reference: HymnIdentifier(hymnType: .chineseSupplementSimplified, hymnNumber: "216"), name: "诗歌(简)"),
+//                                   SongLink(reference: HymnIdentifier(hymnType: .tagalog, hymnNumber: "1151"), name: "Tagalog")]
+//                        .relevant[SongLink(reference: HymnIdentifier(hymnType: .classic, hymnNumber: "152"), name: "Original Tune"),
+//                                  SongLink(reference: HymnIdentifier(hymnType: .newTune, hymnNumber: "152"), name: "New Tune"),
+//                                  SongLink(reference: HymnIdentifier(hymnType: .classic, hymnNumber: "152b"), name: "Alternate Tune")]
                         .build()
 
                     let expected
                         = UiHymn(hymnIdentifier: classic1151,
                                  title: "title",
                                  lyrics: [Verse(verseType: .verse, verseContent: ["line 1", "line 2"])],
-                                 pdfSheet: MetaDatum(name: "Lead Sheet",
-                                                     data: [Datum(value: "Piano", path: "/en/hymn/h/1151/f=ppdf"),
-                                                            Datum(value: "Guitar", path: "/en/hymn/h/1151/f=pdf"),
-                                                            Datum(value: "Text", path: "/en/hymn/h/1151/f=gtpdf")]),
+                                 pdfSheet: ["Piano": "/en/hymn/h/1151/f=ppdf", "Guitar": "/en/hymn/h/1151/f=pdf",
+                                            "Text": "/en/hymn/h/1151/f=gtpdf"],
                                  category: "This is my category",
                                  subcategory: "This is my subcategory",
                                  author: "This is the author",
@@ -110,14 +113,12 @@ class ConverterSpec: QuickSpec {
                                  meter: "This is the meter",
                                  scriptures: "This is the scriptures",
                                  hymnCode: "This is the hymnCode",
-                                 languages: MetaDatum(name: "Languages",
-                                                      data: [Datum(value: "Cebuano", path: "/en/hymn/cb/1151"),
-                                                             Datum(value: "诗歌(简)", path: "/en/hymn/ts/216?gb=1"),
-                                                             Datum(value: "Tagalog", path: "/en/hymn/ht/1151")]),
-                                 relevant: MetaDatum(name: "Relevant",
-                                                     data: [Datum(value: "Original Tune", path: "/en/hymn/h/152"),
-                                                            Datum(value: "New Tune", path: "/en/hymn/nt/152"),
-                                                            Datum(value: "Alternate Tune", path: "/en/hymn/h/152b")]))
+                                 languages: [SongLink(reference: HymnIdentifier(hymnType: .cebuano, hymnNumber: "1151"), name: "Cebuano"),
+                                             SongLink(reference: HymnIdentifier(hymnType: .chineseSupplementSimplified, hymnNumber: "216"), name: "诗歌(简)"),
+                                             SongLink(reference: HymnIdentifier(hymnType: .tagalog, hymnNumber: "1151"), name: "Tagalog")],
+                                 relevant: [SongLink(reference: HymnIdentifier(hymnType: .classic, hymnNumber: "152"), name: "Original Tune"),
+                                            SongLink(reference: HymnIdentifier(hymnType: .newTune, hymnNumber: "152"), name: "New Tune"),
+                                            SongLink(reference: HymnIdentifier(hymnType: .classic, hymnNumber: "152b"), name: "Alternate Tune")])
                     it("should correctly convert to a UiHymn") {
                         expect(try! target.toUiHymn(hymnIdentifier: classic1151, hymnEntity: filledHymn)).to(equal(expected))
                     }
