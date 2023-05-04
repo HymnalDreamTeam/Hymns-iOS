@@ -20,7 +20,6 @@ class DisplayHymnContainerViewModelSpec: QuickSpec {
                     for num in 0..<1360 {
                         expect(target.hymns![num].identifier.hymnType).to(equal(HymnType.classic))
                         expect(target.hymns![num].identifier.hymnNumber).to(equal("\(num + 1)"))
-                        expect(target.hymns![num].identifier.queryParams).to(beNil())
                     }
                 }
                 it("current hymn should be input song - 1 (list is 0-indexed)") {

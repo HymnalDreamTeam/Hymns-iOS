@@ -10,7 +10,6 @@ struct HymnEntity: Equatable {
     let id: Int64?
     let hymnType: String
     let hymnNumber: String
-    let queryParams: String
     let title: String?
     let lyricsJson: String?
     let category: String?
@@ -33,7 +32,6 @@ struct HymnEntity: Equatable {
         case id = "ID"
         case hymnType = "HYMN_TYPE"
         case hymnNumber = "HYMN_NUMBER"
-        case queryParams = "QUERY_PARAMS"
         case title = "SONG_TITLE"
         case lyricsJson = "SONG_LYRICS"
         case category = "SONG_META_DATA_CATEGORY"
@@ -55,7 +53,6 @@ struct HymnEntity: Equatable {
     static func == (lhs: HymnEntity, rhs: HymnEntity) -> Bool {
         let hymnTypesEqual = lhs.hymnType == rhs.hymnType
         let hymnNumbersEqual = lhs.hymnNumber == rhs.hymnNumber
-        let queryParamsEqual = lhs.queryParams == rhs.queryParams
         let titlesEqual = lhs.title == rhs.title
         let lyricsEqual = lhs.lyricsJson == rhs.lyricsJson
         let categoriesEqual = lhs.category == rhs.category
@@ -72,7 +69,7 @@ struct HymnEntity: Equatable {
         let pdfsEqual = lhs.pdfSheetJson == rhs.pdfSheetJson
         let languagesEqual = lhs.languagesJson == rhs.languagesJson
         let relevantsEqual = lhs.relevantJson == rhs.relevantJson
-        return hymnTypesEqual && hymnNumbersEqual && queryParamsEqual && titlesEqual && lyricsEqual && categoriesEqual && subcategoriesEqual
+        return hymnTypesEqual && hymnNumbersEqual && titlesEqual && lyricsEqual && categoriesEqual && subcategoriesEqual
         && authorsEqual && composersEqual && keysEqual && timesEqual && metersEqual && scripturesEqual && hymnCodesEqual && musicsEqual && svgsEqual
         && pdfsEqual && languagesEqual && relevantsEqual
     }
@@ -87,7 +84,6 @@ extension HymnEntity: Codable, FetchableRecord, PersistableRecord, MutablePersis
         static let id = Column(CodingKeys.id)
         static let hymnType = Column(CodingKeys.hymnType)
         static let hymnNumber = Column(CodingKeys.hymnNumber)
-        static let queryParams = Column(CodingKeys.queryParams)
         static let title = Column(CodingKeys.title)
         static let lyricsJson = Column(CodingKeys.lyricsJson)
         static let category = Column(CodingKeys.category)
@@ -136,7 +132,7 @@ class HymnEntityBuilder {
         guard let hymnType = HymnType.fromAbbreviatedValue(hymnEntity.hymnType) else {
             return nil
         }
-        self.hymnIdentifier = HymnIdentifier(hymnType: hymnType, hymnNumber: hymnEntity.hymnNumber, queryParams: hymnEntity.queryParams.deserializeFromQueryParamString)
+        self.hymnIdentifier = HymnIdentifier(hymnType: hymnType, hymnNumber: hymnEntity.hymnNumber)
         self.title = hymnEntity.title
         self.lyricsJson = hymnEntity.lyricsJson
         self.category = hymnEntity.category
@@ -249,7 +245,6 @@ class HymnEntityBuilder {
         HymnEntity(id: id,
                    hymnType: hymnIdentifier.hymnType.abbreviatedValue,
                    hymnNumber: hymnIdentifier.hymnNumber,
-                   queryParams: hymnIdentifier.queryParamString,
                    title: title,
                    lyricsJson: lyricsJson,
                    category: category,

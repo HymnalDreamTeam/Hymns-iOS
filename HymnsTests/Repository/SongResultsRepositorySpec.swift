@@ -8,41 +8,27 @@ import Quick
 // swiftlint:disable:next type_body_length
 class SongResultsRepositorySpec: QuickSpec {
 
-    static let noMatchesSearchResult = SearchResultEntity(hymnType: .classic, hymnNumber: "1", queryParams: nil,
-                                                          title: "no matches in match info",
+    static let noMatchesSearchResult = SearchResultEntity(hymnType: .classic, hymnNumber: "1", title: "no matches in match info",
                                                           matchInfo: Data([0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]))
-    static let noMatches = SongResultEntity(hymnType: .classic, hymnNumber: "1", queryParams: nil,
-                                            title: "no matches in match info")
-    static let singleMatchInLyricsSearchResult = SearchResultEntity(hymnType: .classic, hymnNumber: "2", queryParams: nil,
-                                                                    title: "Hymn: single match in lyrics",
+    static let noMatches = SongResultEntity(hymnType: .classic, hymnNumber: "1", title: "no matches in match info")
+    static let singleMatchInLyricsSearchResult = SearchResultEntity(hymnType: .classic, hymnNumber: "2", title: "Hymn: single match in lyrics",
                                                                     matchInfo: Data([0x0, 0x0, 0x0, 0x0, 0x1, 0x0, 0x0, 0x0]))
-    static let singleMatchInLyrics = SongResultEntity(hymnType: .classic, hymnNumber: "2", queryParams: nil,
-                                                      title: "Hymn: single match in lyrics")
-    static let singleMatchInTitleSearchResult = SearchResultEntity(hymnType: .classic, hymnNumber: "3", queryParams: nil,
-                                                                   title: "single match in title",
+    static let singleMatchInLyrics = SongResultEntity(hymnType: .classic, hymnNumber: "2", title: "Hymn: single match in lyrics")
+    static let singleMatchInTitleSearchResult = SearchResultEntity(hymnType: .classic, hymnNumber: "3", title: "single match in title",
                                                                    matchInfo: Data([0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]))
-    static let singleMatchInTitle = SongResultEntity(hymnType: .classic, hymnNumber: "3", queryParams: nil,
-                                                     title: "single match in title")
-    static let twoMatchesInLyricsSearchResult = SearchResultEntity(hymnType: .classic, hymnNumber: "4", queryParams: nil,
-                                                                   title: "Hymn: two matches in lyrics",
+    static let singleMatchInTitle = SongResultEntity(hymnType: .classic, hymnNumber: "3", title: "single match in title")
+    static let twoMatchesInLyricsSearchResult = SearchResultEntity(hymnType: .classic, hymnNumber: "4", title: "Hymn: two matches in lyrics",
                                                                    matchInfo: Data([0x0, 0x0, 0x0, 0x0, 0x2, 0x0, 0x0, 0x0]))
-    static let twoMatchesInLyrics = SongResultEntity(hymnType: .classic, hymnNumber: "4", queryParams: nil,
-                                                     title: "Hymn: two matches in lyrics")
-    static let maxMatchesInLyricsSearchResult = SearchResultEntity(hymnType: .classic, hymnNumber: "5", queryParams: nil,
-                                                                   title: "max matches in lyrics",
+    static let twoMatchesInLyrics = SongResultEntity(hymnType: .classic, hymnNumber: "4", title: "Hymn: two matches in lyrics")
+    static let maxMatchesInLyricsSearchResult = SearchResultEntity(hymnType: .classic, hymnNumber: "5", title: "max matches in lyrics",
                                                                    matchInfo: Data([0x0, 0x0, 0x0, 0x0, 0xff, 0xff, 0xff, 0xff]))
-    static let maxMatchesInLyrics = SongResultEntity(hymnType: .classic, hymnNumber: "5", queryParams: nil,
-                                                     title: "max matches in lyrics")
-    static let maxMatchesInTitleSearchResult = SearchResultEntity(hymnType: .classic, hymnNumber: "6", queryParams: nil,
-                                                                  title: "Hymn: max matches in title",
+    static let maxMatchesInLyrics = SongResultEntity(hymnType: .classic, hymnNumber: "5", title: "max matches in lyrics")
+    static let maxMatchesInTitleSearchResult = SearchResultEntity(hymnType: .classic, hymnNumber: "6", title: "Hymn: max matches in title",
                                                                   matchInfo: Data([0xff, 0xff, 0xff, 0xff, 0x0, 0x0, 0x0, 0x0]))
-    static let maxMatchesInTitle = SongResultEntity(hymnType: .classic, hymnNumber: "6", queryParams: nil,
-                                                    title: "Hymn: max matches in title")
-    static let maxMatchesInBothSearchResult = SearchResultEntity(hymnType: .classic, hymnNumber: "7", queryParams: nil,
-                                                                 title: "max matches in both",
+    static let maxMatchesInTitle = SongResultEntity(hymnType: .classic, hymnNumber: "6", title: "Hymn: max matches in title")
+    static let maxMatchesInBothSearchResult = SearchResultEntity(hymnType: .classic, hymnNumber: "7", title: "max matches in both",
                                                                  matchInfo: Data([0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]))
-    static let maxMatchesInBoth = SongResultEntity(hymnType: .classic, hymnNumber: "7", queryParams: nil,
-                                                   title: "max matches in both")
+    static let maxMatchesInBoth = SongResultEntity(hymnType: .classic, hymnNumber: "7", title: "max matches in both")
     let databaseResults = [noMatchesSearchResult, singleMatchInLyricsSearchResult, singleMatchInTitleSearchResult, twoMatchesInLyricsSearchResult,
                            maxMatchesInLyricsSearchResult, maxMatchesInTitleSearchResult, maxMatchesInBothSearchResult]
     let sortedDatabaseResults = [maxMatchesInBoth, maxMatchesInTitle, maxMatchesInLyrics, singleMatchInTitle, twoMatchesInLyrics,
@@ -50,10 +36,10 @@ class SongResultsRepositorySpec: QuickSpec {
 
     static let noMatchesSongbaseResult = SongbaseSearchResultEntity(bookId: 1, bookIndex: 1, title: "First Songbase song",
                                                                     matchInfo: Data([0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]))
-    static let noMatchesSongbase = SongResultEntity(hymnType: .songbase, hymnNumber: "1", queryParams: nil, title: "First Songbase song")
+    static let noMatchesSongbase = SongResultEntity(hymnType: .songbase, hymnNumber: "1", title: "First Songbase song")
     static let singleMatchInLyricsSongbaseResult = SongbaseSearchResultEntity(bookId: 1, bookIndex: 2, title: "Second Songbase song",
                                                                               matchInfo: Data([0x0, 0x0, 0x0, 0x0, 0x1, 0x0, 0x0, 0x0]))
-    static let singleMatchInLyricsSongbase = SongResultEntity(hymnType: .songbase, hymnNumber: "2", queryParams: nil, title: "Second Songbase song")
+    static let singleMatchInLyricsSongbase = SongResultEntity(hymnType: .songbase, hymnNumber: "2", title: "Second Songbase song")
 
     let songbaseResults = [noMatchesSongbaseResult, singleMatchInLyricsSongbaseResult]
     let sortedSongbaseResults = [singleMatchInLyricsSongbase, noMatchesSongbase]
@@ -290,8 +276,8 @@ class SongResultsRepositorySpec: QuickSpec {
                             given(converter.toUiSongResultsPage(songResultsEntities: self.sortedDatabaseResults, hasMorePages: false)) ~> convertedResultPage
 
                             let networkSongResultEntities = [
-                                SongResultEntity(hymnType: .classic, hymnNumber: "1151", queryParams: nil, title: "classic 1151 again"),
-                                SongResultEntity(hymnType: .cebuano, hymnNumber: "123", queryParams: nil, title: "cebuano 123")]
+                                SongResultEntity(hymnType: .classic, hymnNumber: "1151", title: "classic 1151 again"),
+                                SongResultEntity(hymnType: .cebuano, hymnNumber: "123", title: "cebuano 123")]
                             given(converter.toSongResultEntities(songResultsPage: self.networkResult)) ~> (networkSongResultEntities, self.networkResult.hasMorePages!)
                             let convertedNetworkResultPage = UiSongResultsPage(
                                 results: [UiSongResult(name: "classic 1151 again", identifier: classic1151),
@@ -377,8 +363,8 @@ class SongResultsRepositorySpec: QuickSpec {
                         it("should return network results") {
                             given(converter.toUiSongResultsPage(songResultsEntities: [SongResultEntity](), hasMorePages: false)) ~> UiSongResultsPage(results: [UiSongResult](), hasMorePages: false)
                             let networkSongResultEntities = [
-                                SongResultEntity(hymnType: .classic, hymnNumber: "1151", queryParams: nil, title: "classic 1151 again"),
-                                SongResultEntity(hymnType: .cebuano, hymnNumber: "123", queryParams: nil, title: "cebuano 123")]
+                                SongResultEntity(hymnType: .classic, hymnNumber: "1151", title: "classic 1151 again"),
+                                SongResultEntity(hymnType: .cebuano, hymnNumber: "123", title: "cebuano 123")]
                             given(converter.toSongResultEntities(songResultsPage: self.networkResult)) ~> (networkSongResultEntities, self.networkResult.hasMorePages!)
                             let convertedNetworkResultPage = UiSongResultsPage(
                                 results: [UiSongResult(name: "classic 1151 again", identifier: classic1151),
@@ -460,8 +446,8 @@ class SongResultsRepositorySpec: QuickSpec {
                         it("should return network results") {
                             given(converter.toUiSongResultsPage(songResultsEntities: [SongResultEntity](), hasMorePages: false)) ~> UiSongResultsPage(results: [UiSongResult](), hasMorePages: false)
                             let networkSongResultEntities = [
-                                SongResultEntity(hymnType: .classic, hymnNumber: "1151", queryParams: nil, title: "classic 1151 again"),
-                                SongResultEntity(hymnType: .cebuano, hymnNumber: "123", queryParams: nil, title: "cebuano 123")]
+                                SongResultEntity(hymnType: .classic, hymnNumber: "1151", title: "classic 1151 again"),
+                                SongResultEntity(hymnType: .cebuano, hymnNumber: "123", title: "cebuano 123")]
                             given(converter.toSongResultEntities(songResultsPage: self.networkResult)) ~> (networkSongResultEntities, self.networkResult.hasMorePages!)
                             let convertedNetworkResultPage = UiSongResultsPage(
                                 results: [UiSongResult(name: "classic 1151 again", identifier: classic1151),

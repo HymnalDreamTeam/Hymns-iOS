@@ -31,7 +31,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                     // saving another cebuano123 should replace the old one.
                     target.saveHymn(HymnEntityBuilder(hymnIdentifier: cebuano123).title("new cebuano title").build())
                     // this one should be a whole new song in the db
-                    target.saveHymn(HymnEntityBuilder(hymnIdentifier: cebuano123QueryParams).title("cebuano 123 with query params").hymnCode("171214436716555").build())
+                    target.saveHymn(HymnEntityBuilder(hymnIdentifier: chineseSimplified123).title("chinese simplified 123").hymnCode("171214436716555").build())
                 }
                 context("getting a stored song") {
                     it("should return the stored song") {
@@ -55,11 +55,11 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         publisher.cancel()
                     }
                 }
-                context("getting a stored song with query params") {
+                context("getting a simplified chinese song") {
                     it("should return the stored song") {
                         let completion = XCTestExpectation(description: "completion received")
                         let value = XCTestExpectation(description: "value received")
-                        let publisher = target.getHymn(cebuano123QueryParams)
+                        let publisher = target.getHymn(chineseSimplified123)
                             .print(self.description)
                             .receive(on: testQueue)
                             .sink(receiveCompletion: { state in
@@ -67,8 +67,8 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                                 expect(state).to(equal(.finished))
                             }, receiveValue: { entity in
                                 value.fulfill()
-                                expect(entity).to(equal(HymnEntityBuilder(hymnIdentifier: cebuano123QueryParams)
-                                    .title("cebuano 123 with query params")
+                                expect(entity).to(equal(HymnEntityBuilder(hymnIdentifier: chineseSimplified123)
+                                    .title("chinese simplified 123")
                                     .hymnCode("171214436716555")
                                     .build()))
                             })
@@ -119,7 +119,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                             .receive(on: testQueue)
                             .sink(receiveCompletion: { state in
                                 completion.fulfill()
-                                expect(state).to(equal(.failure(.data(description: "SQLite error 1 with statement `SELECT * FROM SONG_DATA WHERE HYMN_TYPE = ? AND HYMN_NUMBER = ? AND QUERY_PARAMS = ?`: no such table: SONG_DATA"))))
+                                expect(state).to(equal(.failure(.data(description: "SQLite error 1 with statement `SELECT * FROM SONG_DATA WHERE HYMN_TYPE = ? AND HYMN_NUMBER = ?`: no such table: SONG_DATA"))))
                             }, receiveValue: { _ in
                                 value.fulfill()
                             })
@@ -160,7 +160,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                 let matchInTitle = HymnEntityBuilder(hymnIdentifier: HymnIdentifier(hymnType: .howardHigashi, hymnNumber: "matchInTitle")).title("summer is coming").build()
                 let matchInTitleReplacement = HymnEntityBuilder(hymnIdentifier: HymnIdentifier(hymnType: .howardHigashi, hymnNumber: "matchInTitle")).title("summer is coming!!").build()
                 let noMatch = HymnEntityBuilder(hymnIdentifier: HymnIdentifier(hymnType: .chineseSupplement, hymnNumber: "noMatch")).title("no match").lyricsJson("at all").build()
-                let matchInBoth = HymnEntityBuilder(hymnIdentifier: HymnIdentifier(hymnType: .korean, hymnNumber: "matchInBoth", queryParams: ["key1": "value1", "key2": "value2"])).title("summer coming").lyricsJson("no, really. summer is!").build()
+                let matchInBoth = HymnEntityBuilder(hymnIdentifier: HymnIdentifier(hymnType: .korean, hymnNumber: "matchInBoth")).title("summer coming").lyricsJson("no, really. summer is!").build()
                 var searchResults = [SearchResultEntity]()
                 beforeEach {
                     target.saveHymn(jennysSong)
@@ -198,7 +198,6 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         let searchResult = searchResults[0]
                         expect(searchResult.hymnType).to(equal(HymnType.fromAbbreviatedValue(rainsOfCastamere.hymnType)!))
                         expect(searchResult.hymnNumber).to(equal(rainsOfCastamere.hymnNumber))
-                        expect(searchResult.queryParams).to(beNil())
                         expect(searchResult.title).to(equal(rainsOfCastamere.title))
                     }
                     it("should match lyrics but not title") {
@@ -214,7 +213,6 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         let searchResult = searchResults[1]
                         expect(searchResult.hymnType).to(equal(HymnType.fromAbbreviatedValue(matchInBoth.hymnType)!))
                         expect(searchResult.hymnNumber).to(equal(matchInBoth.hymnNumber))
-                        expect(searchResult.queryParams).to(equal(["key1": "value1", "key2": "value2"]))
                         expect(searchResult.title).to(equal(matchInBoth.title))
                     }
                     it("should match lyrics and title") {
@@ -230,7 +228,6 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         let searchResult = searchResults[2]
                         expect(searchResult.hymnType).to(equal(HymnType.fromAbbreviatedValue(matchInTitleReplacement.hymnType)!))
                         expect(searchResult.hymnNumber).to(equal(matchInTitleReplacement.hymnNumber))
-                        expect(searchResult.queryParams).to(beNil())
                         expect(searchResult.title).to(equal(matchInTitleReplacement.title))
                     }
                     it("should match title but not lyrics") {

@@ -131,9 +131,8 @@ class ConverterImpl: Converter {
                 self.analytics.logError(message: "error happened when trying to parse song result", extraParameters: ["path": songResult.path, "name": songResult.name])
                 return nil
             }
-            let queryParams = RegexUtil.getQueryParams(path: songResult.path)
             let title = songResult.name
-            return SongResultEntity(hymnType: hymnType, hymnNumber: hymnNumber, queryParams: queryParams, title: title)
+            return SongResultEntity(hymnType: hymnType, hymnNumber: hymnNumber, title: title)
         }
         return (songResultEntities, songResultsPage.hasMorePages ?? false)
     }
@@ -143,8 +142,7 @@ class ConverterImpl: Converter {
             let title = songResultsEntity.title
             let hymnType = songResultsEntity.hymnType
             let hymnNumber = songResultsEntity.hymnNumber
-            let queryParams = songResultsEntity.queryParams
-            let hymnIdentifier = HymnIdentifier(hymnType: hymnType, hymnNumber: hymnNumber, queryParams: queryParams)
+            let hymnIdentifier = HymnIdentifier(hymnType: hymnType, hymnNumber: hymnNumber)
             return UiSongResult(name: title, identifier: hymnIdentifier)
         }
         return UiSongResultsPage(results: songResults, hasMorePages: hasMorePages)

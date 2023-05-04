@@ -110,7 +110,7 @@ class TagSheetViewModelSpec: QuickSpec {
                     let tags = [Tag(hymnIdentifier: cebuano123, songTitle: "title 1 should be ignored", tag: "tag 1", color: .none),
                                 Tag(hymnIdentifier: classic40, songTitle: "title 2 should be ignored", tag: "tag 2", color: .blue),
                                 Tag(hymnIdentifier: classic500, songTitle: "title 3 should be ignored", tag: "tag 3", color: .green),
-                                Tag(hymnIdentifier: chinese216, songTitle: "title 4 should be ignored", tag: "tag 4", color: .none)]
+                                Tag(hymnIdentifier: chineseSupplement216, songTitle: "title 4 should be ignored", tag: "tag 4", color: .none)]
                     beforeEach {
                         given(tagStore.getTagsForHymn(hymnIdentifier: cebuano123)) ~> { _ in
                             Just(tags).mapError({ _ -> ErrorType in

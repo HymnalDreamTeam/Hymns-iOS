@@ -23,12 +23,8 @@ class HymnalApiServiceImpl: HymnalApiService {
     func getHymn(_ hymnIdentifier: HymnIdentifier) -> AnyPublisher<Hymn, ErrorType> {
         let hymnType = hymnIdentifier.hymnType
         let hymnNumber = hymnIdentifier.hymnNumber
-        let queryParams = hymnIdentifier.queryParams
 
-        guard let url = HymnalApi.getHymnUrl(hymnType: hymnType, hymnNumber: hymnNumber, queryParams: queryParams) else {
-            let hymnIdentifier = queryParams != nil
-                ? HymnIdentifier(hymnType: hymnType, hymnNumber: hymnNumber, queryParams: queryParams!)
-                : HymnIdentifier(hymnType: hymnType, hymnNumber: hymnNumber)
+        guard let url = HymnalApi.getHymnUrl(hymnType: hymnType, hymnNumber: hymnNumber) else {
             let error = ErrorType.data(description: "Couldn't create sarch URL for \(hymnIdentifier)")
             return Fail(error: error).eraseToAnyPublisher()
         }
@@ -78,16 +74,19 @@ private struct HymnalApi {
 }
 
 private extension HymnalApi {
-    static func getHymnUrl(hymnType: HymnType, hymnNumber: String, queryParams: [String: String]?) -> URL? {
+    static func getHymnUrl(hymnType: HymnType, hymnNumber: String) -> URL? {
         var components = URLComponents()
         components.scheme = Self.scheme
         components.host = Self.host
         components.path = "/v2/hymn/\(hymnType.abbreviatedValue)/\(hymnNumber)"
         components.queryItems = [URLQueryItem(name: "check_exists", value: "true")]
-        if let queryParams = queryParams, !queryParams.isEmpty {
-            components.queryItems?.append(contentsOf: queryParams.compactMap({ (key, value) -> URLQueryItem in
-                return URLQueryItem(name: key, value: value)
-            }))
+        if hymnType == .chineseSimplified {
+            components.path = "/v2/hymn/\(HymnType.chinese.abbreviatedValue)/\(hymnNumber)"
+            components.queryItems?.append(URLQueryItem(name: "gb", value: "1"))
+        }
+        if hymnType == .chineseSupplementSimplified {
+            components.path = "/v2/hymn/\(HymnType.chineseSupplement.abbreviatedValue)/\(hymnNumber)"
+            components.queryItems?.append(URLQueryItem(name: "gb", value: "1"))
         }
         return components.url
     }

@@ -99,9 +99,8 @@ class DisplayHymnBottomBarViewModel: ObservableObject {
                     self.analytics.logError(message: "error happened when trying to parse song language", extraParameters: ["path": datum.path, "value": datum.value])
                     return nil
                 }
-                let queryParams = RegexUtil.getQueryParams(path: datum.path)
                 let title = datum.value
-                let hymnIdentifier = HymnIdentifier(hymnType: hymnType, hymnNumber: hymnNumber, queryParams: queryParams)
+                let hymnIdentifier = HymnIdentifier(hymnType: hymnType, hymnNumber: hymnNumber)
                 let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: hymnIdentifier)).eraseToAnyView()
                 return SongResultViewModel(stableId: String(describing: hymnIdentifier), title: title, destinationView: destination)
             }

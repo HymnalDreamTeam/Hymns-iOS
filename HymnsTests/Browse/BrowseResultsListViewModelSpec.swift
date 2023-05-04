@@ -104,8 +104,8 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                 context("category and subcategory") {
                     beforeEach {
                         given(dataStore.getResultsBy(category: "category", subcategory: "subcategory")) ~>
-                        Just([SongResultEntity(hymnType: .classic, hymnNumber: "44", queryParams: nil, title: "classic44"),
-                              SongResultEntity(hymnType: .newSong, hymnNumber: "99", queryParams: nil, title: "newSong99")])
+                        Just([SongResultEntity(hymnType: .classic, hymnNumber: "44", title: "classic44"),
+                              SongResultEntity(hymnType: .newSong, hymnNumber: "99", title: "newSong99")])
                         .mapError({ _ -> ErrorType in
                             // This will never be triggered.
                         }).eraseToAnyPublisher()
@@ -379,8 +379,8 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                 context("has results") {
                     beforeEach {
                         given(tagStore.getSongsByTag(UiTag(title: "FanIntoFlames", color: .none))) ~> { _ in
-                            Just([SongResultEntity(hymnType: .classic, hymnNumber: "123", queryParams: nil, title: "classic123"),
-                                  SongResultEntity(hymnType: .dutch, hymnNumber: "55", queryParams: nil, title: "dutch55")])
+                            Just([SongResultEntity(hymnType: .classic, hymnNumber: "123", title: "classic123"),
+                                  SongResultEntity(hymnType: .dutch, hymnNumber: "55", title: "dutch55")])
                             .mapError({ _ -> ErrorType in
                                 // This will never be triggered.
                             }).eraseToAnyPublisher()
@@ -454,14 +454,13 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                     context("fetch chinese") {
                         beforeEach {
                             given(dataStore.getAllSongs(hymnType: .chinese)) ~> { _ in
-                                Just([SongResultEntity(hymnType: .classic, hymnNumber: "123", queryParams: nil, title: "classic123"),
-                                      SongResultEntity(hymnType: .chinese, hymnNumber: "3", queryParams: [String: String](), title: "should be filtered out"),
-                                      SongResultEntity(hymnType: .dutch, hymnNumber: "55", queryParams: nil, title: "dutch55"),
-                                      SongResultEntity(hymnType: .classic, hymnNumber: "11b", queryParams: nil, title: "non numeric number"),
-                                      SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "5", queryParams: [String: String](), title: "should be filtered out"),
-                                      SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "5", queryParams: nil, title: "should not be filtered out"),
-                                      SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "-9", queryParams: nil, title: "negative hymn numbers should be filtered out"),
-                                      SongResultEntity(hymnType: .chinese, hymnNumber: "3", queryParams: nil, title: "should not be filtered out")])
+                                Just([SongResultEntity(hymnType: .chinese, hymnNumber: "11b", title: "non numeric number"),
+                                      SongResultEntity(hymnType: .chinese, hymnNumber: "5", title: "5th song"),
+                                      SongResultEntity(hymnType: .chinese, hymnNumber: "12", title: "Twelve"),
+                                      SongResultEntity(hymnType: .chinese, hymnNumber: "-9", title: "negative hymn number"),
+                                      SongResultEntity(hymnType: .chinese, hymnNumber: "3", title: "Third song"),
+                                      SongResultEntity(hymnType: .chinese, hymnNumber: "abcd333", title: "No leading numbers"),
+                                      SongResultEntity(hymnType: .chinese, hymnNumber: "11", title: "11")])
                                 .mapError({ _ -> ErrorType in
                                     // This will never be triggered.
                                 }).eraseToAnyPublisher()
@@ -476,73 +475,16 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                         it("should set the title to the hymn type") {
                             expect(target.title).to(equal(HymnType.chinese.displayTitle))
                         }
-                        it("should set the correct results") {
+                        it("sort the results") {
                             expect(target.songResults).toNot(beNil())
-                            expect(target.songResults!).to(haveCount(4))
-                            expect(target.songResults![0].title).to(equal("3. should not be filtered out"))
-                            expect(target.songResults![1].title).to(equal("5. should not be filtered out"))
-                            expect(target.songResults![2].title).to(equal("55. dutch55"))
-                            expect(target.songResults![3].title).to(equal("123. classic123"))
-                        }
-                    }
-                    context("fetch cebuano") {
-                        beforeEach {
-                            given(dataStore.getAllSongs(hymnType: .cebuano)) ~> { _ in
-                                Just([SongResultEntity(hymnType: .classic, hymnNumber: "123", queryParams: nil, title: "classic123"),
-                                      SongResultEntity(hymnType: .chinese, hymnNumber: "3", queryParams: [String: String](), title: "should be filtered out"),
-                                      SongResultEntity(hymnType: .dutch, hymnNumber: "55", queryParams: nil, title: "dutch55"),
-                                      SongResultEntity(hymnType: .classic, hymnNumber: "11b", queryParams: nil, title: "non numeric number"),
-                                      SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "5", queryParams: [String: String](), title: "should be filtered out"),
-                                      SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "5", queryParams: nil, title: "should not be filtered out"),
-                                      SongResultEntity(hymnType: .chinese, hymnNumber: "3", queryParams: nil, title: "should not be filtered out")])
-                                .mapError({ _ -> ErrorType in
-                                    // This will never be triggered.
-                                }).eraseToAnyPublisher()
-                            }
-                            target = BrowseResultsListViewModel(hymnType: .cebuano)
-                            target.fetchResults()
-                            testQueue.sync {}
-                            testQueue.sync {}
-                            testQueue.sync {}
-                            testQueue.sync {}
-                        }
-                        it("should not show the hymn number") {
-                            expect(target.songResults).toNot(beNil())
-                            expect(target.songResults!).to(haveCount(4))
-                            expect(target.songResults![0].title).to(equal("should not be filtered out"))
-                            expect(target.songResults![1].title).to(equal("should not be filtered out"))
-                            expect(target.songResults![2].title).to(equal("dutch55"))
-                            expect(target.songResults![3].title).to(equal("classic123"))
-                        }
-                    }
-                    context("fetch german") {
-                        beforeEach {
-                            given(dataStore.getAllSongs(hymnType: .german)) ~> { _ in
-                                Just([SongResultEntity(hymnType: .classic, hymnNumber: "123", queryParams: nil, title: "classic123"),
-                                      SongResultEntity(hymnType: .chinese, hymnNumber: "3", queryParams: [String: String](), title: "should be filtered out"),
-                                      SongResultEntity(hymnType: .dutch, hymnNumber: "55", queryParams: nil, title: "dutch55"),
-                                      SongResultEntity(hymnType: .classic, hymnNumber: "11b", queryParams: nil, title: "non numeric number"),
-                                      SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "5", queryParams: [String: String](), title: "should be filtered out"),
-                                      SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "5", queryParams: nil, title: "should not be filtered out"),
-                                      SongResultEntity(hymnType: .chinese, hymnNumber: "3", queryParams: nil, title: "should not be filtered out")])
-                                .mapError({ _ -> ErrorType in
-                                    // This will never be triggered.
-                                }).eraseToAnyPublisher()
-                            }
-                            target = BrowseResultsListViewModel(hymnType: .german)
-                            target.fetchResults()
-                            testQueue.sync {}
-                            testQueue.sync {}
-                            testQueue.sync {}
-                            testQueue.sync {}
-                        }
-                        it("should not show the hymn number") {
-                            expect(target.songResults).toNot(beNil())
-                            expect(target.songResults!).to(haveCount(4))
-                            expect(target.songResults![0].title).to(equal("should not be filtered out"))
-                            expect(target.songResults![1].title).to(equal("should not be filtered out"))
-                            expect(target.songResults![2].title).to(equal("dutch55"))
-                            expect(target.songResults![3].title).to(equal("classic123"))
+                            expect(target.songResults!).to(haveCount(7))
+                            expect(target.songResults![0].title).to(equal("3. Third song"))
+                            expect(target.songResults![1].title).to(equal("5. 5th song"))
+                            expect(target.songResults![2].title).to(equal("11. 11"))
+                            expect(target.songResults![3].title).to(equal("11b. non numeric number"))
+                            expect(target.songResults![4].title).to(equal("12. Twelve"))
+                            expect(target.songResults![5].title).to(equal("-9. negative hymn number"))
+                            expect(target.songResults![6].title).to(equal("abcd333. No leading numbers"))
                         }
                     }
                     context("fetch songbase") {

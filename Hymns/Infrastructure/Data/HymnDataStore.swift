@@ -67,7 +67,6 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
                     //   ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                     //   HYMN_TYPE TEXT NOT NULL,
                     //   HYMN_NUMBER TEXT NOT NULL,
-                    //   QUERY_PARAMS TEXT NOT NULL,
                     //   SONG_TITLE TEXT NOT NULL,
                     //   SONG_LYRICS TEXT,
                     //   SONG_META_DATA_CATEGORY TEXT,
@@ -89,7 +88,6 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
                         table.autoIncrementedPrimaryKey(HymnEntity.CodingKeys.id.rawValue)
                         table.column(HymnEntity.CodingKeys.hymnType.rawValue, .text).notNull()
                         table.column(HymnEntity.CodingKeys.hymnNumber.rawValue, .text).notNull()
-                        table.column(HymnEntity.CodingKeys.queryParams.rawValue, .text).notNull()
                         table.column(HymnEntity.CodingKeys.title.rawValue, .text).notNull()
                         table.column(HymnEntity.CodingKeys.lyricsJson.rawValue, .text)
                         table.column(HymnEntity.CodingKeys.category.rawValue, .text)
@@ -108,10 +106,10 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
                         table.column(HymnEntity.CodingKeys.relevantJson.rawValue, .text)
                     }
 
-                    // CREATE UNIQUE INDEX IF NOT EXISTS index_SONG_DATA_HYMN_TYPE_HYMN_NUMBER_QUERY_PARAMS ON SONG_DATA (HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS)
-                    try database.create(index: "index_SONG_DATA_HYMN_TYPE_HYMN_NUMBER_QUERY_PARAMS",
+                    // CREATE UNIQUE INDEX IF NOT EXISTS index_SONG_DATA_HYMN_TYPE_HYMN_NUMBER ON SONG_DATA (HYMN_TYPE, HYMN_NUMBER)
+                    try database.create(index: "index_SONG_DATA_HYMN_TYPE_HYMN_NUMBER",
                                         on: tableName,
-                                        columns: [HymnEntity.CodingKeys.hymnType.rawValue, HymnEntity.CodingKeys.hymnNumber.rawValue, HymnEntity.CodingKeys.queryParams.rawValue],
+                                        columns: [HymnEntity.CodingKeys.hymnType.rawValue, HymnEntity.CodingKeys.hymnNumber.rawValue],
                                         unique: true,
                                         ifNotExists: true)
 
@@ -150,19 +148,18 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
                 try entity.insert(database)
             }
         } catch {
-            analytics.logError(message: "Save entity failed", error: error, extraParameters: ["hymnType": entity.hymnType, "hymnNumber": entity.hymnNumber, "queryParams": entity.queryParams])
+            analytics.logError(message: "Save entity failed", error: error, extraParameters: ["hymnType": entity.hymnType, "hymnNumber": entity.hymnNumber])
         }
     }
 
     func getHymn(_ hymnIdentifier: HymnIdentifier) -> AnyPublisher<HymnEntity?, ErrorType> {
         let hymnType = hymnIdentifier.hymnType.abbreviatedValue
         let hymnNumber = hymnIdentifier.hymnNumber
-        let queryParams = hymnIdentifier.queryParamString
 
         return databaseQueue.readPublisher { database in
             try HymnEntity.fetchOne(database,
-                                    sql: "SELECT * FROM SONG_DATA WHERE HYMN_TYPE = ? AND HYMN_NUMBER = ? AND QUERY_PARAMS = ?",
-                                    arguments: [hymnType, hymnNumber, queryParams])
+                                    sql: "SELECT * FROM SONG_DATA WHERE HYMN_TYPE = ? AND HYMN_NUMBER = ?",
+                                    arguments: [hymnType, hymnNumber])
         }.mapError({error -> ErrorType in
             .data(description: error.localizedDescription)
         }).map({entity -> HymnEntity? in
@@ -181,7 +178,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
          */
         return databaseQueue.readPublisher { database in
             try SearchResultEntity.fetchAll(database,
-                                            sql: "SELECT SONG_DATA.SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS, matchinfo(SEARCH_VIRTUAL_SONG_DATA, 's') FROM SONG_DATA JOIN SEARCH_VIRTUAL_SONG_DATA ON (SEARCH_VIRTUAL_SONG_DATA.docid = SONG_DATA.rowid) WHERE SEARCH_VIRTUAL_SONG_DATA MATCH ?",
+                                            sql: "SELECT SONG_DATA.SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, matchinfo(SEARCH_VIRTUAL_SONG_DATA, 's') FROM SONG_DATA JOIN SEARCH_VIRTUAL_SONG_DATA ON (SEARCH_VIRTUAL_SONG_DATA.docid = SONG_DATA.rowid) WHERE SEARCH_VIRTUAL_SONG_DATA MATCH ?",
                                             arguments: [pattern])
         }.mapError({error -> ErrorType in
             .data(description: error.localizedDescription)
@@ -210,7 +207,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
     func getResultsBy(category: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
         databaseQueue.readPublisher { database in
             try SongResultEntity.fetchAll(database,
-                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE SONG_META_DATA_CATEGORY = ?",
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER FROM SONG_DATA WHERE SONG_META_DATA_CATEGORY = ?",
                                           arguments: [category])
         }.mapError({error -> ErrorType in
                 .data(description: error.localizedDescription)
@@ -220,7 +217,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
     func getResultsBy(category: String, hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType> {
         databaseQueue.readPublisher { database in
             try SongResultEntity.fetchAll(database,
-                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE HYMN_TYPE = ? AND SONG_META_DATA_CATEGORY = ?",
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER FROM SONG_DATA WHERE HYMN_TYPE = ? AND SONG_META_DATA_CATEGORY = ?",
                                           arguments: [hymnType.abbreviatedValue, category])
         }.mapError({error -> ErrorType in
                 .data(description: error.localizedDescription)
@@ -230,7 +227,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
     func getResultsBy(category: String, subcategory: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
         databaseQueue.readPublisher { database in
             try SongResultEntity.fetchAll(database,
-                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE SONG_META_DATA_CATEGORY = ? AND SONG_META_DATA_SUBCATEGORY = ?",
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER FROM SONG_DATA WHERE SONG_META_DATA_CATEGORY = ? AND SONG_META_DATA_SUBCATEGORY = ?",
                                           arguments: [category, subcategory])
         }.mapError({error -> ErrorType in
                 .data(description: error.localizedDescription)
@@ -240,7 +237,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
     func getResultsBy(category: String, subcategory: String, hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType> {
         databaseQueue.readPublisher { database in
             try SongResultEntity.fetchAll(database,
-                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE HYMN_TYPE = ? AND SONG_META_DATA_CATEGORY = ? AND SONG_META_DATA_SUBCATEGORY = ?",
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER FROM SONG_DATA WHERE HYMN_TYPE = ? AND SONG_META_DATA_CATEGORY = ? AND SONG_META_DATA_SUBCATEGORY = ?",
                                           arguments: [hymnType.abbreviatedValue, category, subcategory])
         }.mapError({error -> ErrorType in
                 .data(description: error.localizedDescription)
@@ -250,7 +247,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
     func getResultsBy(subcategory: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
         databaseQueue.readPublisher { database in
             try SongResultEntity.fetchAll(database,
-                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE SONG_META_DATA_SUBCATEGORY = ?",
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER FROM SONG_DATA WHERE SONG_META_DATA_SUBCATEGORY = ?",
                                           arguments: [subcategory])
         }.mapError({error -> ErrorType in
                 .data(description: error.localizedDescription)
@@ -260,7 +257,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
     func getResultsBy(subcategory: String, hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType> {
         databaseQueue.readPublisher { database in
             try SongResultEntity.fetchAll(database,
-                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE HYMN_TYPE = ? AND SONG_META_DATA_SUBCATEGORY = ?",
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER FROM SONG_DATA WHERE HYMN_TYPE = ? AND SONG_META_DATA_SUBCATEGORY = ?",
                                           arguments: [hymnType.abbreviatedValue, subcategory])
         }.mapError({error -> ErrorType in
                 .data(description: error.localizedDescription)
@@ -270,7 +267,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
     func getResultsBy(author: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
         databaseQueue.readPublisher { database in
             try SongResultEntity.fetchAll(database,
-                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE SONG_META_DATA_AUTHOR LIKE '%' || ? || '%'",
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER FROM SONG_DATA WHERE SONG_META_DATA_AUTHOR LIKE '%' || ? || '%'",
                                           arguments: [author])
         }.mapError({error -> ErrorType in
             .data(description: error.localizedDescription)
@@ -280,7 +277,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
     func getResultsBy(composer: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
         databaseQueue.readPublisher { database in
             try SongResultEntity.fetchAll(database,
-                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE SONG_META_DATA_COMPOSER LIKE '%' || ? || '%'",
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER FROM SONG_DATA WHERE SONG_META_DATA_COMPOSER LIKE '%' || ? || '%'",
                                           arguments: [composer])
         }.mapError({error -> ErrorType in
             .data(description: error.localizedDescription)
@@ -290,7 +287,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
     func getResultsBy(key: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
         databaseQueue.readPublisher { database in
             try SongResultEntity.fetchAll(database,
-                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE SONG_META_DATA_KEY = ?",
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER FROM SONG_DATA WHERE SONG_META_DATA_KEY = ?",
                                           arguments: [key])
         }.mapError({error -> ErrorType in
             .data(description: error.localizedDescription)
@@ -300,7 +297,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
     func getResultsBy(time: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
         databaseQueue.readPublisher { database in
             try SongResultEntity.fetchAll(database,
-                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE SONG_META_DATA_TIME LIKE '%' || ? || '%'",
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER FROM SONG_DATA WHERE SONG_META_DATA_TIME LIKE '%' || ? || '%'",
                                           arguments: [time])
         }.mapError({error -> ErrorType in
             .data(description: error.localizedDescription)
@@ -310,7 +307,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
     func getResultsBy(meter: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
         databaseQueue.readPublisher { database in
             try SongResultEntity.fetchAll(database,
-                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE SONG_META_DATA_METER LIKE '%' || ? || '%'",
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER FROM SONG_DATA WHERE SONG_META_DATA_METER LIKE '%' || ? || '%'",
                                           arguments: [meter])
         }.mapError({error -> ErrorType in
             .data(description: error.localizedDescription)
@@ -320,7 +317,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
     func getResultsBy(scriptures: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
         databaseQueue.readPublisher { database in
             try SongResultEntity.fetchAll(database,
-                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE SONG_META_DATA_SCRIPTURES = ?",
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER FROM SONG_DATA WHERE SONG_META_DATA_SCRIPTURES = ?",
                                           arguments: [scriptures])
         }.mapError({error -> ErrorType in
             .data(description: error.localizedDescription)
@@ -330,7 +327,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
     func getResultsBy(hymnCode: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
         databaseQueue.readPublisher { database in
             try SongResultEntity.fetchAll(database,
-                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE SONG_META_DATA_HYMN_CODE = ?",
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER FROM SONG_DATA WHERE SONG_META_DATA_HYMN_CODE = ?",
                                           arguments: [hymnCode])
         }.mapError({error -> ErrorType in
             .data(description: error.localizedDescription)
@@ -339,7 +336,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
 
     func getScriptureSongs() -> AnyPublisher<[ScriptureEntity], ErrorType> {
         databaseQueue.readPublisher { database in
-            try ScriptureEntity.fetchAll(database, sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS, SONG_META_DATA_SCRIPTURES FROM SONG_DATA WHERE SONG_META_DATA_SCRIPTURES IS NOT NULL AND SONG_TITLE IS NOT NULL")
+            try ScriptureEntity.fetchAll(database, sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, SONG_META_DATA_SCRIPTURES FROM SONG_DATA WHERE SONG_META_DATA_SCRIPTURES IS NOT NULL AND SONG_TITLE IS NOT NULL")
         }.mapError({error -> ErrorType in
             .data(description: error.localizedDescription)
         }).eraseToAnyPublisher()
@@ -348,7 +345,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
     func getAllSongs(hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType> {
         databaseQueue.readPublisher { database in
             try SongResultEntity.fetchAll(database,
-                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, QUERY_PARAMS FROM SONG_DATA WHERE HYMN_TYPE = ?",
+                                          sql: "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER FROM SONG_DATA WHERE HYMN_TYPE = ?",
                                           arguments: [hymnType.abbreviatedValue])
         }.mapError({error -> ErrorType in
             .data(description: error.localizedDescription)

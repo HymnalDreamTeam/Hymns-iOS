@@ -139,7 +139,7 @@ class SearchViewModelSearchingSpec: QuickSpec {
                     }
                 }
                 context("with a single page of results") {
-                    let classic594 = UiSongResult(name: "classic594", identifier: HymnIdentifier(hymnType: .classic, hymnNumber: "594", queryParams: ["gb": "1", "query": "3"]))
+                    let classic594 = UiSongResult(name: "classic594", identifier: HymnIdentifier(hymnType: .classic, hymnNumber: "594"))
                     let newTune7 = UiSongResult(name: "newTune7", identifier: HymnIdentifier(hymnType: .newTune, hymnNumber: "7"))
                     beforeEach {
                         given(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 1)) ~> { _, _ in
@@ -285,8 +285,7 @@ class SearchViewModelSearchingSpec: QuickSpec {
                         describe("load more does not reach threshold") {
                             beforeEach {
                                 target.loadMore(at:
-                                                    SongResultViewModel(stableId: "hymnType: h, hymnNumber: 6, queryParams: ",
-                                                                        title: "classic6", label: "Hymn 6",
+                                                    SongResultViewModel(stableId: "hymnType: h, hymnNumber: 6", title: "classic6", label: "Hymn 6",
                                                                         destinationView: EmptyView().eraseToAnyView()))
                             }
                             it("should not fetch the next page") {
@@ -295,9 +294,7 @@ class SearchViewModelSearchingSpec: QuickSpec {
                         }
                         describe("load more meets threshold") {
                             beforeEach {
-                                target.loadMore(at:
-                                                    SongResultViewModel(stableId: "hymnType: h, hymnNumber: 7, queryParams: ",
-                                                                        title: "classic7", label: "Hymn 7",
+                                target.loadMore(at: SongResultViewModel(stableId: "hymnType: h, hymnNumber: 7", title: "classic7", label: "Hymn 7",
                                                                         destinationView: EmptyView().eraseToAnyView()))
                                 testQueue.sync {}
                                 testQueue.sync {}
@@ -318,8 +315,7 @@ class SearchViewModelSearchingSpec: QuickSpec {
                             describe("no more pages to load") {
                                 beforeEach {
                                     target.loadMore(at:
-                                                        SongResultViewModel(stableId: "hymnType: h, hymnNumber: 23, queryParams: ",
-                                                                            title: "classic23", label: "Hymn 23",
+                                                        SongResultViewModel(stableId: "hymnType: h, hymnNumber: 23", title: "classic23", label: "Hymn 23",
                                                                             destinationView: EmptyView().eraseToAnyView()))
                                 }
                                 it("should not fetch the next page") {
@@ -359,11 +355,8 @@ class SearchViewModelSearchingSpec: QuickSpec {
                         }
                         describe("try to load more") {
                             beforeEach {
-                                target.loadMore(at:
-                                                    SongResultViewModel(
-                                                        stableId: "hymnType: h, hymnNumber: 7, queryParams: ",
-                                                        title: "classic7", label: "Hymn 7",
-                                                        destinationView: EmptyView().eraseToAnyView()))
+                                target.loadMore(at: SongResultViewModel(stableId: "hymnType: h, hymnNumber: 7", title: "classic7", label: "Hymn 7",
+                                                                        destinationView: EmptyView().eraseToAnyView()))
                                 testQueue.sync {}
                             }
                             it("not fetch the next page since previous call is still loading") {
@@ -384,11 +377,8 @@ class SearchViewModelSearchingSpec: QuickSpec {
                             }
                             describe("loading more") {
                                 beforeEach {
-                                    target.loadMore(at:
-                                                        SongResultViewModel(
-                                                            stableId: "hymnType: h, hymnNumber: 7, queryParams: ",
-                                                            title: "classic7", label: "Hymn 7",
-                                                            destinationView: EmptyView().eraseToAnyView()))
+                                    target.loadMore(at: SongResultViewModel(stableId: "hymnType: h, hymnNumber: 7", title: "classic7", label: "Hymn 7",
+                                                                            destinationView: EmptyView().eraseToAnyView()))
                                     testQueue.sync {}
                                     testQueue.sync {}
                                     testQueue.sync {}
@@ -432,8 +422,8 @@ class SearchViewModelSearchingSpec: QuickSpec {
                 context("with results") {
                     beforeEach {
                         given(songResultsRepository.search(hymnCode: "171214436716555")) ~> { _ in
-                            Just([SongResultEntity(hymnType: .german, hymnNumber: "93", queryParams: nil, title: "title"),
-                                  SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "933", queryParams: nil, title: "title 2")])
+                            Just([SongResultEntity(hymnType: .german, hymnNumber: "93", title: "title"),
+                                  SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "933", title: "title 2")])
                                 .mapError({ _ -> ErrorType in
                                     // This will never be triggered.
                                 }).eraseToAnyPublisher()

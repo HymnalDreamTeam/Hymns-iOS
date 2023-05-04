@@ -4,20 +4,11 @@ import GRDB
 struct SongResultEntity: Decodable, Equatable {
     let hymnType: HymnType
     let hymnNumber: String
-    let queryParams: [String: String]?
     let title: String
-
-    init(hymnType: HymnType, hymnNumber: String, queryParams: [String: String]? = nil, title: String) {
-        self.hymnType = hymnType
-        self.hymnNumber = hymnNumber
-        self.queryParams = queryParams
-        self.title = title
-    }
 
     enum CodingKeys: String, CodingKey {
         case hymnType = "HYMN_TYPE"
         case hymnNumber = "HYMN_NUMBER"
-        case queryParams = "QUERY_PARAMS"
         case title = "SONG_TITLE"
     }
 }
@@ -27,7 +18,6 @@ extension SongResultEntity: FetchableRecord {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         hymnType = try container.decode(HymnType.self, forKey: .hymnType)
         hymnNumber = try container.decode(String.self, forKey: .hymnNumber)
-        queryParams = try container.decode(String.self, forKey: .queryParams).deserializeFromQueryParamString
         // Many hymn titles prepend "Hymn: " to the title. It is unnecessary and takes up screen space, so  we
         // strip it out whenever possible.
         title = try container.decode(String.self, forKey: .title).replacingOccurrences(of: "Hymn: ", with: "")

@@ -12,7 +12,7 @@ class RecentSong: Object {
 
     init(hymnIdentifier: HymnIdentifier, songTitle: String) {
         super.init()
-        self.primaryKey = "\(hymnIdentifier.hymnType):\(hymnIdentifier.hymnNumber):\(hymnIdentifier.queryParams ?? [String: String]())"
+        self.primaryKey = "\(hymnIdentifier.hymnType):\(hymnIdentifier.hymnNumber)"
         self.hymnIdentifierEntity = HymnIdentifierEntity(hymnIdentifier)
         self.songTitle = songTitle
     }

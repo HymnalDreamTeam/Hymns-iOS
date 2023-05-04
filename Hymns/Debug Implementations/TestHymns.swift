@@ -2,7 +2,7 @@
 import Foundation
 let classic1151 = HymnIdentifier(hymnType: .classic, hymnNumber: "1151")
 let classic1152 = HymnIdentifier(hymnType: .classic, hymnNumber: "1152")
-let chinese216 = HymnIdentifier(hymnType: .chineseSupplement, hymnNumber: "216", queryParams: ["gb": "1"])
+let chineseSupplement216 = HymnIdentifier(hymnType: .chineseSupplement, hymnNumber: "216")
 let classic40 = HymnIdentifier(hymnType: .classic, hymnNumber: "40")
 let classic2 = HymnIdentifier(hymnType: .classic, hymnNumber: "2")
 let classic3 = HymnIdentifier(hymnType: .classic, hymnNumber: "3")
@@ -13,7 +13,7 @@ let classic1152Entity = HymnEntityBuilder(hymnIdentifier: classic1152).title(Opt
 let classic2Entity = HymnEntityBuilder(hymnIdentifier: classic2).title(Optional("Classic 2")).lyricsJson(Optional("[{\"verse_content\": [\"classic hymn 2 verse 1\"], \"verse_type\": \"verse\"}, {\"verse_content\": [\"classic hymn 2 chorus\"], \"verse_type\": \"chorus\"}, {\"verse_content\": [\"classic hymn 2 verse 2\"], \"verse_type\": \"verse\"}]")).build()
 let classic3Entity = HymnEntityBuilder(hymnIdentifier: classic3).title(Optional("Classic 3")).lyricsJson(Optional("[{\"verse_content\": [\"classic hymn 3 verse 1\"], \"verse_type\": \"verse\"}, {\"verse_content\": [\"classic hymn 3 chorus\"], \"verse_type\": \"chorus\"}, {\"verse_content\": [\"classic hymn 3 verse 2\"], \"verse_type\": \"verse\"}]")).pdfSheetJson("{\"data\": [{\"path\": \"/en/hymn/h/3/f=ppdf\", \"value\": \"Piano\"}, {\"path\": \"/en/hymn/h/3/f=gtpdf\", \"value\": \"Text\"}], \"name\": \"Lead Sheet\"}").build()
 let classic40Entity = HymnEntityBuilder(hymnIdentifier: classic40).title(Optional("Classic 40")).lyricsJson(Optional("[{\"verse_content\": [\"classic hymn 40 verse 1\"], \"verse_type\": \"verse\"}, {\"verse_content\": [\"classic hymn 40 chorus\"], \"verse_type\": \"chorus\"}, {\"verse_content\": [\"classic hymn 40 verse 2\"], \"verse_type\": \"verse\"}]")).pdfSheetJson("{\"data\": [{\"path\": \"/en/hymn/h/40/f=ppdf\", \"value\": \"Piano\"}, {\"path\": \"/en/hymn/h/40/f=gpdf\", \"value\": \"Guitar\"}], \"name\": \"Lead Sheet\"}").build()
-let chinese216Entity = HymnEntityBuilder(hymnIdentifier: chinese216).title(Optional("Hymn: Minoru\'s song in Chinese")).lyricsJson(Optional("[{\"verse_content\": [\"chinese verse 1 chinese line 1\"], \"verse_type\": \"verse\"}]")).build()
+let chineseSupplement216Entity = HymnEntityBuilder(hymnIdentifier: chineseSupplement216).title(Optional("Hymn: Minoru\'s song in Chinese")).lyricsJson(Optional("[{\"verse_content\": [\"chinese verse 1 chinese line 1\"], \"verse_type\": \"verse\"}]")).build()
 let howardHigashi2Entity = HymnEntityBuilder(hymnIdentifier: howardiHigsashi2).title(Optional("Hymn: Howard Higashi\'s  second ")).lyricsJson(Optional("[{\"verse_content\": [\"howard higashi verse 1 line 2\"], \"verse_type\": \"verse\"}]"))
     .languagesJson("{\"data\": [{\"path\": \"/en/hymn/ts/216?gb=1\", \"value\": \"ZhongWen\"}], \"name\": \"Languages\"}").build()
 #endif

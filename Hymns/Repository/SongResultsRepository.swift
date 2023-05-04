@@ -144,7 +144,7 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
                 songbaseStore.searchHymn(searchParameter).map { songbaseResultEntities -> [SearchResultEntity] in
                     songbaseResultEntities.map { songbaseResultEntity -> SearchResultEntity in
                         SearchResultEntity(hymnType: .songbase, hymnNumber: String(songbaseResultEntity.bookIndex),
-                                           queryParams: nil, title: songbaseResultEntity.title, matchInfo: songbaseResultEntity.matchInfo)
+                                           title: songbaseResultEntity.title, matchInfo: songbaseResultEntity.matchInfo)
                     }
                 }.eraseToAnyPublisher() : emptyResults
 
@@ -159,8 +159,7 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
                     return rank1 > rank2
                 }.map { searchResultEntity -> SongResultEntity in
                     let title = searchResultEntity.title
-                    return SongResultEntity(hymnType: searchResultEntity.hymnType, hymnNumber: searchResultEntity.hymnNumber,
-                                            queryParams: searchResultEntity.queryParams, title: title)
+                    return SongResultEntity(hymnType: searchResultEntity.hymnType, hymnNumber: searchResultEntity.hymnNumber, title: title)
                 }
                 return (sortedSongResults, false)
         }.eraseToAnyPublisher()

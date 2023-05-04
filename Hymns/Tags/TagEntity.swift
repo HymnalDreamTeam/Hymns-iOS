@@ -31,7 +31,7 @@ class Tag: Object, Identifiable {
     }
 
     static func createPrimaryKey(hymnIdentifier: HymnIdentifier, tag: String, color: TagColor) -> String {
-        return ("\(hymnIdentifier.hymnType):\(hymnIdentifier.hymnNumber):\(hymnIdentifier.queryParams ?? [String: String]()):\(tag):\(color.rawValue)")
+        return ("\(hymnIdentifier.hymnType):\(hymnIdentifier.hymnNumber):\(tag):\(color.rawValue)")
     }
 
     override func isEqual(_ object: Any?) -> Bool {

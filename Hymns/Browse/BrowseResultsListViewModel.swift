@@ -143,8 +143,7 @@ class BrowseResultsListViewModel: ObservableObject {
         // If hymnType is songbase, then use the songbase store instead of the data store.
         let publisher = hymnType == .songbase ? songbaseStore.getAllSongs().map { songbaseResults -> [SongResultEntity] in
             songbaseResults.map { songbaseResult -> SongResultEntity in
-                SongResultEntity(hymnType: .songbase, hymnNumber: String(songbaseResult.bookIndex),
-                                 queryParams: nil, title: songbaseResult.title)
+                SongResultEntity(hymnType: .songbase, hymnNumber: String(songbaseResult.bookIndex), title: songbaseResult.title)
             }
         }.eraseToAnyPublisher() : dataStore.getAllSongs(hymnType: hymnType)
 
@@ -152,30 +151,25 @@ class BrowseResultsListViewModel: ObservableObject {
             .subscribe(on: backgroundQueue)
             .map({ songResults -> [SongResultViewModel] in
                 songResults
-                    .filter({ entity -> Bool in
-                        if (entity.hymnType == .chinese || entity.hymnType == .chineseSupplement) && entity.queryParams != nil {
-                            // Filter out the chinese songs where they have query params (essentially the gb=1) songs
-                            // so we don't end up showing double results.
-                            return false
-                        }
-                        return true
-                    }).filter({ songResult -> Bool in
-                        // Only show the songs with a positive integer as the hymn number. In other words, skip the weird ones.
-                        songResult.hymnNumber.isPositiveInteger
-                    }).sorted(by: { (result1, result2) -> Bool in
-                        guard let hymnNumber1 = result1.hymnNumber.toInteger, let hymnNumber2 = result2.hymnNumber.toInteger else {
-                            return false
-                        }
-                        return hymnNumber1 < hymnNumber2
-                    }).map({ songResult -> SongResultViewModel in
-                        let hymnIdentifier = HymnIdentifier(hymnType: songResult.hymnType, hymnNumber: songResult.hymnNumber, queryParams: songResult.queryParams)
+                    .sorted(by: { result1, result2 in
+                        let leadingNumbers1 = result1.hymnNumber.components(separatedBy: CharacterSet.decimalDigits.inverted)[0]
+                        let leadingNumbers2 = result2.hymnNumber.components(separatedBy: CharacterSet.decimalDigits.inverted)[0]
 
-                        var title = "\(songResult.hymnNumber). \(songResult.title)"
-                        if hymnType == .cebuano || hymnType == .german {
-                            // Don't show hymn number here since the numbers are not continuous and showing a list
-                            // of non-continous numbers is weird.
-                            title = songResult.title
+                        if leadingNumbers1.isEmpty {
+                            // If there are no leading numbers, they are automatically put to the end
+                            return false
+                        } else if leadingNumbers2.isEmpty {
+                            // If there are no leading numbers, they are automatically put to the end
+                            return true
+                        } else if let hymnNumber1 = leadingNumbers1.toInteger, let hymnNumber2 = leadingNumbers2.toInteger, hymnNumber1 != hymnNumber2 {
+                            // Sort the tuples by the numeric part first
+                            return hymnNumber1 < hymnNumber2
+                        } else {
+                            return result1.hymnNumber < result2.hymnNumber
                         }
+                    }).map({ songResult -> SongResultViewModel in
+                        let hymnIdentifier = HymnIdentifier(hymnType: songResult.hymnType, hymnNumber: songResult.hymnNumber)
+                        let title = "\(songResult.hymnNumber). \(songResult.title)"
                         let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: hymnIdentifier)).eraseToAnyView()
                         return SongResultViewModel(stableId: String(describing: hymnIdentifier), title: title, destinationView: destination)
                     })

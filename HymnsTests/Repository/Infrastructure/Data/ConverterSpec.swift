@@ -131,8 +131,8 @@ class ConverterSpec: QuickSpec {
                 let noHymnNumber = SongResult(name: "noHymnNumber", path: "/en/hymn/h/a")
                 context("valid and invalid song results") {
                     it("convert the valid results and drop the invalid ones") {
-                        let expectedEntities = [SongResultEntity(hymnType: .classic, hymnNumber: "594", queryParams: ["query": "3"], title: "classic594"),
-                                                SongResultEntity(hymnType: .newTune, hymnNumber: "7", queryParams: nil, title: "newTune7")]
+                        let expectedEntities = [SongResultEntity(hymnType: .classic, hymnNumber: "594", title: "classic594"),
+                                                SongResultEntity(hymnType: .newTune, hymnNumber: "7", title: "newTune7")]
                         let (entities, hasMorePages) = target.toSongResultEntities(songResultsPage: SongResultsPage(results: [classic594, classic595,
                                                                                                                               noHymnType, newTune7, noHymnNumber],
                                                                                                                     hasMorePages: false))
@@ -142,11 +142,11 @@ class ConverterSpec: QuickSpec {
                 }
             }
             describe("toUiSongResultsPage") {
-                let classic594 = SongResultEntity(hymnType: .classic, hymnNumber: "594", queryParams: ["gb": "1", "query": "3"], title: "classic594")
-                let newTune7 = SongResultEntity(hymnType: .newTune, hymnNumber: "7", queryParams: nil, title: "newTune7")
+                let classic594 = SongResultEntity(hymnType: .classic, hymnNumber: "594", title: "classic594")
+                let newTune7 = SongResultEntity(hymnType: .newTune, hymnNumber: "7", title: "newTune7")
                 it("should convert to a valid UiSongResultsPage") {
                     let expectedPage
-                        = UiSongResultsPage(results: [UiSongResult(name: "classic594", identifier: HymnIdentifier(hymnType: .classic, hymnNumber: "594", queryParams: ["gb": "1", "query": "3"])),
+                        = UiSongResultsPage(results: [UiSongResult(name: "classic594", identifier: HymnIdentifier(hymnType: .classic, hymnNumber: "594")),
                                                       UiSongResult(name: "newTune7", identifier: HymnIdentifier(hymnType: .newTune, hymnNumber: "7"))], hasMorePages: true)
                     let page = target.toUiSongResultsPage(songResultsEntities: [classic594, newTune7], hasMorePages: true)
                     expect(page).to(equal(expectedPage))

@@ -25,8 +25,7 @@ class TagStoreTestImpl: TagStore {
             }
             let hymnType = storedTag.hymnIdentifierEntity.hymnType
             let hymnNumber = storedTag.hymnIdentifierEntity.hymnNumber
-            let queryParams = storedTag.hymnIdentifierEntity.queryParams?.deserializeFromQueryParamString
-            return SongResultEntity(hymnType: hymnType, hymnNumber: hymnNumber, queryParams: queryParams, title: storedTag.songTitle)
+            return SongResultEntity(hymnType: hymnType, hymnNumber: hymnNumber, title: storedTag.songTitle)
         }
         return Just(matchingTags).mapError({ _ -> ErrorType in
             // This will never be triggered.

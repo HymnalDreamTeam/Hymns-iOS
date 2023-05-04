@@ -173,9 +173,9 @@ class TagStoreRealmImplSpec: QuickSpec {
                                 return
                             }, receiveValue: { songResults in
                                 value.fulfill()
-                                expect(songResults).to(contain([SongResultEntity(hymnType: .classic, hymnNumber: "1109", queryParams: nil, title: "Hymn 1109"),
-                                                                SongResultEntity(hymnType: .classic, hymnNumber: "500", queryParams: nil, title: "Hymn 500"),
-                                                                SongResultEntity(hymnType: .classic, hymnNumber: "1151", queryParams: nil, title: "Hymn 1151")]))
+                                expect(songResults).to(contain([SongResultEntity(hymnType: .classic, hymnNumber: "1109", title: "Hymn 1109"),
+                                                                SongResultEntity(hymnType: .classic, hymnNumber: "500", title: "Hymn 500"),
+                                                                SongResultEntity(hymnType: .classic, hymnNumber: "1151", title: "Hymn 1151")]))
                             })
                         self.wait(for: [failure, finished, value], timeout: testTimeout)
                         cancellable.cancel()

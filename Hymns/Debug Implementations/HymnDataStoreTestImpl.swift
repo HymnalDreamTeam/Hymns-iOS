@@ -7,44 +7,44 @@ class HymnDataStoreTestImpl: HymnDataStore {
     private var hymnStore = [
         classic1151: classic1151Entity,
         classic1152: classic1152Entity,
-        chinese216: chinese216Entity,
+        chineseSupplement216: chineseSupplement216Entity,
         classic2: classic2Entity,
         classic3: classic3Entity,
         classic40: classic40Entity,
         howardiHigsashi2: howardHigashi2Entity]
     private let searchStore =
         ["search param":
-            [SearchResultEntity(hymnType: .classic, hymnNumber: "1151", queryParams: nil, title: "Click me!", matchInfo: Data(repeating: 0, count: 8)),
-             SearchResultEntity(hymnType: .chinese, hymnNumber: "4", queryParams: nil, title: "Don't click!", matchInfo: Data(repeating: 1, count: 8))]]
+            [SearchResultEntity(hymnType: .classic, hymnNumber: "1151", title: "Click me!", matchInfo: Data(repeating: 0, count: 8)),
+             SearchResultEntity(hymnType: .chinese, hymnNumber: "4", title: "Don't click!", matchInfo: Data(repeating: 1, count: 8))]]
     private let categories =
         [CategoryEntity(category: "category 1", subcategory: "subcategory 1", count: 5),
          CategoryEntity(category: "category 1", subcategory: "subcategory 2", count: 1),
          CategoryEntity(category: "category 2", subcategory: "subcategory 1", count: 9)]
     private let songResultsByCategory =
         [("category 1 h subcategory 2"):
-            [SongResultEntity(hymnType: .classic, hymnNumber: "1151", queryParams: nil, title: "Click me!"),
-             SongResultEntity(hymnType: .newTune, hymnNumber: "37", queryParams: nil, title: "Don't click!"),
-             SongResultEntity(hymnType: .classic, hymnNumber: "883", queryParams: nil, title: "Don't click either!")],
+            [SongResultEntity(hymnType: .classic, hymnNumber: "1151", title: "Click me!"),
+             SongResultEntity(hymnType: .newTune, hymnNumber: "37", title: "Don't click!"),
+             SongResultEntity(hymnType: .classic, hymnNumber: "883", title: "Don't click either!")],
          ("song's category"):
-             [SongResultEntity(hymnType: .classic, hymnNumber: "1151", queryParams: nil, title: "Click me!"),
-              SongResultEntity(hymnType: .newTune, hymnNumber: "37", queryParams: nil, title: "Don't click!"),
-              SongResultEntity(hymnType: .classic, hymnNumber: "883", queryParams: nil, title: "Don't click either!")]]
+             [SongResultEntity(hymnType: .classic, hymnNumber: "1151", title: "Click me!"),
+              SongResultEntity(hymnType: .newTune, hymnNumber: "37", title: "Don't click!"),
+              SongResultEntity(hymnType: .classic, hymnNumber: "883", title: "Don't click either!")]]
     private let songResultsByAuthor =
         [("Barack Obama"):
-            [SongResultEntity(hymnType: .classic, hymnNumber: "113", queryParams: nil, title: "Hymn 113"),
-             SongResultEntity(hymnType: .classic, hymnNumber: "990", queryParams: nil, title: "Hymn 990")]]
+            [SongResultEntity(hymnType: .classic, hymnNumber: "113", title: "Hymn 113"),
+             SongResultEntity(hymnType: .classic, hymnNumber: "990", title: "Hymn 990")]]
     private let songResultsByHymnCode =
         [("171214436716555"):
-            [SongResultEntity(hymnType: .classic, hymnNumber: "1151", queryParams: nil, title: "Click me!"),
-             SongResultEntity(hymnType: .classic, hymnNumber: "883", queryParams: nil, title: "Don't click either!")]]
+            [SongResultEntity(hymnType: .classic, hymnNumber: "1151", title: "Click me!"),
+             SongResultEntity(hymnType: .classic, hymnNumber: "883", title: "Don't click either!")]]
     private let scriptureSongs =
-        [ScriptureEntity(title: "chinese1151", hymnType: .chinese, hymnNumber: "155", queryParams: nil, scriptures: "Hosea 14:8"),
-         ScriptureEntity(title: "Click me!", hymnType: .classic, hymnNumber: "1151", queryParams: nil, scriptures: "Revelation 22"),
-         ScriptureEntity(title: "Don't click me!", hymnType: .spanish, hymnNumber: "1151", queryParams: nil, scriptures: "Revelation"),
-         ScriptureEntity(title: "chinese24", hymnType: .chinese, hymnNumber: "24", queryParams: nil, scriptures: "Genesis 1:26"),
-         ScriptureEntity(title: "chinese33", hymnType: .chinese, hymnNumber: "33", queryParams: nil, scriptures: "Genesis 1:1")]
+        [ScriptureEntity(title: "chinese1151", hymnType: .chinese, hymnNumber: "155", scriptures: "Hosea 14:8"),
+         ScriptureEntity(title: "Click me!", hymnType: .classic, hymnNumber: "1151", scriptures: "Revelation 22"),
+         ScriptureEntity(title: "Don't click me!", hymnType: .spanish, hymnNumber: "1151", scriptures: "Revelation"),
+         ScriptureEntity(title: "chinese24", hymnType: .chinese, hymnNumber: "24", scriptures: "Genesis 1:26"),
+         ScriptureEntity(title: "chinese33", hymnType: .chinese, hymnNumber: "33", scriptures: "Genesis 1:1")]
     private let howardHigashiSongs = Array(1...50).map { num -> SongResultEntity in
-        SongResultEntity(hymnType: .howardHigashi, hymnNumber: "\(num)", queryParams: nil, title: "Higashi title \(num)")
+        SongResultEntity(hymnType: .howardHigashi, hymnNumber: "\(num)", title: "Higashi title \(num)")
     }
 
     var databaseInitializedProperly: Bool = true
@@ -53,7 +53,7 @@ class HymnDataStoreTestImpl: HymnDataStore {
         guard let hymnType = HymnType.fromAbbreviatedValue(entity.hymnType) else {
             fatalError()
         }
-        let hymnIdentifier = HymnIdentifier(hymnType: hymnType, hymnNumber: entity.hymnNumber, queryParams: entity.queryParams.deserializeFromQueryParamString)
+        let hymnIdentifier = HymnIdentifier(hymnType: hymnType, hymnNumber: entity.hymnNumber)
         hymnStore[hymnIdentifier] = entity
     }
 

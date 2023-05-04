@@ -29,7 +29,7 @@ class FavoriteEntity: Object, Identifiable {
     }
 
     static func createPrimaryKey(hymnIdentifier: HymnIdentifier) -> String {
-        return "\(hymnIdentifier.hymnType):\(hymnIdentifier.hymnNumber):\(hymnIdentifier.queryParams ?? [String: String]())"
+        return "\(hymnIdentifier.hymnType):\(hymnIdentifier.hymnNumber)"
     }
 
     override func isEqual(_ object: Any?) -> Bool {

@@ -54,7 +54,6 @@
 		3B2E84BB2470D63000EA4329 /* classic_1151.json in Resources */ = {isa = PBXBuildFile; fileRef = 3B2E84BA2470D63000EA4329 /* classic_1151.json */; };
 		3B2E84BD2470D66C00EA4329 /* new_song_500.json in Resources */ = {isa = PBXBuildFile; fileRef = 3B2E84BC2470D66C00EA4329 /* new_song_500.json */; };
 		3B2E84C12471CD4700EA4329 /* classic_1109.json in Resources */ = {isa = PBXBuildFile; fileRef = 3B2E84C02471CD4700EA4329 /* classic_1109.json */; };
-		3B2E84C924735E5C00EA4329 /* HymnIdentifierSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2E84C824735E5C00EA4329 /* HymnIdentifierSpec.swift */; };
 		3B369CEC246D07580068A29C /* PDFViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B369CEB246D07580068A29C /* PDFViewer.swift */; };
 		3B369CEE246D08A50068A29C /* PDFPreloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B369CED246D08A50068A29C /* PDFPreloader.swift */; };
 		3B369CF0246D0D570068A29C /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B369CEF246D0D570068A29C /* WebView.swift */; };
@@ -390,7 +389,6 @@
 		3B2E84BA2470D63000EA4329 /* classic_1151.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = classic_1151.json; sourceTree = "<group>"; };
 		3B2E84BC2470D66C00EA4329 /* new_song_500.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = new_song_500.json; sourceTree = "<group>"; };
 		3B2E84C02471CD4700EA4329 /* classic_1109.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = classic_1109.json; sourceTree = "<group>"; };
-		3B2E84C824735E5C00EA4329 /* HymnIdentifierSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HymnIdentifierSpec.swift; sourceTree = "<group>"; };
 		3B35097A29957B79002A75DD /* StoreKitTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKitTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/StoreKitTest.framework; sourceTree = DEVELOPER_DIR; };
 		3B369CEB246D07580068A29C /* PDFViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFViewer.swift; sourceTree = "<group>"; };
 		3B369CED246D08A50068A29C /* PDFPreloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFPreloader.swift; sourceTree = "<group>"; };
@@ -733,7 +731,6 @@
 			children = (
 				3BB9E98627DC6ACD00BD01C9 /* Models */,
 				3B11E29D24623D7900F27E73 /* ConverterSpec.swift */,
-				3B2E84C824735E5C00EA4329 /* HymnIdentifierSpec.swift */,
 				3BD345E22442EC5200F5DF2E /* HymnalApiService_GetHymnSpec.swift */,
 				3BE08CF924CABF960082D7D7 /* HymnalNetServiceSpec.swift */,
 				3B09F900243D3BDC00252C15 /* HymnalApiService_SearchTest.swift */,
@@ -2114,7 +2111,6 @@
 				3BDA53FD24909D00008A5A21 /* BrowseScripturesViewModelSpec.swift in Sources */,
 				B5FCEBFC248A89FB000DA2DD /* TagListViewModelSpec.swift in Sources */,
 				3BB7877A24550686003CBEED /* StringExtensionsSpec.swift in Sources */,
-				3B2E84C924735E5C00EA4329 /* HymnIdentifierSpec.swift in Sources */,
 				3B75C57925A981B2002AC724 /* DisplayHymnContainerViewModelSpec.swift in Sources */,
 				3BB9E98827DC6ADC00BD01C9 /* ChordsSpec.swift in Sources */,
 				3BE08CFA24CABF960082D7D7 /* HymnalNetServiceSpec.swift in Sources */,

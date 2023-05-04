@@ -29,14 +29,12 @@ class DisplayHymnContainerViewModel: ObservableObject {
     func populateHymns() {
         let hymnType = identifier.hymnType
         let hymnNumber = identifier.hymnNumber
-        let queryParams = identifier.queryParams
 
         if hymnType.maxNumber > 0 && hymnNumber.isPositiveInteger, let hymnNumberInt = hymnNumber.toInteger, hymnNumberInt <= hymnType.maxNumber {
             hymns = (1...HymnType.classic.maxNumber).map({ num -> DisplayHymnViewModel in
                 let numString = String(num)
                 let shouldStore = storeInHistoryStore && hymnNumber == numString
-                return DisplayHymnViewModel(hymnToDisplay: HymnIdentifier(hymnType: hymnType, hymnNumber: numString, queryParams: queryParams),
-                                            storeInHistoryStore: shouldStore)
+                return DisplayHymnViewModel(hymnToDisplay: HymnIdentifier(hymnType: hymnType, hymnNumber: numString), storeInHistoryStore: shouldStore)
             })
             currentHymn = hymnNumberInt - 1
         } else {

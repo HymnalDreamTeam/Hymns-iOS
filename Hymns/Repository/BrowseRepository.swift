@@ -21,7 +21,7 @@ class BrowseRepositoryImpl: BrowseRepository {
                 return scriptureEntities.reduce(into: scriptures) { (results, entity) in
                     let title = entity.title
                     let scriptureReferences = entity.scriptures.components(separatedBy: ";")
-                    let hymnIdentifier = HymnIdentifier(hymnType: entity.hymnType, hymnNumber: entity.hymnNumber, queryParams: entity.queryParams)
+                    let hymnIdentifier = HymnIdentifier(hymnType: entity.hymnType, hymnNumber: entity.hymnNumber)
 
                     // Keep track of latest book/chapter because some references don't have any book/chapter, so they
                     // should refer to the previous book/chapter

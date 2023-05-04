@@ -4,7 +4,7 @@ import Foundation
 class Transformers: ObservableObject {
 
     static func toSongResultsViewModel(entity: SongResultEntity, storeInHistoryStore: Bool = false) -> SongResultViewModel {
-        let hymnIdentifier = HymnIdentifier(hymnType: entity.hymnType, hymnNumber: entity.hymnNumber, queryParams: entity.queryParams)
+        let hymnIdentifier = HymnIdentifier(hymnType: entity.hymnType, hymnNumber: entity.hymnNumber)
         let stableId = String(describing: hymnIdentifier)
         let title = entity.title
         let label = String(format: hymnIdentifier.hymnType.displayLabel, hymnIdentifier.hymnNumber)

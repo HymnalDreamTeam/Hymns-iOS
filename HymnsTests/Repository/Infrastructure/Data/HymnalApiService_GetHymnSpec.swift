@@ -93,17 +93,42 @@ class HymnalApiService_GetHymnSpec: QuickSpec {
                     cancellable.cancel()
                 }
             }
-            context("with a valid response and the request contains query paramters") {
+            context("chinese simplified with a valid response") {
                 beforeEach {
                     // Stub mock to return a valid network response but an invalid json.
                     URLProtocolMock.response = self.createValidResponse(for: Self.children24URL)
-                    URLProtocolMock.testURLs = [Self.children24QueryParamsURL: Data(children_24_json.utf8)]
+                    URLProtocolMock.testURLs = [Self.chineseSimplified24URL: Data(children_24_json.utf8)]
                 }
                 it("the finished completion and receive value callbacks should be triggered") {
                     let finished = XCTestExpectation(description: "finished received")
                     let value = XCTestExpectation(description: "value received")
 
-                    let identifier = HymnIdentifier(hymnType: .children, hymnNumber: "24", queryParams: ["key1": "value1"])
+                    let identifier = HymnIdentifier(hymnType: .chineseSimplified, hymnNumber: "24")
+                    let cancellable
+                        = target.getHymn(identifier)
+                            .sink(
+                                receiveCompletion: { state in
+                                    finished.fulfill()
+                                    expect(state).to(equal(.finished))
+                            }, receiveValue: { hymn in
+                                value.fulfill()
+                                expect(hymn).to(equal(children_24_hymn))
+                            })
+                    self.wait(for: [finished, value], timeout: testTimeout)
+                    cancellable.cancel()
+                }
+            }
+            context("chinese supplement simplified with a valid response") {
+                beforeEach {
+                    // Stub mock to return a valid network response but an invalid json.
+                    URLProtocolMock.response = self.createValidResponse(for: Self.children24URL)
+                    URLProtocolMock.testURLs = [Self.chineseSupplementSimplified22URL: Data(children_24_json.utf8)]
+                }
+                it("the finished completion and receive value callbacks should be triggered") {
+                    let finished = XCTestExpectation(description: "finished received")
+                    let value = XCTestExpectation(description: "value received")
+
+                    let identifier = HymnIdentifier(hymnType: .chineseSupplementSimplified, hymnNumber: "22")
                     let cancellable
                         = target.getHymn(identifier)
                             .sink(
@@ -124,5 +149,6 @@ class HymnalApiService_GetHymnSpec: QuickSpec {
 
 extension HymnalApiService_GetHymnSpec {
     static let children24URL = URL(string: "http://hymnalnetapi.herokuapp.com/v2/hymn/c/24?check_exists=true")!
-    static let children24QueryParamsURL = URL(string: "http://hymnalnetapi.herokuapp.com/v2/hymn/c/24?check_exists=true&key1=value1")!
+    static let chineseSimplified24URL = URL(string: "http://hymnalnetapi.herokuapp.com/v2/hymn/ch/24?check_exists=true&gb=1")!
+    static let chineseSupplementSimplified22URL = URL(string: "http://hymnalnetapi.herokuapp.com/v2/hymn/ts/22?check_exists=true&gb=1")!
 }
