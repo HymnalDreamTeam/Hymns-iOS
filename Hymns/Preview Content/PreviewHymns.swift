@@ -15,7 +15,6 @@ func getHymnFromJson(fileName: String) -> HymnEntity {
 //    let jsonString = try! String(contentsOfFile: jsonPath)
 //    let jsonData = jsonString.data(using: .utf8)!
 //    return try! decoder.decode(Hymn.self, from: jsonData)
-    return HymnEntityBuilder(hymnIdentifier: HymnIdentifier(hymnType: .cebuano, hymnNumber: "booyah")).build()
-
+    return HymnEntityBuilder().build()
 }
 #endif

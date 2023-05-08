@@ -1,5 +1,4 @@
 import Combine
-import FirebaseCrashlytics
 import Foundation
 import RealmSwift
 import Resolver
@@ -17,11 +16,11 @@ class HistoryStoreRealmImpl: HistoryStore {
      */
     let numberToStore = 50
 
-    private let analytics: AnalyticsLogger
+    private let firebaseLogger: FirebaseLogger
     private let realm: Realm
 
-    init(analytics: AnalyticsLogger = Resolver.resolve(), realm: Realm) {
-        self.analytics = analytics
+    init(firebaseLogger: FirebaseLogger = Resolver.resolve(), realm: Realm) {
+        self.firebaseLogger = firebaseLogger
         self.realm = realm
     }
 
@@ -60,11 +59,11 @@ class HistoryStoreRealmImpl: HistoryStore {
                     for (index, entity) in entitiesToDelete.enumerated() {
                         extraParameters["primary_key \(index)"] = entity.primaryKey
                     }
-                    analytics.logError(message: "error occurred when deleting recent songs", error: error, extraParameters: extraParameters)
+                    firebaseLogger.logError(message: "error occurred when deleting recent songs", error: error, extraParameters: extraParameters)
                 }
             }
         } catch {
-            analytics.logError(message: "error occurred when storing recent song", error: error, extraParameters: ["hymnIdentifier": String(describing: hymnIdentifier), "title": songTitle])
+            firebaseLogger.logError(message: "error occurred when storing recent song", error: error, extraParameters: ["hymnIdentifier": String(describing: hymnIdentifier), "title": songTitle])
         }
     }
 

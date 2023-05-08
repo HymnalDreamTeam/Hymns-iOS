@@ -83,7 +83,7 @@ private class SearchPublisher: NetworkBoundPublisher {
 
 private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscription where SubscriberType.Input == UiSongResultsPage, SubscriberType.Failure == ErrorType {
 
-    private let analytics: AnalyticsLogger
+    private let analytics: FirebaseLogger
     private let converter: Converter
     private let dataStore: HymnDataStore
     private let pageNumber: Int
@@ -95,7 +95,7 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
     var subscriber: SubscriberType?
     var disposables: Set<AnyCancellable>
 
-    fileprivate init(pageNumber: Int, searchParameter: String, analytics: AnalyticsLogger = Resolver.resolve(),
+    fileprivate init(pageNumber: Int, searchParameter: String, analytics: FirebaseLogger = Resolver.resolve(),
                      converter: Converter, dataStore: HymnDataStore, disposables: inout Set<AnyCancellable>,
                      service: HymnalApiService, songbaseStore: SongbaseStore, subscriber: SubscriberType,
                      systemUtil: SystemUtil) {
@@ -143,8 +143,9 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
             = songbaseStore.databaseInitializedProperly ?
                 songbaseStore.searchHymn(searchParameter).map { songbaseResultEntities -> [SearchResultEntity] in
                     songbaseResultEntities.map { songbaseResultEntity -> SearchResultEntity in
-                        SearchResultEntity(hymnType: .songbase, hymnNumber: String(songbaseResultEntity.bookIndex),
-                                           title: songbaseResultEntity.title, matchInfo: songbaseResultEntity.matchInfo)
+                        SearchResultEntity(hymnType: .songbaseOther, hymnNumber: String(songbaseResultEntity.bookIndex),
+                                           title: songbaseResultEntity.title, matchInfo: songbaseResultEntity.matchInfo,
+                                           songId: 0)
                     }
                 }.eraseToAnyPublisher() : emptyResults
 

@@ -141,9 +141,9 @@ class BrowseResultsListViewModel: ObservableObject {
 
     private func fetchByHymnType(_ hymnType: HymnType) {
         // If hymnType is songbase, then use the songbase store instead of the data store.
-        let publisher = hymnType == .songbase ? songbaseStore.getAllSongs().map { songbaseResults -> [SongResultEntity] in
+        let publisher = hymnType == .songbaseOther ? songbaseStore.getAllSongs().map { songbaseResults -> [SongResultEntity] in
             songbaseResults.map { songbaseResult -> SongResultEntity in
-                SongResultEntity(hymnType: .songbase, hymnNumber: String(songbaseResult.bookIndex), title: songbaseResult.title)
+                SongResultEntity(hymnType: .songbaseOther, hymnNumber: String(songbaseResult.bookIndex), title: songbaseResult.title)
             }
         }.eraseToAnyPublisher() : dataStore.getAllSongs(hymnType: hymnType)
 

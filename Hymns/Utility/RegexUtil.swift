@@ -1,4 +1,3 @@
-import FirebaseCrashlytics
 import Foundation
 
 public class RegexUtil {
@@ -106,7 +105,6 @@ public class RegexUtil {
                 } else if hymnType == .chineseSupplement {
                     return .chineseSupplementSimplified
                 } else {
-                    Crashlytics.crashlytics().record(error: NonFatal(localizedDescription: "Path \(path) is expected to be a Chinese song"))
                     return nil
                 }
             }

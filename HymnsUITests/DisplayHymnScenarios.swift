@@ -80,7 +80,7 @@ class DisplayHymnScenarios: BaseTestCase {
             .waitForStaticTexts("verse 1 line 1")
             .verifyStaticTextsNotExists("Languages", "Change to another language")
             .openLanguages()
-            .pressButton("诗歌(简)")
+            .pressButton("詩歌(繁)")
             .waitForStaticTexts("Chinese Supplement 216", "chinese verse 1 chinese line 1")
             .goBack()
             .waitForStaticTexts("verse 1 line 1")

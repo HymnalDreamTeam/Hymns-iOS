@@ -1,4 +1,3 @@
-import FirebaseCrashlytics
 import SwiftUI
 
 struct PrivacyPolicySettingView: View {

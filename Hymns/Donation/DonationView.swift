@@ -1,4 +1,4 @@
-import FirebaseAnalytics
+import Resolver
 import StoreKit
 import SwiftUI
 
@@ -8,7 +8,10 @@ struct DonationView: View {
 
     @ObservedObject private var viewModel: DonationViewModel
 
-    init(viewModel: DonationViewModel) {
+    private let firebaseLogger: FirebaseLogger
+
+    init(firebaseLogger: FirebaseLogger = Resolver.resolve(), viewModel: DonationViewModel) {
+        self.firebaseLogger = firebaseLogger
         self.viewModel = viewModel
     }
 
@@ -43,9 +46,7 @@ struct DonationView: View {
                 }
             }.eraseToAnyView()
         }.task {
-            let params: [String: Any] = [
-                AnalyticsParameterScreenName: "DonationView"]
-            Analytics.logEvent(AnalyticsEventScreenView, parameters: params)
+            firebaseLogger.logScreenView(screenName: "DonationView")
         }
     }
 }

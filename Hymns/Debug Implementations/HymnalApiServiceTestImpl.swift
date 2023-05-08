@@ -4,7 +4,9 @@ import Foundation
 
 class HymnalApiServiceTestImpl: HymnalApiService {
 
-    private var hymnStore = [classic1151: classic1151Entity, chineseSupplement216: chineseSupplement216Entity, classic2: classic2Entity]
+    private var hymnStore = [classic1151.hymnIdentifier!: classic1151Entity,
+                             chineseSupplement216.hymnIdentifier!: chineseSupplement216Entity,
+                             classic2.hymnIdentifier!: classic2Entity]
 
     func getHymn(_ hymnIdentifier: HymnIdentifier) -> AnyPublisher<Hymn, ErrorType> {
         Just(Hymn(title: "throw an error", metaData: [], lyrics: [])).tryMap({ _ -> Hymn in

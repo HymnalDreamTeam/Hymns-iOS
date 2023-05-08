@@ -18,18 +18,21 @@ import Foundation
     case cebuano
     case tagalog
     case french
-    // Song types added from H4A
     case spanish
     case korean
     case japanese
     case indonesian
     case farsi
     case russian
-    case songbase
+    case beFilled
+    case liederbuch
+    case blueSongbook
+    case songbaseOther // Uncategorized songbase songs.
 
     static var allCases: [HymnType] {
-        return [classic, newTune, newSong, children, howardHigashi, dutch, german, chinese, chineseSupplement, cebuano,
-                tagalog, french, spanish, korean, japanese, indonesian, farsi, russian, songbase]
+        return [classic, newTune, newSong, children, howardHigashi, dutch, german, chinese, chineseSimplified,
+                chineseSupplement, chineseSupplementSimplified, cebuano, tagalog, french, spanish, korean,
+                japanese, indonesian, farsi, russian, beFilled, liederbuch, blueSongbook, songbaseOther]
     }
 }
 
@@ -49,7 +52,7 @@ extension HymnType {
         "chidren": .children,
         "howard higashi": .howardHigashi, "long beach": .howardHigashi, "longbeach": .howardHigashi,
         "dt": .dutch, "dutch": .dutch,
-        "g": german, "ge": .german, "german": .german,
+        "g": .liederbuch, "ge": .liederbuch, "german": .liederbuch,
         "chinese": .chinese, "中文": .chinese,
         "cs": .chineseSupplement, "chs": .chineseSupplement, "chinese supplement": .chineseSupplement, "中文補充": .chineseSupplement, "中文补充": .chineseSupplement, "補充": .chineseSupplement, "补充": .chineseSupplement,
         "cebuano": .cebuano,
@@ -61,7 +64,7 @@ extension HymnType {
         "indonesian": .indonesian,
         "farsi": .farsi,
         "russian": .russian, "ru": .russian,
-        "songbase": .songbase, "sb": .songbase
+        "songbase": .blueSongbook, "sb": blueSongbook
     ]) { _, new in new } // merging two dictionaries: https://stackoverflow.com/a/43615143/1907538
 
     var abbreviatedValue: String {
@@ -106,8 +109,14 @@ extension HymnType {
             return "F"
         case .russian:
             return "R"
-        case .songbase:
+        case .beFilled:
+            return "bf"
+        case .liederbuch:
+            return "lde"
+        case .blueSongbook:
             return "sb"
+        case .songbaseOther:
+            return "sbx"
         }
     }
 
@@ -132,8 +141,14 @@ extension HymnType {
             return 1005
         case .russian:
             return 800
-        case .songbase:
-            return 706
+        case .beFilled:
+            return 0
+        case .liederbuch:
+            return 0
+        case .blueSongbook:
+            return 0
+        case .songbaseOther:
+            return 0
         default:
             return 0
         }
@@ -191,7 +206,13 @@ extension HymnType {
             return NSLocalizedString("Farsi Songs", comment: "Display name of 'Farsi Songs'. Usually appears just by itself (i.e. as a title).")
         case .russian:
             return NSLocalizedString("Russian Songs", comment: "Display name of 'Russian Songs'. Usually appears just by itself (i.e. as a title).")
-        case .songbase:
+        case .beFilled:
+            return NSLocalizedString("Be Filled Songs", comment: "Display name of 'Be Filled Songs'. Usually appears just by itself (i.e. as a title).")
+        case .liederbuch:
+            return NSLocalizedString("Liederbuch Songs", comment: "Display name of 'Liederbuch Songs'. Usually appears just by itself (i.e. as a title).")
+        case .blueSongbook:
+            return NSLocalizedString("Songbase Songs", comment: "Display name of 'Songbase Songs'. Usually appears just by itself (i.e. as a title).")
+        case .songbaseOther:
             return NSLocalizedString("Songbase Songs", comment: "Display name of 'Songbase Songs'. Usually appears just by itself (i.e. as a title).")
         }
     }
@@ -234,7 +255,13 @@ extension HymnType {
             return NSLocalizedString("Farsi %@", comment: "Will appear in conjunction with something else (e.g. Farsi 7).")
         case .russian:
             return NSLocalizedString("Russian %@", comment: "Will appear in conjunction with something else (e.g. Russian 7).")
-        case .songbase:
+        case .beFilled:
+            return NSLocalizedString("Be Filled %@", comment: "Will appear in conjunction with something else (e.g. Be Filled 7).")
+        case .liederbuch:
+            return NSLocalizedString("Liederbuch %@", comment: "Will appear in conjunction with something else (e.g. Liederbuch 7).")
+        case .blueSongbook:
+            return NSLocalizedString("Songbase %@", comment: "Will appear in conjunction with something else (e.g. Songbase 7).")
+        case .songbaseOther:
             return NSLocalizedString("Songbase %@", comment: "Will appear in conjunction with something else (e.g. Songbase 7).")
         }
     }
@@ -263,7 +290,7 @@ extension HymnType: Decodable {
 extension HymnType {
     var toSongbaseBook: Int? {
         switch self {
-        case .songbase:
+        case .songbaseOther:
             return 1
         case .classic:
             return 2

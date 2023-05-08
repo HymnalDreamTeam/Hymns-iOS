@@ -1,9 +1,8 @@
-import FirebaseCrashlytics
 import Foundation
 import Resolver
 
 protocol Converter {
-    func toHymnEntity(hymnIdentifier: HymnIdentifier, hymn: Hymn) throws -> HymnEntity
+    func toHymnEntity(hymn: Hymn) throws -> HymnEntity
     func toUiHymn(hymnIdentifier: HymnIdentifier, hymnEntity: HymnEntity?) throws -> UiHymn?
     func toSongResultEntities(songResultsPage: SongResultsPage) -> ([SongResultEntity], Bool)
     func toUiSongResultsPage(songResultsEntities: [SongResultEntity], hasMorePages: Bool) -> UiSongResultsPage
@@ -11,14 +10,14 @@ protocol Converter {
 
 class ConverterImpl: Converter {
 
-    private let analytics: AnalyticsLogger
+    private let firebaseLogger: FirebaseLogger
 
-    init(analytics: AnalyticsLogger = Resolver.resolve()) {
-        self.analytics = analytics
+    init(firebaseLogger: FirebaseLogger = Resolver.resolve()) {
+        self.firebaseLogger = firebaseLogger
     }
 
-    func toHymnEntity(hymnIdentifier: HymnIdentifier, hymn: Hymn) throws -> HymnEntity {
-        HymnEntityBuilder(hymnIdentifier: hymnIdentifier)
+    func toHymnEntity(hymn: Hymn) throws -> HymnEntity {
+        HymnEntityBuilder()
             .title(hymn.title)
             .lyrics(extractVerseEntities(hymn.lyrics))
             .category(getMetadata(hymn: hymn, metaDatumName: .category))
@@ -60,7 +59,8 @@ class ConverterImpl: Converter {
         return verses.map { verse in
             let verseType = verse.verseType
             if let transliteration = verse.transliteration, transliteration.count != verse.verseContent.count {
-                Crashlytics.crashlytics().record(error: NonFatal(localizedDescription: "Mismatch in transliteration and verse content size for \(verses)"))
+                firebaseLogger.logError(message: "Mismatch in transliteration and verse content size",
+                                        extraParameters: ["verses_json": String(describing: verses)])
                 // If there is a mismatch, we have no way of knowing which transliteration line refers to which verse
                 // line, so we just skip transliteration altogether.
                 return VerseEntity(verseType: verseType, lines: verse.verseContent.map { LineEntity(lineContent: $0) })
@@ -95,7 +95,8 @@ class ConverterImpl: Converter {
             let hymnNumber = RegexUtil.getHymnNumber(path: datum.path)
 
             guard let hymnType = hymnType, let hymnNumber = hymnNumber else {
-                Crashlytics.crashlytics().record(error: NonFatal(localizedDescription: "Unable to parse \(datum.path) into a valid song link"))
+                firebaseLogger.logError(message: "Unable to parse metadata into valid song link",
+                                        extraParameters: ["datum": String(describing: datum)])
                 return nil
             }
             return SongLink(reference: HymnIdentifier(hymnType: hymnType, hymnNumber: hymnNumber), name: value)
@@ -137,7 +138,8 @@ class ConverterImpl: Converter {
     func toSongResultEntities(songResultsPage: SongResultsPage) -> ([SongResultEntity], Bool) {
         let songResultEntities = songResultsPage.results.compactMap { songResult -> SongResultEntity? in
             guard let hymnType = RegexUtil.getHymnType(path: songResult.path), let hymnNumber = RegexUtil.getHymnNumber(path: songResult.path) else {
-                self.analytics.logError(message: "error happened when trying to parse song result", extraParameters: ["path": songResult.path, "name": songResult.name])
+                firebaseLogger.logError(message: "error happened when trying to parse song result",
+                                        extraParameters: ["path": songResult.path, "name": songResult.name])
                 return nil
             }
             let title = songResult.name

@@ -496,7 +496,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                     // This will never be triggered.
                                 }).eraseToAnyPublisher()
                             }
-                            target = BrowseResultsListViewModel(hymnType: .songbase)
+                            target = BrowseResultsListViewModel(hymnType: .songbaseOther)
                             target.fetchResults()
                             testQueue.sync {}
                             testQueue.sync {}
@@ -504,7 +504,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                             testQueue.sync {}
                         }
                         it("should set the title to the hymn type") {
-                            expect(target.title).to(equal(HymnType.songbase.displayTitle))
+                            expect(target.title).to(equal(HymnType.songbaseOther.displayTitle))
                         }
                         it("should set the correct results") {
                             expect(target.songResults).toNot(beNil())

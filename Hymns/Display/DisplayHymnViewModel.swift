@@ -17,7 +17,7 @@ class DisplayHymnViewModel: ObservableObject {
 
     let identifier: HymnIdentifier
 
-    private let analytics: AnalyticsLogger
+    private let analytics: FirebaseLogger
     private let backgroundQueue: DispatchQueue
     private let favoriteStore: FavoriteStore
     private let historyStore: HistoryStore
@@ -33,7 +33,7 @@ class DisplayHymnViewModel: ObservableObject {
     private var resultsTitle: String = ""
     private var disposables = Set<AnyCancellable>()
 
-    init(analytics: AnalyticsLogger = Resolver.resolve(),
+    init(analytics: FirebaseLogger = Resolver.resolve(),
          backgroundQueue: DispatchQueue = Resolver.resolve(name: "background"),
          favoriteStore: FavoriteStore = Resolver.resolve(),
          hymnToDisplay identifier: HymnIdentifier,
@@ -61,7 +61,7 @@ class DisplayHymnViewModel: ObservableObject {
         analytics.logDisplaySong(hymnIdentifier: identifier)
 
         let hymnPublisher: AnyPublisher<UiHymn?, Never> = {
-            if identifier.hymnType != .songbase {
+            if identifier.hymnType != .songbaseOther {
                 return repository.getHymn(identifier)
             } else {
                 return Just<UiHymn?>(nil).eraseToAnyPublisher()

@@ -1,5 +1,3 @@
-import FirebaseAnalytics
-import FirebaseCrashlytics
 import Foundation
 import Resolver
 import StoreKit
@@ -14,12 +12,15 @@ class DonationViewModel: ObservableObject {
     @Published var coffeeDonations: [DonationType]
     @Binding var resultBinding: Result<SettingsToastItem, Error>?
 
+    private let firebaseLogger: FirebaseLogger
     private let donationTypeToDonation: [DonationType: CoffeeDonation]
 
-    init(coffeeDonations: [any CoffeeDonation], resultBinding: Binding<Result<SettingsToastItem, Error>?>) {
+    init(coffeeDonations: [any CoffeeDonation],
+         firebaseLogger: FirebaseLogger = Resolver.resolve(),
+         resultBinding: Binding<Result<SettingsToastItem, Error>?>) {
         self.donationTypeToDonation = coffeeDonations.compactMap { coffeeDonation -> (donationType: DonationType, coffeeDonation: CoffeeDonation)? in
             guard let donationType = DonationType(rawValue: coffeeDonation.id) else {
-                Crashlytics.crashlytics().record(error: NonFatal(localizedDescription: "Found unidentified coffee donation id \(coffeeDonation.id)"))
+                firebaseLogger.logError(message: "Found unidentified coffee donation id", extraParameters: ["donation_id": coffeeDonation.id])
                 return nil
             }
             return (donationType: donationType, coffeeDonation: coffeeDonation)
@@ -30,22 +31,21 @@ class DonationViewModel: ObservableObject {
             donation2.rank > donation1.rank
         })
         self._resultBinding = resultBinding
+        self.firebaseLogger = firebaseLogger
     }
 
     @MainActor
     func initiatePurchase(donationType: DonationType) async {
         guard let coffeeDonation = donationTypeToDonation[donationType] else {
-            Crashlytics.crashlytics().record(error: NonFatal(localizedDescription: "Unrecognized coffee donation selection made: \(donationType). This should never ever happen."))
+            firebaseLogger.logError(message: "Unrecognized coffee donation selection made. This should never happen",
+                                    extraParameters: ["donation_type": String(describing: donationType)])
             self.resultBinding = .success(.donate(.other))
             return
         }
 
         do {
             let purchaseResult = try await coffeeDonation.purchase(options: [])
-            let params: [String: Any] = [
-                "product": coffeeDonation,
-                "result": purchaseResult]
-            Analytics.logEvent(AnalyticsEventPurchase, parameters: params)
+            firebaseLogger.logDonation(product: coffeeDonation, result: purchaseResult)
             switch purchaseResult {
             case .success:
                 self.resultBinding = .success(.donate(.success))
@@ -55,7 +55,10 @@ class DonationViewModel: ObservableObject {
                 self.resultBinding = .success(.donate(.other))
             }
         } catch {
-            Crashlytics.crashlytics().record(error: error)
+            firebaseLogger.logError(message: "Purchase failed",
+                                    error: error,
+                                    extraParameters: ["donation_type": String(describing: donationType),
+                                                      "coffee_donation": String(describing: coffeeDonation)])
             self.resultBinding = .failure(error)
         }
     }

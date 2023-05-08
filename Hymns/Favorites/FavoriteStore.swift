@@ -1,5 +1,4 @@
 import Combine
-import FirebaseCrashlytics
 import Foundation
 import RealmSwift
 import Resolver
@@ -13,11 +12,11 @@ protocol FavoriteStore {
 
 class FavoriteStoreRealmImpl: FavoriteStore {
 
-    private let analytics: AnalyticsLogger
+    private let firebaseLogger: FirebaseLogger
     private let realm: Realm
 
-    init(analytics: AnalyticsLogger = Resolver.resolve(), realm: Realm) {
-        self.analytics = analytics
+    init(firebaseLogger: FirebaseLogger = Resolver.resolve(), realm: Realm) {
+        self.firebaseLogger = firebaseLogger
         self.realm = realm
     }
 
@@ -27,13 +26,13 @@ class FavoriteStoreRealmImpl: FavoriteStore {
                 realm.add(entity, update: .modified)
             }
         } catch {
-            analytics.logError(message: "error orccured when storing favorite", error: error, extraParameters: ["primaryKey": entity.primaryKey])
+            firebaseLogger.logError(message: "error orccured when storing favorite", error: error, extraParameters: ["primaryKey": entity.primaryKey])
         }
     }
 
     func deleteFavorite(primaryKey: String) {
         guard let entityToDelete = realm.object(ofType: FavoriteEntity.self, forPrimaryKey: primaryKey) else {
-            analytics.logError(message: "tried to delete a favorite that doesn't exist", extraParameters: ["primaryKey": primaryKey])
+            firebaseLogger.logError(message: "tried to delete a favorite that doesn't exist", extraParameters: ["primaryKey": primaryKey])
             return
         }
 
@@ -42,7 +41,7 @@ class FavoriteStoreRealmImpl: FavoriteStore {
                 realm.delete(entityToDelete)
             }
         } catch {
-            analytics.logError(message: "error orccured when deleting favorite", error: error, extraParameters: ["primaryKey": primaryKey])
+            firebaseLogger.logError(message: "error orccured when deleting favorite", error: error, extraParameters: ["primaryKey": primaryKey])
         }
     }
 

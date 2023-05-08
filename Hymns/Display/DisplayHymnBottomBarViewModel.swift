@@ -14,14 +14,14 @@ class DisplayHymnBottomBarViewModel: ObservableObject {
 
     let identifier: HymnIdentifier
 
-    private let analytics: AnalyticsLogger
+    private let analytics: FirebaseLogger
     private let systemUtil: SystemUtil
 
     private var disposables = Set<AnyCancellable>()
 
     init(hymnToDisplay identifier: HymnIdentifier,
          hymn: UiHymn,
-         analytics: AnalyticsLogger = Resolver.resolve(),
+         analytics: FirebaseLogger = Resolver.resolve(),
          systemUtil: SystemUtil = Resolver.resolve()) {
         self.analytics = analytics
         self.identifier = identifier

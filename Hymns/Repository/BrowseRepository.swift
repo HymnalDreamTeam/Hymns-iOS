@@ -1,5 +1,4 @@
 import Combine
-import FirebaseCrashlytics
 import Resolver
 
 protocol BrowseRepository {
@@ -9,9 +8,11 @@ protocol BrowseRepository {
 class BrowseRepositoryImpl: BrowseRepository {
 
     private let dataStore: HymnDataStore
+    private let firebaseLogger: FirebaseLogger
 
-    init(dataStore: HymnDataStore = Resolver.resolve()) {
+    init(dataStore: HymnDataStore = Resolver.resolve(), firebaseLogger: FirebaseLogger = Resolver.resolve()) {
         self.dataStore = dataStore
+        self.firebaseLogger = firebaseLogger
     }
 
     func scriptureSongs()  -> AnyPublisher<[ScriptureResult], ErrorType> {
@@ -61,7 +62,8 @@ class BrowseRepositoryImpl: BrowseRepository {
                                         references.append(scriptureReference)
                                         references.append(" ")
                                     }
-                                    Crashlytics.crashlytics().record(error: NonFatal(localizedDescription: "Chapter in reference was nil: \(references)"))
+                                    self.firebaseLogger.logError(message: "Chapter in scripture reference was nil. This should not happen.",
+                                                                 extraParameters: ["references": references])
                                     continue
                                 }
                             }
@@ -79,13 +81,5 @@ class BrowseRepositoryImpl: BrowseRepository {
                     }
                 }
             }).eraseToAnyPublisher()
-    }
-
-    func categories(by hymnType: HymnType?)  -> AnyPublisher<[CategoryEntity], ErrorType> {
-        if let hymnType = hymnType {
-            return dataStore.getCategories(by: hymnType)
-        } else {
-            return dataStore.getAllCategories()
-        }
     }
 }

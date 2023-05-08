@@ -7,13 +7,13 @@ class DisplayHymnPdfViewModel: ObservableObject {
     @Published var isLoading: Bool = true
     @Published var pdfDocument: PDFDocument?
 
-    private let analytics: AnalyticsLogger
+    private let analytics: FirebaseLogger
     private let backgroundQueue: DispatchQueue
     private let mainQueue: DispatchQueue
     private let preloader: PDFLoader
     private let url: URL
 
-    init(analytics: AnalyticsLogger = Resolver.resolve(),
+    init(analytics: FirebaseLogger = Resolver.resolve(),
          backgroundQueue: DispatchQueue = Resolver.resolve(name: "background"),
          mainQueue: DispatchQueue = Resolver.resolve(name: "main"),
          preloader: PDFLoader = Resolver.resolve(),

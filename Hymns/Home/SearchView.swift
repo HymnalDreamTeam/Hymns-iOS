@@ -1,4 +1,3 @@
-import FirebaseAnalytics
 import Resolver
 import SwiftUI
 
@@ -8,7 +7,10 @@ struct SearchView: View {
     @ObservedObject private var viewModel: SearchViewModel
     @State private var resultToShow: SongResultViewModel?
 
-    init(viewModel: SearchViewModel = Resolver.resolve()) {
+    private let firebaseLogger: FirebaseLogger
+
+    init(firebaseLogger: FirebaseLogger = Resolver.resolve(), viewModel: SearchViewModel = Resolver.resolve()) {
+        self.firebaseLogger = firebaseLogger
         self.viewModel = viewModel
     }
 
@@ -76,9 +78,7 @@ struct SearchView: View {
                 }
             }
         }.onAppear {
-            let params: [String: Any] = [
-                AnalyticsParameterScreenName: "HomeView"]
-            Analytics.logEvent(AnalyticsEventScreenView, parameters: params)
+            firebaseLogger.logScreenView(screenName: "HomeView")
             resultToShow = nil
             self.viewModel.setUp()
         }

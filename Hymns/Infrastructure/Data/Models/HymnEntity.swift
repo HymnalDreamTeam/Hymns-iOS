@@ -5,11 +5,9 @@ import GRDB
  * Structure of a Hymn object returned from the databse.
  */
 struct HymnEntity: Equatable {
-    static let databaseTableName = "SONG_DATA"
+
     // Prefer Int64 for auto-incremented database ids
     let id: Int64?
-    let hymnType: String
-    let hymnNumber: String
     let title: String?
     let lyrics: [VerseEntity]?
     let category: String?
@@ -30,8 +28,6 @@ struct HymnEntity: Equatable {
     // https://developer.apple.com/documentation/foundation/archives_and_serialization/encoding_and_decoding_custom_types
     enum CodingKeys: String, CodingKey {
         case id = "ID"
-        case hymnType = "HYMN_TYPE"
-        case hymnNumber = "HYMN_NUMBER"
         case title = "SONG_TITLE"
         case lyrics = "SONG_LYRICS"
         case category = "SONG_META_DATA_CATEGORY"
@@ -49,41 +45,15 @@ struct HymnEntity: Equatable {
         case languages = "SONG_META_DATA_LANGUAGES"
         case relevant = "SONG_META_DATA_RELEVANT"
     }
-
-    static func == (lhs: HymnEntity, rhs: HymnEntity) -> Bool {
-        let hymnTypesEqual = lhs.hymnType == rhs.hymnType
-        let hymnNumbersEqual = lhs.hymnNumber == rhs.hymnNumber
-        let titlesEqual = lhs.title == rhs.title
-        let lyricsEqual = lhs.lyrics == rhs.lyrics
-        let categoriesEqual = lhs.category == rhs.category
-        let subcategoriesEqual = lhs.subcategory == rhs.subcategory
-        let authorsEqual = lhs.author == rhs.author
-        let composersEqual = lhs.composer == rhs.composer
-        let keysEqual = lhs.key == rhs.key
-        let timesEqual = lhs.time == rhs.time
-        let metersEqual = lhs.meter == rhs.meter
-        let scripturesEqual = lhs.scriptures == rhs.scriptures
-        let hymnCodesEqual = lhs.hymnCode == rhs.hymnCode
-        let musicsEqual = lhs.music == rhs.music
-        let svgsEqual = lhs.svgSheet == rhs.svgSheet
-        let pdfsEqual = lhs.pdfSheet == rhs.pdfSheet
-        let languagesEqual = lhs.languages == rhs.languages
-        let relevantsEqual = lhs.relevant == rhs.relevant
-        return hymnTypesEqual && hymnNumbersEqual && titlesEqual && lyricsEqual && categoriesEqual && subcategoriesEqual
-        && authorsEqual && composersEqual && keysEqual && timesEqual && metersEqual && scripturesEqual && hymnCodesEqual && musicsEqual && svgsEqual
-        && pdfsEqual && languagesEqual && relevantsEqual
-    }
 }
 
-extension HymnEntity: Codable, FetchableRecord, PersistableRecord, MutablePersistableRecord {
+extension HymnEntity: Codable {
     // https://github.com/groue/GRDB.swift/blob/master/README.md#conflict-resolution
     static let persistenceConflictPolicy = PersistenceConflictPolicy(insert: .replace, update: .replace)
 
     // Define database columns from CodingKeys
     private enum Columns {
         static let id = Column(CodingKeys.id)
-        static let hymnType = Column(CodingKeys.hymnType)
-        static let hymnNumber = Column(CodingKeys.hymnNumber)
         static let title = Column(CodingKeys.title)
         static let lyrics = Column(CodingKeys.lyrics)
         static let category = Column(CodingKeys.category)
@@ -103,9 +73,49 @@ extension HymnEntity: Codable, FetchableRecord, PersistableRecord, MutablePersis
     }
 }
 
+// Intended force-trys. FetchableRecord is designed for records that reliably decode from rows.
+// swiftlint:disable force_try
+extension HymnEntity: FetchableRecord, MutablePersistableRecord {
+    public init(row: Row) {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+
+        self.id = row[CodingKeys.id.rawValue]
+        self.title = row[CodingKeys.title.rawValue]
+        self.lyrics = try! decoder.decodeJson([VerseEntity].self, from: row[CodingKeys.lyrics.rawValue])
+        self.category = row[CodingKeys.category.rawValue]
+        self.subcategory = row[CodingKeys.subcategory.rawValue]
+        self.author = row[CodingKeys.author.rawValue]
+        self.composer = row[CodingKeys.composer.rawValue]
+        self.key = row[CodingKeys.key.rawValue]
+        self.time = row[CodingKeys.time.rawValue]
+        self.meter = row[CodingKeys.meter.rawValue]
+        self.scriptures = row[CodingKeys.scriptures.rawValue]
+        self.hymnCode = row[CodingKeys.hymnCode.rawValue]
+        self.music = try! decoder.decodeJson([String: String].self, from: row[CodingKeys.music.rawValue])
+        self.svgSheet = try! decoder.decodeJson([String: String].self, from: row[CodingKeys.svgSheet.rawValue])
+        self.pdfSheet = try! decoder.decodeJson([String: String].self, from: row[CodingKeys.pdfSheet.rawValue])
+        self.languages = try! decoder.decodeJson([SongLink].self, from: row[CodingKeys.languages.rawValue])
+        self.relevant = try! decoder.decodeJson([SongLink].self, from: row[CodingKeys.relevant.rawValue])
+    }
+}
+
+extension JSONDecoder {
+    func decodeJson<T>(_ type: T.Type, from value: DatabaseValueConvertible?) throws -> T? where T: Decodable {
+        guard let value = value, let valueString = String(describing: value).data(using: .utf8) else {
+            return nil
+        }
+        return try! decoder.decode(type, from: valueString)
+    }
+}
+// swiftlint:enable force_try
+
+extension HymnEntity: PersistableRecord {
+    static let databaseTableName = "SONG_DATA"
+}
+
 class HymnEntityBuilder {
 
-    private (set) var hymnIdentifier: HymnIdentifier
     private (set) var id: Int64?
     private (set) var title: String?
     private (set) var lyrics: [VerseEntity]?
@@ -124,15 +134,12 @@ class HymnEntityBuilder {
     private (set) var languages: [SongLink]?
     private (set) var relevant: [SongLink]?
 
-    init(hymnIdentifier: HymnIdentifier) {
-        self.hymnIdentifier = hymnIdentifier
+    init(id: Int64? = nil) {
+        self.id = id
     }
 
-    init?(_ hymnEntity: HymnEntity) {
-        guard let hymnType = HymnType.fromAbbreviatedValue(hymnEntity.hymnType) else {
-            return nil
-        }
-        self.hymnIdentifier = HymnIdentifier(hymnType: hymnType, hymnNumber: hymnEntity.hymnNumber)
+    init(_ hymnEntity: HymnEntity) {
+        self.id = hymnEntity.id
         self.title = hymnEntity.title
         self.lyrics = hymnEntity.lyrics
         self.category = hymnEntity.category
@@ -149,11 +156,6 @@ class HymnEntityBuilder {
         self.pdfSheet = hymnEntity.pdfSheet
         self.languages = hymnEntity.languages
         self.relevant = hymnEntity.relevant
-    }
-
-    public func hymnIdentifier(_ hymnIdentifier: HymnIdentifier) -> HymnEntityBuilder {
-        self.hymnIdentifier = hymnIdentifier
-        return self
     }
 
     public func id(_ id: Int64?) -> HymnEntityBuilder {
@@ -243,8 +245,6 @@ class HymnEntityBuilder {
 
     public func build() -> HymnEntity {
         HymnEntity(id: id,
-                   hymnType: hymnIdentifier.hymnType.abbreviatedValue,
-                   hymnNumber: hymnIdentifier.hymnNumber,
                    title: title,
                    lyrics: lyrics,
                    category: category,

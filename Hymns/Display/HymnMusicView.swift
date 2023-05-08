@@ -1,4 +1,3 @@
-import FirebaseAnalytics
 import SwiftUI
 import Resolver
 

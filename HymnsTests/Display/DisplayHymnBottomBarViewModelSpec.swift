@@ -18,7 +18,7 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                           VerseEntity(verseType: .verse, lineStrings: ["verse 3 line 1", "verse 3 line 2"])]
             let pdfSheet = ["Guitar": "https://www.hymnal.net/Hymns/Hymnal/svg/e1151_g.svg"]
             let languages = [SongLink(reference: HymnIdentifier(hymnType: .tagalog, hymnNumber: "1151"), name: "Tagalog"),
-                             SongLink(reference: HymnIdentifier(hymnType: .chineseSupplementSimplified, hymnNumber: "216"), name: "Tagalog")]
+                             SongLink(reference: HymnIdentifier(hymnType: .chineseSupplementSimplified, hymnNumber: "216"), name: "诗歌(简)")]
             let music = ["mp3": "/en/hymn/h/1151/f=mp3"]
             let relevant = [SongLink(reference: HymnIdentifier(hymnType: .newTune, hymnNumber: "1151"), name: "New Tune"),
                             SongLink(reference: HymnIdentifier(hymnType: .newSong, hymnNumber: "216"), name: "Cool other song")]

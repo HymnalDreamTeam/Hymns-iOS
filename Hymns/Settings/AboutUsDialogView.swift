@@ -5,7 +5,7 @@ import Resolver
 struct AboutUsDialogView: View {
 
     @Environment(\.presentationMode) var presentationMode
-    private let analytics: AnalyticsLogger = Resolver.resolve()
+    private let analytics: FirebaseLogger = Resolver.resolve()
     private let application: Application = Resolver.resolve()
 
     var body: some View {

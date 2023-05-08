@@ -1,4 +1,3 @@
-import FirebaseAnalytics
 import MessageUI
 import Resolver
 import StoreKit
@@ -10,7 +9,10 @@ struct SettingsView: View {
 
     @State var result: Result<SettingsToastItem, Error>?
 
-    init(viewModel: SettingsViewModel = Resolver.resolve()) {
+    private let firebaseLogger: FirebaseLogger
+
+    init(firebaseLogger: FirebaseLogger = Resolver.resolve(), viewModel: SettingsViewModel = Resolver.resolve()) {
+        self.firebaseLogger = firebaseLogger
         self.viewModel = viewModel
     }
 
@@ -33,9 +35,7 @@ struct SettingsView: View {
                     }
                 }.eraseToAnyView()
         }.onAppear {
-            let params: [String: Any] = [
-                AnalyticsParameterScreenName: "SettingsView"]
-            Analytics.logEvent(AnalyticsEventScreenView, parameters: params)
+            firebaseLogger.logScreenView(screenName: "SettingsView")
             self.viewModel.populateSettings(result: self.$result)
         }.toast(item: $result, options: ToastOptions(alignment: .bottom, disappearAfter: 5)) { result -> AnyView in
             switch result {

@@ -1,4 +1,3 @@
-import FirebaseCrashlytics
 import StoreKit
 import SwiftUI
 

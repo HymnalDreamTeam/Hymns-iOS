@@ -5,8 +5,7 @@ import XCTest
 
 class HymnsRepositoryImpl_dbUninitializedTests: XCTestCase {
 
-    let databaseResult = HymnEntityBuilder(hymnIdentifier: cebuano123)
-        .id(0).title("song title")
+    let databaseResult = HymnEntityBuilder().title("song title")
         .lyrics([VerseEntity(verseType: .verse, lineStrings: ["line 1", "line 2"])])
         .build()
     let networkResult = Hymn(title: "song title", metaData: [MetaDatum](), lyrics: [Verse(verseType: .verse, verseContent: ["line 1", "line 2"])])
@@ -47,7 +46,8 @@ class HymnsRepositoryImpl_dbUninitializedTests: XCTestCase {
 
         verify(dataStore.getDatabaseInitializedProperly()).wasCalled(exactly(1))
         verify(service.getHymn(any())).wasNeverCalled()
-        verify(dataStore.saveHymn(any())).wasNeverCalled()
+        verify(dataStore.saveHymn(any(HymnEntity.self))).wasNeverCalled()
+        verify(dataStore.saveHymn(any(HymnIdEntity.self))).wasNeverCalled()
         wait(for: [completion, value], timeout: testTimeout)
         cancellable.cancel()
     }
@@ -78,7 +78,8 @@ class HymnsRepositoryImpl_dbUninitializedTests: XCTestCase {
 
         verify(dataStore.getDatabaseInitializedProperly()).wasCalled(exactly(1))
         verify(service.getHymn(cebuano123)).wasCalled(exactly(1))
-        verify(dataStore.saveHymn(any())).wasNeverCalled()
+        verify(dataStore.saveHymn(any(HymnEntity.self))).wasNeverCalled()
+        verify(dataStore.saveHymn(any(HymnIdEntity.self))).wasNeverCalled()
         wait(for: [completion, value], timeout: testTimeout)
         cancellable.cancel()
     }
@@ -90,7 +91,7 @@ class HymnsRepositoryImpl_dbUninitializedTests: XCTestCase {
                 // This will never be triggered.
             }).eraseToAnyPublisher()
         }
-        given(converter.toHymnEntity(hymnIdentifier: cebuano123, hymn: self.networkResult)) ~> self.databaseResult
+        given(converter.toHymnEntity(hymn: self.networkResult)) ~> self.databaseResult
         given(converter.toUiHymn(hymnIdentifier: cebuano123, hymnEntity: self.databaseResult)) ~> self.expected
 
         let completion = expectation(description: "completion received")
@@ -107,7 +108,8 @@ class HymnsRepositoryImpl_dbUninitializedTests: XCTestCase {
 
         verify(dataStore.getDatabaseInitializedProperly()).wasCalled(exactly(2))
         verify(service.getHymn(cebuano123)).wasCalled(exactly(1))
-        verify(dataStore.saveHymn(any())).wasNeverCalled()
+        verify(dataStore.saveHymn(any(HymnEntity.self))).wasNeverCalled()
+        verify(dataStore.saveHymn(any(HymnIdEntity.self))).wasNeverCalled()
         wait(for: [completion, value], timeout: testTimeout)
         cancellable.cancel()
     }
@@ -119,7 +121,7 @@ class HymnsRepositoryImpl_dbUninitializedTests: XCTestCase {
                 // This will never be triggered.
             }).eraseToAnyPublisher()
         }
-        given(converter.toHymnEntity(hymnIdentifier: cebuano123, hymn: self.networkResult)) ~> {_, _ in
+        given(converter.toHymnEntity(hymn: self.networkResult)) ~> {_ in
             throw TypeConversionError.init(triggeringError: ErrorType.parsing(description: "failed to convert!"))
         }
 
@@ -137,7 +139,8 @@ class HymnsRepositoryImpl_dbUninitializedTests: XCTestCase {
 
         verify(dataStore.getDatabaseInitializedProperly()).wasCalled(exactly(1))
         verify(service.getHymn(cebuano123)).wasCalled(exactly(1))
-        verify(dataStore.saveHymn(any())).wasNeverCalled()
+        verify(dataStore.saveHymn(any(HymnEntity.self))).wasNeverCalled()
+        verify(dataStore.saveHymn(any(HymnIdEntity.self))).wasNeverCalled()
         wait(for: [completion, value], timeout: testTimeout)
         cancellable.cancel()
     }

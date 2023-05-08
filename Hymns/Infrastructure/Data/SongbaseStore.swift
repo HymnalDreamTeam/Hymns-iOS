@@ -26,7 +26,7 @@ class SongbaseStoreGrdbImpl: SongbaseStore {
 
     private(set) var databaseInitializedProperly = true
 
-    private let analytics: AnalyticsLogger
+    private let analytics: FirebaseLogger
     private let databaseQueue: DatabaseQueue
 
     /**
@@ -36,7 +36,7 @@ class SongbaseStoreGrdbImpl: SongbaseStore {
      * - Parameter databaseQueue: `DatabaseQueue` object to use to make sql queries to
      * - Parameter initializeTables: Whether or not to create the necessary tables on startup
      */
-    init(analytics: AnalyticsLogger = Resolver.resolve(), databaseQueue: DatabaseQueue, initializeTables: Bool = false) {
+    init(analytics: FirebaseLogger = Resolver.resolve(), databaseQueue: DatabaseQueue, initializeTables: Bool = false) {
         self.analytics = analytics
         self.databaseQueue = databaseQueue
         if initializeTables {
@@ -168,7 +168,7 @@ extension Resolver {
                     .path else {
                         Crashlytics.crashlytics().log("The desired path in Application Support is nil, so we are unable to create a database file. Fall back to useing an in-memory db and initialize it with empty tables")
                         Crashlytics.crashlytics().setCustomValue("in-memory db", forKey: "songbase_state")
-                        Crashlytics.crashlytics().record(error: NSError(domain: "Database Initialization Error", code: NonFatalEvent.ErrorCode.databaseInitialization.rawValue))
+                        Crashlytics.crashlytics().record(error: AppError(errorDescription: "Songbase Initialization Error"))
                         return SongbaseStoreGrdbImpl(databaseQueue: DatabaseQueue(), initializeTables: true) as SongbaseStoreGrdbImpl
             }
 
@@ -181,7 +181,7 @@ extension Resolver {
                     guard let bundledDbPath = Bundle.main.path(forResource: "songbasedb-v3", ofType: "sqlite") else {
                         Crashlytics.crashlytics().log("Path to the bundled database was not found, so just create an empty database instead and initialize it with empty tables")
                         Crashlytics.crashlytics().setCustomValue("empty persistent db", forKey: "songbase_state")
-                        Crashlytics.crashlytics().record(error: NSError(domain: "Database Initialization Error", code: NonFatalEvent.ErrorCode.databaseInitialization.rawValue))
+                        Crashlytics.crashlytics().record(error: AppError(errorDescription: "Songbase Initialization Error"))
                         needToCreateTables = true
                         break outer
                     }
@@ -189,6 +189,7 @@ extension Resolver {
                     needToCreateTables = false
                     Crashlytics.crashlytics().log("Database successfully copied from bundled SQLite file")
                     Crashlytics.crashlytics().setCustomValue("bundled db", forKey: "songbase_state")
+                    Crashlytics.crashlytics().record(error: AppError(errorDescription: "Songbase Initialization Error"))
                 }
             } catch {
                 Crashlytics.crashlytics().log("Unable to copy bundled data to the Application Support directly, so just create an empty database there instead and initialize it with empty tables")

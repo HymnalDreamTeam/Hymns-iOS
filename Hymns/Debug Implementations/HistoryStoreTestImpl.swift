@@ -4,10 +4,10 @@ import Foundation
 
 class HistoryStoreTestImpl: HistoryStore {
 
-    var results = [RecentSong(hymnIdentifier: classic1151, songTitle: "classic1151"),
-                   RecentSong(hymnIdentifier: classic40, songTitle: "classic40"),
-                   RecentSong(hymnIdentifier: classic2, songTitle: "Classic 2"),
-                   RecentSong(hymnIdentifier: classic3, songTitle: "classic3")]
+    var results = [RecentSong(hymnIdentifier: classic1151.hymnIdentifier!, songTitle: "classic1151"),
+                   RecentSong(hymnIdentifier: classic40.hymnIdentifier!, songTitle: "classic40"),
+                   RecentSong(hymnIdentifier: classic2.hymnIdentifier!, songTitle: "Classic 2"),
+                   RecentSong(hymnIdentifier: classic3.hymnIdentifier!, songTitle: "classic3")]
 
     func clearHistory() throws {
         results = [RecentSong]()

@@ -1,5 +1,4 @@
 import Combine
-import FirebaseCrashlytics
 import Foundation
 import Resolver
 import SwiftUI
@@ -25,21 +24,24 @@ class SearchViewModel: ObservableObject {
     private var isLoading = false
 
     private var disposables = Set<AnyCancellable>()
-    private let analytics: AnalyticsLogger
+    private let analytics: FirebaseLogger
     private let backgroundQueue: DispatchQueue
+    private let firebaseLogger: FirebaseLogger
     private let historyStore: HistoryStore
     private let hymnsRepository: HymnsRepository
     private let mainQueue: DispatchQueue
     private let repository: SongResultsRepository
 
-    init(analytics: AnalyticsLogger = Resolver.resolve(),
+    init(analytics: FirebaseLogger = Resolver.resolve(),
          backgroundQueue: DispatchQueue = Resolver.resolve(name: "background"),
+         firebaseLogger: FirebaseLogger = Resolver.resolve(),
          historyStore: HistoryStore = Resolver.resolve(),
          hymnsRepository: HymnsRepository = Resolver.resolve(),
          mainQueue: DispatchQueue = Resolver.resolve(name: "main"),
          repository: SongResultsRepository = Resolver.resolve()) {
         self.analytics = analytics
         self.backgroundQueue = backgroundQueue
+        self.firebaseLogger = firebaseLogger
         self.historyStore = historyStore
         self.hymnsRepository = hymnsRepository
         self.mainQueue = mainQueue
@@ -254,7 +256,7 @@ class SearchViewModel: ObservableObject {
 
         let searchInput = self.searchParameter
         if searchInput.isEmpty {
-            Crashlytics.crashlytics().record(error: ErrorType.data(description: "search parameter should never be empty during a song fetch"))
+            firebaseLogger.logError(message: "Search parameter should never be empty during a song fetch")
             return
         }
 

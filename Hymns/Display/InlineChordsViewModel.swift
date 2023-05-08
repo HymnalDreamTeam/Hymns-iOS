@@ -8,13 +8,13 @@ class InlineChordsViewModel: ObservableObject {
     @Published var chords: [ChordLine] = [ChordLine]()
     @Published var pdfDocument: PDFDocument?
 
-    private let analytics: AnalyticsLogger
+    private let analytics: FirebaseLogger
     private let backgroundQueue: DispatchQueue
     private let guitarUrl: URL?
     private let mainQueue: DispatchQueue
     private let preloader: PDFLoader
 
-    init(analytics: AnalyticsLogger = Resolver.resolve(),
+    init(analytics: FirebaseLogger = Resolver.resolve(),
          backgroundQueue: DispatchQueue = Resolver.resolve(name: "background"),
          chords: [ChordLine],
          guitarUrl: URL?,

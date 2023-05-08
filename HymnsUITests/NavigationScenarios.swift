@@ -121,14 +121,14 @@ class NavigationScenarios: BaseTestCase {
         displayHymnViewCan
             .waitForStaticTexts("verse 1 line 1")
             .openLanguages()
-            .pressButton("诗歌(简)")
+            .pressButton("詩歌(繁)")
             .waitForStaticTexts("chinese verse 1 chinese line 1")
             // "Back" goes to the original song.
             .goBack()
             .waitForStaticTexts("verse 1 line 1")
             .openLanguages()
             .waitForStaticTexts("Languages", "Change to another language")
-            .pressButton("诗歌(简)")
+            .pressButton("詩歌(繁)")
             .waitForStaticTexts("chinese verse 1 chinese line 1")
             .close()
     }

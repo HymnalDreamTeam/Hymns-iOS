@@ -4,9 +4,9 @@ import Foundation
 
 class TagStoreTestImpl: TagStore {
 
-    var tags = [Tag(hymnIdentifier: classic1151, songTitle: "Click me!", tag: "tag1", color: .green),
-                Tag(hymnIdentifier: classic40, songTitle: "Don't click me!", tag: "tag1", color: .green),
-                Tag(hymnIdentifier: classic40, songTitle: "Should not be dhown", tag: "tag2", color: .red)]
+    var tags = [Tag(hymnIdentifier: classic1151.hymnIdentifier!, songTitle: "Click me!", tag: "tag1", color: .green),
+                Tag(hymnIdentifier: classic40.hymnIdentifier!, songTitle: "Don't click me!", tag: "tag1", color: .green),
+                Tag(hymnIdentifier: classic40.hymnIdentifier!, songTitle: "Should not be dhown", tag: "tag2", color: .red)]
 
     func storeTag(_ tag: Tag) {
         tags.append(tag)

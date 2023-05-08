@@ -4,9 +4,20 @@ import RealmSwift
 /**
  * Uniquely identifies a hymn.
  */
-struct HymnIdentifier {
+struct HymnIdentifier: Equatable, Hashable {
     let hymnType: HymnType
     let hymnNumber: String
+}
+
+extension HymnIdentifier {
+
+    init?(hymnType: HymnType?, hymnNumber: String) {
+        guard let hymnType = hymnType else {
+            return nil
+        }
+        self.hymnType = hymnType
+        self.hymnNumber = hymnNumber
+    }
 }
 
 extension HymnIdentifier {
@@ -16,17 +27,6 @@ extension HymnIdentifier {
     init(_ entity: HymnIdentifierEntity) {
         self.hymnType = entity.hymnType
         self.hymnNumber = entity.hymnNumber
-    }
-}
-
-extension HymnIdentifier: Hashable {
-    static func == (lhs: HymnIdentifier, rhs: HymnIdentifier) -> Bool {
-        lhs.hymnType == rhs.hymnType && lhs.hymnNumber == rhs.hymnNumber
-    }
-
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(hymnType)
-        hasher.combine(hymnNumber)
     }
 }
 
@@ -50,6 +50,7 @@ extension HymnIdentifier: Codable {
     }
 }
 
+// TODO combine with HymnIdEntity
 class HymnIdentifierEntity: Object {
     // https://stackoverflow.com/questions/29123245/using-enum-as-property-of-realm-model
     @objc dynamic private var hymnTypeRaw = HymnType.classic.rawValue

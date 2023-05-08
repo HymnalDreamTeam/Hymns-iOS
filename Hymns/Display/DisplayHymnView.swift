@@ -1,4 +1,3 @@
-import FirebaseAnalytics
 import SwiftUI
 import Resolver
 
@@ -7,7 +6,10 @@ struct DisplayHymnView: View {
     @ObservedObject private var viewModel: DisplayHymnViewModel
     @State private var dialogModel: DialogViewModel<AnyView>?
 
-    init(viewModel: DisplayHymnViewModel) {
+    private let firebaseLogger: FirebaseLogger
+
+    init(firebaseLogger: FirebaseLogger = Resolver.resolve(), viewModel: DisplayHymnViewModel) {
+        self.firebaseLogger = firebaseLogger
         self.viewModel = viewModel
     }
 
@@ -49,6 +51,8 @@ struct DisplayHymnView: View {
         }.hideNavigationBar()
             .onAppear {
                 self.viewModel.fetchHymn()
+        }.task {
+            firebaseLogger.logScreenView(screenName: "DisplayHymnView")
         }.background(Color(.systemBackground))
     }
 }

@@ -18,6 +18,7 @@ struct WrappedHStack<Item: Hashable, Content: View>: View {
         self.verticalSpacing = verticalSpacing
         self.viewBuilder = viewBuilder
     }
+
     var body: some View {
         VStack {
             GeometryReader { geometry in

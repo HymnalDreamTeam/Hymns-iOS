@@ -38,7 +38,6 @@
 		3B203688248B864E00D90DF5 /* ScriptureResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B203687248B864E00D90DF5 /* ScriptureResult.swift */; };
 		3B20368C248B8A2D00D90DF5 /* BrowseRepositoryTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B20368B248B8A2D00D90DF5 /* BrowseRepositoryTest.swift */; };
 		3B20368E248C0E8200D90DF5 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B20368D248C0E8200D90DF5 /* ErrorView.swift */; };
-		3B203690248C131B00D90DF5 /* NonFatal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B20368F248C131B00D90DF5 /* NonFatal.swift */; };
 		3B21F3642486CFA200B4AFE0 /* BrowseResultsListViewModelSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B21F3632486CFA200B4AFE0 /* BrowseResultsListViewModelSpec.swift */; };
 		3B21F366248720E600B4AFE0 /* SubcategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B21F365248720E500B4AFE0 /* SubcategoryView.swift */; };
 		3B22187F247910C3009202B0 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B22187E247910C3009202B0 /* UserDefaultsManager.swift */; };
@@ -82,6 +81,9 @@
 		3B50B972243E450500EABDE4 /* RegexUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B50B971243E450500EABDE4 /* RegexUtil.swift */; };
 		3B52698C24A00919006E72E1 /* AboutUsDialogSnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B52698B24A00919006E72E1 /* AboutUsDialogSnapshots.swift */; };
 		3B52698E24A01E7E006E72E1 /* DisplayHymnPdfSnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B52698D24A01E7E006E72E1 /* DisplayHymnPdfSnapshots.swift */; };
+		3B5322BC2A04B7AD00D53A61 /* HymnIdEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5322BB2A04B7AD00D53A61 /* HymnIdEntity.swift */; };
+		3B5322BE2A04D51200D53A61 /* HymnReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5322BD2A04D51200D53A61 /* HymnReference.swift */; };
+		3B5322C22A0730E700D53A61 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5322C12A0730E700D53A61 /* AppError.swift */; };
 		3B556EA52496AB800025D12F /* HymnalNetSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B556EA42496AB800025D12F /* HymnalNetSpec.swift */; };
 		3B556EA72496C75A0025D12F /* UiTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B556EA62496C75A0025D12F /* UiTag.swift */; };
 		3B57568E243E96B1007013FE /* search_drink.json in Resources */ = {isa = PBXBuildFile; fileRef = 3B57568D243E96B1007013FE /* search_drink.json */; };
@@ -202,6 +204,7 @@
 		3BBCC21724E0D3FD00977961 /* SoundCloudView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBCC21624E0D3FD00977961 /* SoundCloudView.swift */; };
 		3BBCC21B24E1048400977961 /* ToolTip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBCC21A24E1048300977961 /* ToolTip.swift */; };
 		3BBCC21D24E1C51A00977961 /* SoundCloudViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBCC21C24E1C51900977961 /* SoundCloudViewModel.swift */; };
+		3BBF4C9F2A078F8300E6350B /* AnotherUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBF4C9E2A078F8300E6350B /* AnotherUtil.swift */; };
 		3BBFFF5527D32ED900AE60C5 /* WrappedHStackSnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBFFF5427D32ED900AE60C5 /* WrappedHStackSnapshots.swift */; };
 		3BC1328D243826280082A274 /* PreviewHymns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC1328C243826270082A274 /* PreviewHymns.swift */; };
 		3BC1329724385A580082A274 /* HomeContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC1329624385A580082A274 /* HomeContainerView.swift */; };
@@ -222,7 +225,7 @@
 		3BD4AE9B27D8105800B4040A /* HymnMusicSnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD4AE9A27D8105800B4040A /* HymnMusicSnapshots.swift */; };
 		3BD4AE9D27D8A09900B4040A /* InlineChordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD4AE9C27D8A09900B4040A /* InlineChordsView.swift */; };
 		3BD4AE9F27D8A0A500B4040A /* InlineChordsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD4AE9E27D8A0A500B4040A /* InlineChordsViewModel.swift */; };
-		3BD4F51124689E7300352009 /* AnalyticsLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD4F51024689E7300352009 /* AnalyticsLogger.swift */; };
+		3BD4F51124689E7300352009 /* FirebaseLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD4F51024689E7300352009 /* FirebaseLogger.swift */; };
 		3BD4F51324689F8B00352009 /* EventType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD4F51224689F8B00352009 /* EventType.swift */; };
 		3BD768C62757646300FA4C6C /* HomeTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BD768C52757646300FA4C6C /* HomeTabView.swift */; };
 		3BDA53FB24906ECC008A5A21 /* BrowseScripturesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BDA53FA24906ECC008A5A21 /* BrowseScripturesView.swift */; };
@@ -239,7 +242,7 @@
 		3BE210F2249B3E7C00D4E417 /* HymnDataStoreTestImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE210F1249B3E7C00D4E417 /* HymnDataStoreTestImpl.swift */; };
 		3BE210F4249B41A000D4E417 /* DisplayHymnScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE210F3249B41A000D4E417 /* DisplayHymnScenarios.swift */; };
 		3BE210F7249B421000D4E417 /* HomeViewCan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE210F6249B421000D4E417 /* HomeViewCan.swift */; };
-		3BE210FA249B592F00D4E417 /* TestHymns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE210F9249B592F00D4E417 /* TestHymns.swift */; };
+		3BE210FA249B592F00D4E417 /* TestImplHymns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE210F9249B592F00D4E417 /* TestImplHymns.swift */; };
 		3BE210FC249B59A400D4E417 /* DisplayHymnViewCan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE210FB249B59A400D4E417 /* DisplayHymnViewCan.swift */; };
 		3BE31A3D24A4674900B1A038 /* BrowseResultsListSnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE31A3C24A4674900B1A038 /* BrowseResultsListSnapshots.swift */; };
 		3BE31A3F24A468E400B1A038 /* SettingsSnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE31A3E24A468E400B1A038 /* SettingsSnapshots.swift */; };
@@ -261,7 +264,7 @@
 		3BE7C929249CB16B00B04A1F /* SongResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE7C928249CB16B00B04A1F /* SongResults.swift */; };
 		3BE9EE98244AB8650098699E /* PrivacyPolicySettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE9EE97244AB8650098699E /* PrivacyPolicySettingView.swift */; };
 		3BEF3BD927E1381400467ABE /* InlineChordsViewModelSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BEF3BD827E1381400467ABE /* InlineChordsViewModelSpec.swift */; };
-		3BF2045C2800EE1200BA13B3 /* hymnaldb-v19.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 3BF2045B2800EE1200BA13B3 /* hymnaldb-v19.sqlite */; };
+		3BEF7EFF2A08C02000EE79DE /* hymnaldb-v22.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 3BEF7EFE2A08C02000EE79DE /* hymnaldb-v22.sqlite */; };
 		3BF3BDC42467B9F40046228C /* HymnsRepositoryImpl_dbUninitializedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF3BDC32467B9F40046228C /* HymnsRepositoryImpl_dbUninitializedTests.swift */; };
 		3BF3BDC62467C39A0046228C /* HymnsRepositoryImpl_dbInitialized_dbMissTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF3BDC52467C39A0046228C /* HymnsRepositoryImpl_dbInitialized_dbMissTests.swift */; };
 		3BF699AF24417921005AFF6A /* VerseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF699AE24417921005AFF6A /* VerseView.swift */; };
@@ -375,7 +378,6 @@
 		3B203687248B864E00D90DF5 /* ScriptureResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptureResult.swift; sourceTree = "<group>"; };
 		3B20368B248B8A2D00D90DF5 /* BrowseRepositoryTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseRepositoryTest.swift; sourceTree = "<group>"; };
 		3B20368D248C0E8200D90DF5 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
-		3B20368F248C131B00D90DF5 /* NonFatal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonFatal.swift; sourceTree = "<group>"; };
 		3B21F3632486CFA200B4AFE0 /* BrowseResultsListViewModelSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseResultsListViewModelSpec.swift; sourceTree = "<group>"; };
 		3B21F365248720E500B4AFE0 /* SubcategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubcategoryView.swift; sourceTree = "<group>"; };
 		3B22187E247910C3009202B0 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
@@ -420,6 +422,9 @@
 		3B50B971243E450500EABDE4 /* RegexUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegexUtil.swift; sourceTree = "<group>"; };
 		3B52698B24A00919006E72E1 /* AboutUsDialogSnapshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutUsDialogSnapshots.swift; sourceTree = "<group>"; };
 		3B52698D24A01E7E006E72E1 /* DisplayHymnPdfSnapshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayHymnPdfSnapshots.swift; sourceTree = "<group>"; };
+		3B5322BB2A04B7AD00D53A61 /* HymnIdEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HymnIdEntity.swift; sourceTree = "<group>"; };
+		3B5322BD2A04D51200D53A61 /* HymnReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HymnReference.swift; sourceTree = "<group>"; };
+		3B5322C12A0730E700D53A61 /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
 		3B556EA42496AB800025D12F /* HymnalNetSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HymnalNetSpec.swift; sourceTree = "<group>"; };
 		3B556EA62496C75A0025D12F /* UiTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiTag.swift; sourceTree = "<group>"; };
 		3B57568D243E96B1007013FE /* search_drink.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = search_drink.json; sourceTree = "<group>"; };
@@ -541,6 +546,7 @@
 		3BBCC21624E0D3FD00977961 /* SoundCloudView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundCloudView.swift; sourceTree = "<group>"; };
 		3BBCC21A24E1048300977961 /* ToolTip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolTip.swift; sourceTree = "<group>"; };
 		3BBCC21C24E1C51900977961 /* SoundCloudViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundCloudViewModel.swift; sourceTree = "<group>"; };
+		3BBF4C9E2A078F8300E6350B /* AnotherUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnotherUtil.swift; sourceTree = "<group>"; };
 		3BBFFF5427D32ED900AE60C5 /* WrappedHStackSnapshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrappedHStackSnapshots.swift; sourceTree = "<group>"; };
 		3BC1328C243826270082A274 /* PreviewHymns.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewHymns.swift; sourceTree = "<group>"; };
 		3BC13291243850B90082A274 /* classic1151.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = classic1151.json; sourceTree = "<group>"; };
@@ -563,7 +569,7 @@
 		3BD4AE9A27D8105800B4040A /* HymnMusicSnapshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HymnMusicSnapshots.swift; sourceTree = "<group>"; };
 		3BD4AE9C27D8A09900B4040A /* InlineChordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InlineChordsView.swift; sourceTree = "<group>"; };
 		3BD4AE9E27D8A0A500B4040A /* InlineChordsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InlineChordsViewModel.swift; sourceTree = "<group>"; };
-		3BD4F51024689E7300352009 /* AnalyticsLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsLogger.swift; sourceTree = "<group>"; };
+		3BD4F51024689E7300352009 /* FirebaseLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseLogger.swift; sourceTree = "<group>"; };
 		3BD4F51224689F8B00352009 /* EventType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventType.swift; sourceTree = "<group>"; };
 		3BD768C52757646300FA4C6C /* HomeTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTabView.swift; sourceTree = "<group>"; };
 		3BDA53FA24906ECC008A5A21 /* BrowseScripturesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseScripturesView.swift; sourceTree = "<group>"; };
@@ -580,7 +586,7 @@
 		3BE210F1249B3E7C00D4E417 /* HymnDataStoreTestImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HymnDataStoreTestImpl.swift; sourceTree = "<group>"; };
 		3BE210F3249B41A000D4E417 /* DisplayHymnScenarios.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayHymnScenarios.swift; sourceTree = "<group>"; };
 		3BE210F6249B421000D4E417 /* HomeViewCan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewCan.swift; sourceTree = "<group>"; };
-		3BE210F9249B592F00D4E417 /* TestHymns.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHymns.swift; sourceTree = "<group>"; };
+		3BE210F9249B592F00D4E417 /* TestImplHymns.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestImplHymns.swift; sourceTree = "<group>"; };
 		3BE210FB249B59A400D4E417 /* DisplayHymnViewCan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayHymnViewCan.swift; sourceTree = "<group>"; };
 		3BE31A3C24A4674900B1A038 /* BrowseResultsListSnapshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseResultsListSnapshots.swift; sourceTree = "<group>"; };
 		3BE31A3E24A468E400B1A038 /* SettingsSnapshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSnapshots.swift; sourceTree = "<group>"; };
@@ -604,7 +610,7 @@
 		3BE7C928249CB16B00B04A1F /* SongResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongResults.swift; sourceTree = "<group>"; };
 		3BE9EE97244AB8650098699E /* PrivacyPolicySettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyPolicySettingView.swift; sourceTree = "<group>"; };
 		3BEF3BD827E1381400467ABE /* InlineChordsViewModelSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InlineChordsViewModelSpec.swift; sourceTree = "<group>"; };
-		3BF2045B2800EE1200BA13B3 /* hymnaldb-v19.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = "hymnaldb-v19.sqlite"; sourceTree = "<group>"; };
+		3BEF7EFE2A08C02000EE79DE /* hymnaldb-v22.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = "hymnaldb-v22.sqlite"; sourceTree = "<group>"; };
 		3BF3BDC32467B9F40046228C /* HymnsRepositoryImpl_dbUninitializedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HymnsRepositoryImpl_dbUninitializedTests.swift; sourceTree = "<group>"; };
 		3BF3BDC52467C39A0046228C /* HymnsRepositoryImpl_dbInitialized_dbMissTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HymnsRepositoryImpl_dbInitialized_dbMissTests.swift; sourceTree = "<group>"; };
 		3BF699AE24417921005AFF6A /* VerseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerseView.swift; sourceTree = "<group>"; };
@@ -953,6 +959,7 @@
 			children = (
 				3B50B971243E450500EABDE4 /* RegexUtil.swift */,
 				3B877E7F245FE0FE004C10DD /* SystemUtil.swift */,
+				3BBF4C9E2A078F8300E6350B /* AnotherUtil.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -972,11 +979,11 @@
 				3B22187D247910A5009202B0 /* Application */,
 				3B5935B92435B75100E6993C /* Dependency Injection */,
 				3B59359D24355EA500E6993C /* Data */,
+				3B5322C12A0730E700D53A61 /* AppError.swift */,
 				3B3A2A0F244D7C65001BF689 /* Application+Extensions.swift */,
 				3BE50CA3296399A8001C2E66 /* Bundle+Extensions.swift */,
 				3B6DA64A24A9637C00A9277F /* ContentSizeCategory+Extensions.swift */,
 				3B877E81245FF4B4004C10DD /* Data+Extensions.swift */,
-				3B20368F248C131B00D90DF5 /* NonFatal.swift */,
 				3B25C0E22450398F00C435E1 /* String+Extensions.swift */,
 				3B67A50A244653F1004B9F4A /* View+Extensions.swift */,
 			);
@@ -1053,6 +1060,8 @@
 				3B877E872460E1AF004C10DD /* UiHymn.swift */,
 				3BF93B6027DC1ECF00EE95CA /* Chords.swift */,
 				3B90969A245F7F14000229A2 /* HymnEntity.swift */,
+				3B5322BB2A04B7AD00D53A61 /* HymnIdEntity.swift */,
+				3B5322BD2A04D51200D53A61 /* HymnReference.swift */,
 				3B451046291204140091017D /* HymnAttribute.swift */,
 				3B203685248B85D100D90DF5 /* ScriptureEntity.swift */,
 				3B203687248B864E00D90DF5 /* ScriptureResult.swift */,
@@ -1272,7 +1281,7 @@
 		3BD4F50F24689E5C00352009 /* Analytics */ = {
 			isa = PBXGroup;
 			children = (
-				3BD4F51024689E7300352009 /* AnalyticsLogger.swift */,
+				3BD4F51024689E7300352009 /* FirebaseLogger.swift */,
 				3BD4F51224689F8B00352009 /* EventType.swift */,
 			);
 			path = Analytics;
@@ -1288,7 +1297,7 @@
 				3B6AB01526126CB1003A3C68 /* HymnalApiServiceTestImpl.swift */,
 				3BB7DE4924FCC19500D4E6FB /* PdfLoaderTestImpl.swift */,
 				3B6DA64824A9287300A9277F /* TagStoreTestImpl.swift */,
-				3BE210F9249B592F00D4E417 /* TestHymns.swift */,
+				3BE210F9249B592F00D4E417 /* TestImplHymns.swift */,
 			);
 			path = "Debug Implementations";
 			sourceTree = "<group>";
@@ -1443,7 +1452,7 @@
 				B5915C6324CE900100342D7E /* firstLaunchAnimation.json */,
 				3BB931A824E3801500E0C873 /* soundCloudPlayingAnimation.json */,
 				3B1B90202429CF57009FDCC5 /* LaunchScreen.storyboard */,
-				3BF2045B2800EE1200BA13B3 /* hymnaldb-v19.sqlite */,
+				3BEF7EFE2A08C02000EE79DE /* hymnaldb-v22.sqlite */,
 				3B055C49280A4016008D575F /* songbasedb-v3.sqlite */,
 				3B1B90232429CF57009FDCC5 /* Info.plist */,
 				3B1B90162429CF55009FDCC5 /* Hymns.xcdatamodeld */,
@@ -1599,9 +1608,9 @@
 				3B08FE9A27F4F7C10091594D /* classic1151.json in Resources */,
 				3B08FE9B27F4F7C10091594D /* classic40.json in Resources */,
 				3B08FE9C27F4F7C10091594D /* classic1334.json in Resources */,
+				3BEF7EFF2A08C02000EE79DE /* hymnaldb-v22.sqlite in Resources */,
 				3B1B90222429CF57009FDCC5 /* LaunchScreen.storyboard in Resources */,
 				3BB931A924E3801500E0C873 /* soundCloudPlayingAnimation.json in Resources */,
-				3BF2045C2800EE1200BA13B3 /* hymnaldb-v19.sqlite in Resources */,
 				B5E61B34242E613D00EF497D /* Localizable.strings in Resources */,
 				3BAA65B029832B8A00B5CE3A /* Coffee Donations.storekit in Resources */,
 				3BADB429248461D1008CEDAB /* chineseSupplement216.json in Resources */,
@@ -1939,6 +1948,7 @@
 				3BA4612524771C460068F269 /* SongInfoViewModel.swift in Sources */,
 				3B020E7F251DCD0C007B7EBB /* DisplayHymnContainerView.swift in Sources */,
 				3BBCC21124DFBDE100977961 /* SoundCloudWebView.swift in Sources */,
+				3BBF4C9F2A078F8300E6350B /* AnotherUtil.swift in Sources */,
 				3B877E7E245FCE68004C10DD /* Converter.swift in Sources */,
 				B5F8C50C249288E900F22ED0 /* TagSheetViewModel.swift in Sources */,
 				B582E4412493230F00329DA5 /* ColorSelectorView.swift in Sources */,
@@ -1951,6 +1961,7 @@
 				3B21F366248720E600B4AFE0 /* SubcategoryView.swift in Sources */,
 				3B5935C42435D6BE00E6993C /* Repository+Injection.swift in Sources */,
 				3B5935A0243566A400E6993C /* VerseType.swift in Sources */,
+				3B5322BE2A04D51200D53A61 /* HymnReference.swift in Sources */,
 				3B1B90182429CF55009FDCC5 /* Hymns.xcdatamodeld in Sources */,
 				3BD4889D2A037F22005941D5 /* LineEntity.swift in Sources */,
 				3B04D2FE2489819A008C7E5E /* TagStore.swift in Sources */,
@@ -2004,7 +2015,6 @@
 				3B8DD373249F2AC2001C6A7F /* HistoryStoreTestImpl.swift in Sources */,
 				3BB1475A2955408C0021494E /* DisplayHymnBottomBar15.swift in Sources */,
 				3B369CEE246D08A50068A29C /* PDFPreloader.swift in Sources */,
-				3B203690248C131B00D90DF5 /* NonFatal.swift in Sources */,
 				3B11E2A42464AA3400F27E73 /* HymnalNetService.swift in Sources */,
 				3BD4AE9327D6BAEC00B4040A /* HymnMusicView.swift in Sources */,
 				B56305B9244223D7003BC132 /* FontViewModifier.swift in Sources */,
@@ -2039,7 +2049,7 @@
 				B5DC935C248EBD1C00BF90A5 /* MailFeedbackView.swift in Sources */,
 				3BFA66342495A453009CB0BB /* TagPillModifier.swift in Sources */,
 				3BE44363248ABBED00763B3C /* Book.swift in Sources */,
-				3BE210FA249B592F00D4E417 /* TestHymns.swift in Sources */,
+				3BE210FA249B592F00D4E417 /* TestImplHymns.swift in Sources */,
 				3BD4AE9F27D8A0A500B4040A /* InlineChordsViewModel.swift in Sources */,
 				3B87B82624493F7F00AEC7E9 /* SimpleSettingView.swift in Sources */,
 				3B43718124766700000B42AC /* Previews.swift in Sources */,
@@ -2061,6 +2071,7 @@
 				3BD768C62757646300FA4C6C /* HomeTabView.swift in Sources */,
 				3B020E85251DCD32007B7EBB /* DisplayHymnContainerViewModel.swift in Sources */,
 				3B5935BB2435B7A400E6993C /* AppDelegate+Injection.swift in Sources */,
+				3B5322BC2A04B7AD00D53A61 /* HymnIdEntity.swift in Sources */,
 				3B0B39AF243931B3003C5161 /* ErrorType.swift in Sources */,
 				3BB931A724E37F3B00E0C873 /* LottieView.swift in Sources */,
 				3B7B55A724AE863B00566808 /* BrowseViewModel.swift in Sources */,
@@ -2083,6 +2094,7 @@
 				B5C0A59E2489F2EB0048FA46 /* TagListView.swift in Sources */,
 				3B1B90152429CF55009FDCC5 /* SceneDelegate.swift in Sources */,
 				B5809DFC244F614000EF0C63 /* FavoritesViewModel.swift in Sources */,
+				3B5322C22A0730E700D53A61 /* AppError.swift in Sources */,
 				3B20368E248C0E8200D90DF5 /* ErrorView.swift in Sources */,
 				3B25C0E824503B6900C435E1 /* RecentSong.swift in Sources */,
 				3B2DA3212494C38000F5F5B1 /* TagColor.swift in Sources */,
@@ -2098,7 +2110,7 @@
 				3B43717F24764BEF000B42AC /* DisplayHymnBottomBar.swift in Sources */,
 				3BF699AF24417921005AFF6A /* VerseView.swift in Sources */,
 				3B6DA64B24A9637C00A9277F /* ContentSizeCategory+Extensions.swift in Sources */,
-				3BD4F51124689E7300352009 /* AnalyticsLogger.swift in Sources */,
+				3BD4F51124689E7300352009 /* FirebaseLogger.swift in Sources */,
 				3B877E7A245FBD31004C10DD /* NetworkBoundPublisher.swift in Sources */,
 				3B5935A62435848F00E6993C /* Datum.swift in Sources */,
 				3BA30A58278D00ED00A88807 /* FontPicker.swift in Sources */,

@@ -3,19 +3,32 @@ import Combine
 import Foundation
 
 class HymnDataStoreTestImpl: HymnDataStore {
+    static var songId: Int64 = 0
 
-    private var hymnStore = [
-        classic1151: classic1151Entity,
-        classic1152: classic1152Entity,
-        chineseSupplement216: chineseSupplement216Entity,
-        classic2: classic2Entity,
-        classic3: classic3Entity,
-        classic40: classic40Entity,
-        howardiHigsashi2: howardHigashi2Entity]
+    /// Fake storage unit that will pretend to store hymns on the disk, but really just keep it in memory.
+    private var fakeDatabase = [
+        classic1151.songId: classic1151Entity,
+        classic1152.songId: classic1152Entity,
+        chineseSupplement216.songId: chineseSupplement216Entity,
+        classic2.songId: classic2Entity,
+        classic3.songId: classic3Entity,
+        classic40.songId: classic40Entity,
+        howardiHigsashi2.songId: howardHigashi2Entity]
+
+    /// Fake storage unit that will pretend to store hymn ids on the disk, but really just keep it in memory.
+    private var fakeHymnIds = [
+        classic1151,
+        classic1152,
+        chineseSupplement216,
+        classic2,
+        classic3,
+        classic40,
+        howardiHigsashi2]
+
     private let searchStore =
         ["search param":
-            [SearchResultEntity(hymnType: .classic, hymnNumber: "1151", title: "Click me!", matchInfo: Data(repeating: 0, count: 8)),
-             SearchResultEntity(hymnType: .chinese, hymnNumber: "4", title: "Don't click!", matchInfo: Data(repeating: 1, count: 8))]]
+            [SearchResultEntity(hymnType: .classic, hymnNumber: "1151", title: "Click me!", matchInfo: Data(repeating: 0, count: 8), songId: 1),
+             SearchResultEntity(hymnType: .chinese, hymnNumber: "4", title: "Don't click!", matchInfo: Data(repeating: 1, count: 8), songId: 1)]]
     private let categories =
         [CategoryEntity(category: "category 1", subcategory: "subcategory 1", count: 5),
          CategoryEntity(category: "category 1", subcategory: "subcategory 2", count: 1),
@@ -49,28 +62,35 @@ class HymnDataStoreTestImpl: HymnDataStore {
 
     var databaseInitializedProperly: Bool = true
 
-    func saveHymn(_ entity: HymnEntity) {
-        guard let hymnType = HymnType.fromAbbreviatedValue(entity.hymnType) else {
-            fatalError()
-        }
-        let hymnIdentifier = HymnIdentifier(hymnType: hymnType, hymnNumber: entity.hymnNumber)
-        hymnStore[hymnIdentifier] = entity
+    func saveHymn(_ entity: HymnEntity) -> Int64? {
+        HymnDataStoreTestImpl.songId += 1
+        fakeDatabase[entity.id!] = entity
+        return HymnDataStoreTestImpl.songId
     }
 
-    func getHymn(_ hymnIdentifier: HymnIdentifier) -> AnyPublisher<HymnEntity?, ErrorType> {
-        Just(hymnStore[hymnIdentifier]).mapError({ _ -> ErrorType in
+    func saveHymn(_ entity: HymnIdEntity) {
+        fakeHymnIds.append(entity)
+    }
+
+    func getHymn(_ hymnIdentifier: HymnIdentifier) -> AnyPublisher<HymnReference?, ErrorType> {
+        let hymnIdEntity = fakeHymnIds.first(where: { hymnIdEntity in
+            guard let identifier = hymnIdEntity.hymnIdentifier else {
+                return false
+            }
+            return hymnIdentifier == identifier
+        })
+        guard let hymnIdEntity = hymnIdEntity, let hymnEntity = fakeDatabase[hymnIdEntity.songId] else {
+            return Just(nil).mapError({ _ -> ErrorType in
+                // This will never be triggered.
+            }).eraseToAnyPublisher()
+        }
+        return Just(HymnReference(hymnIdEntity: hymnIdEntity, hymnEntity: hymnEntity)).mapError({ _ -> ErrorType in
             // This will never be triggered.
         }).eraseToAnyPublisher()
     }
 
     func searchHymn(_ searchParamter: String) -> AnyPublisher<[SearchResultEntity], ErrorType> {
         Just(searchStore[searchParamter] ?? [SearchResultEntity]()).mapError({ _ -> ErrorType in
-            // This will never be triggered.
-        }).eraseToAnyPublisher()
-    }
-
-    func getAllCategories() -> AnyPublisher<[CategoryEntity], ErrorType> {
-        Just([CategoryEntity]()).mapError({ _ -> ErrorType in
             // This will never be triggered.
         }).eraseToAnyPublisher()
     }

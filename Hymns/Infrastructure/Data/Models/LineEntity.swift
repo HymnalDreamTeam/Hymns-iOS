@@ -6,6 +6,6 @@ struct LineEntity: Codable, Equatable {
 
     init(lineContent: String, transliteration: String? = nil) {
         self.lineContent = lineContent
-        self.transliteration = nil
+        self.transliteration = transliteration
     }
 }

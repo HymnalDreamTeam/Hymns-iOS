@@ -6,12 +6,14 @@ struct SearchResultEntity: Decodable {
     let hymnNumber: String
     let title: String
     let matchInfo: Data
+    let songId: Int
 
     enum CodingKeys: String, CodingKey {
         case hymnType = "HYMN_TYPE"
         case hymnNumber = "HYMN_NUMBER"
         case title = "SONG_TITLE"
         case matchInfo = "matchinfo(SEARCH_VIRTUAL_SONG_DATA, 's')"
+        case songId = "ID"
     }
 }
 
@@ -24,6 +26,7 @@ extension SearchResultEntity: FetchableRecord {
         // strip it out whenever possible.
         title = try container.decode(String.self, forKey: .title).replacingOccurrences(of: "Hymn: ", with: "")
         matchInfo = try container.decode(Data.self, forKey: .matchInfo)
+        songId = try container.decode(Int.self, forKey: .songId)
     }
 }
 

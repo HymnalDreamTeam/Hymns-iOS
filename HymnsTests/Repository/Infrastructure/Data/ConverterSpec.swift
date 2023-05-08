@@ -14,7 +14,7 @@ class ConverterSpec: QuickSpec {
             }
             describe("toHymnEntity") {
                 it("should convert to a valid hymn entity") {
-                    expect(try! target.toHymnEntity(hymnIdentifier: children24, hymn: children_24_hymn)).to(equal(children_24_hymn_entity))
+                    expect(try! target.toHymnEntity(hymn: children_24_hymn)).to(equal(children_24_hymn_entity))
                 }
             }
             describe("toUiHymn") {
@@ -23,30 +23,8 @@ class ConverterSpec: QuickSpec {
                         expect(try! target.toUiHymn(hymnIdentifier: classic1151, hymnEntity: nil)).to(beNil())
                     }
                 }
-                context("nil lyrics") {
-                    let nilLyrics = HymnEntityBuilder(hymnIdentifier: classic1151).build()
-                    it("should throw type conversion error") {
-                        expect {
-                            try target.toUiHymn(hymnIdentifier: classic1151, hymnEntity: nilLyrics)
-                        }.to(throwError { (error: TypeConversionError) in
-                            expect(error.triggeringError).to(matchError(ErrorType.parsing(description: "lyrics was empty")))
-                        })
-                    }
-                }
-                context("empty lyrics") {
-                    let nilLyrics = HymnEntityBuilder(hymnIdentifier: classic1151).lyrics([VerseEntity]()).build()
-                    it("should throw type conversion error") {
-                        expect {
-                            try target.toUiHymn(hymnIdentifier: classic1151, hymnEntity: nilLyrics)
-                        }.to(throwError { (error: TypeConversionError) in
-                            expect(error.triggeringError).to(matchError(ErrorType.parsing(description: "lyrics was empty")))
-                        })
-                    }
-                }
                 context("nil title") {
-                    let nilTitle = HymnEntityBuilder(hymnIdentifier: classic1151)
-                        .lyrics([VerseEntity(verseType: .verse, lineStrings: ["line 1", "line 2"])])
-                        .build()
+                    let nilTitle = HymnEntityBuilder(id: 2).build()
                     it("should throw type conversion error") {
                         expect {
                             try target.toUiHymn(hymnIdentifier: classic1151, hymnEntity: nilTitle)
@@ -56,20 +34,17 @@ class ConverterSpec: QuickSpec {
                     }
                 }
                 context("empty title") {
-                    let nilTitle = HymnEntityBuilder(hymnIdentifier: classic1151).title("")
-                        .lyrics([VerseEntity(verseType: .verse, lineStrings: ["line 1", "line 2"])])
-                        .build()
+                    let emptyTitle = HymnEntityBuilder(id: 2).title("").build()
                     it("should throw type conversion error") {
                         expect {
-                            try target.toUiHymn(hymnIdentifier: classic1151, hymnEntity: nilTitle)
+                            try target.toUiHymn(hymnIdentifier: classic1151, hymnEntity: emptyTitle)
                         }.to(throwError { (error: TypeConversionError) in
                             expect(error.triggeringError).to(matchError(ErrorType.parsing(description: "title was empty")))
                         })
                     }
                 }
                 context("filled hymn") {
-                    let filledHymn
-                        = HymnEntityBuilder(hymnIdentifier: classic1151)
+                    let filledHymn = HymnEntityBuilder(id: 2)
                         .title("Hymn: title")
                         .lyrics([VerseEntity(verseType: .verse, lineStrings: ["line 1", "line 2"])])
                         .category("This is my category")
@@ -81,21 +56,22 @@ class ConverterSpec: QuickSpec {
                         .meter("This is the meter")
                         .scriptures("This is the scriptures")
                         .hymnCode("This is the hymnCode")
-                        .pdfSheet(["Piano": "/en/hymn/h/1151/f=pdf", "Guitar": "/en/hymn/h/1151/f=pdf",
-                                  "Text": "/en/hymn/h/1151/f=gtpdf"])
+                        .pdfSheet(["Piano": "/en/hymn/h/1151/f=ppdf", "Guitar": "/en/hymn/h/1151/f=pdf",
+                                   "Text": "/en/hymn/h/1151/f=gtpdf"])
                         .languages([SongLink(reference: HymnIdentifier(hymnType: .cebuano, hymnNumber: "1151"), name: "Cebuano"),
-                                   SongLink(reference: HymnIdentifier(hymnType: .chineseSupplementSimplified, hymnNumber: "216"), name: "诗歌(简)"),
-                                   SongLink(reference: HymnIdentifier(hymnType: .tagalog, hymnNumber: "1151"), name: "Tagalog")])
+                                    SongLink(reference: HymnIdentifier(hymnType: .chineseSupplementSimplified, hymnNumber: "216"), name: "诗歌(简)"),
+                                    SongLink(reference: HymnIdentifier(hymnType: .tagalog, hymnNumber: "1151"), name: "Tagalog")])
                         .relevant([SongLink(reference: HymnIdentifier(hymnType: .classic, hymnNumber: "152"), name: "Original Tune"),
-                                  SongLink(reference: HymnIdentifier(hymnType: .newTune, hymnNumber: "152"), name: "New Tune"),
-                                  SongLink(reference: HymnIdentifier(hymnType: .classic, hymnNumber: "152b"), name: "Alternate Tune")])
+                                   SongLink(reference: HymnIdentifier(hymnType: .newTune, hymnNumber: "152"), name: "New Tune"),
+                                   SongLink(reference: HymnIdentifier(hymnType: .classic, hymnNumber: "152b"), name: "Alternate Tune")])
                         .build()
 
                     let expected
                         = UiHymn(hymnIdentifier: classic1151,
                                  title: "title",
                                  lyrics: [VerseEntity(verseType: .verse, lineStrings: ["line 1", "line 2"])],
-                                 pdfSheet: ["Piano": "/en/hymn/h/1151/f=ppdf", "Guitar": "/en/hymn/h/1151/f=pdf",
+                                 pdfSheet: ["Piano": "/en/hymn/h/1151/f=ppdf",
+                                            "Guitar": "/en/hymn/h/1151/f=pdf",
                                             "Text": "/en/hymn/h/1151/f=gtpdf"],
                                  category: "This is my category",
                                  subcategory: "This is my subcategory",

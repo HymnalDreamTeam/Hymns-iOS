@@ -1,5 +1,4 @@
 import Combine
-import FirebaseCrashlytics
 import Foundation
 import RealmSwift
 import Resolver
@@ -14,11 +13,11 @@ protocol TagStore {
 
 class TagStoreRealmImpl: TagStore {
 
-    private let analytics: AnalyticsLogger
+    private let firebaseLogger: FirebaseLogger
     private let realm: Realm
 
-    init(analytics: AnalyticsLogger = Resolver.resolve(), realm: Realm) {
-        self.analytics = analytics
+    init(firebaseLogger: FirebaseLogger = Resolver.resolve(), realm: Realm) {
+        self.firebaseLogger = firebaseLogger
         self.realm = realm
     }
 
@@ -28,7 +27,7 @@ class TagStoreRealmImpl: TagStore {
                 realm.add(TagEntity(tagObject: tag, created: Date()), update: .modified)
             }
         } catch {
-            analytics.logError(message: "error occurred when storing favorite", error: error, extraParameters: ["primaryKey": tag.primaryKey])
+            firebaseLogger.logError(message: "error occurred when storing favorite", error: error, extraParameters: ["primaryKey": tag.primaryKey])
         }
     }
 
@@ -41,7 +40,7 @@ class TagStoreRealmImpl: TagStore {
                 realm.delete(entitiesToDelete)
             }
         } catch {
-            analytics.logError(message: "error occurred when deleting tag", error: error, extraParameters: ["primaryKey": primaryKey])
+            firebaseLogger.logError(message: "error occurred when deleting tag", error: error, extraParameters: ["primaryKey": primaryKey])
         }
     }
 

@@ -30,7 +30,7 @@ extension Resolver: ResolverRegistering {
         register {NavigationCoordinator()}.scope(.application)
         register {URLSession.shared}.scope(.application)
         register {UserDefaultsManager()}.scope(.application)
-        register {AnalyticsLogger()}
+        register {FirebaseLoggerImpl() as FirebaseLogger}.scope(.application)
         register {SystemUtilImpl() as SystemUtil}.scope(.application)
         registerPDFLoader()
         registerConverters()

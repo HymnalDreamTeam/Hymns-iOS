@@ -1,4 +1,3 @@
-import FirebaseAnalytics
 import Resolver
 import SwiftUI
 
@@ -6,7 +5,10 @@ struct BrowseView: View {
 
     @ObservedObject private var viewModel: BrowseViewModel
 
-    init(viewModel: BrowseViewModel = Resolver.resolve()) {
+    private let firebaseLogger: FirebaseLogger
+
+    init(firebaseLogger: FirebaseLogger = Resolver.resolve(), viewModel: BrowseViewModel = Resolver.resolve()) {
+        self.firebaseLogger = firebaseLogger
         self.viewModel = viewModel
     }
 
@@ -21,9 +23,7 @@ struct BrowseView: View {
                 }
             }
         }.onAppear {
-            let params: [String: Any] = [
-                AnalyticsParameterScreenName: "BrowseView"]
-            Analytics.logEvent(AnalyticsEventScreenView, parameters: params)
+            firebaseLogger.logScreenView(screenName: "BrowseView")
         }
     }
 }

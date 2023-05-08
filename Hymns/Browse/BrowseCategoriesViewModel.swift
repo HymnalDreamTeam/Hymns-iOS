@@ -5,16 +5,16 @@ class BrowseCategoriesViewModel: ObservableObject {
 
     @Published var categories: [CategoryViewModel]? = [CategoryViewModel]()
 
-    private let analytics: AnalyticsLogger
+    private let analytics: FirebaseLogger
     private let backgroundQueue: DispatchQueue
     private let categoriesRepository: CategoriesRepository
-    private let hymnType: HymnType?
+    private let hymnType: HymnType
     private let mainQueue: DispatchQueue
 
     private var disposables = Set<AnyCancellable>()
 
-    init(hymnType: HymnType?,
-         analytics: AnalyticsLogger = Resolver.resolve(),
+    init(hymnType: HymnType,
+         analytics: FirebaseLogger = Resolver.resolve(),
          backgroundQueue: DispatchQueue = Resolver.resolve(name: "background"),
          categoriesRepository: CategoriesRepository = Resolver.resolve(),
          mainQueue: DispatchQueue = Resolver.resolve(name: "main")) {

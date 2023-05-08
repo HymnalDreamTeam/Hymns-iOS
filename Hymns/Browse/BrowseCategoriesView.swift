@@ -33,7 +33,7 @@ struct BrowseCategoriesView_Previews: PreviewProvider {
         let loadingViewModel = BrowseCategoriesViewModel(hymnType: .classic)
         let loading = BrowseCategoriesView(viewModel: loadingViewModel)
 
-        let resultsViewModel = BrowseCategoriesViewModel(hymnType: nil)
+        let resultsViewModel = BrowseCategoriesViewModel(hymnType: .classic)
         resultsViewModel.categories
             = [CategoryViewModel(category: "Category 1",
                                  hymnType: nil,

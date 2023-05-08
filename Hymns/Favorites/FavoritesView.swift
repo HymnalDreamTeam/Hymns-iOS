@@ -1,4 +1,3 @@
-import FirebaseAnalytics
 import Resolver
 import SwiftUI
 
@@ -7,7 +6,10 @@ struct FavoritesView: View {
     @ObservedObject private var viewModel: FavoritesViewModel
     @State private var favoriteToShow: SongResultViewModel?
 
-    init(viewModel: FavoritesViewModel = Resolver.resolve()) {
+    private let firebaseLogger: FirebaseLogger
+
+    init(firebaseLogger: FirebaseLogger = Resolver.resolve(), viewModel: FavoritesViewModel = Resolver.resolve()) {
+        self.firebaseLogger = firebaseLogger
         self.viewModel = viewModel
     }
 
@@ -46,9 +48,7 @@ struct FavoritesView: View {
                 }.listStyle(.plain).id(viewModel.favorites).resignKeyboardOnDragGesture().eraseToAnyView()
             }
         }.onAppear {
-            let params: [String: Any] = [
-                AnalyticsParameterScreenName: "FavoritesView"]
-            Analytics.logEvent(AnalyticsEventScreenView, parameters: params)
+            firebaseLogger.logScreenView(screenName: "FavoritesView")
             self.viewModel.fetchFavorites()
         }
     }

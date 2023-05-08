@@ -13,13 +13,13 @@ protocol PDFLoader {
 
 class PDFLoaderImpl: PDFLoader {
 
-    private let analytics: AnalyticsLogger
+    private let analytics: FirebaseLogger
     private let backgroundQueue: DispatchQueue
     private let mainQueue: DispatchQueue
     private let session: URLSession
     private var cache = [URL: PDFDocument]()
 
-    init(analytics: AnalyticsLogger = Resolver.resolve(),
+    init(analytics: FirebaseLogger = Resolver.resolve(),
          backgroundQueue: DispatchQueue = Resolver.resolve(name: "background"),
          mainQueue: DispatchQueue = Resolver.resolve(name: "main"),
          session: URLSession = Resolver.resolve()) {

@@ -1,5 +1,4 @@
 import AVFoundation
-import FirebaseCrashlytics
 import Combine
 import Resolver
 import SwiftUI
@@ -25,6 +24,7 @@ class AudioPlayerViewModel: NSObject, ObservableObject {
     public static let seekDuration: Float64 = 2
 
     private let backgroundQueue: DispatchQueue
+    private let firebaseLogger: FirebaseLogger
     private let mainQueue: DispatchQueue
     private let url: URL
     private let service: HymnalNetService
@@ -36,9 +36,11 @@ class AudioPlayerViewModel: NSObject, ObservableObject {
 
     init(url: URL,
          backgroundQueue: DispatchQueue = Resolver.resolve(name: "background"),
+         firebaseLogger: FirebaseLogger = Resolver.resolve(),
          mainQueue: DispatchQueue = Resolver.resolve(name: "main"),
          service: HymnalNetService = Resolver.resolve(),
          systemUtil: SystemUtil = Resolver.resolve()) {
+        self.firebaseLogger = firebaseLogger
         self.url = url
         self.mainQueue = mainQueue
         self.backgroundQueue = backgroundQueue
@@ -54,7 +56,8 @@ class AudioPlayerViewModel: NSObject, ObservableObject {
         do {
             try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback)
         } catch {
-            Crashlytics.crashlytics().record(error: NonFatal(localizedDescription: "Unable to set AVAudioSession category to \(AVAudioSession.Category.playback.rawValue)"))
+            firebaseLogger.logError(message: "Unable to set AVAudioSession category to \(AVAudioSession.Category.playback.rawValue)",
+                                    error: error)
         }
     }
 
@@ -76,7 +79,8 @@ class AudioPlayerViewModel: NSObject, ObservableObject {
                     if let failed = failed {
                         failed()
                     }
-                    Crashlytics.crashlytics().record(error: NonFatal(localizedDescription: "Failed to initialize audio player"))
+                    firebaseLogger.logError(message: "Failed to initialize audio player",
+                                            extraParameters: ["url": String(describing: url)])
                     return
                 }
                 player.delegate = self

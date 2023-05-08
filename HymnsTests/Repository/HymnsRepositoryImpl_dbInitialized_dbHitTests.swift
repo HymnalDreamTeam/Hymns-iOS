@@ -5,10 +5,11 @@ import XCTest
 
 class HymnsRepositoryImpl_dbInitialized_dbHitTests: XCTestCase {
 
-    let databaseResult = HymnEntityBuilder(hymnIdentifier: cebuano123)
-        .id(0).title("song title")
-        .lyrics([VerseEntity(verseType: .verse, lineStrings: ["line 1", "line 2"])])
-        .build()
+    let databaseResult = HymnReference(
+        hymnIdEntity: HymnIdEntity(hymnIdentifier: cebuano123, songId: 3),
+        hymnEntity: HymnEntityBuilder().title("song title")
+            .lyrics([VerseEntity(verseType: .verse, lineStrings: ["line 1", "line 2"])])
+            .build())
     let networkResult = Hymn(title: "song title", metaData: [MetaDatum](), lyrics: [Verse(verseType: .verse, verseContent: ["line 1", "line 2"])])
     let expected = UiHymn(hymnIdentifier: cebuano123, title: "song title", lyrics: [VerseEntity(verseType: .verse, lineStrings: ["line 1", "line 2"])])
 
@@ -36,7 +37,7 @@ class HymnsRepositoryImpl_dbInitialized_dbHitTests: XCTestCase {
 
     func test_getHymn_resultsCached() {
         given(systemUtil.isNetworkAvailable()) ~> false
-        given(converter.toUiHymn(hymnIdentifier: cebuano123, hymnEntity: self.databaseResult)) ~> self.expected
+        given(converter.toUiHymn(hymnIdentifier: databaseResult.hymnIdEntity.hymnIdentifier!, hymnEntity: databaseResult.hymnEntity)) ~> self.expected
 
         var set = Set<AnyCancellable>()
         // Make one request to store it the memcache.
@@ -66,7 +67,8 @@ class HymnsRepositoryImpl_dbInitialized_dbHitTests: XCTestCase {
 
         verify(dataStore.getHymn(any())).wasNeverCalled()
         verify(service.getHymn(any())).wasNeverCalled()
-        verify(dataStore.saveHymn(any())).wasNeverCalled()
+        verify(dataStore.saveHymn(any(HymnEntity.self))).wasNeverCalled()
+        verify(dataStore.saveHymn(any(HymnIdEntity.self))).wasNeverCalled()
         wait(for: [completion, value], timeout: testTimeout)
         cancellable.cancel()
     }
@@ -79,7 +81,7 @@ class HymnsRepositoryImpl_dbInitialized_dbHitTests: XCTestCase {
             // Test asynchronous data store call as well to make sure the loading values are being dropped
         }
         given(systemUtil.isNetworkAvailable()) ~> false
-        given(converter.toUiHymn(hymnIdentifier: cebuano123, hymnEntity: self.databaseResult)) ~> self.expected
+        given(converter.toUiHymn(hymnIdentifier: databaseResult.hymnIdEntity.hymnIdentifier!, hymnEntity: databaseResult.hymnEntity)) ~> self.expected
 
         let completion = expectation(description: "completion received")
         let value = expectation(description: "value received")
@@ -95,20 +97,21 @@ class HymnsRepositoryImpl_dbInitialized_dbHitTests: XCTestCase {
 
         verify(dataStore.getHymn(cebuano123)).wasCalled(exactly(1))
         verify(service.getHymn(any())).wasNeverCalled()
-        verify(dataStore.saveHymn(any())).wasNeverCalled()
+        verify(dataStore.saveHymn(any(HymnEntity.self))).wasNeverCalled()
+        verify(dataStore.saveHymn(any(HymnIdEntity.self))).wasNeverCalled()
         wait(for: [completion, value], timeout: testTimeout)
         cancellable.cancel()
     }
 
     func test_getHymn_networkAvailable_resultsSuccessful() {
         given(systemUtil.isNetworkAvailable()) ~> true
-        given(service.getHymn(cebuano123)) ~> {  _ in
+        given(service.getHymn(cebuano123)) ~> { _ in
             Just(self.networkResult).mapError({ _ -> ErrorType in
                 // This will never be triggered.
             }).eraseToAnyPublisher()
         }
-        given(converter.toUiHymn(hymnIdentifier: cebuano123, hymnEntity: self.databaseResult)) ~> self.expected
-        given(converter.toHymnEntity(hymnIdentifier: cebuano123, hymn: self.networkResult)) ~> self.databaseResult
+        given(converter.toUiHymn(hymnIdentifier: databaseResult.hymnIdEntity.hymnIdentifier!, hymnEntity: databaseResult.hymnEntity)) ~> self.expected
+        given(converter.toHymnEntity(hymn: self.networkResult)) ~> self.databaseResult.hymnEntity
 
         let completion = expectation(description: "completion received")
         let value = expectation(description: "value received")
@@ -134,7 +137,7 @@ class HymnsRepositoryImpl_dbInitialized_dbHitTests: XCTestCase {
 
     func test_getHymn_databaseConversionError_noNetwork() {
         given(systemUtil.isNetworkAvailable()) ~> false
-        given(converter.toUiHymn(hymnIdentifier: cebuano123, hymnEntity: self.databaseResult)) ~> { _, _ in
+        given(converter.toUiHymn(hymnIdentifier: databaseResult.hymnIdEntity.hymnIdentifier!, hymnEntity: databaseResult.hymnEntity)) ~> { _, _ in
             throw TypeConversionError.init(triggeringError: ErrorType.parsing(description: "failed to convert!"))
         }
 
@@ -152,20 +155,21 @@ class HymnsRepositoryImpl_dbInitialized_dbHitTests: XCTestCase {
 
         verify(dataStore.getHymn(cebuano123)).wasCalled(exactly(1))
         verify(service.getHymn(any())).wasNeverCalled()
-        verify(dataStore.saveHymn(any())).wasNeverCalled()
+        verify(dataStore.saveHymn(any(HymnEntity.self))).wasNeverCalled()
+        verify(dataStore.saveHymn(any(HymnIdEntity.self))).wasNeverCalled()
         wait(for: [completion, value], timeout: testTimeout)
         cancellable.cancel()
     }
 
     func test_getHymn_databaseConversionNil_networkAvailable() {
         given(systemUtil.isNetworkAvailable()) ~> true
-        given(service.getHymn(cebuano123)) ~> {  _ in
+        given(service.getHymn(cebuano123)) ~> { _ in
             Just(self.networkResult).mapError({ _ -> ErrorType in
                 // This will never be triggered.
             }).eraseToAnyPublisher()
         }
-        given(converter.toUiHymn(hymnIdentifier: cebuano123, hymnEntity: self.databaseResult)) ~> nil
-        given(converter.toHymnEntity(hymnIdentifier: cebuano123, hymn: self.networkResult)) ~> self.databaseResult
+        given(converter.toUiHymn(hymnIdentifier: databaseResult.hymnIdEntity.hymnIdentifier!, hymnEntity: databaseResult.hymnEntity)) ~> nil
+        given(converter.toHymnEntity(hymn: self.networkResult)) ~> self.databaseResult.hymnEntity
 
         let completion = expectation(description: "completion received")
         let value = expectation(description: "value received")
@@ -184,24 +188,22 @@ class HymnsRepositoryImpl_dbInitialized_dbHitTests: XCTestCase {
         verify(service.getHymn(cebuano123)).wasCalled(exactly(1))
         // Database conversion was mocked to return nil, but the database value returned by the mock data store is still the same as the value returned by the
         // mock network. Therefore, the actual data didn't change so we do not perform any kind of update to the data store.
-        verify(dataStore.saveHymn(self.databaseResult)).wasNeverCalled()
+        verify(dataStore.saveHymn(any(HymnEntity.self))).wasNeverCalled()
+        verify(dataStore.saveHymn(any(HymnIdEntity.self))).wasNeverCalled()
         wait(for: [completion, value], timeout: testTimeout)
         cancellable.cancel()
     }
 
     func test_getHymn_databaseConversionError_networkAvailable_resultsSuccessful() {
-        given(converter.toUiHymn(hymnIdentifier: cebuano123, hymnEntity: self.databaseResult)) ~> { _, _ in
-            throw TypeConversionError.init(triggeringError: ErrorType.parsing(description: "failed to convert!"))
-        }
+        givenSwift(dataStore.saveHymn(self.databaseResult.hymnEntity)) ~> 3
         given(systemUtil.isNetworkAvailable()) ~> true
-        given(service.getHymn(cebuano123)) ~> {  _ in
+        given(service.getHymn(cebuano123)) ~> { _ in
             return Just(self.networkResult).mapError({ _ -> ErrorType in
                 // This will never be triggered.
             }).eraseToAnyPublisher()
         }
-        given(converter.toHymnEntity(hymnIdentifier: cebuano123, hymn: self.networkResult)) ~> self.databaseResult
-
-        given(converter.toUiHymn(hymnIdentifier: cebuano123, hymnEntity: self.databaseResult)) ~> sequence(of: { _, _ in
+        given(converter.toHymnEntity(hymn: self.networkResult)) ~> self.databaseResult.hymnEntity
+        given(converter.toUiHymn(hymnIdentifier: databaseResult.hymnIdEntity.hymnIdentifier!, hymnEntity: databaseResult.hymnEntity)) ~> sequence(of: { _, _ in
             throw TypeConversionError.init(triggeringError: ErrorType.parsing(description: "failed to convert!"))
         }, { _, _ in
             return self.expected
@@ -221,7 +223,8 @@ class HymnsRepositoryImpl_dbInitialized_dbHitTests: XCTestCase {
 
         verify(dataStore.getHymn(cebuano123)).wasCalled(exactly(1))
         verify(service.getHymn(cebuano123)).wasCalled(exactly(1))
-        verify(dataStore.saveHymn(self.databaseResult)).wasCalled(exactly(1))
+        verify(dataStore.saveHymn(self.databaseResult.hymnEntity)).wasCalled(exactly(1))
+        verify(dataStore.saveHymn(self.databaseResult.hymnIdEntity)).wasCalled(exactly(1))
         wait(for: [completion, value], timeout: testTimeout)
         cancellable.cancel()
     }
