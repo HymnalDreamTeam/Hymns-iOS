@@ -5,16 +5,19 @@ import Resolver
 
 #if DEBUG
 let decoder: JSONDecoder = Resolver.resolve()
-let classic40_preview = getHymnFromJson(fileName: "classic40")
-let classic1151_preview = getHymnFromJson(fileName: "classic1151")
-let classic1334_preview = getHymnFromJson(fileName: "classic1334")
-let chineseSupplement216_preview = getHymnFromJson(fileName: "chineseSupplement216")
+let classic40_preview = getHymnEntityFromJson(fileName: "classic40")
+let classic1151_preview = getHymnEntityFromJson(fileName: "classic1151")
+let classic1334_preview = getHymnEntityFromJson(fileName: "classic1334")
+let chineseSupplement216_preview = getHymnEntityFromJson(fileName: "chineseSupplement216")
 
-func getHymnFromJson(fileName: String) -> HymnEntity {
-//    let jsonPath = Bundle.main.path(forResource: fileName, ofType: "json")!
-//    let jsonString = try! String(contentsOfFile: jsonPath)
-//    let jsonData = jsonString.data(using: .utf8)!
-//    return try! decoder.decode(Hymn.self, from: jsonData)
-    return HymnEntityBuilder().build()
+func getHymnEntityFromJson(fileName: String, converter: Converter = Resolver.resolve()) -> HymnEntity {
+    return try! converter.toHymnEntity(hymn: getHymnFromJson(fileName: fileName))
+}
+
+private func getHymnFromJson(fileName: String) -> Hymn {
+    let jsonPath = Bundle.main.path(forResource: fileName, ofType: "json")!
+    let jsonString = try! String(contentsOfFile: jsonPath)
+    let jsonData = jsonString.data(using: .utf8)!
+    return try! decoder.decode(Hymn.self, from: jsonData)
 }
 #endif
