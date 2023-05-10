@@ -4,7 +4,7 @@ import Nimble
 import Quick
 @testable import Hymns
 
-// swiftlint:disable type_body_length function_body_length file_length
+// swiftlint:disable type_body_length function_body_length
 class DisplayHymnViewModelSpec: QuickSpec {
 
     override func spec() {
@@ -32,9 +32,6 @@ class DisplayHymnViewModelSpec: QuickSpec {
                         given(hymnsRepository.getHymn(classic1151)) ~> { _ in
                             Just(nil).assertNoFailure().eraseToAnyPublisher()
                         }
-                        given(hymnsRepository.getSongbase(bookId: 2, bookIndex: 1151)) ~> { _, _ in
-                            Just(nil).assertNoFailure().eraseToAnyPublisher()
-                        }
                         given(systemUtil.isNetworkAvailable()) ~> true
                         target.fetchHymn()
                     }
@@ -56,16 +53,8 @@ class DisplayHymnViewModelSpec: QuickSpec {
                     it("should call hymnsRepository.getHymn") {
                         verify(hymnsRepository.getHymn(classic1151)).wasCalled(exactly(1))
                     }
-                    it("should call hymnsRepository.getSongbase") {
-                        verify(hymnsRepository.getSongbase(bookId: 2, bookIndex: 1151)).wasCalled(exactly(1))
-                    }
                 }
-                context("with valid repository results for data store only") {
-                    beforeEach {
-                        given(hymnsRepository.getSongbase(bookId: 2, bookIndex: 1151)) ~> { _, _ in
-                            Just(nil).assertNoFailure().eraseToAnyPublisher()
-                        }
-                    }
+                context("with valid repository results") {
                     context("for a classic hymn 1151 and store in recent songs") {
                         beforeEach {
                             target = DisplayHymnViewModel(backgroundQueue: testQueue, favoriteStore: favoriteStore,
@@ -109,9 +98,6 @@ class DisplayHymnViewModelSpec: QuickSpec {
                             }
                             it("should call hymnsRepository.getHymn") {
                                 verify(hymnsRepository.getHymn(classic1151)).wasCalled(exactly(1))
-                            }
-                            it("should call hymnsRepository.getSongbase") {
-                                verify(hymnsRepository.getSongbase(bookId: 2, bookIndex: 1151)).wasCalled(exactly(1))
                             }
                             it("should be favorited") {
                                 expect(target.isFavorited).to(beTrue())
@@ -344,18 +330,77 @@ class DisplayHymnViewModelSpec: QuickSpec {
                         }
                     }
                 }
-                context("with valid repository results for songbase only but chords weren't found") {
+                context("with only inline chords") {
                     beforeEach {
                         target = DisplayHymnViewModel(backgroundQueue: testQueue, favoriteStore: favoriteStore,
                                                       hymnToDisplay: songbase1, hymnsRepository: hymnsRepository,
                                                       historyStore: historyStore, mainQueue: testQueue,
                                                       pdfPreloader: pdfLoader, systemUtil: systemUtil, storeInHistoryStore: true)
-                        let songbaseSong = SongbaseSong(bookId: 1, bookIndex: 1, title: "Songbase song", language: "english",
-                                                        lyrics: "Songbase lyrics", chords: "Chords not found")
+                        let songbaseSong = UiHymn(hymnIdentifier: songbase1, title: "Songbase song",
+                                                  inlineChords: [ChordLine("Chords not found")])
                         given(hymnsRepository.getHymn(songbase1)) ~> { _ in
-                            Just(nil).assertNoFailure().eraseToAnyPublisher()
+                            Just(songbaseSong).assertNoFailure().eraseToAnyPublisher()
                         }
-                        given(hymnsRepository.getSongbase(bookId: 1, bookIndex: 1)) ~> { _, _ in
+                        given(systemUtil.isNetworkAvailable()) ~> true
+                    }
+                    let expectedTitle = "Songbase 1"
+                    context("is not favorited") {
+                        beforeEach {
+                            given(favoriteStore.isFavorite(hymnIdentifier: songbase1)) ~> { _ in
+                                Just(false).mapError({ _ -> ErrorType in
+                                    // This will never be triggered.
+                                }).eraseToAnyPublisher()
+                            }
+
+                            expect(target.isLoaded).to(beFalse())
+                            target.fetchHymn()
+                            testQueue.sync {}
+                            testQueue.sync {}
+                            testQueue.sync {}
+                            testQueue.sync {}
+                        }
+                        it("should be done loading") {
+                            expect(target.isLoaded).to(beTrue())
+                        }
+                        it("title should be '\(expectedTitle)'") {
+                            expect(target.title).to(equal(expectedTitle))
+                        }
+                        it("should store the song into the history store") {
+                            verify(historyStore.storeRecentSong(hymnToStore: songbase1, songTitle: "Songbase song")).wasCalled(exactly(1))
+                        }
+                        it("should not hymnsRepository.getHymn") {
+                            verify(hymnsRepository.getHymn(songbase1)).wasCalled(1)
+                        }
+                        it("should be favorited") {
+                            expect(target.isFavorited).to(beFalse())
+                        }
+                        it("should call favoriteStore.isFavorite") {
+                            verify(favoriteStore.isFavorite(hymnIdentifier: songbase1)).wasCalled(exactly(1))
+                        }
+                        it("no url should be prefetched") {
+                            verify(pdfLoader.load(url: any())).wasNeverCalled()
+                        }
+                        it("should have one tabs") {
+                            expect(target.tabItems).to(haveCount(1))
+                        }
+                        it("first tab should be music") {
+                            expect(target.tabItems[0].id).to(equal("Music"))
+                        }
+                        it("should have a bottom bar") {
+                            expect(target.bottomBar).to(equal(DisplayHymnBottomBarViewModel(hymnToDisplay: songbase1, hymn: hymn)))
+                        }
+                    }
+                }
+                context("with lyrics and inline chords") {
+                    beforeEach {
+                        target = DisplayHymnViewModel(backgroundQueue: testQueue, favoriteStore: favoriteStore,
+                                                      hymnToDisplay: songbase1, hymnsRepository: hymnsRepository,
+                                                      historyStore: historyStore, mainQueue: testQueue,
+                                                      pdfPreloader: pdfLoader, systemUtil: systemUtil, storeInHistoryStore: true)
+                        let songbaseSong = UiHymn(hymnIdentifier: songbase1, title: "Songbase song",
+                                                  lyrics: [VerseEntity(verseType: .verse, lineStrings: ["Songbase lyrics"])],
+                                                  inlineChords: [ChordLine("[G]Songbase chords")])
+                        given(hymnsRepository.getHymn(songbase1)) ~> { _ in
                             Just(songbaseSong).assertNoFailure().eraseToAnyPublisher()
                         }
                         given(systemUtil.isNetworkAvailable()) ~> true
@@ -386,10 +431,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                             verify(historyStore.storeRecentSong(hymnToStore: songbase1, songTitle: "Songbase song")).wasCalled(exactly(1))
                         }
                         it("should not call hymnsRepository.getHymn") {
-                            verify(hymnsRepository.getHymn(any())).wasNeverCalled()
-                        }
-                        it("should call hymnsRepository.getSongbase") {
-                            verify(hymnsRepository.getSongbase(bookId: 1, bookIndex: 1)).wasCalled(exactly(1))
+                            verify(hymnsRepository.getHymn(songbase1)).wasCalled(1)
                         }
                         it("should be favorited") {
                             expect(target.isFavorited).to(beTrue())
@@ -401,28 +443,29 @@ class DisplayHymnViewModelSpec: QuickSpec {
                             verify(pdfLoader.load(url: any())).wasNeverCalled()
                         }
                         it("should have one tabs") {
-                            expect(target.tabItems).to(haveCount(1))
+                            expect(target.tabItems).to(haveCount(2))
                         }
                         it("first tab should be lyrics") {
-                            expect(target.tabItems[0].id).to(equal("Music"))
+                            expect(target.tabItems[0].id).to(equal("Lyrics"))
+                        }
+                        it("second tab should be music") {
+                            expect(target.tabItems[1].id).to(equal("Music"))
                         }
                         it("should have a bottom bar") {
                             expect(target.bottomBar).to(equal(DisplayHymnBottomBarViewModel(hymnToDisplay: songbase1, hymn: hymn)))
                         }
                     }
                 }
-                context("with valid repository results for songbase only and chords were found") {
+                context("with lyrics and emptyinline chords") {
                     beforeEach {
                         target = DisplayHymnViewModel(backgroundQueue: testQueue, favoriteStore: favoriteStore,
                                                       hymnToDisplay: songbase1, hymnsRepository: hymnsRepository,
                                                       historyStore: historyStore, mainQueue: testQueue,
                                                       pdfPreloader: pdfLoader, systemUtil: systemUtil, storeInHistoryStore: true)
-                        let songbaseSong = SongbaseSong(bookId: 1, bookIndex: 1, title: "Songbase song", language: "english",
-                                                        lyrics: "Songbase lyrics", chords: "[G]Songbase chords")
+                        let songbaseSong = UiHymn(hymnIdentifier: songbase1, title: "Songbase song",
+                                                  lyrics: [VerseEntity(verseType: .verse, lineStrings: ["Songbase lyrics"])],
+                                                  inlineChords: [ChordLine]())
                         given(hymnsRepository.getHymn(songbase1)) ~> { _ in
-                            Just(nil).assertNoFailure().eraseToAnyPublisher()
-                        }
-                        given(hymnsRepository.getSongbase(bookId: 1, bookIndex: 1)) ~> { _, _ in
                             Just(songbaseSong).assertNoFailure().eraseToAnyPublisher()
                         }
                         given(systemUtil.isNetworkAvailable()) ~> true
@@ -453,10 +496,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                             verify(historyStore.storeRecentSong(hymnToStore: songbase1, songTitle: "Songbase song")).wasCalled(exactly(1))
                         }
                         it("should not call hymnsRepository.getHymn") {
-                            verify(hymnsRepository.getHymn(any())).wasNeverCalled()
-                        }
-                        it("should call hymnsRepository.getSongbase") {
-                            verify(hymnsRepository.getSongbase(bookId: 1, bookIndex: 1)).wasCalled(exactly(1))
+                            verify(hymnsRepository.getHymn(songbase1)).wasCalled(1)
                         }
                         it("should be favorited") {
                             expect(target.isFavorited).to(beTrue())
@@ -471,30 +511,27 @@ class DisplayHymnViewModelSpec: QuickSpec {
                             expect(target.tabItems).to(haveCount(1))
                         }
                         it("first tab should be lyrics") {
-                            expect(target.tabItems[0].id).to(equal("Music"))
+                            expect(target.tabItems[0].id).to(equal("Lyrics"))
                         }
                         it("should have a bottom bar") {
                             expect(target.bottomBar).to(equal(DisplayHymnBottomBarViewModel(hymnToDisplay: songbase1, hymn: hymn)))
                         }
                     }
                 }
-                context("with valid repository results from data store and songbase and chords were found") {
+                context("with inline chords and sheet music") {
                     let expectedTitle = "Hymn 1151"
                     beforeEach {
                         target = DisplayHymnViewModel(backgroundQueue: testQueue, favoriteStore: favoriteStore,
                                                       hymnToDisplay: classic1151, hymnsRepository: hymnsRepository,
                                                       historyStore: historyStore, mainQueue: testQueue,
                                                       pdfPreloader: pdfLoader, systemUtil: systemUtil, storeInHistoryStore: true)
-                        let hymn = UiHymn(hymnIdentifier: classic1151, title: "title", lyrics: [VerseEntity(verseType: .verse, lineStrings: ["verse line"])],
+                        let hymn = UiHymn(hymnIdentifier: classic1151, title: "title",
+                                          lyrics: [VerseEntity(verseType: .verse, lineStrings: ["verse line"])],
+                                          inlineChords: [ChordLine("[G]Songbase chords")],
                                           pdfSheet: ["Piano": "/en/hymn/c/1151/f=ppdf", "Guitar": "/en/hymn/c/1151/f=pdf",
                                                      "Text": "/en/hymn/c/1151/f=gtpdf"])
-                        let songbaseSong = SongbaseSong(bookId: 2, bookIndex: 1151, title: "Songbase song", language: "english",
-                                                        lyrics: "Songbase lyrics", chords: "[G]Songbase chords")
                         given(hymnsRepository.getHymn(classic1151)) ~> { _ in
                             Just(hymn).assertNoFailure().eraseToAnyPublisher()
-                        }
-                        given(hymnsRepository.getSongbase(bookId: 2, bookIndex: 1151)) ~> { _, _ in
-                            Just(songbaseSong).assertNoFailure().eraseToAnyPublisher()
                         }
                         given(systemUtil.isNetworkAvailable()) ~> true
 
@@ -519,75 +556,6 @@ class DisplayHymnViewModelSpec: QuickSpec {
                     }
                     it("should call hymnsRepository.getHymn") {
                         verify(hymnsRepository.getHymn(classic1151)).wasCalled(exactly(1))
-                    }
-                    it("should call hymnsRepository.getSongbase") {
-                        verify(hymnsRepository.getSongbase(bookId: 2, bookIndex: 1151)).wasCalled(exactly(1))
-                    }
-                    let pianoUrl = URL(string: "http://www.hymnal.net/en/hymn/c/1151/f=ppdf")!
-                    it("piano url should be prefetched") {
-                        verify(pdfLoader.load(url: pianoUrl)).wasCalled(exactly(1))
-                    }
-                    let chordsUrl = URL(string: "http://www.hymnal.net/en/hymn/c/1151/f=gtpdf")!
-                    it("chords url should be prefetched") {
-                        verify(pdfLoader.load(url: chordsUrl)).wasCalled(exactly(1))
-                    }
-                    it("should have two tabs") {
-                        expect(target.tabItems).to(haveCount(2))
-                    }
-                    it("first tab should be lyrics") {
-                        expect(target.tabItems[0].id).to(equal("Lyrics"))
-                    }
-                    it("second tab should be music") {
-                        expect(target.tabItems[1].id).to(equal("Music"))
-                    }
-                    it("should have a bottom bar") {
-                        expect(target.bottomBar).to(equal(DisplayHymnBottomBarViewModel(hymnToDisplay: classic1151, hymn: hymn)))
-                    }
-                }
-                context("with valid repository results from data store and songbase but chords weren't found") {
-                    let expectedTitle = "Hymn 1151"
-                    beforeEach {
-                        target = DisplayHymnViewModel(backgroundQueue: testQueue, favoriteStore: favoriteStore,
-                                                      hymnToDisplay: classic1151, hymnsRepository: hymnsRepository,
-                                                      historyStore: historyStore, mainQueue: testQueue,
-                                                      pdfPreloader: pdfLoader, systemUtil: systemUtil, storeInHistoryStore: true)
-                        let hymn = UiHymn(hymnIdentifier: classic1151, title: "title", lyrics: [VerseEntity(verseType: .verse, lineStrings: ["verse line"])],
-                                          pdfSheet: ["Piano": "/en/hymn/c/1151/f=ppdf", "Guitar": "/en/hymn/c/1151/f=pdf",
-                                                     "Text": "/en/hymn/c/1151/f=gtpdf"])
-                        let songbaseSong = SongbaseSong(bookId: 2, bookIndex: 1151, title: "Songbase song", language: "english",
-                                                        lyrics: "Songbase lyrics", chords: "Chordsnot found")
-                        given(hymnsRepository.getHymn(classic1151)) ~> { _ in
-                            Just(hymn).assertNoFailure().eraseToAnyPublisher()
-                        }
-                        given(hymnsRepository.getSongbase(bookId: 2, bookIndex: 1151)) ~> { _, _ in
-                            Just(songbaseSong).assertNoFailure().eraseToAnyPublisher()
-                        }
-                        given(systemUtil.isNetworkAvailable()) ~> true
-
-                        given(favoriteStore.isFavorite(hymnIdentifier: classic1151)) ~> { _ in
-                            Just(true).mapError({ _ -> ErrorType in
-                                // This will never be triggered.
-                            }).eraseToAnyPublisher()
-                        }
-
-                        expect(target.isLoaded).to(beFalse())
-                        target.fetchHymn()
-                        testQueue.sync {}
-                        testQueue.sync {}
-                        testQueue.sync {}
-                        testQueue.sync {}
-                    }
-                    it("should be done loading") {
-                        expect(target.isLoaded).to(beTrue())
-                    }
-                    it("title should be '\(expectedTitle)'") {
-                        expect(target.title).to(equal(expectedTitle))
-                    }
-                    it("should call hymnsRepository.getHymn") {
-                        verify(hymnsRepository.getHymn(classic1151)).wasCalled(exactly(1))
-                    }
-                    it("should call hymnsRepository.getSongbase") {
-                        verify(hymnsRepository.getSongbase(bookId: 2, bookIndex: 1151)).wasCalled(exactly(1))
                     }
                     let pianoUrl = URL(string: "http://www.hymnal.net/en/hymn/c/1151/f=ppdf")!
                     it("piano url should be prefetched") {

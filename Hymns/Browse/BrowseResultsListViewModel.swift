@@ -11,7 +11,6 @@ class BrowseResultsListViewModel: ObservableObject {
     private let dataStore: HymnDataStore
     private let mainQueue: DispatchQueue
     private let resultType: HymnAttribute
-    private let songbaseStore: SongbaseStore
     private let tagStore: TagStore
 
     private var disposables = Set<AnyCancellable>()
@@ -68,14 +67,12 @@ class BrowseResultsListViewModel: ObservableObject {
                  backgroundQueue: DispatchQueue = Resolver.resolve(name: "background"),
                  dataStore: HymnDataStore = Resolver.resolve(),
                  mainQueue: DispatchQueue = Resolver.resolve(name: "main"),
-                 songbaseStore: SongbaseStore = Resolver.resolve(),
                  tagStore: TagStore = Resolver.resolve()) {
         self.title = resultType.title
         self.resultType = resultType
         self.backgroundQueue = backgroundQueue
         self.dataStore = dataStore
         self.mainQueue = mainQueue
-        self.songbaseStore = songbaseStore
         self.tagStore = tagStore
     }
 
@@ -140,14 +137,7 @@ class BrowseResultsListViewModel: ObservableObject {
     }
 
     private func fetchByHymnType(_ hymnType: HymnType) {
-        // If hymnType is songbase, then use the songbase store instead of the data store.
-        let publisher = hymnType == .songbaseOther ? songbaseStore.getAllSongs().map { songbaseResults -> [SongResultEntity] in
-            songbaseResults.map { songbaseResult -> SongResultEntity in
-                SongResultEntity(hymnType: .songbaseOther, hymnNumber: String(songbaseResult.bookIndex), title: songbaseResult.title)
-            }
-        }.eraseToAnyPublisher() : dataStore.getAllSongs(hymnType: hymnType)
-
-        return publisher
+        dataStore.getAllSongs(hymnType: hymnType)
             .subscribe(on: backgroundQueue)
             .map({ songResults -> [SongResultViewModel] in
                 songResults

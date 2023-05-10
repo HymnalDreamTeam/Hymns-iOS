@@ -7,7 +7,7 @@ struct UiHymn: Equatable {
     let hymnIdentifier: HymnIdentifier
     let title: String
     let lyrics: [VerseEntity]?
-    let chords: [ChordLine]?
+    let inlineChords: [ChordLine]?
     let pdfSheet: [String: String]?
     let category: String?
     let subcategory: String?
@@ -23,14 +23,14 @@ struct UiHymn: Equatable {
     let relevant: [SongLink]?
     // add more fields as needed
 
-    init(hymnIdentifier: HymnIdentifier, title: String, lyrics: [VerseEntity]? = nil, chords: [ChordLine]? = nil,
+    init(hymnIdentifier: HymnIdentifier, title: String, lyrics: [VerseEntity]? = nil, inlineChords: [ChordLine]? = nil,
          pdfSheet: [String: String]? = nil, category: String? = nil, subcategory: String? = nil, author: String? = nil,
          composer: String? = nil, key: String? = nil, time: String? = nil, meter: String? = nil, scriptures: String? = nil,
          hymnCode: String? = nil, languages: [SongLink]? = nil, music: [String: String]? = nil, relevant: [SongLink]? = nil) {
         self.hymnIdentifier = hymnIdentifier
         self.title = title
         self.lyrics = lyrics
-        self.chords = chords
+        self.inlineChords = inlineChords
         self.pdfSheet = pdfSheet
         self.category = category
         self.subcategory = subcategory
@@ -49,7 +49,7 @@ struct UiHymn: Equatable {
     var builder: UiHymnBuilder {
         UiHymnBuilder(hymnIdentifier: hymnIdentifier, title: title)
             .lyrics(lyrics)
-            .chords(chords)
+            .inlineChords(inlineChords)
             .pdfSheet(pdfSheet)
             .category(category)
             .subcategory(subcategory)
@@ -71,7 +71,7 @@ class UiHymnBuilder {
     private (set) var hymnIdentifier: HymnIdentifier
     private (set) var title: String
     private (set) var lyrics: [VerseEntity]?
-    private (set) var chords: [ChordLine]?
+    private (set) var inlineChords: [ChordLine]?
     private (set) var pdfSheet: [String: String]?
     private (set) var category: String?
     private (set) var subcategory: String?
@@ -96,8 +96,8 @@ class UiHymnBuilder {
         return self
     }
 
-    public func chords(_ chords: [ChordLine]?) -> UiHymnBuilder {
-        self.chords = chords
+    public func inlineChords(_ inlineChords: [ChordLine]?) -> UiHymnBuilder {
+        self.inlineChords = inlineChords
         return self
     }
 
@@ -167,8 +167,8 @@ class UiHymnBuilder {
     }
 
     public func build() -> UiHymn {
-        UiHymn(hymnIdentifier: hymnIdentifier, title: title, lyrics: lyrics, chords: chords, pdfSheet: pdfSheet, category: category, subcategory: subcategory,
-               author: author, composer: composer, key: key, time: time, meter: meter, scriptures: scriptures, hymnCode: hymnCode, languages: languages,
-               music: music, relevant: relevant)
+        UiHymn(hymnIdentifier: hymnIdentifier, title: title, lyrics: lyrics, inlineChords: inlineChords, pdfSheet: pdfSheet, category: category,
+               subcategory: subcategory, author: author, composer: composer, key: key, time: time, meter: meter, scriptures: scriptures, hymnCode: hymnCode,
+               languages: languages, music: music, relevant: relevant)
     }
 }

@@ -13,7 +13,8 @@ class HymnDataStoreTestImpl: HymnDataStore {
         classic2.songId: classic2Entity,
         classic3.songId: classic3Entity,
         classic40.songId: classic40Entity,
-        howardiHigsashi2.songId: howardHigashi2Entity]
+        howardiHigsashi2.songId: howardHigashi2Entity,
+        blueSongbook2.songId: blueSongbook2Entity]
 
     /// Fake storage unit that will pretend to store hymn ids on the disk, but really just keep it in memory.
     private var fakeHymnIds = [
@@ -23,7 +24,8 @@ class HymnDataStoreTestImpl: HymnDataStore {
         classic2,
         classic3,
         classic40,
-        howardiHigsashi2]
+        howardiHigsashi2,
+        blueSongbook2]
 
     private let searchStore =
         ["search param":

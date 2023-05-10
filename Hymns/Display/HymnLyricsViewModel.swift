@@ -12,7 +12,8 @@ class HymnLyricsViewModel: ObservableObject {
 
     private var disposables = Set<AnyCancellable>()
 
-    init?(hymnToDisplay identifier: HymnIdentifier, lyrics: [VerseEntity]?, userDefaultsManager: UserDefaultsManager = Resolver.resolve()) {
+    init?(hymnToDisplay identifier: HymnIdentifier, lyrics: [VerseEntity]?,
+          userDefaultsManager: UserDefaultsManager = Resolver.resolve()) {
         self.identifier = identifier
         self.userDefaultsManager = userDefaultsManager
 
@@ -43,7 +44,9 @@ class HymnLyricsViewModel: ObservableObject {
         var verseViewModels = [VerseViewModel]()
         var verseNumber = 0
         for verse in lyrics {
-            if verse.verseType == .chorus {
+            if verse.verseType == .doNotDisplay {
+                continue
+            } else if verse.verseType == .chorus {
                 verseViewModels.append(VerseViewModel(verseNumber: NSLocalizedString("Chorus", comment: "Indicator that that the verse is of type 'chorus'."),
                                                       verseLines: verse.lines))
             } else if verse.verseType == .other {

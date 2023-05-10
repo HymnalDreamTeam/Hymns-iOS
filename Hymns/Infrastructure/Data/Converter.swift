@@ -116,6 +116,7 @@ class ConverterImpl: Converter {
         }
 
         let lyrics = hymnEntity.lyrics
+        let inlineChords = toChordLines(hymnEntity.inlineChords)
         let category = hymnEntity.category
         let subcategory = hymnEntity.subcategory
         let author = hymnEntity.author
@@ -129,10 +130,28 @@ class ConverterImpl: Converter {
         let music = hymnEntity.music
         let languages = hymnEntity.languages
         let relevant = hymnEntity.relevant
-        return UiHymn(hymnIdentifier: hymnIdentifier, title: title, lyrics: lyrics, pdfSheet: pdfSheet,
-                      category: category, subcategory: subcategory, author: author, composer: composer,
+        return UiHymn(hymnIdentifier: hymnIdentifier, title: title, lyrics: lyrics, inlineChords: inlineChords,
+                      pdfSheet: pdfSheet, category: category, subcategory: subcategory, author: author, composer: composer,
                       key: key, time: time, meter: meter, scriptures: scriptures, hymnCode: hymnCode,
                       languages: languages, music: music, relevant: relevant)
+    }
+
+    private func toChordLines(_ inlineChords: String?) -> [ChordLine]? {
+        guard let inlineChords = inlineChords else {
+            return nil
+        }
+
+        let chordLines = inlineChords.split(omittingEmptySubsequences: false, whereSeparator: \.isNewline).map {  ChordLine(String($0)) }
+
+        let chordsFound = chordLines.contains { chordLine in
+            chordLine.hasChords
+        }
+
+        if !chordsFound {
+            return nil
+        }
+
+        return chordLines
     }
 
     func toSongResultEntities(songResultsPage: SongResultsPage) -> ([SongResultEntity], Bool) {

@@ -9,6 +9,7 @@ let classic2 = HymnIdEntityBuilder(hymnIdentifier: HymnIdentifier(hymnType: .cla
 let classic3 = HymnIdEntityBuilder(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "3"), songId: 6).build()
 let classic4 = HymnIdEntityBuilder(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "4"), songId: 7).build()
 let howardiHigsashi2 = HymnIdEntityBuilder(hymnIdentifier: HymnIdentifier(hymnType: .howardHigashi, hymnNumber: "2"), songId: 8).build()
+let blueSongbook2 = HymnIdEntityBuilder(hymnIdentifier: HymnIdentifier(hymnType: .blueSongbook, hymnNumber: "2"), songId: 9).build()
 let classic1151Entity = HymnEntityBuilder(id: classic1151.songId)
     .title(Optional("Hymn: Minoru\'s song"))
     .lyrics([VerseEntity(verseType: .verse, lines: [LineEntity(lineContent: "verse 1 line 1"),
@@ -26,6 +27,7 @@ let classic1151Entity = HymnEntityBuilder(id: classic1151.songId)
                                                     LineEntity(lineContent: "verse 3 line 2"),
                                                     LineEntity(lineContent: "verse 3 line 3"),
                                                     LineEntity(lineContent: "verse 3 line 4")])])
+    .inlineChords("[G]Songbase version of Hymn 1151 chords")
     .category("song's category")
     .subcategory("song's subcategory")
     .music(["mp3": "/en/hymn/h/1151/f=mp3", "MIDI": "/en/hymn/h/1151/f=mid", "Tune (MIDI)": "/en/hymn/h/1151/f=tune"])
@@ -70,4 +72,10 @@ let howardHigashi2Entity = HymnEntityBuilder(id: howardiHigsashi2.songId)
     .lyrics([VerseEntity(verseType: .verse, lines: [LineEntity(lineContent: "howard higashi verse 1 line 2")])])
     .languages([SongLink(reference: HymnIdentifier(hymnType: .chineseSupplement, hymnNumber: "216"), name: "ZhongWen")])
     .build()
+let blueSongbook2Entity = HymnEntityBuilder(id: blueSongbook2.songId)
+    .title("Songbase version of Hymn 1151 title")
+    .lyrics([VerseEntity(verseType: .doNotDisplay, lineStrings: ["Songbase version of Hymn 1151 lyrics"])])
+    .inlineChords("[G]Songbase version of Hymn 1151 chords")
+    .build()
+
 #endif

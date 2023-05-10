@@ -6,7 +6,6 @@ import Foundation
 enum VerseType: String, Codable {
     case verse
     case chorus
+    case doNotDisplay = "do_not_display"
     case other
-
-    static let all = [verse, chorus, other]
 }

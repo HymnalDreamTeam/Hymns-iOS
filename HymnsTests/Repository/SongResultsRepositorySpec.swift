@@ -66,7 +66,6 @@ class SongResultsRepositorySpec: QuickSpec {
             var converter: ConverterMock!
             var dataStore: HymnDataStoreMock!
             var service: HymnalApiServiceMock!
-            var songbaseStore: SongbaseStoreMock!
             var systemUtil: SystemUtilMock!
             var target: SongResultsRepository!
 
@@ -76,10 +75,9 @@ class SongResultsRepositorySpec: QuickSpec {
                 converter = mock(Converter.self)
                 dataStore = mock(HymnDataStore.self)
                 service = mock(HymnalApiService.self)
-                songbaseStore = mock(SongbaseStore.self)
                 systemUtil = mock(SystemUtil.self)
                 target = SongResultsRepositoryImpl(converter: converter, dataStore: dataStore, mainQueue: backgroundQueue,
-                                                   service: service, songbaseStore: songbaseStore, systemUtil: systemUtil)
+                                                   service: service, systemUtil: systemUtil)
 
                 completion = XCTestExpectation(description: "completion received")
                 value = XCTestExpectation(description: "value received")
@@ -92,60 +90,22 @@ class SongResultsRepositorySpec: QuickSpec {
                     beforeEach {
                         given(dataStore.getDatabaseInitializedProperly()) ~> false
                     }
-                    context("songbase also not initialized properly") {
-                        beforeEach {
-                            given(songbaseStore.getDatabaseInitializedProperly()) ~> false
-                        }
-                        it("should return a failure completion") {
-                            value.isInverted = true
-                            let cancellable = target.search(searchParameter: "param", pageNumber: 1)
-                                .print(self.description)
-                                .sink(receiveCompletion: { state in
-                                    completion.fulfill()
-                                    expect(state).to(equal(.failure(.data(description: "database was not intialized properly"))))
-                                }, receiveValue: { _ in
-                                    value.fulfill()
-                                })
+                    it("should return a failure completion") {
+                        value.isInverted = true
+                        let cancellable = target.search(searchParameter: "param", pageNumber: 1)
+                            .print(self.description)
+                            .sink(receiveCompletion: { state in
+                                completion.fulfill()
+                                expect(state).to(equal(.failure(.data(description: "database was not intialized properly"))))
+                            }, receiveValue: { _ in
+                                value.fulfill()
+                            })
 
-                            verify(dataStore.getDatabaseInitializedProperly()).wasCalled(exactly(1))
-                            verify(songbaseStore.getDatabaseInitializedProperly()).wasCalled(exactly(1))
-                            verify(dataStore.searchHymn(any())).wasNeverCalled()
-                            verify(service.search(for: any(), onPage: any())).wasNeverCalled()
-                            self.wait(for: [completion, value], timeout: testTimeout)
-                            cancellable.cancel()
-                        }
-                    }
-                    context("songbase initialized properly") {
-                        beforeEach {
-                            given(songbaseStore.getDatabaseInitializedProperly()) ~> true
-                            given(songbaseStore.searchHymn("Chenaniah")) ~> { _ in
-                                Just(self.songbaseResults).mapError({ _ -> ErrorType in
-                                    // This will never be triggered.
-                                }).eraseToAnyPublisher()
-                            }
-                        }
-                        it("should only return songbase results") {
-                            // Since we're mocking out the converter, we can conveniently just return one result in the page for succinctness.
-                            let convertedResultPage = UiSongResultsPage(results: [UiSongResult(name: "classic 1151", identifier: classic1151)], hasMorePages: false)
-                            given(converter.toUiSongResultsPage(songResultsEntities: self.sortedSongbaseResults, hasMorePages: false)) ~> convertedResultPage
-
-                            let cancellable = target.search(searchParameter: "Chenaniah", pageNumber: 1)
-                                .print(self.description)
-                                .sink(receiveCompletion: { state in
-                                    completion.fulfill()
-                                    expect(state).to(equal(.finished))
-                                }, receiveValue: { page in
-                                    value.fulfill()
-                                    expect(page).to(equal(convertedResultPage))
-                                })
-                            verify(dataStore.getDatabaseInitializedProperly()).wasCalled(exactly(2))
-                            verify(songbaseStore.getDatabaseInitializedProperly()).wasCalled(exactly(2))
-                            verify(dataStore.searchHymn("Chenaniah")).wasNeverCalled()
-                            verify(songbaseStore.searchHymn("Chenaniah")).wasCalled(exactly(1))
-                            verify(service.search(for: any(), onPage: any())).wasNeverCalled()
-                            self.wait(for: [completion, value], timeout: testTimeout)
-                            cancellable.cancel()
-                        }
+                        verify(dataStore.getDatabaseInitializedProperly()).wasCalled(exactly(1))
+                        verify(dataStore.searchHymn(any())).wasNeverCalled()
+                        verify(service.search(for: any(), onPage: any())).wasNeverCalled()
+                        self.wait(for: [completion, value], timeout: testTimeout)
+                        cancellable.cancel()
                     }
                 }
                 context("data store initialized properly") {
@@ -155,65 +115,6 @@ class SongResultsRepositorySpec: QuickSpec {
                             Just(self.databaseResults).mapError({ _ -> ErrorType in
                                 // This will never be triggered.
                             }).eraseToAnyPublisher()
-                        }
-                    }
-                    context("songbase not initialized properly") {
-                        beforeEach {
-                            given(songbaseStore.getDatabaseInitializedProperly()) ~> false
-                        }
-                        it("should return only data store results") {
-                            // Since we're mocking out the converter, we can conveniently just return one result in the page for succinctness.
-                            let convertedResultPage = UiSongResultsPage(results: [UiSongResult(name: "classic 1151", identifier: classic1151)], hasMorePages: false)
-                            given(converter.toUiSongResultsPage(songResultsEntities: self.sortedDatabaseResults, hasMorePages: false)) ~> convertedResultPage
-
-                            let cancellable = target.search(searchParameter: "Chenaniah", pageNumber: 1)
-                                .print(self.description)
-                                .sink(receiveCompletion: { state in
-                                    completion.fulfill()
-                                    expect(state).to(equal(.finished))
-                                }, receiveValue: { page in
-                                    value.fulfill()
-                                    expect(page).to(equal(convertedResultPage))
-                                })
-                            verify(dataStore.getDatabaseInitializedProperly()).wasCalled(exactly(2))
-                            verify(songbaseStore.getDatabaseInitializedProperly()).wasCalled(exactly(1))
-                            verify(dataStore.searchHymn("Chenaniah")).wasCalled(exactly(1))
-                            verify(songbaseStore.searchHymn("Chenaniah")).wasNeverCalled()
-                            verify(service.search(for: any(), onPage: any())).wasNeverCalled()
-                            self.wait(for: [completion, value], timeout: testTimeout)
-                            cancellable.cancel()
-                        }
-                    }
-                    context("songbase initialized properly") {
-                        beforeEach {
-                            given(songbaseStore.getDatabaseInitializedProperly()) ~> true
-                            given(songbaseStore.searchHymn("Chenaniah")) ~> { _ in
-                                Just(self.songbaseResults).mapError({ _ -> ErrorType in
-                                    // This will never be triggered.
-                                }).eraseToAnyPublisher()
-                            }
-                        }
-                        it("should combine data store and songbase results") {
-                            // Since we're mocking out the converter, we can conveniently just return one result in the page for succinctness.
-                            let convertedResultPage = UiSongResultsPage(results: [UiSongResult(name: "classic 1151", identifier: classic1151)], hasMorePages: false)
-                            given(converter.toUiSongResultsPage(songResultsEntities: self.combinedSortedResults, hasMorePages: false)) ~> convertedResultPage
-
-                            let cancellable = target.search(searchParameter: "Chenaniah", pageNumber: 1)
-                                .print(self.description)
-                                .sink(receiveCompletion: { state in
-                                    completion.fulfill()
-                                    expect(state).to(equal(.finished))
-                                }, receiveValue: { page in
-                                    value.fulfill()
-                                    expect(page).to(equal(convertedResultPage))
-                                })
-                            verify(dataStore.getDatabaseInitializedProperly()).wasCalled(exactly(2))
-                            verify(songbaseStore.getDatabaseInitializedProperly()).wasCalled(exactly(1))
-                            verify(dataStore.searchHymn("Chenaniah")).wasCalled(exactly(1))
-                            verify(songbaseStore.searchHymn("Chenaniah")).wasCalled(exactly(1))
-                            verify(service.search(for: any(), onPage: any())).wasNeverCalled()
-                            self.wait(for: [completion, value], timeout: testTimeout)
-                            cancellable.cancel()
                         }
                     }
                 }
@@ -227,7 +128,6 @@ class SongResultsRepositorySpec: QuickSpec {
                 context("only data store initialized properly") {
                     beforeEach {
                         given(dataStore.getDatabaseInitializedProperly()) ~> true
-                        given(songbaseStore.getDatabaseInitializedProperly()) ~> false
                         given(dataStore.searchHymn("Chenaniah")) ~> { _ in
                             Just(self.databaseResults).mapError({ _ -> ErrorType in
                                 // This will never be triggered.
@@ -261,9 +161,7 @@ class SongResultsRepositorySpec: QuickSpec {
                                     expect(page).to(equal(convertedResultPage))
                                 })
                             verify(dataStore.getDatabaseInitializedProperly()).wasCalled(exactly(2))
-                            verify(songbaseStore.getDatabaseInitializedProperly()).wasCalled(exactly(1))
                             verify(dataStore.searchHymn("Chenaniah")).wasCalled(exactly(1))
-                            verify(songbaseStore.searchHymn("Chenaniah")).wasNeverCalled()
                             verify(service.search(for: "Chenaniah", onPage: 1)).wasCalled(exactly(1))
                             self.wait(for: [completion, value], timeout: testTimeout)
                             cancellable.cancel()
@@ -311,9 +209,7 @@ class SongResultsRepositorySpec: QuickSpec {
                                     }
                                 })
                             verify(dataStore.getDatabaseInitializedProperly()).wasCalled(exactly(2))
-                            verify(songbaseStore.getDatabaseInitializedProperly()).wasCalled(exactly(1))
                             verify(dataStore.searchHymn("Chenaniah")).wasCalled(exactly(1))
-                            verify(songbaseStore.searchHymn("Chenaniah")).wasNeverCalled()
                             verify(service.search(for: "Chenaniah", onPage: 1)).wasCalled(exactly(1))
                             self.wait(for: [completion, value], timeout: testTimeout)
                             cancellable.cancel()
@@ -323,7 +219,6 @@ class SongResultsRepositorySpec: QuickSpec {
                 context("data store not initialized properly") {
                     beforeEach {
                         given(dataStore.getDatabaseInitializedProperly()) ~> false
-                        given(songbaseStore.getDatabaseInitializedProperly()) ~> false
                     }
                     context("network error") {
                         beforeEach {
@@ -351,9 +246,7 @@ class SongResultsRepositorySpec: QuickSpec {
                                     value.fulfill()
                                 })
                             verify(dataStore.getDatabaseInitializedProperly()).wasCalled(exactly(1))
-                            verify(songbaseStore.getDatabaseInitializedProperly()).wasCalled(exactly(1))
                             verify(dataStore.searchHymn("Chenaniah")).wasNeverCalled()
-                            verify(songbaseStore.searchHymn("Chenaniah")).wasNeverCalled()
                             verify(service.search(for: "Chenaniah", onPage: 1)).wasCalled(exactly(1))
                             self.wait(for: [completion, value], timeout: testTimeout)
                             cancellable.cancel()
@@ -389,9 +282,7 @@ class SongResultsRepositorySpec: QuickSpec {
                                     expect(page).to(equal(convertedNetworkResultPage))
                                 })
                             verify(dataStore.getDatabaseInitializedProperly()).wasCalled(exactly(1))
-                            verify(songbaseStore.getDatabaseInitializedProperly()).wasCalled(exactly(1))
                             verify(dataStore.searchHymn("Chenaniah")).wasNeverCalled()
-                            verify(songbaseStore.searchHymn("Chenaniah")).wasNeverCalled()
                             verify(service.search(for: "Chenaniah", onPage: 1)).wasCalled(exactly(1))
                             self.wait(for: [completion, value], timeout: testTimeout)
                             cancellable.cancel()
@@ -401,7 +292,6 @@ class SongResultsRepositorySpec: QuickSpec {
                 context("data store miss") {
                     beforeEach {
                         given(dataStore.getDatabaseInitializedProperly()) ~> true
-                        given(songbaseStore.getDatabaseInitializedProperly()) ~> false
                         given(dataStore.searchHymn("Chenaniah")) ~> { _ in
                             Just([SearchResultEntity]()).mapError({ _ -> ErrorType in
                                 // This will never be triggered.
@@ -434,9 +324,7 @@ class SongResultsRepositorySpec: QuickSpec {
                                     expect(page).to(equal(emptyResultPage))
                                 })
                             verify(dataStore.getDatabaseInitializedProperly()).wasCalled(exactly(2))
-                            verify(songbaseStore.getDatabaseInitializedProperly()).wasCalled(exactly(1))
                             verify(dataStore.searchHymn("Chenaniah")).wasCalled(exactly(1))
-                            verify(songbaseStore.searchHymn("Chenaniah")).wasNeverCalled()
                             verify(service.search(for: "Chenaniah", onPage: 1)).wasCalled(exactly(1))
                             self.wait(for: [completion, value], timeout: testTimeout)
                             cancellable.cancel()
@@ -482,9 +370,7 @@ class SongResultsRepositorySpec: QuickSpec {
                                     }
                                 })
                             verify(dataStore.getDatabaseInitializedProperly()).wasCalled(exactly(2))
-                            verify(songbaseStore.getDatabaseInitializedProperly()).wasCalled(exactly(1))
                             verify(dataStore.searchHymn("Chenaniah")).wasCalled(exactly(1))
-                            verify(songbaseStore.searchHymn("Chenaniah")).wasNeverCalled()
                             verify(service.search(for: "Chenaniah", onPage: 1)).wasCalled(exactly(1))
                             self.wait(for: [completion, value], timeout: testTimeout)
                             cancellable.cancel()

@@ -27,6 +27,7 @@ class HymnLyricsViewModelSpec: QuickSpec {
             }
             context("without transliterable lyrics") {
                 let verses = [VerseEntity(verseType: .verse, lineStrings: ["line 1", "line 2"]),
+                              VerseEntity(verseType: .doNotDisplay, lineStrings: ["Should be dropped"]),
                               VerseEntity(verseType: .chorus, lineStrings: ["chorus 1", "chorus 2"])]
                 beforeEach {
                     target = HymnLyricsViewModel(hymnToDisplay: classic1151, lyrics: verses)!
@@ -89,6 +90,9 @@ class HymnLyricsViewModelSpec: QuickSpec {
             context("repeat chorus") {
                 beforeEach {
                     UserDefaults.standard.set(true, forKey: "repeat_chorus")
+                }
+                afterEach {
+                    UserDefaults.standard.removeObject(forKey: "repeat_chorus")
                 }
                 context("no chorus") {
                     let verses: [VerseEntity] = [

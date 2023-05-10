@@ -43,6 +43,74 @@ class ConverterSpec: QuickSpec {
                         })
                     }
                 }
+                describe("inline chords") {
+                    context("single line, chords not found") {
+                        let hymnEntity = HymnEntityBuilder(id: 2)
+                            .title("Hymn: title")
+                            .inlineChords("no chords found")
+                            .build()
+
+                        let expected
+                            = UiHymn(hymnIdentifier: classic1151, title: "title")
+                        it("should not set the chords field") {
+                            expect(try! target.toUiHymn(hymnIdentifier: classic1151, hymnEntity: hymnEntity)).to(equal(expected))
+                        }
+                    }
+                    context("single line, chords found") {
+                        let hymnEntity = HymnEntityBuilder(id: 2)
+                            .title("Hymn: title")
+                            .inlineChords("yes [G]chords found")
+                            .build()
+                        it("should set the chords field") {
+                            let actual = try! target.toUiHymn(hymnIdentifier: classic1151, hymnEntity: hymnEntity)!.inlineChords!
+                            expect(actual).to(haveCount(1))
+                            expect(actual[0].hasChords).to(beTrue())
+                            expect(actual[0].words).to(haveCount(3))
+                            expect(actual[0].words[0].chords).to(equal(""))
+                            expect(actual[0].words[0].word).to(equal("yes"))
+                            expect(actual[0].words[1].chords).to(equal("G"))
+                            expect(actual[0].words[1].word).to(equal("chords"))
+                            expect(actual[0].words[2].chords).to(equal(""))
+                            expect(actual[0].words[2].word).to(equal("found"))
+                        }
+                    }
+                    context("multiple lines, chords not found") {
+                        let hymnEntity = HymnEntityBuilder(id: 2)
+                            .title("Hymn: title")
+                            .inlineChords("no chords found\ndefinitely not")
+                            .build()
+
+                        let expected
+                            = UiHymn(hymnIdentifier: classic1151, title: "title")
+                        it("should not set the chords field") {
+                            expect(try! target.toUiHymn(hymnIdentifier: classic1151, hymnEntity: hymnEntity)).to(equal(expected))
+                        }
+                    }
+                    context("multiple lines, chords found") {
+                        let hymnEntity = HymnEntityBuilder(id: 2)
+                            .title("Hymn: title")
+                            .inlineChords("[G]chords found\n\nline2")
+                            .build()
+                        it("should set the chords field") {
+                            let actual = try! target.toUiHymn(hymnIdentifier: classic1151, hymnEntity: hymnEntity)!.inlineChords!
+                            expect(actual).to(haveCount(3))
+                            expect(actual[0].hasChords).to(beTrue())
+                            expect(actual[0].words).to(haveCount(2))
+                            expect(actual[0].words[0].chords).to(equal("G"))
+                            expect(actual[0].words[0].word).to(equal("chords"))
+                            expect(actual[0].words[1].chords).to(equal(""))
+                            expect(actual[0].words[1].word).to(equal("found"))
+
+                            expect(actual[1].words).to(haveCount(1))
+                            expect(actual[1].words[0].chords).to(beNil())
+                            expect(actual[1].words[0].word).to(equal(""))
+
+                            expect(actual[2].words).to(haveCount(1))
+                            expect(actual[2].words[0].chords).to(beNil())
+                            expect(actual[2].words[0].word).to(equal("line2"))
+                        }
+                    }
+                }
                 context("filled hymn") {
                     let filledHymn = HymnEntityBuilder(id: 2)
                         .title("Hymn: title")

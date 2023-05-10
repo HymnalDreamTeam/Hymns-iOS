@@ -16,7 +16,6 @@ class SongResultsRepositoryImpl: SongResultsRepository {
     private let dataStore: HymnDataStore
     private let mainQueue: DispatchQueue
     private let service: HymnalApiService
-    private let songbaseStore: SongbaseStore
     private let systemUtil: SystemUtil
 
     private var disposables = Set<AnyCancellable>()
@@ -25,20 +24,17 @@ class SongResultsRepositoryImpl: SongResultsRepository {
          dataStore: HymnDataStore = Resolver.resolve(),
          mainQueue: DispatchQueue = Resolver.resolve(name: "main"),
          service: HymnalApiService = Resolver.resolve(),
-         songbaseStore: SongbaseStore = Resolver.resolve(),
          systemUtil: SystemUtil = Resolver.resolve()) {
         self.converter = converter
         self.dataStore = dataStore
         self.mainQueue = mainQueue
         self.service = service
-        self.songbaseStore = songbaseStore
         self.systemUtil = systemUtil
     }
 
     func search(searchParameter: String, pageNumber: Int) -> AnyPublisher<UiSongResultsPage, ErrorType> {
         SearchPublisher(pageNumber: pageNumber, searchParameter: searchParameter, converter: converter,
-                        dataStore: dataStore, disposables: &disposables, service: service,
-                        songbaseStore: songbaseStore, systemUtil: systemUtil)
+                        dataStore: dataStore, disposables: &disposables, service: service, systemUtil: systemUtil)
         .eraseToAnyPublisher()
     }
 
@@ -58,26 +54,22 @@ private class SearchPublisher: NetworkBoundPublisher {
     private let pageNumber: Int
     private let searchParameter: String
     private let service: HymnalApiService
-    private let songbaseStore: SongbaseStore
     private let systemUtil: SystemUtil
 
     fileprivate init(pageNumber: Int, searchParameter: String, converter: Converter, dataStore: HymnDataStore,
-                     disposables: inout Set<AnyCancellable>, service: HymnalApiService,
-                     songbaseStore: SongbaseStore, systemUtil: SystemUtil) {
+                     disposables: inout Set<AnyCancellable>, service: HymnalApiService, systemUtil: SystemUtil) {
         self.converter = converter
         self.dataStore = dataStore
         self.disposables = disposables
         self.pageNumber = pageNumber
         self.searchParameter = searchParameter
         self.service = service
-        self.songbaseStore = songbaseStore
         self.systemUtil = systemUtil
     }
 
     func createSubscription<S>(_ subscriber: S) -> Subscription where S: Subscriber, S.Failure == ErrorType, S.Input == UIResultType {
         SearchSubscription(pageNumber: pageNumber, searchParameter: searchParameter, converter: converter, dataStore: dataStore,
-                           disposables: &disposables, service: service, songbaseStore: songbaseStore, subscriber: subscriber,
-                           systemUtil: systemUtil)
+                           disposables: &disposables, service: service, subscriber: subscriber, systemUtil: systemUtil)
     }
 }
 
@@ -89,7 +81,6 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
     private let pageNumber: Int
     private let searchParameter: String
     private let service: HymnalApiService
-    private let songbaseStore: SongbaseStore
     private let systemUtil: SystemUtil
 
     var subscriber: SubscriberType?
@@ -97,8 +88,7 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
 
     fileprivate init(pageNumber: Int, searchParameter: String, analytics: FirebaseLogger = Resolver.resolve(),
                      converter: Converter, dataStore: HymnDataStore, disposables: inout Set<AnyCancellable>,
-                     service: HymnalApiService, songbaseStore: SongbaseStore, subscriber: SubscriberType,
-                     systemUtil: SystemUtil) {
+                     service: HymnalApiService, subscriber: SubscriberType, systemUtil: SystemUtil) {
         // okay to inject analytics because wse aren't mocking it in the unit tests
         self.analytics = analytics
         self.converter = converter
@@ -107,7 +97,6 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
         self.pageNumber = pageNumber
         self.searchParameter = searchParameter
         self.service = service
-        self.songbaseStore = songbaseStore
         self.subscriber = subscriber
         self.systemUtil = systemUtil
     }
@@ -129,7 +118,7 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
     }
 
     func loadFromDatabase() -> AnyPublisher<([SongResultEntity], Bool), ErrorType> {
-        if !dataStore.databaseInitializedProperly && !songbaseStore.databaseInitializedProperly {
+        if !dataStore.databaseInitializedProperly {
             return Just<Void>(()).tryMap { _ -> ([SongResultEntity], Bool) in
                 throw ErrorType.data(description: "database was not intialized properly")
             }.mapError({ error -> ErrorType in
@@ -139,20 +128,8 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
 
         let emptyResults = Just<[SearchResultEntity]>([]) .mapError { _ -> ErrorType in }.eraseToAnyPublisher()
         let dataStoreResults = dataStore.databaseInitializedProperly ? dataStore.searchHymn(searchParameter) : emptyResults
-        let songbaseResults
-            = songbaseStore.databaseInitializedProperly ?
-                songbaseStore.searchHymn(searchParameter).map { songbaseResultEntities -> [SearchResultEntity] in
-                    songbaseResultEntities.map { songbaseResultEntity -> SearchResultEntity in
-                        SearchResultEntity(hymnType: .songbaseOther, hymnNumber: String(songbaseResultEntity.bookIndex),
-                                           title: songbaseResultEntity.title, matchInfo: songbaseResultEntity.matchInfo,
-                                           songId: 0)
-                    }
-                }.eraseToAnyPublisher() : emptyResults
 
-        return dataStoreResults.combineLatest(songbaseResults)
-            .map { combinedResults -> [SearchResultEntity] in
-                combinedResults.0 + combinedResults.1
-            }
+        return dataStoreResults
             .reduce(([SongResultEntity](), false)) { (_, searchResultEntities) -> ([SongResultEntity], Bool) in
                 let sortedSongResults = searchResultEntities.sorted { (entity1, entity2) -> Bool in
                     let rank1 = self.calculateRank(entity1.matchInfo)

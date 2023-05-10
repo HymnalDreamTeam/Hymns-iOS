@@ -56,49 +56,11 @@ class DisplayHymnViewModel: ObservableObject {
         self.storeInHistoryStore = storeInHistoryStore
     }
 
-    // swiftlint:disable:next cyclomatic_complexity
     func fetchHymn() {
         analytics.logDisplaySong(hymnIdentifier: identifier)
 
-        let hymnPublisher: AnyPublisher<UiHymn?, Never> = {
-            if identifier.hymnType != .songbaseOther {
-                return repository.getHymn(identifier)
-            } else {
-                return Just<UiHymn?>(nil).eraseToAnyPublisher()
-            }
-        }()
-        let songbasePublisher: AnyPublisher<SongbaseSong?, Never> = {
-            if let hymnType = identifier.hymnType.toSongbaseBook,
-               identifier.hymnNumber.isPositiveInteger,
-               let hymnNumber = Int(identifier.hymnNumber) {
-                return repository.getSongbase(bookId: hymnType, bookIndex: hymnNumber)
-            } else {
-                return Just<SongbaseSong?>(nil).eraseToAnyPublisher()
-            }
-        }()
-
         var latestValue: UiHymn?
-        Publishers.CombineLatest(hymnPublisher, songbasePublisher)
-            .map({ uiHymn, songbaseSong -> UiHymn? in
-                guard let songbaseSong = songbaseSong else {
-                    return uiHymn
-                }
-
-                let chordLines = songbaseSong.chords.split(omittingEmptySubsequences: false, whereSeparator: \.isNewline).map {  ChordLine(String($0)) }
-                guard let uiHymn = uiHymn else {
-                    return UiHymnBuilder(hymnIdentifier: self.identifier, title: songbaseSong.title).chords(chordLines).build()
-                }
-
-                let chordsFound = chordLines.contains { chordLine in
-                    chordLine.hasChords
-                }
-                // Songbase song found, but no chords in songbase song, so then just return without setting chords.
-                if !chordsFound {
-                    return uiHymn
-                }
-
-                return uiHymn.builder.chords(chordLines).build()
-            })
+        repository.getHymn(identifier)
             .subscribe(on: backgroundQueue)
             .receive(on: mainQueue)
             .sink(receiveCompletion: { [weak self] state in
@@ -159,8 +121,8 @@ class DisplayHymnViewModel: ObservableObject {
             self.pdfLoader.load(url: guitarUrl)
         }
 
-        if let chords = hymn.chords {
-            hymnMusic.append(.guitar(InlineChordsView(viewModel: InlineChordsViewModel(chords: chords, guitarUrl: guitarUrl)).eraseToAnyView()))
+        if let inlineChords = hymn.inlineChords, !inlineChords.isEmpty {
+            hymnMusic.append(.guitar(InlineChordsView(viewModel: InlineChordsViewModel(chords: inlineChords, guitarUrl: guitarUrl)).eraseToAnyView()))
         } else if let guitarUrl = guitarUrl {
             hymnMusic.append(.guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: guitarUrl)).eraseToAnyView()))
         }

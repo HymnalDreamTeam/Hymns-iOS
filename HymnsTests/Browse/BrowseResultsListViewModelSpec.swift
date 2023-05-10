@@ -1,4 +1,3 @@
-// swiftlint:disable file_length
 import Combine
 import Mockingbird
 import Nimble
@@ -15,19 +14,16 @@ class BrowseResultsListViewModelSpec: QuickSpec {
         describe("BrowseResultsListViewModel") {
             let testQueue = DispatchQueue(label: "test_queue")
             var dataStore: HymnDataStoreMock!
-            var songbaseStore: SongbaseStoreMock!
             var tagStore: TagStoreMock!
             var target: BrowseResultsListViewModel!
             beforeEach {
                 dataStore = mock(HymnDataStore.self)
-                songbaseStore = mock(SongbaseStore.self)
                 tagStore = mock(TagStore.self)
 
                 let test = Resolver(child: .mock)
                 test.register(name: "main") { testQueue }
                 test.register(name: "background") { testQueue }
                 test.register { dataStore as HymnDataStore }
-                test.register { songbaseStore as SongbaseStore }
                 test.register { tagStore as TagStore }
                 Resolver.root = test
             }
@@ -489,14 +485,14 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                     }
                     context("fetch songbase") {
                         beforeEach {
-                            given(songbaseStore.getAllSongs()) ~> {
-                                Just([SongbaseResultEntity(bookId: 1, bookIndex: 1, title: "First Songbase song"),
-                                      SongbaseResultEntity(bookId: 1, bookIndex: 2, title: "Second Songbase song")])
+                            given(dataStore.getAllSongs(hymnType: .blueSongbook)) ~> { _ in
+                                Just([SongResultEntity(hymnType: .blueSongbook, hymnNumber: "1", title: "First Songbase song"),
+                                      SongResultEntity(hymnType: .blueSongbook, hymnNumber: "2", title: "Second Songbase song")])
                                 .mapError({ _ -> ErrorType in
                                     // This will never be triggered.
                                 }).eraseToAnyPublisher()
                             }
-                            target = BrowseResultsListViewModel(hymnType: .songbaseOther)
+                            target = BrowseResultsListViewModel(hymnType: .blueSongbook)
                             target.fetchResults()
                             testQueue.sync {}
                             testQueue.sync {}
@@ -504,7 +500,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                             testQueue.sync {}
                         }
                         it("should set the title to the hymn type") {
-                            expect(target.title).to(equal(HymnType.songbaseOther.displayTitle))
+                            expect(target.title).to(equal(HymnType.blueSongbook.displayTitle))
                         }
                         it("should set the correct results") {
                             expect(target.songResults).toNot(beNil())

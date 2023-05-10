@@ -10,6 +10,7 @@ struct HymnEntity: Equatable {
     let id: Int64?
     let title: String?
     let lyrics: [VerseEntity]?
+    let inlineChords: String?
     let category: String?
     let subcategory: String?
     let author: String?
@@ -30,6 +31,7 @@ struct HymnEntity: Equatable {
         case id = "ID"
         case title = "SONG_TITLE"
         case lyrics = "SONG_LYRICS"
+        case inlineChords = "INLINE_CHORDS"
         case category = "SONG_META_DATA_CATEGORY"
         case subcategory = "SONG_META_DATA_SUBCATEGORY"
         case author = "SONG_META_DATA_AUTHOR"
@@ -56,6 +58,7 @@ extension HymnEntity: Codable {
         static let id = Column(CodingKeys.id)
         static let title = Column(CodingKeys.title)
         static let lyrics = Column(CodingKeys.lyrics)
+        static let inlineChords = Column(CodingKeys.inlineChords)
         static let category = Column(CodingKeys.category)
         static let subcategory = Column(CodingKeys.subcategory)
         static let author = Column(CodingKeys.author)
@@ -83,6 +86,7 @@ extension HymnEntity: FetchableRecord, MutablePersistableRecord {
         self.id = row[CodingKeys.id.rawValue]
         self.title = row[CodingKeys.title.rawValue]
         self.lyrics = try! decoder.decodeJson([VerseEntity].self, from: row[CodingKeys.lyrics.rawValue])
+        self.inlineChords = row[CodingKeys.inlineChords.rawValue]
         self.category = row[CodingKeys.category.rawValue]
         self.subcategory = row[CodingKeys.subcategory.rawValue]
         self.author = row[CodingKeys.author.rawValue]
@@ -119,6 +123,7 @@ class HymnEntityBuilder {
     private (set) var id: Int64?
     private (set) var title: String?
     private (set) var lyrics: [VerseEntity]?
+    private (set) var inlineChords: String?
     private (set) var category: String?
     private (set) var subcategory: String?
     private (set) var author: String?
@@ -142,6 +147,7 @@ class HymnEntityBuilder {
         self.id = hymnEntity.id
         self.title = hymnEntity.title
         self.lyrics = hymnEntity.lyrics
+        self.inlineChords = hymnEntity.inlineChords
         self.category = hymnEntity.category
         self.subcategory = hymnEntity.subcategory
         self.author = hymnEntity.author
@@ -170,6 +176,11 @@ class HymnEntityBuilder {
 
     public func lyrics(_ lyrics: [VerseEntity]?) -> HymnEntityBuilder {
         self.lyrics = lyrics
+        return self
+    }
+
+    public func inlineChords(_ inlineChords: String?) -> HymnEntityBuilder {
+        self.inlineChords = inlineChords
         return self
     }
 
@@ -247,6 +258,7 @@ class HymnEntityBuilder {
         HymnEntity(id: id,
                    title: title,
                    lyrics: lyrics,
+                   inlineChords: inlineChords,
                    category: category,
                    subcategory: subcategory,
                    author: author,

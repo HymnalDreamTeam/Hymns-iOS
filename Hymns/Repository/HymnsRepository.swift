@@ -8,7 +8,6 @@ import Resolver
 protocol HymnsRepository {
     func getHymn(_ hymnIdentifier: HymnIdentifier)  -> AnyPublisher<UiHymn?, Never>
     func getHymn(_ hymnIdentifier: HymnIdentifier, makeNetworkRequest: Bool)  -> AnyPublisher<UiHymn?, Never>
-    func getSongbase(bookId: Int, bookIndex: Int) -> AnyPublisher<SongbaseSong?, Never>
 }
 
 class HymnsRepositoryImpl: HymnsRepository {
@@ -18,7 +17,6 @@ class HymnsRepositoryImpl: HymnsRepository {
     private let firebaseLogger: FirebaseLogger
     private let mainQueue: DispatchQueue
     private let service: HymnalApiService
-    private let songbaseStore: SongbaseStore
     private let systemUtil: SystemUtil
 
     private var disposables = Set<AnyCancellable>()
@@ -29,14 +27,12 @@ class HymnsRepositoryImpl: HymnsRepository {
          firebaseLogger: FirebaseLogger = Resolver.resolve(),
          mainQueue: DispatchQueue = Resolver.resolve(name: "main"),
          service: HymnalApiService = Resolver.resolve(),
-         songbaseStore: SongbaseStore = Resolver.resolve(),
          systemUtil: SystemUtil = Resolver.resolve()) {
         self.converter = converter
         self.dataStore = dataStore
         self.firebaseLogger = firebaseLogger
         self.mainQueue = mainQueue
         self.service = service
-        self.songbaseStore = songbaseStore
         self.systemUtil = systemUtil
     }
 
@@ -61,10 +57,6 @@ class HymnsRepositoryImpl: HymnsRepository {
                 }
                 return hymn
         }.eraseToAnyPublisher()
-    }
-
-    func getSongbase(bookId: Int, bookIndex: Int) -> AnyPublisher<SongbaseSong?, Never> {
-        songbaseStore.getHymn(bookId: bookId, bookIndex: bookIndex).replaceError(with: nil).eraseToAnyPublisher()
     }
 }
 

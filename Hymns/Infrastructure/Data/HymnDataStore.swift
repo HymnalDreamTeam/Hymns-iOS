@@ -8,6 +8,7 @@ import Resolver
 /**
  * Service to contact the local Hymn database.
  */
+// swiftlint:disable file_length
 protocol HymnDataStore {
 
     /**
@@ -58,12 +59,11 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
         if initializeTables {
             databaseQueue.inDatabase { database in
                 do {
-                    // CREATE TABLE SONG_DATA(
+                    // CREATE TABLE IF NOT EXISTS SONG_DATA(
                     //   ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                    //   HYMN_TYPE TEXT NOT NULL,
-                    //   HYMN_NUMBER TEXT NOT NULL,
                     //   SONG_TITLE TEXT NOT NULL,
                     //   SONG_LYRICS TEXT,
+                    //   INLINE_CHORDS TEXT,
                     //   SONG_META_DATA_CATEGORY TEXT,
                     //   SONG_META_DATA_SUBCATEGORY TEXT,
                     //   SONG_META_DATA_AUTHOR TEXT,
@@ -77,12 +77,12 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
                     //   SONG_META_DATA_SVG_SHEET_MUSIC TEXT,
                     //   SONG_META_DATA_PDF_SHEET_MUSIC TEXT,
                     //   SONG_META_DATA_LANGUAGES TEXT,
-                    //   SONG_META_DATA_RELEVANT TEXT
-                    // )
+                    //   SONG_META_DATA_RELEVANT TEXT)
                     try database.create(table: HymnEntity.databaseTableName, ifNotExists: true) { table in
                         table.autoIncrementedPrimaryKey(HymnEntity.CodingKeys.id.rawValue)
                         table.column(HymnEntity.CodingKeys.title.rawValue, .text).notNull()
                         table.column(HymnEntity.CodingKeys.lyrics.rawValue, .text)
+                        table.column(HymnEntity.CodingKeys.inlineChords.rawValue, .text)
                         table.column(HymnEntity.CodingKeys.category.rawValue, .text)
                         table.column(HymnEntity.CodingKeys.subcategory.rawValue, .text)
                         table.column(HymnEntity.CodingKeys.author.rawValue, .text)
@@ -103,14 +103,13 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
                     try database.create(index: "index_SONG_DATA_ID",
                                         on: HymnEntity.databaseTableName,
                                         columns: [HymnEntity.CodingKeys.id.rawValue],
-                                        unique: false,
                                         ifNotExists: true)
 
                     // CREATE TABLE IF NOT EXISTS SONG_IDS(
                     //   HYMN_TYPE TEXT NOT NULL,
-                    //   HYMN_NUMBER` TEXT NOT NULL,
+                    //   HYMN_NUMBER TEXT NOT NULL,
                     //   SONG_ID INTEGER NOT NULL,
-                    //   PRIMARY KEY(HYMN_TYPE, HYMN_NUMBER),
+                    //   PRIMARY KEY (HYMN_TYPE, HYMN_NUMBER),
                     //   FOREIGN KEY(SONG_ID) REFERENCES SONG_DATA(ID) ON UPDATE NO ACTION ON DELETE CASCADE
                     // )
                     try database.create(table: HymnIdEntity.databaseTableName, ifNotExists: true) { table in
@@ -134,7 +133,6 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
                     try database.create(index: "index_SONG_IDS_SONG_ID",
                                         on: HymnIdEntity.databaseTableName,
                                         columns: [HymnIdEntity.CodingKeys.songId.rawValue],
-                                        unique: false,
                                         ifNotExists: true)
 
                     // CREATE VIRTUAL TABLE IF NOT EXISTS SEARCH_VIRTUAL_SONG_DATA USING FTS4(
@@ -211,7 +209,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
     }
 
     func searchHymn(_ searchParameter: String) -> AnyPublisher<[SearchResultEntity], ErrorType> {
-        let pattern = FTS3Pattern(matchingAllTokensIn: searchParameter)
+        let pattern = FTS3Pattern(matchingAnyTokenIn: searchParameter)
 
         /// For each column, the length of the longest subsequence of phrase matches that the column value has in common with the query text. For example, if a table column contains the text 'a b c d e' and the query
         /// is 'a c "d e"', then the length of the longest common subsequence is 2 (phrase "c" followed by phrase "d e").

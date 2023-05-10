@@ -15,6 +15,7 @@ class HymnDataStoreGrdbImpl_BrowseSpec: QuickSpec {
             var target: HymnDataStoreGrdbImpl!
             beforeEach {
                 // https://github.com/groue/GRDB.swift/blob/master/README.md#database-queues
+          
                 inMemoryDBQueue = DatabaseQueue()
                 firebaseLogger = mock(FirebaseLogger.self)
                 target = HymnDataStoreGrdbImpl(databaseQueue: inMemoryDBQueue, firebaseLogger: firebaseLogger, initializeTables: true)
