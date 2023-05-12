@@ -1,14 +1,18 @@
 import Combine
+import FirebaseCrashlytics
 import Foundation
 import RealmSwift
 import Resolver
 
 protocol TagStore {
     func storeTag(_ tag: Tag)
+    func storeTagEntity(_ tag: TagEntity)
     func deleteTag(_ tag: Tag)
     func getSongsByTag(_ tag: UiTag) -> AnyPublisher<[SongResultEntity], ErrorType>
     func getTagsForHymn(hymnIdentifier: HymnIdentifier) -> AnyPublisher<[Tag], ErrorType>
     func getUniqueTags() -> AnyPublisher<[UiTag], ErrorType>
+    func getAllTagEntities() -> AnyPublisher<[TagEntity], ErrorType>
+    func clear() throws
 }
 
 class TagStoreRealmImpl: TagStore {
@@ -27,7 +31,19 @@ class TagStoreRealmImpl: TagStore {
                 realm.add(TagEntity(tagObject: tag, created: Date()), update: .modified)
             }
         } catch {
-            firebaseLogger.logError(message: "error occurred when storing favorite", error: error, extraParameters: ["primaryKey": tag.primaryKey])
+            firebaseLogger.logError(message: "error occurred when storing tag", error: error,
+                                    extraParameters: ["primaryKey": tag.primaryKey])
+        }
+    }
+
+    func storeTagEntity(_ tagEntity: TagEntity) {
+        do {
+            try realm.write {
+                realm.add(tagEntity, update: .modified)
+            }
+        } catch {
+            firebaseLogger.logError(message: "error occurred when storing tag", error: error,
+                                    extraParameters: ["primaryKey": tagEntity.primaryKey])
         }
     }
 
@@ -41,6 +57,12 @@ class TagStoreRealmImpl: TagStore {
             }
         } catch {
             firebaseLogger.logError(message: "error occurred when deleting tag", error: error, extraParameters: ["primaryKey": primaryKey])
+        }
+    }
+
+    func clear() throws {
+        try realm.write {
+            realm.deleteAll()
         }
     }
 
@@ -83,6 +105,18 @@ class TagStoreRealmImpl: TagStore {
                 .data(description: error.localizedDescription)
             }).eraseToAnyPublisher()
     }
+
+    func getAllTagEntities() -> AnyPublisher<[TagEntity], ErrorType> {
+        realm.objects(TagEntity.self)
+            .collectionPublisher
+            .map { entities -> [TagEntity] in
+                entities.map { entity -> TagEntity in
+                    entity
+                }
+        }.mapError({ error -> ErrorType in
+            .data(description: error.localizedDescription)
+        }).eraseToAnyPublisher()
+    }
 }
 
 extension Resolver {
@@ -99,7 +133,9 @@ extension Resolver {
                 // Set the block which will be called automatically when opening a Realm with
                 // a schema version lower than the one set above
                 migrationBlock: { migration, oldSchemaVersion in
-                    // We've removed query parameters, so all songs with query params must be changed to its approprate 'simplified' hymn type
+                    // In version 1:
+                    //   - hymnTypeRaw has been migrated from the enum value to the HymnType's abbreviated value
+                    //   - Removed query parameters, so all songs with query params must be changed to its approprate 'simplified' hymn type
                     if oldSchemaVersion < 1 {
                         migration.enumerateObjects(ofType: TagEntity.className()) { old, new in
                             let newHymnIdentifier = old.flatMap { oldEntity in
@@ -107,13 +143,14 @@ extension Resolver {
                             }.flatMap { tag in
                                 tag["hymnIdentifierEntity"] as? MigrationObject
                             }.flatMap { hymnIdentifierEntity -> HymnIdentifier? in
-                                let hymnType = hymnIdentifierEntity["hymnTypeRaw"] as? String
+                                let hymnType = hymnIdentifierEntity["hymnTypeRaw"] as? Int
                                 let hymnNumber = hymnIdentifierEntity["hymnNumber"] as? String
                                 let queryParams = (hymnIdentifierEntity["queryParams"] as? String?)?.flatMap {$0}
 
                                 guard let hymnType = hymnType,
-                                        let hymnType = HymnType.fromAbbreviatedValue(hymnType),
+                                      let hymnType = HymnType(rawValue: hymnType),
                                         let hymnNumber = hymnNumber else {
+                                    Crashlytics.crashlytics().record(error: AppError(errorDescription: "Unable to migrate favorite \(hymnIdentifierEntity)"))
                                     return nil
                                 }
 
@@ -144,15 +181,15 @@ extension Resolver {
                                 return
                             }
 
-                            let newPrimaryKey = "\(newHymnIdentifier.hymnType.abbreviatedValue):\(newHymnIdentifier.hymnNumber):\(tag):\(tagColor)"
+                            let newPrimaryKey = "\(newHymnIdentifier.hymnType):\(newHymnIdentifier.hymnNumber):\(tag):\(tagColor)"
                             new.flatMap { newEntity in
                                 newEntity["primaryKey"] = newPrimaryKey
-                                return newEntity["recentSong"] as? MigrationObject
-                            }.flatMap { recentSong in
-                                recentSong["primaryKey"] = newPrimaryKey
-                                return recentSong["hymnIdentifierEntity"] as? MigrationObject
+                                return newEntity["tagObject"] as? MigrationObject
+                            }.flatMap { tag in
+                                tag["primaryKey"] = newPrimaryKey
+                                return tag["hymnIdentifierEntity"] as? MigrationObject
                             }.flatMap { hymnIdentifierEntity in
-                                hymnIdentifierEntity["hymnType"] = newHymnIdentifier.hymnType.abbreviatedValue
+                                hymnIdentifierEntity["hymnTypeRaw"] = newHymnIdentifier.hymnType.abbreviatedValue
                                 hymnIdentifierEntity["hymnNumber"] = newHymnIdentifier.hymnNumber
                             }
                         }

@@ -18,9 +18,7 @@ struct ScriptureEntity: Decodable, Equatable {
 extension ScriptureEntity: FetchableRecord {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        // Many hymn titles prepend "Hymn: " to the title. It is unnecessary and takes up screen space, so  we
-        // strip it out whenever possible.
-        title = try container.decode(String.self, forKey: .title).replacingOccurrences(of: "Hymn: ", with: "")
+        title = try container.decode(String.self, forKey: .title)
         hymnType = try container.decode(HymnType.self, forKey: .hymnType)
         hymnNumber = try container.decode(String.self, forKey: .hymnNumber)
         scriptures = try container.decode(String.self, forKey: .scriptures)

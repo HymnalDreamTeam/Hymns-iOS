@@ -1,6 +1,7 @@
 #if DEBUG
 import Combine
 import Foundation
+import RealmSwift
 
 class FavoriteStoreTestImpl: FavoriteStore {
 
@@ -18,10 +19,23 @@ class FavoriteStoreTestImpl: FavoriteStore {
         }
     }
 
+    func clear() {
+        entities.removeAll()
+    }
+
     func favorites() -> AnyPublisher<[FavoriteEntity], ErrorType> {
         Just(entities).mapError({ _ -> ErrorType in
             // This will never be triggered.
         }).eraseToAnyPublisher()
+    }
+
+    func favoritesSync() -> Results<FavoriteEntity> {
+        // swiftlint:disable:next force_try
+        let favorites = try! Realm().objects(FavoriteEntity.self)
+        entities.forEach { entity in
+            favorites.realm!.add(entity)
+        }
+        return favorites
     }
 
     func isFavorite(hymnIdentifier: HymnIdentifier) -> AnyPublisher<Bool, ErrorType> {

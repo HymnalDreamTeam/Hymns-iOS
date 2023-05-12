@@ -51,7 +51,7 @@ class ConverterSpec: QuickSpec {
                             .build()
 
                         let expected
-                            = UiHymn(hymnIdentifier: classic1151, title: "title")
+                            = UiHymn(hymnIdentifier: classic1151, title: "Hymn: title")
                         it("should not set the chords field") {
                             expect(try! target.toUiHymn(hymnIdentifier: classic1151, hymnEntity: hymnEntity)).to(equal(expected))
                         }
@@ -81,7 +81,7 @@ class ConverterSpec: QuickSpec {
                             .build()
 
                         let expected
-                            = UiHymn(hymnIdentifier: classic1151, title: "title")
+                            = UiHymn(hymnIdentifier: classic1151, title: "Hymn: title")
                         it("should not set the chords field") {
                             expect(try! target.toUiHymn(hymnIdentifier: classic1151, hymnEntity: hymnEntity)).to(equal(expected))
                         }
@@ -113,7 +113,7 @@ class ConverterSpec: QuickSpec {
                 }
                 context("filled hymn") {
                     let filledHymn = HymnEntityBuilder(id: 2)
-                        .title("Hymn: title")
+                        .title("title")
                         .lyrics([VerseEntity(verseType: .verse, lineStrings: ["line 1", "line 2"])])
                         .category("This is my category")
                         .subcategory("This is my subcategory")

@@ -1,8 +1,7 @@
 import Foundation
 
-/**
- * Represents the type of a hymn.
- */
+/// Represents the type of a hymn.
+/// Note: Must keep this ordering because some versions of favorites/tags/history database rely on the numbering, and it may mess up migration for devices on those versions.
 @objc enum HymnType: Int {
     case classic
     case newTune
@@ -12,9 +11,7 @@ import Foundation
     case dutch
     case german
     case chinese
-    case chineseSimplified
     case chineseSupplement
-    case chineseSupplementSimplified
     case cebuano
     case tagalog
     case french
@@ -24,9 +21,11 @@ import Foundation
     case indonesian
     case farsi
     case russian
+    case blueSongbook
+    case chineseSimplified
+    case chineseSupplementSimplified
     case beFilled
     case liederbuch
-    case blueSongbook
     case songbaseOther // Uncategorized songbase songs.
 
     static var allCases: [HymnType] {

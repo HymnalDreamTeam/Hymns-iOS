@@ -4,7 +4,7 @@ import Nimble
 import Quick
 @testable import Hymns
 
-// swiftlint:disable type_body_length function_body_length
+// swiftlint:disable type_body_length function_body_length file_length
 class DisplayHymnViewModelSpec: QuickSpec {
 
     override func spec() {

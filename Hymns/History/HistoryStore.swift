@@ -1,4 +1,5 @@
 import Combine
+import FirebaseCrashlytics
 import Foundation
 import RealmSwift
 import Resolver
@@ -63,7 +64,8 @@ class HistoryStoreRealmImpl: HistoryStore {
                 }
             }
         } catch {
-            firebaseLogger.logError(message: "error occurred when storing recent song", error: error, extraParameters: ["hymnIdentifier": String(describing: hymnIdentifier), "title": songTitle])
+            firebaseLogger.logError(message: "error occurred when storing recent song", error: error,
+                                    extraParameters: ["hymnIdentifier": String(describing: hymnIdentifier), "title": songTitle])
         }
     }
 
@@ -90,7 +92,9 @@ extension Resolver {
                 // Set the block which will be called automatically when opening a Realm with
                 // a schema version lower than the one set above
                 migrationBlock: { migration, oldSchemaVersion in
-                    // We've removed query parameters, so all songs with query params must be changed to its approprate 'simplified' hymn type
+                    // In version 2:
+                    //   - hymnTypeRaw has been migrated from the enum value to the HymnType's abbreviated value
+                    //   - Removed query parameters, so all songs with query params must be changed to its approprate 'simplified' hymn type
                     if oldSchemaVersion < 2 {
                         migration.enumerateObjects(ofType: RecentSongEntity.className()) { old, new in
                             let newHymnIdentifier = old.flatMap { oldEntity in
@@ -98,13 +102,14 @@ extension Resolver {
                             }.flatMap { recentSong in
                                 recentSong["hymnIdentifierEntity"] as? MigrationObject
                             }.flatMap { hymnIdentifierEntity -> HymnIdentifier? in
-                                let hymnType = hymnIdentifierEntity["hymnTypeRaw"] as? String
+                                let hymnType = hymnIdentifierEntity["hymnTypeRaw"] as? Int
                                 let hymnNumber = hymnIdentifierEntity["hymnNumber"] as? String
                                 let queryParams = (hymnIdentifierEntity["queryParams"] as? String?)?.flatMap {$0}
 
                                 guard let hymnType = hymnType,
-                                        let hymnType = HymnType.fromAbbreviatedValue(hymnType),
+                                      let hymnType = HymnType(rawValue: hymnType),
                                         let hymnNumber = hymnNumber else {
+                                    Crashlytics.crashlytics().record(error: AppError(errorDescription: "Unable to migrate favorite \(hymnIdentifierEntity)"))
                                     return nil
                                 }
 
@@ -131,7 +136,7 @@ extension Resolver {
                                 recentSong["primaryKey"] = newPrimaryKey
                                 return recentSong["hymnIdentifierEntity"] as? MigrationObject
                             }.flatMap { hymnIdentifierEntity in
-                                hymnIdentifierEntity["hymnType"] = newHymnIdentifier.hymnType.abbreviatedValue
+                                hymnIdentifierEntity["hymnTypeRaw"] = newHymnIdentifier.hymnType.abbreviatedValue
                                 hymnIdentifierEntity["hymnNumber"] = newHymnIdentifier.hymnNumber
                             }
                         }

@@ -3,41 +3,41 @@ import SwiftUI
 
 struct LaunchRouterView: View {
 
+    @ObservedObject private var viewModel: LaunchRouterViewModel
+
+    @AppStorage("favorites_migrated") var favoritesMigrated = false
+    @AppStorage("tags_migrated") var tagsMigrated = false
+    @AppStorage("history_migrated") var historyMigrated = false
+
+    private let firebaseLogger: FirebaseLogger
     private let userDefaultsManager: UserDefaultsManager
     private let systemUtil: SystemUtil
 
-    @State var showSplashAnimation: Bool {
-        willSet {
-            userDefaultsManager.showSplashAnimation = newValue
-        }
-    }
-
-    init(userDefaultsManager: UserDefaultsManager = Resolver.resolve(),
-         systemUtil: SystemUtil = Resolver.resolve()) {
+    init(firebaseLogger: FirebaseLogger = Resolver.resolve(),
+         userDefaultsManager: UserDefaultsManager = Resolver.resolve(),
+         systemUtil: SystemUtil = Resolver.resolve(),
+         viewModel: LaunchRouterViewModel) {
+        self.firebaseLogger = firebaseLogger
         self.userDefaultsManager = userDefaultsManager
         self.systemUtil = systemUtil
-        self._showSplashAnimation = .init(initialValue: userDefaultsManager.showSplashAnimation)
+        self.viewModel = viewModel
     }
 
     var body: some View {
         Group { () -> AnyView in
-            if showSplashAnimation {
-                return LottieView(fileName: "firstLaunchAnimation")
-                    .onAppear {
-                        // inspiration: https://www.raywenderlich.com/4503153-how-to-create-a-splash-screen-with-swiftui
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.7) {
-                            self.showSplashAnimation = false
-                        }
-                }.eraseToAnyView()
-            } else {
+            if viewModel.oldDatabaseFilesDeleted && favoritesMigrated && tagsMigrated && historyMigrated {
                 if #available(iOS 16, *) {
                     return HomeContainerView().eraseToAnyView()
                 } else {
                     return HomeContainerView15().eraseToAnyView()
                 }
+            } else {
+                return LottieView(fileName: "firstLaunchAnimation", shouldLoop: true).eraseToAnyView()
             }
         }.task {
-            await systemUtil.loadDonationProducts()
+            await viewModel.preloadDonationProducts()
+            await viewModel.deleteOldDatabaseFiles()
+            await viewModel.migrateSongbaseV3()
         }
     }
 }

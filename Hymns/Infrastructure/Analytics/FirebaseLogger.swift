@@ -7,6 +7,7 @@ import Resolver
  * Wrapper for `FirebaseAnalytics` and `FirebaseCrashLyrics` to help keep track of what we are logging and analyzing.
  */
 protocol FirebaseLogger {
+    func logLaunchTask(description: String)
     func logScreenView(screenName: String)
     func logSearchActive(isActive: Bool)
     func logQueryChanged(queryText: String)
@@ -31,6 +32,14 @@ class FirebaseLoggerImpl: FirebaseLogger {
 
     init(backgroundThread: DispatchQueue = Resolver.resolve(name: "background")) {
         self.backgroundThread = backgroundThread
+    }
+
+    func logLaunchTask(description: String) {
+        backgroundThread.async {
+            Analytics.logEvent(LaunchTask.name, parameters: [
+                LaunchTask.Params.description.rawValue: description
+            ])
+        }
     }
 
     func logScreenView(screenName: String) {

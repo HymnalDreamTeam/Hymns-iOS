@@ -28,6 +28,10 @@ class RecentSong: Object {
     override var hash: Int {
         primaryKey.hash + hymnIdentifierEntity.hash + songTitle.hash
     }
+
+    func copy() -> RecentSong {
+        return RecentSong(hymnIdentifier: hymnIdentifierEntity.hymnIdentifier, songTitle: songTitle)
+    }
 }
 
 class RecentSongEntity: Object {
