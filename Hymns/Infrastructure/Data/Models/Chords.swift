@@ -4,13 +4,10 @@ import Resolver
 
 struct ChordLine: Identifiable {
 
-    // Separates line out into words.
-    // Note: ?: represents a non-matching group. i.e. the regex matches,
-    //       but the range isn't extracted.
-    // (?:\\[.*?\\])? --> optionally extracts chord (non-matching)
-    // \\S+ --> one or more non-whitespace characters
-    private static let separatorPattern = "(?:\\[.*?\\])?\\S+"
-    private static let chordsPattern = "\\[(.*?)\\]"
+    // Separates chord line out into words.
+    // Note: ?: represents a non-matching group. i.e. the regex matches, but the range isn't extracted.
+    private static let separatorPattern = "(\\S*(?:\\[.*?])\\S*|\\S+)"
+    private static let chordsPattern = "\\[(.*?)]"
 
     var id = UUID()
 

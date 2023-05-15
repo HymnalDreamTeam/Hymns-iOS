@@ -47,6 +47,16 @@ class ChordsSpec: QuickSpec {
                     expect(target.words.map { $0.chords! }).to(equal(["  G", "Am - C", "", "D", "G  C", "G"]))
                 }
             }
+            context("long chords in middle of word") {
+                beforeEach {
+                    target = ChordLine("  [G]Exercise your [A]spirit in this w[D  G-D  G-D  G-D]ay.")
+                }
+                it("should extract the chords out into correct ChordWords") {
+                    expect(target.words).to(haveCount(6))
+                    expect(target.words.map { $0.word }).to(equal(["Exercise", "your", "spirit", "in", "this", "way."]))
+                    expect(target.words.map { $0.chords! }).to(equal(["G", "", "A", "", "", " D  G-D  G-D  G-D"]))
+                }
+            }
         }
         describe("ChordWord") {
             var target: ChordWord!
