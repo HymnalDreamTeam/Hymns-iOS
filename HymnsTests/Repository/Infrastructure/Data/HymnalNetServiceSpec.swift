@@ -42,7 +42,7 @@ class HymnalNetServiceSpec: QuickSpec {
                                 value.fulfill()
                                 return
                             })
-                    self.wait(for: [failure, value], timeout: testTimeout)
+                    await self.fulfillment(of: [failure, value], timeout: testTimeout)
                     cancellable.cancel()
                 }
             }
@@ -69,7 +69,7 @@ class HymnalNetServiceSpec: QuickSpec {
                                 value.fulfill()
                                 expect(actual).to(equal(expected))
                             })
-                    self.wait(for: [finished, value], timeout: testTimeout)
+                    await self.fulfillment(of: [finished, value], timeout: testTimeout)
                     cancellable.cancel()
                 }
             }

@@ -50,19 +50,28 @@ extension HymnIdentifier: Codable {
     }
 }
 
-// TODO combine with HymnIdEntity
 class HymnIdentifierEntity: Object {
     // https://stackoverflow.com/questions/29123245/using-enum-as-property-of-realm-model
-    @objc dynamic private var hymnTypeRaw = HymnType.classic.rawValue
+    @objc dynamic private var hymnTypeRaw = HymnType.classic.abbreviatedValue
     var hymnType: HymnType {
         get {
-            return HymnType(rawValue: hymnTypeRaw)!
+            return HymnType.fromAbbreviatedValue(hymnTypeRaw)!
         }
         set {
-            hymnTypeRaw = newValue.rawValue
+            hymnTypeRaw = newValue.abbreviatedValue
         }
     }
     @objc dynamic var hymnNumber: String = ""
+
+    var hymnIdentifier: HymnIdentifier {
+        get {
+            HymnIdentifier(hymnType: hymnType, hymnNumber: hymnNumber)
+        }
+        set {
+            hymnTypeRaw = newValue.hymnType.abbreviatedValue
+            hymnNumber = newValue.hymnNumber
+        }
+    }
 
     override required init() {
         super.init()

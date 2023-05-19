@@ -1,4 +1,5 @@
 import Combine
+import FirebaseCrashlytics
 import Foundation
 import RealmSwift
 import Resolver
@@ -6,6 +7,8 @@ import Resolver
 protocol FavoriteStore {
     func storeFavorite(_ entity: FavoriteEntity)
     func deleteFavorite(primaryKey: String)
+    func clear()
+    func favoritesSync() -> Results<FavoriteEntity>
     func favorites() -> AnyPublisher<[FavoriteEntity], ErrorType>
     func isFavorite(hymnIdentifier: HymnIdentifier) -> AnyPublisher<Bool, ErrorType>
 }
@@ -41,7 +44,18 @@ class FavoriteStoreRealmImpl: FavoriteStore {
                 realm.delete(entityToDelete)
             }
         } catch {
-            firebaseLogger.logError(message: "error orccured when deleting favorite", error: error, extraParameters: ["primaryKey": primaryKey])
+            firebaseLogger.logError(message: "error orccured when deleting favorite",
+                                    error: error, extraParameters: ["primaryKey": primaryKey])
+        }
+    }
+
+    func clear() {
+        do {
+            try realm.write {
+                realm.deleteAll()
+            }
+        } catch {
+            firebaseLogger.logError(message: "error orccured when clearing favorites table", error: error)
         }
     }
 
@@ -54,6 +68,10 @@ class FavoriteStoreRealmImpl: FavoriteStore {
             }).mapError({ error -> ErrorType in
                 .data(description: error.localizedDescription)
             }).eraseToAnyPublisher()
+    }
+
+    func favoritesSync() -> Results<FavoriteEntity> {
+        realm.objects(FavoriteEntity.self)
     }
 
     func isFavorite(hymnIdentifier: HymnIdentifier) -> AnyPublisher<Bool, ErrorType> {
@@ -84,19 +102,22 @@ extension Resolver {
                 // Set the block which will be called automatically when opening a Realm with
                 // a schema version lower than the one set above
                 migrationBlock: { migration, oldSchemaVersion in
-                    // We've removed query parameters, so all songs with query params must be changed to its approprate 'simplified' hymn type
+                    // In version 1:
+                    //   - hymnTypeRaw has been migrated from the enum value to the HymnType's abbreviated value
+                    //   - Removed query parameters, so all songs with query params must be changed to its approprate 'simplified' hymn type
                     if oldSchemaVersion < 1 {
                         migration.enumerateObjects(ofType: FavoriteEntity.className()) { old, new in
                             let newHymnIdentifier = old.flatMap { oldEntity in
                                 oldEntity["hymnIdentifierEntity"] as? MigrationObject
                             }.flatMap { hymnIdentifierEntity -> HymnIdentifier? in
-                                let hymnType = hymnIdentifierEntity["hymnTypeRaw"] as? String
+                                let hymnType = hymnIdentifierEntity["hymnTypeRaw"] as? Int
                                 let hymnNumber = hymnIdentifierEntity["hymnNumber"] as? String
                                 let queryParams = (hymnIdentifierEntity["queryParams"] as? String?)?.flatMap {$0}
 
                                 guard let hymnType = hymnType,
-                                        let hymnType = HymnType.fromAbbreviatedValue(hymnType),
+                                      let hymnType = HymnType(rawValue: hymnType),
                                         let hymnNumber = hymnNumber else {
+                                    Crashlytics.crashlytics().record(error: AppError(errorDescription: "Unable to migrate favorite \(hymnIdentifierEntity)"))
                                     return nil
                                 }
 
@@ -120,7 +141,7 @@ extension Resolver {
                                 newEntity["primaryKey"] = newPrimaryKey
                                 return newEntity["hymnIdentifierEntity"] as? MigrationObject
                             }.flatMap { hymnIdentifierEntity in
-                                hymnIdentifierEntity["hymnType"] = newHymnIdentifier.hymnType.abbreviatedValue
+                                hymnIdentifierEntity["hymnTypeRaw"] = newHymnIdentifier.hymnType.abbreviatedValue
                                 hymnIdentifierEntity["hymnNumber"] = newHymnIdentifier.hymnNumber
                             }
                         }

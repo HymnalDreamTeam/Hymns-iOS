@@ -22,7 +22,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Add `@Environment(\.managedObjectContext)` in the views that will need the context.
 
         #if DEBUG
-        var rootView = LaunchRouterView().environment(\.managedObjectContext, context).eraseToAnyView()
+        var rootView = LaunchRouterView(viewModel: LaunchRouterViewModel()).environment(\.managedObjectContext, context).eraseToAnyView()
 
         let isTesting = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil || CommandLine.arguments.contains(AppDelegate.uiTestingFlag)
         // If we are in a test, then we go straight to the home container and we skip the launcher

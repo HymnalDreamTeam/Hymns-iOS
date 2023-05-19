@@ -5,6 +5,9 @@ import GRDB
 import GRDBCombine
 import Resolver
 
+// swiftlint:disable:next identifier_name
+let HYMN_DATA_STORE_VERISON = 23
+
 /**
  * Service to contact the local Hymn database.
  */
@@ -19,6 +22,7 @@ protocol HymnDataStore {
     func saveHymn(_ entity: HymnIdEntity)
     func saveHymn(_ entity: HymnEntity) -> Int64?
     func getHymn(_ hymnIdentifier: HymnIdentifier) -> AnyPublisher<HymnReference?, ErrorType>
+    func getHymnsByTitleSync(_ title: String) throws -> [HymnReference]
     func searchHymn(_ searchParameter: String) -> AnyPublisher<[SearchResultEntity], ErrorType>
     func getCategories(by hymnType: HymnType) -> AnyPublisher<[CategoryEntity], ErrorType>
     func getResultsBy(category: String) -> AnyPublisher<[SongResultEntity], ErrorType>
@@ -195,6 +199,15 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
         }).map({entity -> HymnReference? in
             return entity
         }).eraseToAnyPublisher()
+    }
+
+    func getHymnsByTitleSync(_ title: String) throws -> [HymnReference] {
+        try databaseQueue.read { database in
+            try HymnReference.fetchAll(
+                database,
+                sql: "SELECT * FROM SONG_DATA JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID WHERE SONG_TITLE = ?",
+                arguments: [title])
+        }
     }
 
     func getHymnNumbers(_ hymnType: HymnType) -> AnyPublisher<[String], ErrorType> {
@@ -505,7 +518,7 @@ extension Resolver {
             let fileManager = FileManager.default
             guard let dbPath =
                 try? fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-                    .appendingPathComponent("hymnaldb-v22.sqlite")
+                    .appendingPathComponent("hymnaldb-v\(HYMN_DATA_STORE_VERISON).sqlite")
                     .path else {
                         Crashlytics.crashlytics().log("The desired path in Application Support is nil, so we are unable to create a database file. Fall back to useing an in-memory db and initialize it with empty tables")
                         Crashlytics.crashlytics().setCustomValue("in-memory db", forKey: "database_state")
@@ -519,7 +532,8 @@ extension Resolver {
                 // Need to copy the bundled database into the Application Support directory on order for GRDB to access it
                 // https://github.com/groue/GRDB.swift#how-do-i-open-a-database-stored-as-a-resource-of-my-application
                 if !fileManager.fileExists(atPath: dbPath) {
-                    guard let bundledDbPath = Bundle.main.path(forResource: "hymnaldb-v22", ofType: "sqlite") else {
+                    guard let bundledDbPath = Bundle.main.path(forResource: "hymnaldb-v\(HYMN_DATA_STORE_VERISON)",
+                                                               ofType: "sqlite") else {
                         Crashlytics.crashlytics().log("Path to the bundled database was not found, so just create an empty database instead and initialize it with empty tables")
                         Crashlytics.crashlytics().setCustomValue("empty persistent db", forKey: "database_state")
                         Crashlytics.crashlytics().record(error: AppError(errorDescription: "Database Initialization Error"))
@@ -528,9 +542,6 @@ extension Resolver {
                     }
                     try fileManager.copyItem(atPath: bundledDbPath, toPath: dbPath)
                     needToCreateTables = false
-                    Crashlytics.crashlytics().log("Database successfully copied from bundled SQLite file")
-                    Crashlytics.crashlytics().setCustomValue("bundled db", forKey: "database_state")
-                    Crashlytics.crashlytics().record(error: AppError(errorDescription: "Database Initialization Error"))
                 }
             } catch {
                 Crashlytics.crashlytics().log("Unable to copy bundled data to the Application Support directly, so just create an empty database there instead and initialize it with empty tables")

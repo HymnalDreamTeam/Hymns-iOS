@@ -41,7 +41,7 @@ class HymnalApiService_GetHymnSpec: QuickSpec {
                                 value.fulfill()
                                 return
                             })
-                    self.wait(for: [failure, value], timeout: testTimeout)
+                    await self.fulfillment(of: [failure, value], timeout: testTimeout)
                     cancellable.cancel()
                 }
             }
@@ -65,7 +65,7 @@ class HymnalApiService_GetHymnSpec: QuickSpec {
                                 value.fulfill()
                                 return
                             })
-                    self.wait(for: [failure, value], timeout: testTimeout)
+                    await self.fulfillment(of: [failure, value], timeout: testTimeout)
                     cancellable.cancel()
                 }
             }
@@ -89,7 +89,7 @@ class HymnalApiService_GetHymnSpec: QuickSpec {
                                 value.fulfill()
                                 expect(hymn).to(equal(children_24_hymn))
                             })
-                    self.wait(for: [finished, value], timeout: testTimeout)
+                    await self.fulfillment(of: [finished, value], timeout: testTimeout)
                     cancellable.cancel()
                 }
             }
@@ -114,7 +114,7 @@ class HymnalApiService_GetHymnSpec: QuickSpec {
                                 value.fulfill()
                                 expect(hymn).to(equal(children_24_hymn))
                             })
-                    self.wait(for: [finished, value], timeout: testTimeout)
+                    await self.fulfillment(of: [finished, value], timeout: testTimeout)
                     cancellable.cancel()
                 }
             }
@@ -139,7 +139,7 @@ class HymnalApiService_GetHymnSpec: QuickSpec {
                                 value.fulfill()
                                 expect(hymn).to(equal(children_24_hymn))
                             })
-                    self.wait(for: [finished, value], timeout: testTimeout)
+                    await self.fulfillment(of: [finished, value], timeout: testTimeout)
                     cancellable.cancel()
                 }
             }

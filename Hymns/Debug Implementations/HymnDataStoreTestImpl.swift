@@ -91,6 +91,18 @@ class HymnDataStoreTestImpl: HymnDataStore {
         }).eraseToAnyPublisher()
     }
 
+    func getHymnsByTitleSync(_ title: String) throws -> [HymnReference] {
+        fakeDatabase.filter({ _, hymnEntity in
+            return hymnEntity.title == title
+        }).flatMap { songId, hymnEntity in
+            fakeHymnIds.filter { hymnIdEntity in
+                hymnIdEntity.songId == songId
+            }.map { hymnIdEntity in
+                HymnReference(hymnIdEntity: hymnIdEntity, hymnEntity: hymnEntity)
+            }
+        }
+    }
+
     func searchHymn(_ searchParamter: String) -> AnyPublisher<[SearchResultEntity], ErrorType> {
         Just(searchStore[searchParamter] ?? [SearchResultEntity]()).mapError({ _ -> ErrorType in
             // This will never be triggered.

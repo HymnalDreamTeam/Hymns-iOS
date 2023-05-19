@@ -15,7 +15,7 @@ class HymnDataStoreGrdbImpl_BrowseSpec: QuickSpec {
             var target: HymnDataStoreGrdbImpl!
             beforeEach {
                 // https://github.com/groue/GRDB.swift/blob/master/README.md#database-queues
-          
+
                 inMemoryDBQueue = DatabaseQueue()
                 firebaseLogger = mock(FirebaseLogger.self)
                 target = HymnDataStoreGrdbImpl(databaseQueue: inMemoryDBQueue, firebaseLogger: firebaseLogger, initializeTables: true)
@@ -75,7 +75,7 @@ class HymnDataStoreGrdbImpl_BrowseSpec: QuickSpec {
                                 expect(categories[2]).to(equal(CategoryEntity(category: "category 2", subcategory: "subcategory 1", count: 1)))
                                 expect(categories[3]).to(equal(CategoryEntity(category: "category 2", subcategory: "subcategory 2", count: 1)))
                             })
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -98,7 +98,7 @@ class HymnDataStoreGrdbImpl_BrowseSpec: QuickSpec {
                                 expect(results[4]).to(equal(SongResultEntity(hymnType: .spanish, hymnNumber: "1", title: "spanish 1")))
                                 expect(results[5]).to(equal(SongResultEntity(hymnType: .spanish, hymnNumber: "3", title: "spanish 3")))
                             })
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -118,7 +118,7 @@ class HymnDataStoreGrdbImpl_BrowseSpec: QuickSpec {
                                 expect(results[1]).to(equal(SongResultEntity(hymnType: .classic, hymnNumber: "2", title: "classic 2")))
                                 expect(results[2]).to(equal(SongResultEntity(hymnType: .classic, hymnNumber: "500", title: "classic 500")))
                             })
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -138,7 +138,7 @@ class HymnDataStoreGrdbImpl_BrowseSpec: QuickSpec {
                                 expect(results[1]).to(equal(SongResultEntity(hymnType: .classic, hymnNumber: "500", title: "classic 500")))
                                 expect(results[2]).to(equal(SongResultEntity(hymnType: .spanish, hymnNumber: "3", title: "spanish 3")))
                             })
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -157,7 +157,7 @@ class HymnDataStoreGrdbImpl_BrowseSpec: QuickSpec {
                                 expect(results[0]).to(equal(SongResultEntity(hymnType: .classic, hymnNumber: "1151", title: "classic 1151")))
                                 expect(results[1]).to(equal(SongResultEntity(hymnType: .classic, hymnNumber: "500", title: "classic 500")))
                             })
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -174,7 +174,7 @@ class HymnDataStoreGrdbImpl_BrowseSpec: QuickSpec {
                                 value.fulfill()
                                 expect(results).to(beEmpty())
                             })
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -196,7 +196,7 @@ class HymnDataStoreGrdbImpl_BrowseSpec: QuickSpec {
                                 expect(results[3]).to(equal(SongResultEntity(hymnType: .classic, hymnNumber: "501", title: "classic 501")))
                                 expect(results[4]).to(equal(SongResultEntity(hymnType: .spanish, hymnNumber: "3", title: "spanish 3")))
                             })
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -216,7 +216,7 @@ class HymnDataStoreGrdbImpl_BrowseSpec: QuickSpec {
                                 expect(results[1]).to(equal(SongResultEntity(hymnType: .classic, hymnNumber: "500", title: "classic 500")))
                                 expect(results[2]).to(equal(SongResultEntity(hymnType: .classic, hymnNumber: "501", title: "classic 501")))
                             })
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -238,7 +238,7 @@ class HymnDataStoreGrdbImpl_BrowseSpec: QuickSpec {
                                 expect(songs[3]).to(equal(SongResultEntity(hymnType: .classic, hymnNumber: "500", title: "classic 500")))
                                 expect(songs[4]).to(equal(SongResultEntity(hymnType: .classic, hymnNumber: "501", title: "classic 501")))
                             })
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -296,7 +296,7 @@ class HymnDataStoreGrdbImpl_BrowseSpec: QuickSpec {
                             value.fulfill()
                             expect(scriptures).to(equal(expected))
                         })
-                    self.wait(for: [completion, value], timeout: testTimeout)
+                    await self.fulfillment(of: [completion, value], timeout: testTimeout)
                     publisher.cancel()
                 }
             }

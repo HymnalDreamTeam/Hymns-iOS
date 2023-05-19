@@ -104,7 +104,7 @@ class SongResultsRepositorySpec: QuickSpec {
                         verify(dataStore.getDatabaseInitializedProperly()).wasCalled(exactly(1))
                         verify(dataStore.searchHymn(any())).wasNeverCalled()
                         verify(service.search(for: any(), onPage: any())).wasNeverCalled()
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         cancellable.cancel()
                     }
                 }
@@ -163,7 +163,7 @@ class SongResultsRepositorySpec: QuickSpec {
                             verify(dataStore.getDatabaseInitializedProperly()).wasCalled(exactly(2))
                             verify(dataStore.searchHymn("Chenaniah")).wasCalled(exactly(1))
                             verify(service.search(for: "Chenaniah", onPage: 1)).wasCalled(exactly(1))
-                            self.wait(for: [completion, value], timeout: testTimeout)
+                            await self.fulfillment(of: [completion, value], timeout: testTimeout)
                             cancellable.cancel()
                         }
                     }
@@ -211,7 +211,7 @@ class SongResultsRepositorySpec: QuickSpec {
                             verify(dataStore.getDatabaseInitializedProperly()).wasCalled(exactly(2))
                             verify(dataStore.searchHymn("Chenaniah")).wasCalled(exactly(1))
                             verify(service.search(for: "Chenaniah", onPage: 1)).wasCalled(exactly(1))
-                            self.wait(for: [completion, value], timeout: testTimeout)
+                            await self.fulfillment(of: [completion, value], timeout: testTimeout)
                             cancellable.cancel()
                         }
                     }
@@ -248,7 +248,7 @@ class SongResultsRepositorySpec: QuickSpec {
                             verify(dataStore.getDatabaseInitializedProperly()).wasCalled(exactly(1))
                             verify(dataStore.searchHymn("Chenaniah")).wasNeverCalled()
                             verify(service.search(for: "Chenaniah", onPage: 1)).wasCalled(exactly(1))
-                            self.wait(for: [completion, value], timeout: testTimeout)
+                            await self.fulfillment(of: [completion, value], timeout: testTimeout)
                             cancellable.cancel()
                         }
                     }
@@ -284,7 +284,7 @@ class SongResultsRepositorySpec: QuickSpec {
                             verify(dataStore.getDatabaseInitializedProperly()).wasCalled(exactly(1))
                             verify(dataStore.searchHymn("Chenaniah")).wasNeverCalled()
                             verify(service.search(for: "Chenaniah", onPage: 1)).wasCalled(exactly(1))
-                            self.wait(for: [completion, value], timeout: testTimeout)
+                            await self.fulfillment(of: [completion, value], timeout: testTimeout)
                             cancellable.cancel()
                         }
                     }
@@ -326,7 +326,7 @@ class SongResultsRepositorySpec: QuickSpec {
                             verify(dataStore.getDatabaseInitializedProperly()).wasCalled(exactly(2))
                             verify(dataStore.searchHymn("Chenaniah")).wasCalled(exactly(1))
                             verify(service.search(for: "Chenaniah", onPage: 1)).wasCalled(exactly(1))
-                            self.wait(for: [completion, value], timeout: testTimeout)
+                            await self.fulfillment(of: [completion, value], timeout: testTimeout)
                             cancellable.cancel()
                         }
                     }
@@ -372,7 +372,7 @@ class SongResultsRepositorySpec: QuickSpec {
                             verify(dataStore.getDatabaseInitializedProperly()).wasCalled(exactly(2))
                             verify(dataStore.searchHymn("Chenaniah")).wasCalled(exactly(1))
                             verify(service.search(for: "Chenaniah", onPage: 1)).wasCalled(exactly(1))
-                            self.wait(for: [completion, value], timeout: testTimeout)
+                            await self.fulfillment(of: [completion, value], timeout: testTimeout)
                             cancellable.cancel()
                         }
                     }

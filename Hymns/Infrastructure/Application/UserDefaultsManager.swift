@@ -16,7 +16,9 @@ class UserDefaultsManager {
         }
     }
 
-    @AppStorage("show_splash_animation") var showSplashAnimation = true
+    @AppStorage("favorites_migrated") var favoritesMigrated = false
+    @AppStorage("tags_migrated") var tagsMigrated = false
+    @AppStorage("history_migrated") var historyMigrated = false
     @AppStorage("repeat_chorus") var shouldRepeatChorus = false
     @AppStorage("has_seen_soundcloud_minimize_tooltip") var hasSeenSoundCloudMinimizeTooltip = false
     @AppStorage("has_seen_display_hymn_close_tool_tip") var hasSeenDisplayHymnCloseToolTip = false

@@ -17,13 +17,6 @@ class FavoriteEntity: Object, Identifiable {
         self.songTitle = songTitle
     }
 
-    init(hymnIdentifier: HymnIdentifier) {
-        super.init()
-        self.primaryKey = Self.createPrimaryKey(hymnIdentifier: hymnIdentifier)
-        self.hymnIdentifierEntity = HymnIdentifierEntity(hymnIdentifier)
-        self.songTitle = ""
-    }
-
     override static func primaryKey() -> String? {
         return "primaryKey"
     }
@@ -38,5 +31,9 @@ class FavoriteEntity: Object, Identifiable {
 
     override var hash: Int {
         return primaryKey.hash
+    }
+
+    func copy() -> FavoriteEntity {
+        return FavoriteEntity(hymnIdentifier: hymnIdentifierEntity.hymnIdentifier, songTitle: songTitle)
     }
 }

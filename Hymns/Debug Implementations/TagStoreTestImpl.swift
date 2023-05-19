@@ -12,10 +12,24 @@ class TagStoreTestImpl: TagStore {
         tags.append(tag)
     }
 
+    func storeTagEntity(_ tag: TagEntity) {
+        tags.append(tag.tagObject)
+    }
+
     func deleteTag(_ tag: Tag) {
         tags.removeAll { storedTag -> Bool in
             storedTag == tag
         }
+    }
+
+    func getAllTagEntities() -> AnyPublisher<[TagEntity], ErrorType> {
+        Just(tags).map { tags in
+            tags.map { tag in
+                TagEntity(tagObject: tag, created: Date.now)
+            }
+        }.mapError({ _ -> ErrorType in
+            // This will never be triggered.
+        }).eraseToAnyPublisher()
     }
 
     func getSongsByTag(_ tag: UiTag) -> AnyPublisher<[SongResultEntity], ErrorType> {
@@ -48,6 +62,10 @@ class TagStoreTestImpl: TagStore {
         }).mapError({ _ -> ErrorType in
             // This will never be triggered.
         }).eraseToAnyPublisher()
+    }
+
+    func clear() {
+        tags.removeAll()
     }
 }
 #endif

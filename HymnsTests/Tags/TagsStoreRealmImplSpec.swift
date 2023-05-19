@@ -68,7 +68,7 @@ class TagStoreRealmImplSpec: QuickSpec {
                                                        Tag(hymnIdentifier: classic1151, songTitle: "Hymn 1151", tag: "Peace", color: .yellow),
                                                        Tag(hymnIdentifier: classic1151, songTitle: "Hymn 1151", tag: "Christ", color: .blue)]))
                             })
-                        self.wait(for: [failure, finished, value], timeout: testTimeout)
+                        await self.fulfillment(of: [failure, finished, value], timeout: testTimeout)
                         cancellable.cancel()
                     }
                 }
@@ -108,7 +108,7 @@ class TagStoreRealmImplSpec: QuickSpec {
                                 }
                             })
                         target.deleteTag(Tag(hymnIdentifier: cebuano123, songTitle: "Naghigda sa lubong\\u2014", tag: "Table", color: .blue))
-                        self.wait(for: [failure, finished, value], timeout: testTimeout)
+                        await self.fulfillment(of: [failure, finished, value], timeout: testTimeout)
                         cancellable.cancel()
                     }
                     it("should be case sensitive") {
@@ -126,7 +126,7 @@ class TagStoreRealmImplSpec: QuickSpec {
                                 expect(songResults).to(haveCount(1))
                             })
                         target.deleteTag(Tag(hymnIdentifier: cebuano123, songTitle: "Naghigda sa lubong\\u2014", tag: "table", color: .blue))
-                        self.wait(for: [failure, finished, value], timeout: testTimeout)
+                        await self.fulfillment(of: [failure, finished, value], timeout: testTimeout)
                         cancellable.cancel()
                     }
                     it("not delete if the color doesn't match") {
@@ -144,7 +144,7 @@ class TagStoreRealmImplSpec: QuickSpec {
                                 expect(songResults).to(haveCount(1))
                             })
                         target.deleteTag(Tag(hymnIdentifier: cebuano123, songTitle: "Naghigda sa lubong\\u2014", tag: "Table", color: .green))
-                        self.wait(for: [failure, finished, value], timeout: testTimeout)
+                        await self.fulfillment(of: [failure, finished, value], timeout: testTimeout)
                         cancellable.cancel()
                     }
                 }
@@ -177,7 +177,7 @@ class TagStoreRealmImplSpec: QuickSpec {
                                                                 SongResultEntity(hymnType: .classic, hymnNumber: "500", title: "Hymn 500"),
                                                                 SongResultEntity(hymnType: .classic, hymnNumber: "1151", title: "Hymn 1151")]))
                             })
-                        self.wait(for: [failure, finished, value], timeout: testTimeout)
+                        await self.fulfillment(of: [failure, finished, value], timeout: testTimeout)
                         cancellable.cancel()
                     }
                 }
@@ -209,7 +209,7 @@ class TagStoreRealmImplSpec: QuickSpec {
                                                          UiTag(title: "Bread and wine", color: .yellow),
                                                          UiTag(title: "Is", color: .red)]))
                             })
-                        self.wait(for: [failure, finished, value], timeout: testTimeout)
+                        await self.fulfillment(of: [failure, finished, value], timeout: testTimeout)
                         cancellable.cancel()
                     }
                 }
@@ -258,7 +258,7 @@ class TagStoreRealmImplSpec: QuickSpec {
                     }
                     it("the correct callbacks should be called") {
                         target.deleteTag(Tag(hymnIdentifier: classic1151, songTitle: "Hymn 1151", tag: "Is", color: .red))
-                        self.wait(for: [failure, finished, value], timeout: testTimeout)
+                        await self.fulfillment(of: [failure, finished, value], timeout: testTimeout)
                         expect(cancellable).toNot(beNil())
                         cancellable!.cancel()
                     }

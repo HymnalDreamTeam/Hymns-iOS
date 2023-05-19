@@ -73,7 +73,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         testQueue.sync {}
                         testQueue.sync {}
                         testQueue.sync {}
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -98,7 +98,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         testQueue.sync {}
                         testQueue.sync {}
                         testQueue.sync {}
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -119,11 +119,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                                         hymnIdEntity: HymnIdEntity(hymnIdentifier: songbase1, songId: 6),
                                         hymnEntity: HymnEntityBuilder(id: 6).title("songbase 1").inlineChords("chords").build())))
                             })
-                        testQueue.sync {}
-                        testQueue.sync {}
-                        testQueue.sync {}
-                        testQueue.sync {}
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -145,7 +141,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         testQueue.sync {}
                         testQueue.sync {}
                         testQueue.sync {}
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -174,7 +170,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         testQueue.sync {}
                         testQueue.sync {}
                         testQueue.sync {}
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -197,7 +193,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                     testQueue.sync {}
                     testQueue.sync {}
                     testQueue.sync {}
-                    self.wait(for: [completion, value], timeout: testTimeout)
+                    await self.fulfillment(of: [completion, value], timeout: testTimeout)
                     publisher.cancel()
                 }
             }
@@ -263,7 +259,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                     testQueue.sync {}
                     testQueue.sync {}
                     testQueue.sync {}
-                    self.wait(for: [completion, value], timeout: testTimeout)
+                    await self.fulfillment(of: [completion, value], timeout: testTimeout)
                     publisher.cancel()
                 }
                 it("should return three results") {
@@ -361,7 +357,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         testQueue.sync {}
                         testQueue.sync {}
                         testQueue.sync {}
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -384,7 +380,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         testQueue.sync {}
                         testQueue.sync {}
                         testQueue.sync {}
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -420,7 +416,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         testQueue.sync {}
                         testQueue.sync {}
                         testQueue.sync {}
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -442,7 +438,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         testQueue.sync {}
                         testQueue.sync {}
                         testQueue.sync {}
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -478,7 +474,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         testQueue.sync {}
                         testQueue.sync {}
                         testQueue.sync {}
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -500,7 +496,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         testQueue.sync {}
                         testQueue.sync {}
                         testQueue.sync {}
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -536,7 +532,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         testQueue.sync {}
                         testQueue.sync {}
                         testQueue.sync {}
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -558,7 +554,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         testQueue.sync {}
                         testQueue.sync {}
                         testQueue.sync {}
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -594,7 +590,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         testQueue.sync {}
                         testQueue.sync {}
                         testQueue.sync {}
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -616,7 +612,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         testQueue.sync {}
                         testQueue.sync {}
                         testQueue.sync {}
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -652,7 +648,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         testQueue.sync {}
                         testQueue.sync {}
                         testQueue.sync {}
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -674,7 +670,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         testQueue.sync {}
                         testQueue.sync {}
                         testQueue.sync {}
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -710,7 +706,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         testQueue.sync {}
                         testQueue.sync {}
                         testQueue.sync {}
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }
@@ -732,7 +728,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         testQueue.sync {}
                         testQueue.sync {}
                         testQueue.sync {}
-                        self.wait(for: [completion, value], timeout: testTimeout)
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
                     }
                 }

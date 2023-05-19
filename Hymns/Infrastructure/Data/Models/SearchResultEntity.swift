@@ -22,9 +22,7 @@ extension SearchResultEntity: FetchableRecord {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         hymnType = try container.decode(HymnType.self, forKey: .hymnType)
         hymnNumber = try container.decode(String.self, forKey: .hymnNumber)
-        // Many hymn titles prepend "Hymn: " to the title. It is unnecessary and takes up screen space, so  we
-        // strip it out whenever possible.
-        title = try container.decode(String.self, forKey: .title).replacingOccurrences(of: "Hymn: ", with: "")
+        title = try container.decode(String.self, forKey: .title)
         matchInfo = try container.decode(Data.self, forKey: .matchInfo)
         songId = try container.decode(Int.self, forKey: .songId)
     }

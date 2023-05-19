@@ -58,7 +58,7 @@ class HistoryStoreRealmImplSpec: QuickSpec {
                                 expect(recentSongs[1]).to(equal(RecentSong(hymnIdentifier: newSong145, songTitle: "Hymn: Jesus shall reign where\\u2019er the sun")))
                                 expect(recentSongs[2]).to(equal(RecentSong(hymnIdentifier: classic1151, songTitle: "Hymn 1151")))
                             })
-                        self.wait(for: [failure, finished, value], timeout: testTimeout)
+                        await self.fulfillment(of: [failure, finished, value], timeout: testTimeout)
                         cancellable.cancel()
                     }
                 }
@@ -91,7 +91,7 @@ class HistoryStoreRealmImplSpec: QuickSpec {
                                 value.fulfill()
                                 expect(recentSongs).to(beEmpty())
                             })
-                        self.wait(for: [failure, finished, value], timeout: testTimeout)
+                        await self.fulfillment(of: [failure, finished, value], timeout: testTimeout)
                         cancellable.cancel()
                     }
                 }
@@ -127,7 +127,7 @@ class HistoryStoreRealmImplSpec: QuickSpec {
                                         expect(recentSong).to(equal(RecentSong(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "\(numberToStore - index)"), songTitle: "song \(numberToStore - index)")))
                                     }
                                 })
-                            self.wait(for: [failure, finished, value], timeout: testTimeout)
+                            await self.fulfillment(of: [failure, finished, value], timeout: testTimeout)
                             cancellable.cancel()
                         }
                     }

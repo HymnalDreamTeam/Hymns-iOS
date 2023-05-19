@@ -31,7 +31,7 @@ class Tag: Object, Identifiable {
     }
 
     static func createPrimaryKey(hymnIdentifier: HymnIdentifier, tag: String, color: TagColor) -> String {
-        return ("\(hymnIdentifier.hymnType):\(hymnIdentifier.hymnNumber):\(tag):\(color.rawValue)")
+        return "\(hymnIdentifier.hymnType):\(hymnIdentifier.hymnNumber):\(tag):\(color.rawValue)"
     }
 
     override func isEqual(_ object: Any?) -> Bool {
@@ -40,6 +40,11 @@ class Tag: Object, Identifiable {
 
     override var hash: Int {
         return primaryKey.hash
+    }
+
+    func copy() -> Tag {
+        return Tag(hymnIdentifier: hymnIdentifierEntity.hymnIdentifier,
+                   songTitle: songTitle, tag: tag, color: color)
     }
 }
 
@@ -61,5 +66,9 @@ class TagEntity: Object {
 
     override static func primaryKey() -> String? {
         return "primaryKey"
+    }
+
+    func copy() -> TagEntity {
+        return TagEntity(tagObject: tagObject.copy(), created: created)
     }
 }

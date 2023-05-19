@@ -56,7 +56,7 @@ class FavoriteStoreRealmImplSpec: QuickSpec {
                                                            FavoriteEntity(hymnIdentifier: newSong145, songTitle: "Hymn: Jesus shall reign where\\u2019er the sun"),
                                                            FavoriteEntity(hymnIdentifier: cebuano123, songTitle: "Naghigda sa lubong\\u2014")]))
                             })
-                        self.wait(for: [failure, finished, value], timeout: testTimeout)
+                        await self.fulfillment(of: [failure, finished, value], timeout: testTimeout)
                         cancellable.cancel()
                     }
                     it("cebuano123 should be favorited") {
@@ -80,7 +80,7 @@ class FavoriteStoreRealmImplSpec: QuickSpec {
                                 value.fulfill()
                                 expect(isFavorite).to(beTrue())
                             })
-                        self.wait(for: [failure, finished, value], timeout: testTimeout)
+                        await self.fulfillment(of: [failure, finished, value], timeout: testTimeout)
                         cancellable.cancel()
                     }
                     context("favorites status changes") {
@@ -117,7 +117,7 @@ class FavoriteStoreRealmImplSpec: QuickSpec {
                         }
                         it("the correct callbacks should be called") {
                             target.deleteFavorite(primaryKey: FavoriteEntity.createPrimaryKey(hymnIdentifier: cebuano123))
-                            self.wait(for: [failure, finished, value], timeout: testTimeout)
+                            await self.fulfillment(of: [failure, finished, value], timeout: testTimeout)
                             expect(cancellable).toNot(beNil())
                             cancellable!.cancel()
                         }

@@ -187,7 +187,7 @@ class SearchViewModelSpec: QuickSpec {
                         verify(historyStore.recentSongs()).wasCalled(exactly(1))
                     }
                     it("should display recent songs") {
-                        expect(target.songResults).toEventually(haveCount(2))
+                        await expect {target.songResults}.toEventually(haveCount(2))
                         expect(target.songResults[0].title).to(equal(recentSongs[0].songTitle))
                         expect(target.songResults[0].label).to(equal("Hymn 1151"))
                         expect(target.songResults[1].title).to(equal(recentSongs[1].songTitle))

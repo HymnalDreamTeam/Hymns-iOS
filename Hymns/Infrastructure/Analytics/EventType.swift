@@ -4,6 +4,18 @@ protocol AnalyticsEvent {
     static var name: String { get }
 }
 
+struct LaunchTask: AnalyticsEvent {
+
+    static let name = "launch_task"
+
+    // Allow non-alphanumeric characters for logging params
+    // swiftlint:disable identifier_name
+    enum Params: String {
+        case description
+    }
+    // swiftlint:enable identifier_name
+}
+
 struct SearchActiveChanged: AnalyticsEvent {
 
     static let name = "search_active"
