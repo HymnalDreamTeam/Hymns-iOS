@@ -137,12 +137,13 @@ extension Resolver {
                             }
 
                             let newPrimaryKey = "\(newHymnIdentifier.hymnType.abbreviatedValue):\(newHymnIdentifier.hymnNumber)"
-                            new.flatMap { newEntity in
+                            _ = new.flatMap { newEntity in
                                 newEntity["primaryKey"] = newPrimaryKey
                                 return newEntity["hymnIdentifierEntity"] as? MigrationObject
                             }.flatMap { hymnIdentifierEntity in
                                 hymnIdentifierEntity["hymnTypeRaw"] = newHymnIdentifier.hymnType.abbreviatedValue
                                 hymnIdentifierEntity["hymnNumber"] = newHymnIdentifier.hymnNumber
+                                return hymnIdentifierEntity
                             }
                         }
                     }

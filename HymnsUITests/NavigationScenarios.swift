@@ -14,7 +14,7 @@ class NavigationScenarios: BaseTestCase {
                 .tapResult("Hymn 1151, classic1151")
             _ = testNavigationToDifferentLanguageFromHymn1151(displayHymnViewCan)
                 .switchToHome()
-                .waitForButtons("Hymn 1151, Minoru's song", "Hymn 40, classic40")
+                .waitForButtons("Hymn 1151, Hymn: Minoru's song", "Hymn 40, classic40")
         }
     }
 

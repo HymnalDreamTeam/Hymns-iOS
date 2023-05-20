@@ -28,7 +28,7 @@ struct DisplayHymnToolbar: View {
                 Button(action: {
                     coordinator.jumpBackToRoot()
                 }, label: {
-                    Image(systemName: "xmark")
+                    Image(systemName: "magnifyingglass")
                         .accessibility(label: Text("Close", comment: "A11y label for closing the song and going back direclty to the home screen from a hymn page."))
                         .accentColor(.primary)
                 })
