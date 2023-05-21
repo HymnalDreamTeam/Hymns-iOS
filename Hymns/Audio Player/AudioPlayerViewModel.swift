@@ -80,7 +80,7 @@ class AudioPlayerViewModel: NSObject, ObservableObject {
                         failed()
                     }
                     self.firebaseLogger.logError(message: "Failed to initialize audio player",
-                                                 extraParameters: ["url": String(describing: url)])
+                                                 extraParameters: ["url": String(describing: self.url)])
                     return
                 }
                 player.delegate = self

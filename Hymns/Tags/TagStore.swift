@@ -182,7 +182,7 @@ extension Resolver {
                             }
 
                             let newPrimaryKey = "\(newHymnIdentifier.hymnType):\(newHymnIdentifier.hymnNumber):\(tag):\(tagColor)"
-                            new.flatMap { newEntity in
+                            _ = new.flatMap { newEntity in
                                 newEntity["primaryKey"] = newPrimaryKey
                                 return newEntity["tagObject"] as? MigrationObject
                             }.flatMap { tag in
@@ -191,6 +191,7 @@ extension Resolver {
                             }.flatMap { hymnIdentifierEntity in
                                 hymnIdentifierEntity["hymnTypeRaw"] = newHymnIdentifier.hymnType.abbreviatedValue
                                 hymnIdentifierEntity["hymnNumber"] = newHymnIdentifier.hymnNumber
+                                return hymnIdentifierEntity
                             }
                         }
                     }

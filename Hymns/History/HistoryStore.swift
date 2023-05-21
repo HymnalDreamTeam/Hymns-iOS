@@ -129,7 +129,7 @@ extension Resolver {
                             }
 
                             let newPrimaryKey = "\(newHymnIdentifier.hymnType.abbreviatedValue):\(newHymnIdentifier.hymnNumber)"
-                            new.flatMap { newEntity in
+                            _ = new.flatMap { newEntity in
                                 newEntity["primaryKey"] = newPrimaryKey
                                 return newEntity["recentSong"] as? MigrationObject
                             }.flatMap { recentSong in
@@ -138,6 +138,7 @@ extension Resolver {
                             }.flatMap { hymnIdentifierEntity in
                                 hymnIdentifierEntity["hymnTypeRaw"] = newHymnIdentifier.hymnType.abbreviatedValue
                                 hymnIdentifierEntity["hymnNumber"] = newHymnIdentifier.hymnNumber
+                                return hymnIdentifierEntity
                             }
                         }
                     }
@@ -159,10 +160,11 @@ extension Resolver {
                                 return
                             }
 
-                            new.flatMap { newEntity in
+                            _ = new.flatMap { newEntity in
                                 newEntity["recentSong"] as? MigrationObject
                             }.flatMap { recentSong in
                                 recentSong["songTitle"] = newTitle
+                                return recentSong
                             }
                         }
                     }

@@ -8,12 +8,9 @@ struct LaunchTask: AnalyticsEvent {
 
     static let name = "launch_task"
 
-    // Allow non-alphanumeric characters for logging params
-    // swiftlint:disable identifier_name
     enum Params: String {
         case description
     }
-    // swiftlint:enable identifier_name
 }
 
 struct SearchActiveChanged: AnalyticsEvent {
