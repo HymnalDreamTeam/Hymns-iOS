@@ -109,7 +109,7 @@ extension JSONDecoder {
         guard let value = value, let valueString = String(describing: value).data(using: .utf8) else {
             return nil
         }
-        return try! decoder.decode(type, from: valueString)
+        return try! decode(type, from: valueString)
     }
 }
 // swiftlint:enable force_try

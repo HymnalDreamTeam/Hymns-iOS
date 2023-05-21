@@ -38,7 +38,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             UserDefaults.standard.removePersistentDomain(forName: appDomain)
         }
         #else
-        let rootView = LaunchRouterView().environment(\.managedObjectContext, context).eraseToAnyView()
+        let rootView = LaunchRouterView(viewModel: LaunchRouterViewModel()).environment(\.managedObjectContext, context).eraseToAnyView()
         #endif
 
         // Use a UIHostingController as window root view controller.
