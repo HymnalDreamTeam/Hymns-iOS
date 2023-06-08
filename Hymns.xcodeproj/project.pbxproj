@@ -167,6 +167,7 @@
 		3BAA65B42983401C00B5CE3A /* DonationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAA65B32983401C00B5CE3A /* DonationView.swift */; };
 		3BAC029224F608AD005A96E9 /* RepeatChorusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAC029124F608AD005A96E9 /* RepeatChorusView.swift */; };
 		3BAC029424F608DC005A96E9 /* RepeatChorusViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BAC029324F608DC005A96E9 /* RepeatChorusViewModel.swift */; };
+		3BACE3332A318F21001A55BD /* hymnaldb-v24.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 3BACE3322A318F21001A55BD /* hymnaldb-v24.sqlite */; };
 		3BADB42524822BDB008CEDAB /* BrowseTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BADB42424822BDB008CEDAB /* BrowseTab.swift */; };
 		3BADB429248461D1008CEDAB /* chineseSupplement216.json in Resources */ = {isa = PBXBuildFile; fileRef = 3BADB428248461D1008CEDAB /* chineseSupplement216.json */; };
 		3BB10D77299754AF00E84EB5 /* CoffeeDonation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB10D76299754AF00E84EB5 /* CoffeeDonation.swift */; };
@@ -508,6 +509,7 @@
 		3BAA65B32983401C00B5CE3A /* DonationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonationView.swift; sourceTree = "<group>"; };
 		3BAC029124F608AD005A96E9 /* RepeatChorusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatChorusView.swift; sourceTree = "<group>"; };
 		3BAC029324F608DC005A96E9 /* RepeatChorusViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatChorusViewModel.swift; sourceTree = "<group>"; };
+		3BACE3322A318F21001A55BD /* hymnaldb-v24.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = "hymnaldb-v24.sqlite"; sourceTree = "<group>"; };
 		3BADB42424822BDB008CEDAB /* BrowseTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseTab.swift; sourceTree = "<group>"; };
 		3BADB428248461D1008CEDAB /* chineseSupplement216.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = chineseSupplement216.json; sourceTree = "<group>"; };
 		3BB10D76299754AF00E84EB5 /* CoffeeDonation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoffeeDonation.swift; sourceTree = "<group>"; };
@@ -1439,6 +1441,7 @@
 				B5915C6324CE900100342D7E /* firstLaunchAnimation.json */,
 				3BB931A824E3801500E0C873 /* soundCloudPlayingAnimation.json */,
 				3BB195BC2A0F5D7000F5C53D /* hymnaldb-v23.sqlite */,
+				3BACE3322A318F21001A55BD /* hymnaldb-v24.sqlite */,
 				3B1B90202429CF57009FDCC5 /* LaunchScreen.storyboard */,
 				3B1B90232429CF57009FDCC5 /* Info.plist */,
 				3B1B90162429CF55009FDCC5 /* Hymns.xcdatamodeld */,
@@ -1608,6 +1611,7 @@
 				B5915C6424CE900100342D7E /* firstLaunchAnimation.json in Resources */,
 				3B1B901C2429CF57009FDCC5 /* Assets.xcassets in Resources */,
 				3B23BD142A13584B00040A16 /* songbase_v3_migration_changed.txt in Resources */,
+				3BACE3332A318F21001A55BD /* hymnaldb-v24.sqlite in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
