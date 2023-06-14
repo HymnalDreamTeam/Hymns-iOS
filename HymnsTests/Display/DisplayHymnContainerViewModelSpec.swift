@@ -9,46 +9,55 @@ class DisplayHymnContainerViewModelSpec: QuickSpec {
 
     override func spec() {
         describe("DisplayHymnContainerViewModelSpec") {
+            // https://www.vadimbulavin.com/unit-testing-async-code-in-swift/
+            let testQueue = DispatchQueue(label: "test_queue")
+            var dataStore: HymnDataStoreMock!
             var target: DisplayHymnContainerViewModel!
-            context("with continuous hymn type") {
+            beforeEach {
+                dataStore = mock(HymnDataStore.self)
+                given(dataStore.getHymnNumbers(by: .classic)) ~> { _  in
+                    Just(["1333", "2", "3", "13", "13a", "14", "113", "1330"]).mapError({ _ -> ErrorType in
+                        // This will never be triggered.
+                    }).eraseToAnyPublisher()
+                }
+                target = DisplayHymnContainerViewModel(hymnToDisplay: HymnIdentifier(hymnType: .classic, hymnNumber: "13"),
+                                                       backgroundQueue: testQueue, dataStore: dataStore, mainQueue: testQueue)
+            }
+            context("hymn numbers found") {
                 beforeEach {
-                    target = DisplayHymnContainerViewModel(hymnToDisplay: HymnIdentifier(hymnType: .classic, hymnNumber: "13"))
                     target.populateHymns()
+                    testQueue.sync {}
+                    testQueue.sync {}
                 }
                 it("hymns should contain all the classic hymns") {
-                    expect(target.hymns).to(haveCount(1360))
-                    for num in 0..<1360 {
-                        expect(target.hymns![num].identifier.hymnType).to(equal(HymnType.classic))
-                        expect(target.hymns![num].identifier.hymnNumber).to(equal("\(num + 1)"))
+                    expect(target.hymns).to(haveCount(7))
+                    expect(target.hymns![0].identifier).to(equal(HymnIdentifier(hymnType: .classic, hymnNumber: "2")))
+                    expect(target.hymns![1].identifier).to(equal(HymnIdentifier(hymnType: .classic, hymnNumber: "3")))
+                    expect(target.hymns![2].identifier).to(equal(HymnIdentifier(hymnType: .classic, hymnNumber: "13")))
+                    expect(target.hymns![3].identifier).to(equal(HymnIdentifier(hymnType: .classic, hymnNumber: "14")))
+                    expect(target.hymns![4].identifier).to(equal(HymnIdentifier(hymnType: .classic, hymnNumber: "113")))
+                    expect(target.hymns![5].identifier).to(equal(HymnIdentifier(hymnType: .classic, hymnNumber: "1330")))
+                    expect(target.hymns![6].identifier).to(equal(HymnIdentifier(hymnType: .classic, hymnNumber: "1333")))
+                }
+                it("current hymn should be at the correct index") {
+                    expect(target.currentHymn).to(equal(2))
+                }
+            }
+            context("hymn numbers not found") {
+                beforeEach {
+                    given(dataStore.getHymnNumbers(by: .classic)) ~> { _  in
+                        Just([String]()).mapError({ _ -> ErrorType in
+                            // This will never be triggered.
+                        }).eraseToAnyPublisher()
                     }
-                }
-                it("current hymn should be input song - 1 (list is 0-indexed)") {
-                    expect(target.currentHymn).to(equal(12))
-                }
-            }
-            context("with non-continuous hymn type") {
-                beforeEach {
-                    target = DisplayHymnContainerViewModel(hymnToDisplay: HymnIdentifier(hymnType: .newTune, hymnNumber: "13"))
                     target.populateHymns()
-                }
-                it("hymns should contain only the loaded song") {
-                    expect(target.hymns).to(haveCount(1))
-                    expect(target.hymns![0].identifier.hymnType).to(equal(HymnType.newTune))
-                    expect(target.hymns![0].identifier.hymnNumber).to(equal("13"))
-                }
-                it("current hymn should be 0") {
-                    expect(target.currentHymn).to(equal(0))
-                }
-            }
-            context("with hymn number greater than max number") {
-                beforeEach {
-                    target = DisplayHymnContainerViewModel(hymnToDisplay: HymnIdentifier(hymnType: .classic, hymnNumber: "6550"))
-                    target.populateHymns()
+                    testQueue.sync {}
+                    testQueue.sync {}
                 }
                 it("hymns should contain only the loaded song") {
                     expect(target.hymns).to(haveCount(1))
                     expect(target.hymns![0].identifier.hymnType).to(equal(HymnType.classic))
-                    expect(target.hymns![0].identifier.hymnNumber).to(equal("6550"))
+                    expect(target.hymns![0].identifier.hymnNumber).to(equal("13"))
                 }
                 it("current hymn should be 0") {
                     expect(target.currentHymn).to(equal(0))
@@ -56,8 +65,11 @@ class DisplayHymnContainerViewModelSpec: QuickSpec {
             }
             context("with non-number hymn number") {
                 beforeEach {
-                    target = DisplayHymnContainerViewModel(hymnToDisplay: HymnIdentifier(hymnType: .classic, hymnNumber: "abc"))
+                    target = DisplayHymnContainerViewModel(hymnToDisplay: HymnIdentifier(hymnType: .classic, hymnNumber: "abc"),
+                                                           backgroundQueue: testQueue, dataStore: dataStore, mainQueue: testQueue)
                     target.populateHymns()
+                    testQueue.sync {}
+                    testQueue.sync {}
                 }
                 it("hymns should contain only the loaded song") {
                     expect(target.hymns).to(haveCount(1))
@@ -70,13 +82,39 @@ class DisplayHymnContainerViewModelSpec: QuickSpec {
             }
             context("with negative hymn number") {
                 beforeEach {
-                    target = DisplayHymnContainerViewModel(hymnToDisplay: HymnIdentifier(hymnType: .classic, hymnNumber: "-1"))
+                    target = DisplayHymnContainerViewModel(hymnToDisplay: HymnIdentifier(hymnType: .classic, hymnNumber: "-1"),
+                                                           backgroundQueue: testQueue, dataStore: dataStore, mainQueue: testQueue)
                     target.populateHymns()
+                    testQueue.sync {}
+                    testQueue.sync {}
                 }
                 it("hymns should contain only the loaded song") {
                     expect(target.hymns).to(haveCount(1))
                     expect(target.hymns![0].identifier.hymnType).to(equal(HymnType.classic))
                     expect(target.hymns![0].identifier.hymnNumber).to(equal("-1"))
+                }
+                it("current hymn should be 0") {
+                    expect(target.currentHymn).to(equal(0))
+                }
+            }
+            context("data store error") {
+                beforeEach {
+                    given(dataStore.getHymnNumbers(by: .classic)) ~> { _  in
+                        Just([String]())
+                            .tryMap({ _ -> [String] in
+                                throw URLError(.badURL)
+                            }).mapError({ _ -> ErrorType in
+                                    .data(description: "forced data error")
+                            }).eraseToAnyPublisher()
+                    }
+                    target.populateHymns()
+                    testQueue.sync {}
+                    testQueue.sync {}
+                }
+                it("hymns should contain only the loaded song") {
+                    expect(target.hymns).to(haveCount(1))
+                    expect(target.hymns![0].identifier.hymnType).to(equal(HymnType.classic))
+                    expect(target.hymns![0].identifier.hymnNumber).to(equal("13"))
                 }
                 it("current hymn should be 0") {
                     expect(target.currentHymn).to(equal(0))

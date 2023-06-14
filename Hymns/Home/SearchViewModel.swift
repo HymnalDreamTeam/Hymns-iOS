@@ -26,24 +26,24 @@ class SearchViewModel: ObservableObject {
     private var disposables = Set<AnyCancellable>()
     private let analytics: FirebaseLogger
     private let backgroundQueue: DispatchQueue
+    private let dataStore: HymnDataStore
     private let firebaseLogger: FirebaseLogger
     private let historyStore: HistoryStore
-    private let hymnsRepository: HymnsRepository
     private let mainQueue: DispatchQueue
     private let repository: SongResultsRepository
 
     init(analytics: FirebaseLogger = Resolver.resolve(),
          backgroundQueue: DispatchQueue = Resolver.resolve(name: "background"),
+         dataStore: HymnDataStore = Resolver.resolve(),
          firebaseLogger: FirebaseLogger = Resolver.resolve(),
          historyStore: HistoryStore = Resolver.resolve(),
-         hymnsRepository: HymnsRepository = Resolver.resolve(),
          mainQueue: DispatchQueue = Resolver.resolve(name: "main"),
          repository: SongResultsRepository = Resolver.resolve()) {
         self.analytics = analytics
         self.backgroundQueue = backgroundQueue
+        self.dataStore = dataStore
         self.firebaseLogger = firebaseLogger
         self.historyStore = historyStore
-        self.hymnsRepository = hymnsRepository
         self.mainQueue = mainQueue
         self.repository = repository
 
@@ -106,7 +106,7 @@ class SearchViewModel: ObservableObject {
                 self.fetchByHymnCode(searchParameter.trim(), searchParameter: searchParameter)
                 return
             }
-            self.fetchByNumber(hymnType: .classic, hymnNumber: searchParameter.trim(), searchParameter: searchParameter)
+            self.fetchByHymnType(hymnType: .classic, hymnNumber: searchParameter.trim(), searchParameter: searchParameter)
             return
         }
 
@@ -150,70 +150,44 @@ class SearchViewModel: ObservableObject {
             }).store(in: &disposables)
     }
 
-    private func fetchByNumber(hymnType: HymnType, hymnNumber: String, searchParameter: String) {
-        label = nil
-        Just((1...hymnType.maxNumber))
-            .subscribe(on: backgroundQueue)
-            .map({ range -> [SongResultViewModel] in
-                guard !hymnNumber.isEmpty else {
-                    return [SongResultViewModel]()
-                }
-                let matchingNumbers = range.map({String($0)}).filter {$0.contains(hymnNumber)}
-                return matchingNumbers.map({ number -> SongResultViewModel in
-                    let title = String(format: hymnType.displayLabel, number)
-                    let identifier = HymnIdentifier(hymnType: hymnType, hymnNumber: number)
-                    let destination = DisplayHymnContainerView(viewModel:
-                                                                DisplayHymnContainerViewModel(hymnToDisplay: identifier,
-                                                                                              storeInHistoryStore: true)).eraseToAnyView()
-                    return SongResultViewModel(
-                        stableId: String(describing: identifier),
-                        title: title,
-                        destinationView: destination)
-                })
-            }).receive(on: mainQueue)
-            .sink { songResults in
-                if searchParameter.trim() != self.searchParameter.trim() {
-                    // search parameter has changed by the time the call completed, so just drop this.
-                    return
-                }
-                self.songResults = songResults
-                self.state = songResults.isEmpty ? .empty : .results
-        }.store(in: &disposables)
-    }
-
     private func fetchByHymnType(hymnType: HymnType, hymnNumber: String, searchParameter: String) {
         label = nil
-        if hymnType.maxNumber > 0 {
-            // continuous hymn, so use typeahead
-            self.fetchByNumber(hymnType: hymnType, hymnNumber: hymnNumber, searchParameter: searchParameter)
-            return
-        }
-
         let hymnIdentifier = HymnIdentifier(hymnType: hymnType, hymnNumber: hymnNumber)
-        hymnsRepository
-            .getHymn(hymnIdentifier, makeNetworkRequest: false)
-            .subscribe(on: backgroundQueue)
-            .receive(on: mainQueue)
-            .sink(receiveValue: { [weak self] uiHymn in
-                guard let self = self else { return }
-                guard let uiHymn = uiHymn else {
-                    self.songResults = [SongResultViewModel]()
-                    self.state = .empty
-                    return
+        dataStore.getHymnNumbers(by: hymnIdentifier.hymnType)
+            .replaceError(with: [String]())
+            .map({ hymnNumbers -> [SongResultViewModel] in
+                guard !hymnIdentifier.hymnNumber.isEmpty else {
+                    return [SongResultViewModel]()
                 }
+                return hymnNumbers
+                    .filter {$0.contains(hymnIdentifier.hymnNumber)}
+                    .compactMap({ hymnNumber in
+                        hymnNumber.toInteger
+                    }).sorted().map({ hymnNumber in
+                        String(hymnNumber)
+                    }).map({ number -> SongResultViewModel in
+                        let title = String(format: hymnIdentifier.hymnType.displayLabel, number)
+                        let identifier = HymnIdentifier(hymnType: hymnIdentifier.hymnType, hymnNumber: number)
+                        let destination = DisplayHymnContainerView(viewModel:
+                                                                    DisplayHymnContainerViewModel(hymnToDisplay: identifier,
+                                                                                                  storeInHistoryStore: true)).eraseToAnyView()
+                        return SongResultViewModel(
+                            stableId: String(describing: identifier),
+                            title: title,
+                            destinationView: destination)
+                    })
+            }).subscribe(on: backgroundQueue)
+            .receive(on: mainQueue)
+            .sink(receiveValue: { [weak self] songResults in
+                guard let self = self else { return }
                 if searchParameter.trim() != self.searchParameter.trim() {
                     // search parameter has changed by the time the call completed, so just drop this.
                     return
                 }
-                self.songResults = [
-                    SongResultViewModel(stableId: String(describing: hymnIdentifier),
-                                        title: uiHymn.title,
-                                        label: String(format: hymnIdentifier.hymnType.displayLabel, hymnIdentifier.hymnNumber),
-                                        destinationView: DisplayHymnContainerView(viewModel:
-                                                                                    DisplayHymnContainerViewModel(hymnToDisplay: hymnIdentifier,
-                                                                                                                  storeInHistoryStore: true)).eraseToAnyView())
-                ]
-                self.state = .results
+                self.songResults += songResults.filter { songResult in
+                    !self.songResults.map({$0.stableId}).contains(songResult.stableId)
+                }
+                self.state = self.songResults.isEmpty ? .empty : .results
             }).store(in: &disposables)
     }
 

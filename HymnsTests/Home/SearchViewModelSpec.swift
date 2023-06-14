@@ -11,29 +11,29 @@ class SearchViewModelSpec: QuickSpec {
         describe("SearchViewModel") {
             // https://www.vadimbulavin.com/unit-testing-async-code-in-swift/
             let testQueue = DispatchQueue(label: "test_queue")
+            var dataStore: HymnDataStoreMock!
             var historyStore: HistoryStoreMock!
-            var hymnsRepository: HymnsRepositoryMock!
             var songResultsRepository: SongResultsRepositoryMock!
             var target: SearchViewModel!
 
             let recentSongs = [RecentSong(hymnIdentifier: classic1151, songTitle: "Hymn 1151"),
                                RecentSong(hymnIdentifier: cebuano123, songTitle: "Naghigda sa lubong\\u2014")]
             beforeEach {
+                dataStore = mock(HymnDataStore.self)
                 historyStore = mock(HistoryStore.self)
                 given(historyStore.recentSongs()) ~> {
                     Just(recentSongs).mapError({ _ -> ErrorType in
                         // This will never be triggered.
                     }).eraseToAnyPublisher()
                 }
-                hymnsRepository = mock(HymnsRepository.self)
                 songResultsRepository = mock(SongResultsRepository.self)
             }
             let recentHymns = "Recent hymns"
             context("initial state") {
                 beforeEach {
                     let initiallyInactiveQueue = DispatchQueue(label: "test_queue", attributes: .initiallyInactive)
-                    target = SearchViewModel(backgroundQueue: initiallyInactiveQueue, historyStore: historyStore,
-                                             hymnsRepository: hymnsRepository, mainQueue: initiallyInactiveQueue,
+                    target = SearchViewModel(backgroundQueue: initiallyInactiveQueue, dataStore: dataStore,
+                                             historyStore: historyStore, mainQueue: initiallyInactiveQueue,
                                              repository: songResultsRepository)
                     target.setUp()
                 }
@@ -46,8 +46,8 @@ class SearchViewModelSpec: QuickSpec {
                 context("search-by-type already seen") {
                     beforeEach {
                         target.hasSeenSearchByTypeTooltip = true
-                        target = SearchViewModel(backgroundQueue: testQueue, historyStore: historyStore,
-                                                 hymnsRepository: hymnsRepository, mainQueue: testQueue,
+                        target = SearchViewModel(backgroundQueue: testQueue, dataStore: dataStore,
+                                                 historyStore: historyStore, mainQueue: testQueue,
                                                  repository: songResultsRepository)
                         target.setUp()
                     }
@@ -58,8 +58,8 @@ class SearchViewModelSpec: QuickSpec {
                 context("search-by-type not seen") {
                     beforeEach {
                         target.hasSeenSearchByTypeTooltip = false
-                        target = SearchViewModel(backgroundQueue: testQueue, historyStore: historyStore,
-                                                 hymnsRepository: hymnsRepository, mainQueue: testQueue,
+                        target = SearchViewModel(backgroundQueue: testQueue, dataStore: dataStore,
+                                                 historyStore: historyStore, mainQueue: testQueue,
                                                  repository: songResultsRepository)
                         target.setUp()
                     }
@@ -94,8 +94,9 @@ class SearchViewModelSpec: QuickSpec {
                                     .data(description: "forced data error")
                             }).eraseToAnyPublisher()
                     }
-                    target = SearchViewModel(backgroundQueue: testQueue, historyStore: historyStore,
-                                             mainQueue: testQueue, repository: songResultsRepository)
+                    target = SearchViewModel(backgroundQueue: testQueue, dataStore: dataStore,
+                                             historyStore: historyStore, mainQueue: testQueue,
+                                             repository: songResultsRepository)
                     target.setUp()
                     testQueue.sync {}
                     testQueue.sync {}
@@ -118,8 +119,8 @@ class SearchViewModelSpec: QuickSpec {
                             // This will never be triggered.
                         }).eraseToAnyPublisher()
                     }
-                    target = SearchViewModel(backgroundQueue: testQueue, historyStore: historyStore,
-                                             hymnsRepository: hymnsRepository, mainQueue: testQueue,
+                    target = SearchViewModel(backgroundQueue: testQueue, dataStore: dataStore,
+                                             historyStore: historyStore, mainQueue: testQueue,
                                              repository: songResultsRepository)
                     target.setUp()
                     testQueue.sync {}
@@ -138,8 +139,8 @@ class SearchViewModelSpec: QuickSpec {
             }
             context("recent songs") {
                 beforeEach {
-                    target = SearchViewModel(backgroundQueue: testQueue, historyStore: historyStore,
-                                             hymnsRepository: hymnsRepository, mainQueue: testQueue,
+                    target = SearchViewModel(backgroundQueue: testQueue, dataStore: dataStore,
+                                             historyStore: historyStore, mainQueue: testQueue,
                                              repository: songResultsRepository)
                     target.setUp()
                     testQueue.sync {}
@@ -167,8 +168,8 @@ class SearchViewModelSpec: QuickSpec {
             }
             context("search active") {
                 beforeEach {
-                    target = SearchViewModel(backgroundQueue: testQueue, historyStore: historyStore,
-                                             hymnsRepository: hymnsRepository, mainQueue: testQueue,
+                    target = SearchViewModel(backgroundQueue: testQueue, dataStore: dataStore,
+                                             historyStore: historyStore, mainQueue: testQueue,
                                              repository: songResultsRepository)
                     target.setUp()
                     target.searchActive = true
@@ -200,8 +201,17 @@ class SearchViewModelSpec: QuickSpec {
                 describe("clear mock invocations called from setup") {
                     beforeEach {
                         clearInvocations(on: historyStore)
+                        given(dataStore.getHymnNumbers(by: .classic)) ~> { _  in
+                            Just([1...1360].flatMap { range in
+                                range.map { number in
+                                    String(number)
+                                }
+                            }).mapError({ _ -> ErrorType in
+                                // This will never be triggered.
+                            }).eraseToAnyPublisher()
+                        }
                     }
-                    context("with numeric search parameter") {
+                    describe("with numeric search parameter") {
                         beforeEach {
                             target.searchParameter = "198 "
                             sleep(1) // allow time for the debouncer to trigger.
@@ -226,7 +236,7 @@ class SearchViewModelSpec: QuickSpec {
                             verify(songResultsRepository.search(searchParameter: any(), pageNumber: any())).wasNeverCalled()
                         }
                     }
-                    context("with invalid numeric search parameter") {
+                    describe("with invalid numeric search parameter") {
                         beforeEach {
                             target.searchParameter = "2000 " // number is larger than any valid song
                             sleep(1) // allow time for the debouncer to trigger.
@@ -247,8 +257,16 @@ class SearchViewModelSpec: QuickSpec {
                             verify(songResultsRepository.search(searchParameter: any(), pageNumber: any())).wasNeverCalled()
                         }
                     }
-                    context("with continuous hymn type search") { // search by hymn type on a type that is continuous
+                    context("non-classic hymn type where numbers are found") {
                         beforeEach {
+                            given(dataStore.getHymnNumbers(by: .chinese)) ~> { _  in
+                                return Just(["1", "2", "3", "10", "11", "12",
+                                             "100", "110", "111", "112", "113",
+                                             "1000", "1001", "1010", "1100",
+                                             "1100", "1110", "1101", "1111"]).mapError({ _ -> ErrorType in
+                                    // This will never be triggered.
+                                }).eraseToAnyPublisher()
+                            }
                             target.searchParameter = "ChINEsE 111 "
                             sleep(1) // allow time for the debouncer to trigger.
                         }
@@ -274,56 +292,24 @@ class SearchViewModelSpec: QuickSpec {
                             verify(songResultsRepository.search(searchParameter: any(), pageNumber: any())).wasNeverCalled()
                         }
                     }
-                    context("with noncontinuous hymn type search") { // search by hymn type on a type that is not continuous
-                        let newTune111 = HymnIdentifier(hymnType: .newTune, hymnNumber: "111")
-                        context("with nil result") {
-                            context("search complete") {
-                                beforeEach {
-                                    given(hymnsRepository.getHymn(newTune111, makeNetworkRequest: false)) ~> { _, _ in
-                                        Just(nil).assertNoFailure().eraseToAnyPublisher()
-                                    }
-                                    target.searchParameter = "  Nt 111 "
-                                    sleep(1) // allow time for the debouncer to trigger.
-                                }
-                                it("no label should be showing") {
-                                    expect(target.label).to(beNil())
-                                }
-                                it("should not still be loading") {
-                                    expect(target.state).to(equal(.empty))
-                                }
-                                it("song results should be empty") {
-                                    expect(target.songResults).to(beEmpty())
-                                }
-                                it("should try to fetch the song from hymnsRepository") {
-                                    verify(hymnsRepository.getHymn(newTune111, makeNetworkRequest: false)).wasCalled(exactly(1))
-                                }
+                    context("numbers not found") {
+                        beforeEach {
+                            given(dataStore.getHymnNumbers(by: .newTune)) ~> { _  in
+                                return Just([String]()).mapError({ _ -> ErrorType in
+                                    // This will never be triggered.
+                                }).eraseToAnyPublisher()
                             }
+                            target.searchParameter = "  Nt 111 "
+                            sleep(1) // allow time for the debouncer to trigger.
                         }
-                        context("with result") {
-                            context("search complete") {
-                                beforeEach {
-                                    let hymn = UiHymn(hymnIdentifier: newTune111, title: "title", lyrics: [VerseEntity]())
-                                    given(hymnsRepository.getHymn(newTune111, makeNetworkRequest: false)) ~> { _, _ in
-                                        Just(hymn).assertNoFailure().eraseToAnyPublisher()
-                                    }
-                                    target.searchParameter = "  new tune111 "
-                                    sleep(1) // allow time for the debouncer to trigger.
-                                }
-                                it("no label should be showing") {
-                                    expect(target.label).to(beNil())
-                                }
-                                it("should not still be loading") {
-                                    expect(target.state).to(equal(.results))
-                                }
-                                it("song results should contain fetched hymn") {
-                                    expect(target.songResults).to(haveCount(1))
-                                    expect(target.songResults[0].title).to(equal("title"))
-                                    expect(target.songResults[0].label).to(equal("New tune 111"))
-                                }
-                                it("should try to fetch the song from hymnsRepository") {
-                                    verify(hymnsRepository.getHymn(newTune111, makeNetworkRequest: false)).wasCalled(exactly(1))
-                                }
-                            }
+                        it("no label should be showing") {
+                            expect(target.label).to(beNil())
+                        }
+                        it("state to be empty") {
+                            expect(target.state).to(equal(.empty))
+                        }
+                        it("song results should be empty") {
+                            expect(target.songResults).to(beEmpty())
                         }
                     }
                 }

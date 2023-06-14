@@ -12,12 +12,14 @@ class SearchViewModelTest: XCTestCase {
 
     // https://www.vadimbulavin.com/unit-testing-async-code-in-swift/
     let testQueue = DispatchQueue(label: "test_queue")
+    var dataStore: HymnDataStoreMock!
     var historyStore: HistoryStoreMock!
     var songResultsRepository: SongResultsRepositoryMock!
     var target: SearchViewModel!
 
     override func setUp() {
         super.setUp()
+        dataStore = mock(HymnDataStore.self)
         historyStore = mock(HistoryStore.self)
         given(historyStore.recentSongs()) ~> {
             Just(self.recentSongs).mapError({ _ -> ErrorType in
@@ -25,8 +27,9 @@ class SearchViewModelTest: XCTestCase {
             }).eraseToAnyPublisher()
         }
         songResultsRepository = mock(SongResultsRepository.self)
-        target = SearchViewModel(backgroundQueue: testQueue, historyStore: historyStore,
-                                 mainQueue: testQueue, repository: songResultsRepository)
+        target = SearchViewModel(backgroundQueue: testQueue, dataStore: dataStore,
+                                 historyStore: historyStore, mainQueue: testQueue,
+                                 repository: songResultsRepository)
         target.setUp()
         testQueue.sync {}
         testQueue.sync {}
@@ -50,8 +53,9 @@ class SearchViewModelTest: XCTestCase {
                 // This will never be triggered.
             }).eraseToAnyPublisher()
         }
-        target = SearchViewModel(backgroundQueue: testQueue, historyStore: historyStore,
-                                 mainQueue: testQueue, repository: songResultsRepository)
+        target = SearchViewModel(backgroundQueue: testQueue, dataStore: dataStore,
+                                 historyStore: historyStore, mainQueue: testQueue,
+                                 repository: songResultsRepository)
         target.setUp()
         testQueue.sync {}
         testQueue.sync {}
@@ -76,6 +80,16 @@ class SearchViewModelTest: XCTestCase {
     }
 
     func test_searchActive_numericSearchParameter() {
+        given(dataStore.getHymnNumbers(by: .classic)) ~> { _  in
+            Just([1...1360].flatMap { range in
+                range.map { number in
+                    String(number)
+                }
+            }).mapError({ _ -> ErrorType in
+                // This will never be triggered.
+            }).eraseToAnyPublisher()
+        }
+
         target.searchActive = true
         clearInvocations(on: historyStore) // clear invocations called from activating search
         target.searchParameter = "198 "
@@ -91,6 +105,16 @@ class SearchViewModelTest: XCTestCase {
     }
 
     func test_searchActive_invalidNumericSearchParameter() {
+        given(dataStore.getHymnNumbers(by: .classic)) ~> { _  in
+            Just([1...1360].flatMap { range in
+                range.map { number in
+                    String(number)
+                }
+            }).mapError({ _ -> ErrorType in
+                // This will never be triggered.
+            }).eraseToAnyPublisher()
+        }
+
         target.searchActive = true
         clearInvocations(on: historyStore) // clear invocations called from activating search
         target.searchParameter = "2000 " // number is larger than any valid song

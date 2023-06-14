@@ -1,4 +1,6 @@
+import Combine
 import Foundation
+import Resolver
 import SwiftEventBus
 
 class DisplayHymnContainerViewModel: ObservableObject {
@@ -9,11 +11,22 @@ class DisplayHymnContainerViewModel: ObservableObject {
     @Published var swipeEnabled = true
 
     var currentHymn: Int = 0
+    private let backgroundQueue: DispatchQueue
+    private let dataStore: HymnDataStore
     private let identifier: HymnIdentifier
+    private let mainQueue: DispatchQueue
     private let storeInHistoryStore: Bool
 
-    init(hymnToDisplay identifier: HymnIdentifier, storeInHistoryStore: Bool = false) {
+    private var disposables = Set<AnyCancellable>()
+
+    init(hymnToDisplay identifier: HymnIdentifier, storeInHistoryStore: Bool = false,
+         backgroundQueue: DispatchQueue = Resolver.resolve(name: "background"),
+         dataStore: HymnDataStore = Resolver.resolve(),
+         mainQueue: DispatchQueue = Resolver.resolve(name: "main")) {
+        self.backgroundQueue = backgroundQueue
+        self.dataStore = dataStore
         self.identifier = identifier
+        self.mainQueue = mainQueue
         self.storeInHistoryStore = storeInHistoryStore
         SwiftEventBus.onMainThread(self, name: Self.songSwipableEvent, handler: { result in
             if let enableSwiping = result?.object as? Bool {
@@ -28,19 +41,31 @@ class DisplayHymnContainerViewModel: ObservableObject {
 
     func populateHymns() {
         let hymnType = identifier.hymnType
-        let hymnNumber = identifier.hymnNumber
-
-        if hymnType.maxNumber > 0 && hymnNumber.isPositiveInteger, let hymnNumberInt = hymnNumber.toInteger, hymnNumberInt <= hymnType.maxNumber {
-            hymns = (1...HymnType.classic.maxNumber).map({ num -> DisplayHymnViewModel in
-                let numString = String(num)
-                let shouldStore = storeInHistoryStore && hymnNumber == numString
-                return DisplayHymnViewModel(hymnToDisplay: HymnIdentifier(hymnType: hymnType, hymnNumber: numString), storeInHistoryStore: shouldStore)
-            })
-            currentHymn = hymnNumberInt - 1
-        } else {
-            hymns = [DisplayHymnViewModel(hymnToDisplay: identifier, storeInHistoryStore: storeInHistoryStore)]
-            currentHymn = 0
-        }
+        dataStore.getHymnNumbers(by: hymnType)
+            .subscribe(on: backgroundQueue)
+            .replaceError(with: [String]())
+            .map { hymnNumbers in
+                hymnNumbers
+                    .filter({ hymnNumber in
+                        hymnNumber.isPositiveInteger
+                    }).compactMap({ hymnNumber in
+                        hymnNumber.toInteger
+                    }).sorted().map({ hymnNumber in
+                        String(hymnNumber)
+                    }).map { hymnNumber in
+                        HymnIdentifier(hymnType: hymnType, hymnNumber: hymnNumber)
+                    }
+            }.sink { hymnIdentifiers in
+                if let index = hymnIdentifiers.firstIndex(of: self.identifier) {
+                    self.hymns = hymnIdentifiers.map({ hymnIdentifier in
+                        DisplayHymnViewModel(hymnToDisplay: hymnIdentifier, storeInHistoryStore: self.storeInHistoryStore && self.identifier == hymnIdentifier)
+                    })
+                    self.currentHymn = index
+                } else {
+                    self.hymns = [DisplayHymnViewModel(hymnToDisplay: self.identifier, storeInHistoryStore: self.storeInHistoryStore)]
+                    self.currentHymn = 0
+                }
+            }.store(in: &disposables)
     }
 }
 

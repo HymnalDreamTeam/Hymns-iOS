@@ -50,6 +50,7 @@ extension HymnType {
         "new song": .newSong,
         "chidren": .children,
         "howard higashi": .howardHigashi, "long beach": .howardHigashi, "longbeach": .howardHigashi,
+        "be filled": .beFilled, "befilled": .beFilled,
         "dt": .dutch, "dutch": .dutch,
         "g": .liederbuch, "ge": .liederbuch, "german": .liederbuch,
         "chinese": .chinese, "中文": .chinese,
@@ -116,40 +117,6 @@ extension HymnType {
             return "sb"
         case .songbaseOther:
             return "sbx"
-        }
-    }
-
-    /**
-     * The number of songs in the category from Hymnal.net.
-     *
-     * Note: Certain hymn types don't have a max number because they are not continuous (i.e. new tunes, different languages, etc).
-     */
-    var maxNumber: Int {
-        switch self {
-        case .classic:
-            return 1360
-        case .newSong:
-            return 722
-        case .children:
-            return 181
-        case .howardHigashi:
-            return 87
-        case .chinese:
-            return 1111
-        case .chineseSupplement:
-            return 1005
-        case .russian:
-            return 800
-        case .beFilled:
-            return 0
-        case .liederbuch:
-            return 0
-        case .blueSongbook:
-            return 0
-        case .songbaseOther:
-            return 0
-        default:
-            return 0
         }
     }
 

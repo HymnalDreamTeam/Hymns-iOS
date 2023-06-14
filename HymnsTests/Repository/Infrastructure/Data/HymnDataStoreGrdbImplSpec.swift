@@ -174,6 +174,65 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         publisher.cancel()
                     }
                 }
+                describe("getting by hymn number") {
+                    beforeEach {
+                        var hymnIdentifier = HymnIdentifier(hymnType: .classic, hymnNumber: "3")
+                        var songId = target.saveHymn(HymnEntityBuilder(id: 7).title("classic 3").build())
+                        target.saveHymn(HymnIdEntity(hymnIdentifier: hymnIdentifier, songId: songId!))
+
+                        hymnIdentifier = HymnIdentifier(hymnType: .classic, hymnNumber: "4")
+                        songId = target.saveHymn(HymnEntityBuilder(id: 8).title("classic 4").build())
+                        target.saveHymn(HymnIdEntity(hymnIdentifier: hymnIdentifier, songId: songId!))
+
+                        hymnIdentifier = HymnIdentifier(hymnType: .classic, hymnNumber: "5")
+                        songId = target.saveHymn(HymnEntityBuilder(id: 9).title("classic 5").build())
+                        target.saveHymn(HymnIdEntity(hymnIdentifier: hymnIdentifier, songId: songId!))
+                    }
+                    context("hymn type exists") {
+                        it("should return hymn numbers of that type") {
+                            let completion = XCTestExpectation(description: "completion received")
+                            let value = XCTestExpectation(description: "value received")
+                            let publisher = target.getHymnNumbers(by: .classic)
+                                .print(self.description)
+                                .receive(on: testQueue)
+                                .sink(receiveCompletion: { state in
+                                    completion.fulfill()
+                                    expect(state).to(equal(.finished))
+                                }, receiveValue: { entities in
+                                    value.fulfill()
+                                    expect(entities).to(equal(["1151", "3", "4", "5"]))
+                                })
+                            testQueue.sync {}
+                            testQueue.sync {}
+                            testQueue.sync {}
+                            testQueue.sync {}
+                            await self.fulfillment(of: [completion, value], timeout: testTimeout)
+                            publisher.cancel()
+                        }
+                    }
+                    context("hymn type does not exist") {
+                        it("should return empty list") {
+                            let completion = XCTestExpectation(description: "completion received")
+                            let value = XCTestExpectation(description: "value received")
+                            let publisher = target.getHymnNumbers(by: .liederbuch)
+                                .print(self.description)
+                                .receive(on: testQueue)
+                                .sink(receiveCompletion: { state in
+                                    completion.fulfill()
+                                    expect(state).to(equal(.finished))
+                                }, receiveValue: { entities in
+                                    value.fulfill()
+                                    expect(entities).to(beEmpty())
+                                })
+                            testQueue.sync {}
+                            testQueue.sync {}
+                            testQueue.sync {}
+                            testQueue.sync {}
+                            await self.fulfillment(of: [completion, value], timeout: testTimeout)
+                            publisher.cancel()
+                        }
+                    }
+                }
             }
             context("search parameter not found") {
                 it("should return empty results") {
@@ -373,7 +432,6 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                                 expect(state).to(equal(.finished))
                             }, receiveValue: { entities in
                                 value.fulfill()
-                                let abc = target.getAllResults()
                                 expect(entities).to(equal([SongResultEntity(hymnType: .classic, hymnNumber: "1", title: "Becoming")]))
                             })
                         testQueue.sync {}

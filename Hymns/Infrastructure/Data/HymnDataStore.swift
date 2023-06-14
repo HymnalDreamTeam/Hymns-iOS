@@ -24,6 +24,7 @@ protocol HymnDataStore {
     func getHymn(_ hymnIdentifier: HymnIdentifier) -> AnyPublisher<HymnReference?, ErrorType>
     func getHymnsByTitleSync(_ title: String) throws -> [HymnReference]
     func searchHymn(_ searchParameter: String) -> AnyPublisher<[SearchResultEntity], ErrorType>
+    func getHymnNumbers(by hymnType: HymnType) -> AnyPublisher<[String], ErrorType>
     func getCategories(by hymnType: HymnType) -> AnyPublisher<[CategoryEntity], ErrorType>
     func getResultsBy(category: String) -> AnyPublisher<[SongResultEntity], ErrorType>
     func getResultsBy(category: String, hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType>
@@ -210,7 +211,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
         }
     }
 
-    func getHymnNumbers(_ hymnType: HymnType) -> AnyPublisher<[String], ErrorType> {
+    func getHymnNumbers(by hymnType: HymnType) -> AnyPublisher<[String], ErrorType> {
         databaseQueue.readPublisher { database in
             try String.fetchAll(
                 database,

@@ -103,6 +103,16 @@ class HymnDataStoreTestImpl: HymnDataStore {
         }
     }
 
+    func getHymnNumbers(by hymnType: HymnType) -> AnyPublisher<[String], ErrorType> {
+        Just(fakeHymnIds.filter { hymnIdEntity in
+            hymnIdEntity.hymnType == hymnType.abbreviatedValue
+        }.map({ hymnIdEntity in
+            hymnIdEntity.hymnNumber
+        })).mapError { _ -> ErrorType in
+            // This will never be triggered.
+        }.eraseToAnyPublisher()
+    }
+
     func searchHymn(_ searchParamter: String) -> AnyPublisher<[SearchResultEntity], ErrorType> {
         Just(searchStore[searchParamter] ?? [SearchResultEntity]()).mapError({ _ -> ErrorType in
             // This will never be triggered.
