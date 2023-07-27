@@ -199,10 +199,18 @@ extension HymnType {
             return NSLocalizedString("Dutch %@", comment: "Will appear in conjunction with something else (e.g. Dutch 7).")
         case .german:
             return NSLocalizedString("German %@", comment: "Will appear in conjunction with something else (e.g. German 7).")
-        case .chinese, .chineseSimplified:
-            return NSLocalizedString("Chinese %@", comment: "Will appear in conjunction with something else (e.g. Chinese 7).")
-        case .chineseSupplement, .chineseSupplementSimplified:
-            return NSLocalizedString("Chinese Supplement %@", comment: "Will appear in conjunction with something else (e.g. Chinese Supplement 7).")
+        case .chinese:
+            return NSLocalizedString("Chinese %@ (Trad.)",
+                                     comment: "Will appear in conjunction with something else (e.g. Chinese 7 (Trad.)).")
+        case .chineseSimplified:
+            return NSLocalizedString("Chinese %@ (Simp.)",
+                                     comment: "Will appear in conjunction with something else (e.g. Chinese 7 (Simp.)).")
+        case .chineseSupplement:
+            return NSLocalizedString("Chinese Supplement %@ (Trad.)",
+                                     comment: "Will appear in conjunction with something else (e.g. Chinese Supplement 7 (Trad.)).")
+        case .chineseSupplementSimplified:
+            return NSLocalizedString("Chinese Supplement %@ (Simp.)",
+                                     comment: "Will appear in conjunction with something else (e.g. Chinese Supplement 7 (Simp.)).")
         case .cebuano:
             return NSLocalizedString("Cebuano %@", comment: "Will appear in conjunction with something else (e.g. Cebuano 7).")
         case .tagalog:

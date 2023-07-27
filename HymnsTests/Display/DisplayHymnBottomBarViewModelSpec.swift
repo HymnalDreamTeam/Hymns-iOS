@@ -38,6 +38,51 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                 beforeEach {
                     given(systemUtil.isNetworkAvailable()) ~> false
                 }
+                describe("removes German language if both German and Liederbuch are present") {
+                    beforeEach {
+                        given(systemUtil.isSmallScreen()) ~> false
+                    }
+                    context("only German language") {
+                        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "title",
+                                                  languages: [SongLink(reference: HymnIdentifier(hymnType: .german, hymnNumber: "2"), name: "german")])
+                        beforeEach {
+                            target = DisplayHymnBottomBarViewModel(hymnToDisplay: classic1151, hymn: hymn, systemUtil: systemUtil)
+                        }
+                        it("should show the German song result") {
+                            expect(target.buttons).to(haveCount(3))
+                            expect(target.buttons[1]).to(equal(.languages([SongResultViewModel(stableId: "hymnType: de, hymnNumber: 2",
+                                                                                               title: "German 2",
+                                                                                               destinationView: EmptyView().eraseToAnyView())])))
+                        }
+                    }
+                    context("only Liederbuch language") {
+                        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "title",
+                                                  languages: [SongLink(reference: HymnIdentifier(hymnType: .liederbuch, hymnNumber: "2"), name: "lied")])
+                        beforeEach {
+                            target = DisplayHymnBottomBarViewModel(hymnToDisplay: classic1151, hymn: hymn, systemUtil: systemUtil)
+                        }
+                        it("should show the Liederbuch song result") {
+                            expect(target.buttons).to(haveCount(3))
+                            expect(target.buttons[1]).to(equal(.languages([SongResultViewModel(stableId: "hymnType: lde, hymnNumber: 2",
+                                                                                               title: "Liederbuch 2",
+                                                                                               destinationView: EmptyView().eraseToAnyView())])))
+                        }
+                    }
+                    context("Liederbuch and German language") {
+                        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "title",
+                                                  languages: [SongLink(reference: HymnIdentifier(hymnType: .german, hymnNumber: "2"), name: "germ"),
+                                                              SongLink(reference: HymnIdentifier(hymnType: .liederbuch, hymnNumber: "20"), name: "lied")])
+                        beforeEach {
+                            target = DisplayHymnBottomBarViewModel(hymnToDisplay: classic1151, hymn: hymn, systemUtil: systemUtil)
+                        }
+                        it("should show only the Liederbuch song result") {
+                            expect(target.buttons).to(haveCount(3))
+                            expect(target.buttons[1]).to(equal(.languages([SongResultViewModel(stableId: "hymnType: lde, hymnNumber: 20",
+                                                                                               title: "Liederbuch 20",
+                                                                                               destinationView: EmptyView().eraseToAnyView())])))
+                        }
+                    }
+                }
                 context("regular screen") {
                     beforeEach {
                         given(systemUtil.isSmallScreen()) ~> false
@@ -81,9 +126,9 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                             expect(target.buttons[0]).to(equal(.share("verse 1 line 1\nverse 1 line 2\nchorus line 1\nchorus line 2\nverse 2 line 1\nverse 2 line 2\nverse 3 line 1\nverse 3 line 2")))
                             expect(target.buttons[1]).to(equal(.fontSize(FontPickerViewModel())))
                             expect(target.buttons[2]).to(equal(.languages([
-                                SongResultViewModel(stableId: "hymnType: ht, hymnNumber: 1151", title: "Tagalog",
+                                SongResultViewModel(stableId: "hymnType: ht, hymnNumber: 1151", title: "Tagalog 1151",
                                                     destinationView: EmptyView().eraseToAnyView()),
-                                SongResultViewModel(stableId: "hymnType: tsx, hymnNumber: 216", title: "诗歌(简)",
+                                SongResultViewModel(stableId: "hymnType: tsx, hymnNumber: 216", title: "Chinese Supplement 216 (Simp.)",
                                                     destinationView: EmptyView().eraseToAnyView())])))
                             expect(target.buttons[3]).to(equal(.relevant([
                                     SongResultViewModel(stableId: "hymnType: nt, hymnNumber: 1151", title: "New Tune",
@@ -109,9 +154,9 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                             expect(target.buttons[0]).to(equal(.share("verse 1 line 1\nverse 1 line 2\nchorus line 1\nchorus line 2\nverse 2 line 1\nverse 2 line 2\nverse 3 line 1\nverse 3 line 2")))
                             expect(target.buttons[1]).to(equal(.fontSize(FontPickerViewModel())))
                             expect(target.buttons[2]).to(equal(.languages([
-                                SongResultViewModel(stableId: "hymnType: ht, hymnNumber: 1151", title: "Tagalog",
+                                SongResultViewModel(stableId: "hymnType: ht, hymnNumber: 1151", title: "Tagalog 1151",
                                                     destinationView: EmptyView().eraseToAnyView()),
-                                SongResultViewModel(stableId: "hymnType: tsx, hymnNumber: 216", title: "诗歌(简)",
+                                SongResultViewModel(stableId: "hymnType: tsx, hymnNumber: 216", title: "Chinese Supplement 216 (Simp.)",
                                                     destinationView: EmptyView().eraseToAnyView())])))
                             expect(target.buttons[3]).to(equal(.relevant([
                                 SongResultViewModel(stableId: "hymnType: nt, hymnNumber: 1151", title: "New Tune",
@@ -177,9 +222,9 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                             expect(target.buttons[0]).to(equal(.share("verse 1 line 1\nverse 1 line 2\nchorus line 1\nchorus line 2\nverse 2 line 1\nverse 2 line 2\nverse 3 line 1\nverse 3 line 2")))
                             expect(target.buttons[1]).to(equal(.fontSize(FontPickerViewModel())))
                             expect(target.buttons[2]).to(equal(.languages([
-                                SongResultViewModel(stableId: "hymnType: ht, hymnNumber: 1151", title: "Tagalog",
+                                SongResultViewModel(stableId: "hymnType: ht, hymnNumber: 1151", title: "Tagalog 1151",
                                                     destinationView: EmptyView().eraseToAnyView()),
-                                SongResultViewModel(stableId: "hymnType: tsx, hymnNumber: 216", title: "诗歌(简)",
+                                SongResultViewModel(stableId: "hymnType: tsx, hymnNumber: 216", title: "Chinese Supplement 216 (Simp.)",
                                                     destinationView: EmptyView().eraseToAnyView())])))
                             expect(target.buttons[3]).to(equal(.musicPlayback(AudioPlayerViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=mp3")!))))
                             expect(target.buttons[4]).to(equal(.relevant([

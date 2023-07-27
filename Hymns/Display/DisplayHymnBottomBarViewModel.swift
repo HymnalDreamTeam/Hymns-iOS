@@ -45,7 +45,7 @@ class DisplayHymnBottomBarViewModel: ObservableObject {
 
         buttons.append(.fontSize(FontPickerViewModel()))
 
-        let languages = self.convertToSongResults(hymn.languages)
+        let languages = self.convertLanguagesToSongResults(hymn.languages)
         if !languages.isEmpty {
             buttons.append(.languages(languages))
         }
@@ -57,7 +57,7 @@ class DisplayHymnBottomBarViewModel: ObservableObject {
             buttons.append(.musicPlayback(AudioPlayerViewModel(url: mp3Url)))
         }
 
-        let relevant = self.convertToSongResults(hymn.relevant)
+        let relevant = self.convertRelevantsToSongResults(hymn.relevant)
         if !relevant.isEmpty {
             buttons.append(.relevant(relevant))
         }
@@ -90,12 +90,40 @@ class DisplayHymnBottomBarViewModel: ObservableObject {
         }
     }
 
-    private func convertToSongResults(_ songLinks: [SongLink]?) -> [SongResultViewModel] {
-        guard let songLinks = songLinks else {
+    private func convertLanguagesToSongResults(_ songLinks: [SongLink]?) -> [SongResultViewModel] {
+        guard var songLinks = songLinks else {
             return [SongResultViewModel]()
         }
 
-        return songLinks.map { songLink in
+        // If both German and Liederbuch exist, then remove German and show only
+        // Liederbuch. This is because they likely both point to the same song
+        // but with different numbering, which is confusing to the user.
+        if songLinks.map({ songLink in
+            songLink.reference.hymnType
+        }).filter({ hymnType in
+            hymnType == .german || hymnType == .liederbuch
+        }).count > 1 {
+            songLinks.removeAll { songLink in
+                songLink.reference.hymnType == .german
+            }
+        }
+
+        return songLinks.map({ songLink in
+            songLink.reference
+        }).map { songLinkReference in
+            let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: songLinkReference)).eraseToAnyView()
+            return SongResultViewModel(stableId: String(describing: songLinkReference),
+                                       title: String(format: songLinkReference.hymnType.displayLabel, songLinkReference.hymnNumber),
+                                       destinationView: destination)
+        }
+    }
+    
+    private func convertRelevantsToSongResults(_ relevantLinks: [SongLink]?) -> [SongResultViewModel] {
+        guard let relevantLinks = relevantLinks else {
+            return [SongResultViewModel]()
+        }
+
+        return relevantLinks.map { songLink in
             let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: songLink.reference)).eraseToAnyView()
             return SongResultViewModel(stableId: String(describing: songLink.reference), title: songLink.name, destinationView: destination)
         }

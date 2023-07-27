@@ -278,11 +278,11 @@ class SearchViewModelSpec: QuickSpec {
                         }
                         it("song results should contain matching numbers") {
                             expect(target.songResults).to(haveCount(3))
-                            expect(target.songResults[0].title).to(equal("Chinese 111"))
+                            expect(target.songResults[0].title).to(equal("Chinese 111 (Trad.)"))
                             expect(target.songResults[0].label).to(beNil())
-                            expect(target.songResults[1].title).to(equal("Chinese 1110"))
+                            expect(target.songResults[1].title).to(equal("Chinese 1110 (Trad.)"))
                             expect(target.songResults[1].label).to(beNil())
-                            expect(target.songResults[2].title).to(equal("Chinese 1111"))
+                            expect(target.songResults[2].title).to(equal("Chinese 1111 (Trad.)"))
                             expect(target.songResults[2].label).to(beNil())
                         }
                         it("should not fetch the recent songs from the history store") {

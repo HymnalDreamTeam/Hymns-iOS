@@ -28,6 +28,7 @@ class DisplayHymnContainerViewModelSpec: QuickSpec {
                     target.populateHymns()
                     testQueue.sync {}
                     testQueue.sync {}
+                    testQueue.sync {}
                 }
                 it("hymns should contain all the classic hymns") {
                     expect(target.hymns).to(haveCount(7))
@@ -53,6 +54,7 @@ class DisplayHymnContainerViewModelSpec: QuickSpec {
                     target.populateHymns()
                     testQueue.sync {}
                     testQueue.sync {}
+                    testQueue.sync {}
                 }
                 it("hymns should contain only the loaded song") {
                     expect(target.hymns).to(haveCount(1))
@@ -70,6 +72,7 @@ class DisplayHymnContainerViewModelSpec: QuickSpec {
                     target.populateHymns()
                     testQueue.sync {}
                     testQueue.sync {}
+                    testQueue.sync {}
                 }
                 it("hymns should contain only the loaded song") {
                     expect(target.hymns).to(haveCount(1))
@@ -85,6 +88,7 @@ class DisplayHymnContainerViewModelSpec: QuickSpec {
                     target = DisplayHymnContainerViewModel(hymnToDisplay: HymnIdentifier(hymnType: .classic, hymnNumber: "-1"),
                                                            backgroundQueue: testQueue, dataStore: dataStore, mainQueue: testQueue)
                     target.populateHymns()
+                    testQueue.sync {}
                     testQueue.sync {}
                     testQueue.sync {}
                 }

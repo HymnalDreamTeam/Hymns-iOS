@@ -55,7 +55,7 @@ class DisplayHymnContainerViewModel: ObservableObject {
                     }).map { hymnNumber in
                         HymnIdentifier(hymnType: hymnType, hymnNumber: hymnNumber)
                     }
-            }.sink { hymnIdentifiers in
+            }.receive(on: mainQueue).sink { hymnIdentifiers in
                 if let index = hymnIdentifiers.firstIndex(of: self.identifier) {
                     self.hymns = hymnIdentifiers.map({ hymnIdentifier in
                         DisplayHymnViewModel(hymnToDisplay: hymnIdentifier, storeInHistoryStore: self.storeInHistoryStore && self.identifier == hymnIdentifier)
