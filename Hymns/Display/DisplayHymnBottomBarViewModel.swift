@@ -117,7 +117,7 @@ class DisplayHymnBottomBarViewModel: ObservableObject {
                                        destinationView: destination)
         }
     }
-    
+
     private func convertRelevantsToSongResults(_ relevantLinks: [SongLink]?) -> [SongResultViewModel] {
         guard let relevantLinks = relevantLinks else {
             return [SongResultViewModel]()
