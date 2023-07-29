@@ -18,6 +18,7 @@ class HymnMusicViewModel: ObservableObject {
 enum HymnMusicTab {
     case piano(AnyView)
     case guitar(AnyView)
+    case inline(AnyView)
 }
 
 extension HymnMusicTab {
@@ -28,6 +29,8 @@ extension HymnMusicTab {
             return Image(systemName: "pianokeys")
         case .guitar:
             return Image("guitalele")
+        case .inline:
+            return Image("lyrics")
         }
     }
 }
@@ -41,6 +44,8 @@ extension HymnMusicTab: TabItem {
         case .piano(let content):
             return content
         case .guitar(let content):
+            return content
+        case .inline(let content):
             return content
         }
     }
@@ -58,7 +63,9 @@ extension HymnMusicTab: TabItem {
         case .piano:
             return Text("Piano sheet music", comment: "A11y label for showing the piano sheet music of a hymn.")
         case .guitar:
-            return Text("Guitar chords", comment: "A11y label for showing the guitar chords of a hymn.")
+            return Text("Guitar sheet music", comment: "A11y label for showing the guitar sheet music of a hymn.")
+        case .inline:
+            return Text("Inline chords", comment: "A11y label for showing the inline chords of a hymn.")
         }
     }
 
@@ -72,12 +79,15 @@ struct HymnMusicTab_Previews: PreviewProvider {
     static var previews: some View {
         let guitar = HymnMusicTab.guitar(EmptyView().eraseToAnyView())
         let piano = HymnMusicTab.piano(EmptyView().eraseToAnyView())
+        let inline = HymnMusicTab.inline(EmptyView().eraseToAnyView())
         return Group {
+            inline.selectedLabel.previewDisplayName("inline selected")
             guitar.selectedLabel.previewDisplayName("guitar selected")
             piano.selectedLabel.previewDisplayName("piano selected")
 
-            guitar.unselectedLabel.previewDisplayName("guitar unselectedLabel")
-            piano.unselectedLabel.previewDisplayName("piano unselectedLabel")
+            inline.unselectedLabel.previewDisplayName("inline unselected")
+            guitar.unselectedLabel.previewDisplayName("guitar unselected")
+            piano.unselectedLabel.previewDisplayName("piano unselected")
         }.previewLayout(.sizeThatFits)
     }
 }

@@ -26,6 +26,15 @@ class HymnMusicSnapshots: XCTestCase {
         assertVersionedSnapshot(matching: view, as: .swiftUiImage(size: CGSize(width: 200, height: 50)))
     }
 
+    func test_inlineAndPianoAndGuitar_inlineSelected() {
+        let viewModel = HymnMusicViewModel(musicViews: [.inline(Text("Inline chords here").eraseToAnyView()),
+                                                        .piano(Text("Piano sheet music here").eraseToAnyView()),
+                                                        .guitar(Text("Guitar sheet music here").eraseToAnyView())])
+        viewModel.currentTab = .inline(Text("Inline chords here").eraseToAnyView())
+        let view = HymnMusicView(viewModel: viewModel)
+        assertVersionedSnapshot(matching: view, as: .image(layout: .sizeThatFits))
+    }
+
     func test_pianoAndGuitar_pianoSelected() {
         let viewModel = HymnMusicViewModel(musicViews: [.piano(Text("Piano sheet music here").eraseToAnyView()),
                                                         .guitar(Text("Guitar sheet music here").eraseToAnyView())])
@@ -40,6 +49,16 @@ class HymnMusicSnapshots: XCTestCase {
         viewModel.currentTab = .guitar(Text("Guitar sheet music here").eraseToAnyView())
         let view = HymnMusicView(viewModel: viewModel)
         assertVersionedSnapshot(matching: view, as: .image(layout: .sizeThatFits))
+    }
+
+    func test_inline_selected() {
+        let inline = HymnMusicTab.inline(EmptyView().eraseToAnyView())
+        assertVersionedSnapshot(matching: inline.selectedLabel, as: .swiftUiImage(size: CGSize(width: 30, height: 30)))
+    }
+
+    func test_inline_unselected() {
+        let inline = HymnMusicTab.inline(EmptyView().eraseToAnyView())
+        assertVersionedSnapshot(matching: inline.selectedLabel, as: .swiftUiImage(size: CGSize(width: 30, height: 30)))
     }
 
     func test_guitar_selected() {

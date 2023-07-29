@@ -4,7 +4,6 @@ import SwiftUI
 
 public struct InlineChordsView: View {
 
-    @State private var showPdfSheet = false
     @ObservedObject private var viewModel: InlineChordsViewModel
 
     init(viewModel: InlineChordsViewModel) {
@@ -19,27 +18,7 @@ public struct InlineChordsView: View {
                     }
                 }
             }
-        }.padding(.horizontal).onAppear {
-            viewModel.loadPdf()
-        }.overlay(
-            viewModel.pdfDocument.map({ _ in
-                Button(action: {
-                    self.showPdfSheet = true
-                }, label: {
-                    Image(systemName: "arrow.up.left.and.arrow.down.right").rotationEffect(.degrees(90)).accessibility(label: Text("Maximize sheet music", comment: "A11y label for maximizing the sheet music.")).padding().padding(.top, 15)
-                }).zIndex(1)
-            }), alignment: .topTrailing).fullScreenCover(isPresented: $showPdfSheet) {
-                VStack(alignment: .leading) {
-                    Button(action: {
-                        self.showPdfSheet = false
-                    }, label: {
-                        Text("Close", comment: "Close the full screen PDF view.").padding()
-                    })
-                    if let pdfDocument = viewModel.pdfDocument {
-                        PDFViewer(pdfDocument)
-                    }
-                }
-            }
+        }.padding(.horizontal)
     }
 }
 
@@ -74,18 +53,8 @@ public struct InlineChordsView: View {
      ]
 
     static var previews: some View {
-        let noGuitarUrlViewModel = InlineChordsViewModel(chords: hymn1151Chords, guitarUrl: nil)
-        let noGuitarUrl = InlineChordsView(viewModel: noGuitarUrlViewModel)
-
-        let guitarUrlViewModel = InlineChordsViewModel(
-            chords: hymn1151Chords,
-            guitarUrl: URL(string: "https://www.hymnal.net/Hymns/Hymnal/svg/e0040_g.svg")!)
-        let guitarUrl = InlineChordsView(viewModel: guitarUrlViewModel)
-
-        return Group {
-            noGuitarUrl.previewDisplayName("No Guitar")
-            guitarUrl.previewDisplayName("Guitar")
-        }
+        let viewModel = InlineChordsViewModel(chords: hymn1151Chords)
+        return InlineChordsView(viewModel: viewModel)
     }
  }
  #endif
