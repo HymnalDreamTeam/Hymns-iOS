@@ -108,23 +108,22 @@ class DisplayHymnViewModel: ObservableObject {
     private func getHymnMusic(_ hymn: UiHymn) -> HymnMusicView? {
         var hymnMusic = [HymnMusicTab]()
 
-        let chordsPath = hymn.pdfSheet?[DatumValue.text.rawValue]
-        let chordsUrl = chordsPath.flatMap({ path -> URL? in
-            HymnalNet.url(path: path)
-        })
-        let guitarSheetPath = hymn.pdfSheet?[DatumValue.guitar.rawValue]
-        let guitarSheetUrl = guitarSheetPath.flatMap({ path -> URL? in
-            HymnalNet.url(path: path)
-        })
-        let guitarUrl = self.systemUtil.isNetworkAvailable() ? chordsUrl ?? guitarSheetUrl : nil
-        if let guitarUrl = guitarUrl {
-            self.pdfLoader.load(url: guitarUrl)
+        if let inlineChords = hymn.inlineChords, !inlineChords.isEmpty {
+            hymnMusic.append(.inline(InlineChordsView(viewModel: InlineChordsViewModel(chords: inlineChords)).eraseToAnyView()))
         }
 
-        if let inlineChords = hymn.inlineChords, !inlineChords.isEmpty {
-            hymnMusic.append(.guitar(InlineChordsView(viewModel: InlineChordsViewModel(chords: inlineChords, guitarUrl: guitarUrl)).eraseToAnyView()))
-        } else if let guitarUrl = guitarUrl {
-            hymnMusic.append(.guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: guitarUrl)).eraseToAnyView()))
+        if self.systemUtil.isNetworkAvailable() {
+            let chordsUrl = hymn.pdfSheet?[DatumValue.text.rawValue].flatMap({ path -> URL? in
+                HymnalNet.url(path: path)
+            })
+            let guitarSheetUrl = hymn.pdfSheet?[DatumValue.guitar.rawValue].flatMap({ path -> URL? in
+                HymnalNet.url(path: path)
+            })
+            let guitarUrl = chordsUrl ?? guitarSheetUrl
+            if let guitarUrl = guitarUrl {
+                self.pdfLoader.load(url: guitarUrl)
+                hymnMusic.append(.guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: guitarUrl)).eraseToAnyView()))
+            }
         }
 
         if self.systemUtil.isNetworkAvailable() {
