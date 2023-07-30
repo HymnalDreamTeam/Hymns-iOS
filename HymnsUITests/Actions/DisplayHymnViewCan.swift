@@ -84,7 +84,23 @@ public class DisplayHymnViewCan: BaseViewCan {
     }
 
     public func openGuitar() -> DisplayHymnViewCan {
-        return pressButton("Guitar chords")
+        return pressButton("Guitar sheet music")
+    }
+
+    public func openInlineChords() -> DisplayHymnViewCan {
+        return pressButton("Inline chords")
+    }
+
+    public func transposeUp() -> DisplayHymnViewCan {
+        return pressButton("Transpose up a half step")
+    }
+
+    public func transposeDown() -> DisplayHymnViewCan {
+        return pressButton("Transpose down a half step")
+    }
+
+    public func transposeReset(_ transposition: Int) -> DisplayHymnViewCan {
+        return pressButton(transposition == 0 ? "Transpose" : String(format: "Capo %+d", transposition))
     }
 
     public func verifyPdfDisplaying(_ string: String) -> DisplayHymnViewCan {
