@@ -128,15 +128,15 @@ class FirebaseLoggerImpl: FirebaseLogger {
     }
 
     func logError(message: String, error: Error?, extraParameters: [String: String]?) {
+        var userInfo = extraParameters ?? [String: String]()
+        userInfo["error_message"] = message
+
         guard let error = error else {
             backgroundThread.async {
-                Crashlytics.crashlytics().record(error: AppError(errorDescription: message))
+                Crashlytics.crashlytics().record(error: AppError(errorDescription: message), userInfo: userInfo)
             }
             return
         }
-
-        var userInfo = extraParameters ?? [String: String]()
-        userInfo["error_message"] = message
         backgroundThread.async {
             Crashlytics.crashlytics().record(error: error, userInfo: userInfo)
         }
