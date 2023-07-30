@@ -13,7 +13,7 @@ struct ChordLine: Identifiable {
 
     var hasChords: Bool {
         words.contains { chordWord in
-            chordWord.chords != nil
+            chordWord.chords != nil && !chordWord.chords!.trim().isEmpty
         }
     }
 
@@ -75,6 +75,12 @@ struct ChordLine: Identifiable {
             return ChordWord(word, chords: chords)
         }
     }
+
+    func transpose(_ steps: Int) {
+        words.forEach { chordWord in
+            chordWord.transpose(steps)
+        }
+    }
 }
 
 extension ChordLine: Hashable, Equatable {
@@ -90,8 +96,10 @@ extension ChordLine: Hashable, Equatable {
 /// Represents a word that could optionally have a chord associated with it.
 class ChordWord: Identifiable, ObservableObject {
 
+    private static let chordsTransposingPattern = "([^A-G]*)([A-G][#b]?)([^A-G]*)"
+
     @Published var fontSize: Float
-    public let chords: String?
+    @Published var chords: String?
     public let word: String
 
     var id = UUID()
@@ -108,6 +116,40 @@ class ChordWord: Identifiable, ObservableObject {
                 self.fontSize = fontSize
         }.store(in: &disposables)
     }
+
+    func transpose(_ steps: Int) {
+        guard let chords = chords else {
+            return
+        }
+        let range = NSRange(chords.startIndex..<chords.endIndex, in: chords)
+        let pattern = NSRegularExpression(Self.chordsTransposingPattern, options: [])
+        let matches = pattern.matches(in: chords, range: range)
+        self.chords = matches.map { match -> String? in
+            if match.numberOfRanges < 4 {
+                return nil
+            }
+
+            var newChords = ""
+            if let beforeChordRange = Range(match.range(at: 1), in: chords) {
+                newChords += String(chords[beforeChordRange])
+            }
+
+            if let chordRange = Range(match.range(at: 2), in: chords), let chord = Chord(rawValue: String(chords[chordRange])) {
+                var newChord = chord
+                for _ in 0..<abs(steps) {
+                    newChord = steps > 0 ? newChord.transposeUp() : newChord.transposeDown()
+                }
+                newChords += newChord.rawValue
+            }
+
+            if let afterChordRange = Range(match.range(at: 3), in: chords) {
+                newChords += String(chords[afterChordRange])
+            }
+            return newChords
+        }.compactMap { $0 }.reduce("", { partialResult, newChords in
+            return partialResult + newChords
+        })
+    }
 }
 
 extension ChordWord: Hashable, Equatable {
@@ -119,3 +161,89 @@ extension ChordWord: Hashable, Equatable {
         hasher.combine(id)
     }
 }
+
+extension ChordWord: CustomStringConvertible {
+    var description: String {
+        "word: \(word), chords: \(String(describing: chords)), fontSize: \(fontSize)"
+    }
+}
+
+// swiftlint:disable identifier_name cyclomatic_complexity
+enum Chord: String {
+    case aFlat = "Ab"
+    case a = "A"
+    case aSharp = "A#"
+    case bFlat = "Bb"
+    case b = "B"
+    case c = "C"
+    case cSharp = "C#"
+    case dFlat = "Db"
+    case d = "D"
+    case dSharp = "D#"
+    case eFlat = "Eb"
+    case e = "E"
+    case f = "F"
+    case fSharp = "F#"
+    case gFlat = "Gb"
+    case g = "G"
+    case gSharp = "G#"
+
+    func transposeUp() -> Chord {
+        switch self {
+        case .gSharp, .aFlat:
+            return .a
+        case .a:
+            return .aSharp
+        case .aSharp, .bFlat:
+            return .b
+        case .b:
+            return .c
+        case .c:
+            return .cSharp
+        case .cSharp, .dFlat:
+            return .d
+        case .d:
+            return .dSharp
+        case .dSharp, .eFlat:
+            return .e
+        case .e:
+            return .f
+        case .f:
+            return .fSharp
+        case .fSharp, .gFlat:
+            return .g
+        case .g:
+            return .gSharp
+        }
+    }
+
+    func transposeDown() -> Chord {
+        switch self {
+        case .g:
+            return .gFlat
+        case .gFlat, .fSharp:
+            return .f
+        case .f:
+            return .e
+        case .e:
+            return .eFlat
+        case .eFlat, .dSharp:
+            return .d
+        case .d:
+            return .dFlat
+        case .dFlat, .cSharp:
+            return .c
+        case .c:
+            return .b
+        case .b:
+            return .bFlat
+        case .bFlat, .aSharp:
+            return .a
+        case .a:
+            return .aFlat
+        case .aFlat, .gSharp:
+            return .g
+        }
+    }
+}
+// swiftlint:enagle identifier_name cyclomatic_complexity

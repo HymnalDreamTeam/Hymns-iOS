@@ -18,8 +18,33 @@ class DisplayHymnMusicScenarios: BaseTestCase {
             .verifyPdfDisplaying("Hymn 1151\'s Piano\n")
             .maximizeSheetMusic()
             .closeSheetMusic()
-            .openGuitar()
+            .openInlineChords()
             .waitForStaticTexts("G", "Songbase", "version", "of", "Hymn", "1151", "chords")
+    }
+
+    func test_transpose() {
+        _ = HomeViewCan(app, testCase: self)
+            .waitForButtons("Hymn 1151, classic1151", "Hymn 40, classic40", "Hymn 2, Classic 2", "Hymn 3, classic3")
+            .tapResult("Hymn 1151, classic1151")
+            .waitForStaticTexts("verse 1 line 1")
+            .openMusic()
+            .waitForStaticTexts("G", "Songbase", "version", "of", "Hymn", "1151", "chords")
+            .waitForButtons("Transpose down a half step", "Transpose", "Transpose up a half step")
+            .transposeUp()
+            .waitForStaticTexts("G#", "Songbase", "version", "of", "Hymn", "1151", "chords")
+            .waitForButtons("Transpose down a half step", "Capo +1", "Transpose up a half step")
+            .transposeUp()
+            .waitForStaticTexts("A", "Songbase", "version", "of", "Hymn", "1151", "chords")
+            .waitForButtons("Transpose down a half step", "Capo +2", "Transpose up a half step")
+            .transposeUp()
+            .waitForStaticTexts("A#", "Songbase", "version", "of", "Hymn", "1151", "chords")
+            .waitForButtons("Transpose down a half step", "Capo +3", "Transpose up a half step")
+            .transposeDown()
+            .waitForStaticTexts("A", "Songbase", "version", "of", "Hymn", "1151", "chords")
+            .waitForButtons("Transpose down a half step", "Capo +2", "Transpose up a half step")
+            .transposeReset(2)
+            .waitForStaticTexts("G", "Songbase", "version", "of", "Hymn", "1151", "chords")
+            .waitForButtons("Transpose down a half step", "Transpose", "Transpose up a half step")
     }
 
     func test_changeFontOfInlineChords() {

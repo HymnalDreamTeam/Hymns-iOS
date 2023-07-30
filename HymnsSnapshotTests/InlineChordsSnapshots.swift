@@ -6,14 +6,12 @@ import XCTest
 // https://troz.net/post/2020/swiftui_snapshots/
 class InlineChordsSnapshots: XCTestCase {
 
-    var preloader: PDFLoader!
-
     override func setUp() {
         super.setUp()
     }
 
     func test_songWithChords() {
-        let hymn1151Chords = [
+        let lyrics = [
             // Verse 1
             ChordLine("1"),
             ChordLine("[G]Drink! A river pure and clear[C]"),
@@ -39,8 +37,40 @@ class InlineChordsSnapshots: XCTestCase {
             ChordLine("and Christ, our morningstar:"),
             ChordLine("Christ, our everything!")
         ]
+        let viewModel = InlineChordsViewModel(chords: lyrics)
+        let view = InlineChordsView(viewModel: viewModel)
+        assertVersionedSnapshot(matching: view, as: .swiftUiImage())
+    }
 
-        let viewModel = InlineChordsViewModel(chords: hymn1151Chords)
+    func test_songTransposed_longLine() {
+        let lyrics = [
+            ChordLine("[G]Drink! A river pure and clear[C] That’s [G7]flowing from the throne; [C]Eat! The tree of life with fruits [G]Here there [D7]is no [G-C-G]night!")
+        ]
+        let viewModel = InlineChordsViewModel(chords: lyrics)
+        viewModel.transpose(10)
+        let view = InlineChordsView(viewModel: viewModel)
+        assertVersionedSnapshot(matching: view, as: .swiftUiImage())
+    }
+
+    func test_songWithOutChords() {
+        let lyrics = [
+            // Verse 1
+            ChordLine("1"),
+            ChordLine("Drink! A river pure and clear"),
+            ChordLine("That’s flowing from the throne;"),
+            ChordLine("Eat! The tree of life with fruits"),
+            ChordLine("Here there is no night!"),
+            ChordLine(""),
+            // Chorus
+            ChordLine(""),
+            ChordLine("  Do come, oh, do come,"),
+            ChordLine("  Says Spirit and the Bride:"),
+            ChordLine("  []Do come, oh, do come,"),
+            ChordLine("  Let him who thirsts and will"),
+            ChordLine("  Take []freely the []water of []l[]i[]fe!"),
+            ChordLine("")
+        ]
+        let viewModel = InlineChordsViewModel(chords: lyrics)
         let view = InlineChordsView(viewModel: viewModel)
         assertVersionedSnapshot(matching: view, as: .swiftUiImage())
     }
