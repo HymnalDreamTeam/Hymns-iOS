@@ -22,10 +22,10 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                 target = HymnDataStoreGrdbImpl(databaseQueue: inMemoryDBQueue, firebaseLogger: firebaseLogger, initializeTables: true)
             }
             afterEach {
-                verify(firebaseLogger.logError(message: any())).wasNeverCalled()
-                verify(firebaseLogger.logError(message: any(), error: any())).wasNeverCalled()
-                verify(firebaseLogger.logError(message: any(), extraParameters: any())).wasNeverCalled()
-                verify(firebaseLogger.logError(message: any(), error: any(), extraParameters: any())).wasNeverCalled()
+                verify(firebaseLogger.logError(any())).wasNeverCalled()
+                verify(firebaseLogger.logError(any(), message: any())).wasNeverCalled()
+                verify(firebaseLogger.logError(any(), extraParameters: any())).wasNeverCalled()
+                verify(firebaseLogger.logError(any(), message: any(), extraParameters: any())).wasNeverCalled()
             }
             describe("the database") {
                 it("should have been initialized successfully") {

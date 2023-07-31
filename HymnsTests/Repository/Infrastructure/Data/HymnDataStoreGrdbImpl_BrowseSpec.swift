@@ -15,7 +15,6 @@ class HymnDataStoreGrdbImpl_BrowseSpec: QuickSpec {
             var target: HymnDataStoreGrdbImpl!
             beforeEach {
                 // https://github.com/groue/GRDB.swift/blob/master/README.md#database-queues
-
                 inMemoryDBQueue = DatabaseQueue()
                 firebaseLogger = mock(FirebaseLogger.self)
                 target = HymnDataStoreGrdbImpl(databaseQueue: inMemoryDBQueue, firebaseLogger: firebaseLogger, initializeTables: true)
@@ -53,10 +52,10 @@ class HymnDataStoreGrdbImpl_BrowseSpec: QuickSpec {
                     target.saveHymn(HymnIdEntity(hymnType: .spanish, hymnNumber: "3", songId: songId!))
                 }
                 afterEach {
-                    verify(firebaseLogger.logError(message: any())).wasNeverCalled()
-                    verify(firebaseLogger.logError(message: any(), error: any())).wasNeverCalled()
-                    verify(firebaseLogger.logError(message: any(), extraParameters: any())).wasNeverCalled()
-                    verify(firebaseLogger.logError(message: any(), error: any(), extraParameters: any())).wasNeverCalled()
+                    verify(firebaseLogger.logError(any())).wasNeverCalled()
+                    verify(firebaseLogger.logError(any(), message: any())).wasNeverCalled()
+                    verify(firebaseLogger.logError(any(), extraParameters: any())).wasNeverCalled()
+                    verify(firebaseLogger.logError(any(), message: any(), extraParameters: any())).wasNeverCalled()
                 }
                 describe("getting all classic categories") {
                     it("should contain categories with their counts") {
@@ -261,7 +260,7 @@ class HymnDataStoreGrdbImpl_BrowseSpec: QuickSpec {
                     // songId is nil because there's no title
                     expect(songId).to(beNil())
                     verify(firebaseLogger.logError(
-                        message: "Save entity failed", error: any(),
+                        any(), message: "Save entity failed",
                         extraParameters: ["hymn": String(describing: HymnEntityBuilder().scriptures("scripture").build())]))
                     .wasCalled(1)
 
@@ -276,9 +275,9 @@ class HymnDataStoreGrdbImpl_BrowseSpec: QuickSpec {
                     target.saveHymn(HymnIdEntity(hymnIdentifier: HymnIdentifier(hymnType: .children, hymnNumber: "1"), songId: songId!))
                 }
                 afterEach {
-                    verify(firebaseLogger.logError(message: any())).wasNeverCalled()
-                    verify(firebaseLogger.logError(message: any(), error: any())).wasNeverCalled()
-                    verify(firebaseLogger.logError(message: any(), extraParameters: any())).wasNeverCalled()
+                    verify(firebaseLogger.logError(any())).wasNeverCalled()
+                    verify(firebaseLogger.logError(any(), message: any())).wasNeverCalled()
+                    verify(firebaseLogger.logError(any(), extraParameters: any())).wasNeverCalled()
                 }
                 let expected = [ScriptureEntity(title: "classic 1", hymnType: .classic, hymnNumber: "1", scriptures: "scripture"),
                                 ScriptureEntity(title: "classic 2", hymnType: .classic, hymnNumber: "2", scriptures: "scripture"),
