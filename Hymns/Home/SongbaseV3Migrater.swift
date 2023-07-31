@@ -77,7 +77,7 @@ class SongbaseV3MigraterImpl: SongbaseV3Migrater {
                         if unchanged.contains(songbaseNumber) {
                             return existing.copy()
                         }
-                        self.firebaseLogger.logError(message: "Songbase \(existing) wasn't found in any mapping")
+                        self.firebaseLogger.logError(SongbaseMigrationError(errorDescription: "Songbase \(existing) wasn't found in any mapping"))
                         return nil
                     }
                 })
@@ -85,7 +85,7 @@ class SongbaseV3MigraterImpl: SongbaseV3Migrater {
                 .sink(receiveCompletion: { state in
                     switch state {
                     case .failure(let failure):
-                        self.firebaseLogger.logError(message: "Failed to migrate favorites", error: failure)
+                        self.firebaseLogger.logError(failure, message: "Failed to migrate favorites")
                     case .finished:
                         break
                     }
@@ -128,7 +128,7 @@ class SongbaseV3MigraterImpl: SongbaseV3Migrater {
                             if unchanged.contains(songbaseNumber) {
                                 return existing.copy()
                             }
-                            self.firebaseLogger.logError(message: "Songbase \(existing) wasn't found in any mapping")
+                            self.firebaseLogger.logError(SongbaseMigrationError(errorDescription: "Songbase \(existing) wasn't found in any mapping"))
                             return nil
                         }
                     })
@@ -136,7 +136,7 @@ class SongbaseV3MigraterImpl: SongbaseV3Migrater {
                     .sink(receiveCompletion: { state in
                         switch state {
                         case .failure(let failure):
-                            self.firebaseLogger.logError(message: "Failed to migrate recent songs", error: failure)
+                            self.firebaseLogger.logError(failure, message: "Failed to migrate recent songs")
                         case .finished:
                             break
                         }
@@ -151,7 +151,7 @@ class SongbaseV3MigraterImpl: SongbaseV3Migrater {
                                                                       songTitle: new.songTitle)
                                 }
                             } catch {
-                                self.firebaseLogger.logError(message: "Failed to clear history", error: error)
+                                self.firebaseLogger.logError(error, message: "Failed to clear history")
                             }
                         }
                         // Cancel task this doesn't trigger again because of these updates, causing an infinite loop
@@ -185,7 +185,7 @@ class SongbaseV3MigraterImpl: SongbaseV3Migrater {
                         if unchanged.contains(songbaseNumber) {
                             return existing.copy()
                         }
-                        self.firebaseLogger.logError(message: "Songbase \(existing) wasn't found in any mapping")
+                        self.firebaseLogger.logError(SongbaseMigrationError(errorDescription: "Songbase \(existing) wasn't found in any mapping"))
                         return nil
                     }
                 })
@@ -193,7 +193,7 @@ class SongbaseV3MigraterImpl: SongbaseV3Migrater {
                 .sink(receiveCompletion: { state in
                     switch state {
                     case .failure(let failure):
-                        self.firebaseLogger.logError(message: "Failed to migrate tags", error: failure)
+                        self.firebaseLogger.logError(failure, message: "Failed to migrate tags")
                     case .finished:
                         break
                     }
@@ -207,7 +207,7 @@ class SongbaseV3MigraterImpl: SongbaseV3Migrater {
                                 self.tagStore.storeTagEntity(new)
                             }
                         } catch {
-                            self.firebaseLogger.logError(message: "Failed to clear tags", error: error)
+                            self.firebaseLogger.logError(error, message: "Failed to clear tags")
                         }
                     }
                     // Cancel task this doesn't trigger again because of these updates, causing an infinite loop
@@ -220,7 +220,7 @@ class SongbaseV3MigraterImpl: SongbaseV3Migrater {
 
     private func readChangedMigrationFile() async -> [String: (reference: HymnIdentifier, title: String)] {
         guard let migrationFile = Bundle.main.path(forResource: "songbase_v3_migration_changed", ofType: "txt") else {
-            firebaseLogger.logError(message: "Changed migration file does not exist")
+            firebaseLogger.logError(SongbaseMigrationError(errorDescription: "Changed migration file does not exist"))
             return [String: (reference: HymnIdentifier, title: String)]()
         }
         do {
@@ -231,7 +231,7 @@ class SongbaseV3MigraterImpl: SongbaseV3Migrater {
                     let songbaseNumber = String(components[0])
                     let replacementType = HymnType.fromAbbreviatedValue(String(components[1]))
                     guard let replacementType = replacementType else {
-                        firebaseLogger.logError(message: "Changed migration file contained an invalid replacement type")
+                        firebaseLogger.logError(SongbaseMigrationError(errorDescription: "Changed migration file contained an invalid replacement type"))
                         return nil
                     }
                     let hymnIdentifier = HymnIdentifier(hymnType: replacementType, hymnNumber: String(components[2]))
@@ -239,33 +239,33 @@ class SongbaseV3MigraterImpl: SongbaseV3Migrater {
                     return (songbaseNumber, (reference: hymnIdentifier, title: title))
                 })
         } catch {
-            firebaseLogger.logError(message: "Changed migration file was malformed")
+            firebaseLogger.logError(SongbaseMigrationError(errorDescription: "Changed migration file was malformed"))
             return [String: (reference: HymnIdentifier, title: String)]()
         }
     }
 
     private func readDroppedMigrationFile() async -> [String] {
         guard let migrationFile = Bundle.main.path(forResource: "songbase_v3_migration_dropped", ofType: "txt") else {
-            firebaseLogger.logError(message: "Dropped migration file does not exist")
+            firebaseLogger.logError(SongbaseMigrationError(errorDescription: "Dropped migration file does not exist"))
             return [String]()
         }
         do {
             return try String.init(contentsOfFile: migrationFile).split(separator: "\n").map { String($0) }
         } catch {
-            firebaseLogger.logError(message: "Dropped migration file was malformed")
+            firebaseLogger.logError(SongbaseMigrationError(errorDescription: "Dropped migration file was malformed"))
             return [String]()
         }
     }
 
     private func readUnchangedMigrationFile() async -> [String] {
         guard let migrationFile = Bundle.main.path(forResource: "songbase_v3_migration_unchanged", ofType: "txt") else {
-            firebaseLogger.logError(message: "Unchanged migration file does not exist")
+            firebaseLogger.logError(SongbaseMigrationError(errorDescription: "Unchanged migration file does not exist"))
             return [String]()
         }
         do {
             return try String.init(contentsOfFile: migrationFile).split(separator: "\n").map { String($0) }
         } catch {
-            firebaseLogger.logError(message: "Unchanged migration file was malformed")
+            firebaseLogger.logError(SongbaseMigrationError(errorDescription: "Unchanged migration file was malformed"))
             return [String]()
         }
     }

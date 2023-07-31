@@ -154,8 +154,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
                     }
                 } catch {
                     databaseInitializedProperly = false
-                    firebaseLogger.logError(message: "Failed to create tables for data store",
-                                            error: error,
+                    firebaseLogger.logError(error, message: "Failed to create tables for data store",
                                             extraParameters: ["database_state": "corrupted"])
                 }
             }
@@ -169,7 +168,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
                 return database.lastInsertedRowID
             }
         } catch {
-            firebaseLogger.logError(message: "Save entity failed", error: error,
+            firebaseLogger.logError(error, message: "Save entity failed",
                                     extraParameters: ["hymn": String(describing: entity)])
         }
         return nil
@@ -181,7 +180,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
                 try entity.insert(database)
             }
         } catch {
-            firebaseLogger.logError(message: "Save entity failed", error: error,
+            firebaseLogger.logError(error, message: "Save entity failed",
                                     extraParameters: ["hymnType": entity.hymnType, "hymnNumber": entity.hymnNumber])
         }
     }
@@ -521,9 +520,10 @@ extension Resolver {
                 try? fileManager.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
                     .appendingPathComponent("hymnaldb-v\(HYMN_DATA_STORE_VERISON).sqlite")
                     .path else {
-                        Crashlytics.crashlytics().log("The desired path in Application Support is nil, so we are unable to create a database file. Fall back to useing an in-memory db and initialize it with empty tables")
                         Crashlytics.crashlytics().setCustomValue("in-memory db", forKey: "database_state")
-                        Crashlytics.crashlytics().record(error: AppError(errorDescription: "Database Initialization Error"))
+                        Crashlytics.crashlytics().record(
+                            error: DatabasePathError(errorDescription: "hymnaldb-v\(HYMN_DATA_STORE_VERISON).sqlite"),
+                            userInfo: ["error_message": "The desired path 'hymnaldb-v\(HYMN_DATA_STORE_VERISON).sqlite' in Application Support is nil, so we are unable to create a database file. Fall back to useing an in-memory db and initialize it with empty tables"])
                         return HymnDataStoreGrdbImpl(databaseQueue: DatabaseQueue(), initializeTables: true) as HymnDataStore
             }
 
@@ -535,9 +535,10 @@ extension Resolver {
                 if !fileManager.fileExists(atPath: dbPath) {
                     guard let bundledDbPath = Bundle.main.path(forResource: "hymnaldb-v\(HYMN_DATA_STORE_VERISON)",
                                                                ofType: "sqlite") else {
-                        Crashlytics.crashlytics().log("Path to the bundled database was not found, so just create an empty database instead and initialize it with empty tables")
                         Crashlytics.crashlytics().setCustomValue("empty persistent db", forKey: "database_state")
-                        Crashlytics.crashlytics().record(error: AppError(errorDescription: "Database Initialization Error"))
+                        Crashlytics.crashlytics().record(
+                            error: DatabaseFileNotFoundError(errorDescription: "Database Initialization Error"),
+                            userInfo: ["error_message": "Path to the bundled database (hymnaldb-v\(HYMN_DATA_STORE_VERISON).sqlite) was not found, so just create an empty database instead and initialize it with empty tables"])
                         needToCreateTables = true
                         break outer
                     }

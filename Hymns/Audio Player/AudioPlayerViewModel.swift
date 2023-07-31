@@ -56,8 +56,7 @@ class AudioPlayerViewModel: NSObject, ObservableObject {
         do {
             try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback)
         } catch {
-            firebaseLogger.logError(message: "Unable to set AVAudioSession category to \(AVAudioSession.Category.playback.rawValue)",
-                                    error: error)
+            firebaseLogger.logError(error, message: "Unable to set AVAudioSession category to \(AVAudioSession.Category.playback.rawValue)")
         }
     }
 
@@ -79,7 +78,7 @@ class AudioPlayerViewModel: NSObject, ObservableObject {
                     if let failed = failed {
                         failed()
                     }
-                    self.firebaseLogger.logError(message: "Failed to initialize audio player",
+                    self.firebaseLogger.logError(AudioInitializationError(errorDescription: "Failed to initialize audio player"),
                                                  extraParameters: ["url": String(describing: self.url)])
                     return
                 }

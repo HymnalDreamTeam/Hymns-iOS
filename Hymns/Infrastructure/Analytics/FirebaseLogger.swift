@@ -18,12 +18,12 @@ protocol FirebaseLogger {
     func logDisplayMusicPdfSuccess(url: URL)
     func logDisplayMusicPdfFailed(url: URL)
 
-    func logError(message: String)
-    func logError(message: String, error: Error)
-    func logError(message: String, extraParameters: [String: String])
     /// By definition, logging an error is logging a non fatal because if it were fatal, we the app would be crashing
     /// https://firebase.google.com/docs/crashlytics/customize-crash-reports?platform=ios#log-excepts
-    func logError(message: String, error: Error?, extraParameters: [String: String]?)
+    func logError(_ error: Error)
+    func logError(_ error: Error, message: String)
+    func logError(_ error: Error, extraParameters: [String: String])
+    func logError(_ error: Error, message: String?, extraParameters: [String: String]?)
 }
 
 class FirebaseLoggerImpl: FirebaseLogger {
@@ -115,28 +115,21 @@ class FirebaseLoggerImpl: FirebaseLogger {
         }
     }
 
-    func logError(message: String) {
-        logError(message: message, error: nil, extraParameters: nil)
+    func logError(_ error: Error) {
+        logError(error, message: nil, extraParameters: nil)
     }
 
-    func logError(message: String, error: Error) {
-        logError(message: message, error: error, extraParameters: nil)
+    func logError(_ error: Error, message: String) {
+        logError(error, message: message, extraParameters: nil)
     }
 
-    func logError(message: String, extraParameters: [String: String]) {
-        logError(message: message, error: nil, extraParameters: extraParameters)
+    func logError(_ error: Error, extraParameters: [String: String]) {
+        logError(error, message: nil, extraParameters: extraParameters)
     }
 
-    func logError(message: String, error: Error?, extraParameters: [String: String]?) {
+    func logError(_ error: Error, message: String?, extraParameters: [String: String]?) {
         var userInfo = extraParameters ?? [String: String]()
         userInfo["error_message"] = message
-
-        guard let error = error else {
-            backgroundThread.async {
-                Crashlytics.crashlytics().record(error: AppError(errorDescription: message), userInfo: userInfo)
-            }
-            return
-        }
         backgroundThread.async {
             Crashlytics.crashlytics().record(error: error, userInfo: userInfo)
         }

@@ -140,7 +140,7 @@ private class HymnSubscription<SubscriberType: Subscriber>: NetworkBoundSubscrip
         let combinedHymn = combineHymns(databaseResult: flattenedDatabaseResult, convertedNetworkResult: convertedNetworkResult)
         if combinedHymn != flattenedDatabaseResult {
             guard let songId = dataStore.saveHymn(combinedHymn) else {
-                firebaseLogger.logError(message: "Failed to save song to the database",
+                firebaseLogger.logError(SongSaveError(errorDescription: "Failed to save song to the database"),
                                         extraParameters: ["song": String(describing: combinedHymn)])
                 return
             }
@@ -168,7 +168,8 @@ private class HymnSubscription<SubscriberType: Subscriber>: NetworkBoundSubscrip
         do {
             return try converter.toHymnEntity(hymn: networkResult)
         } catch {
-            analytics.logError(message: "error orccured when converting Hymn to HymnEntity", error: error, extraParameters: ["hymnIdentifier": String(describing: hymnIdentifier)])
+            analytics.logError(error, message: "error orccured when converting Hymn to HymnEntity",
+                               extraParameters: ["hymnIdentifier": String(describing: hymnIdentifier)])
             throw TypeConversionError(triggeringError: error)
         }
     }
@@ -178,7 +179,8 @@ private class HymnSubscription<SubscriberType: Subscriber>: NetworkBoundSubscrip
         do {
             return try converter.toUiHymn(hymnIdentifier: hymnIdentifier, hymnEntity: databaseResult)
         } catch {
-            analytics.logError(message: "error orccured when converting HymnEntity to UiHymn", error: error, extraParameters: ["hymnIdentifier": String(describing: hymnIdentifier)])
+            analytics.logError(error, message: "error orccured when converting HymnEntity to UiHymn",
+                               extraParameters: ["hymnIdentifier": String(describing: hymnIdentifier)])
             throw TypeConversionError(triggeringError: error)
         }
     }

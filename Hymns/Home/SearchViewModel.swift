@@ -230,7 +230,7 @@ class SearchViewModel: ObservableObject {
 
         let searchInput = self.searchParameter
         if searchInput.isEmpty {
-            firebaseLogger.logError(message: "Search parameter should never be empty during a song fetch")
+            firebaseLogger.logError(EmptySearchInputError(errorDescription: "Search parameter should never be empty during a song fetch"))
             return
         }
 

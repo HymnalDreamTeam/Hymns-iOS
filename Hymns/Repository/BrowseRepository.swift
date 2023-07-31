@@ -62,8 +62,9 @@ class BrowseRepositoryImpl: BrowseRepository {
                                         references.append(scriptureReference)
                                         references.append(" ")
                                     }
-                                    self.firebaseLogger.logError(message: "Chapter in scripture reference was nil. This should not happen.",
-                                                                 extraParameters: ["references": references])
+                                    self.firebaseLogger.logError(
+                                        MalformedScriptureReference(errorDescription: "Chapter in scripture reference was nil. This should not happen."),
+                                        extraParameters: ["references": references])
                                     continue
                                 }
                             }

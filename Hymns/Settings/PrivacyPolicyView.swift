@@ -14,7 +14,7 @@ struct PrivacyPolicyView: View {
 
     var body: some View {
         guard let url = URL(string: "https://app.termly.io/document/privacy-policy/4b9dd46b-aca9-40ae-ac97-58b47e4b4cac") else {
-            firebaseLogger.logError(message: "Privacy policy url malformed",
+            firebaseLogger.logError(MalformedPrivacyPolicyError(errorDescription: "Privacy policy url malformed"),
                                     extraParameters: ["url": "https://app.termly.io/document/privacy-policy/4b9dd46b-aca9-40ae-ac97-58b47e4b4cac"])
             return ErrorView().eraseToAnyView()
         }

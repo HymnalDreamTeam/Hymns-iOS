@@ -20,7 +20,9 @@ class DonationViewModel: ObservableObject {
          resultBinding: Binding<Result<SettingsToastItem, Error>?>) {
         self.donationTypeToDonation = coffeeDonations.compactMap { coffeeDonation -> (donationType: DonationType, coffeeDonation: CoffeeDonation)? in
             guard let donationType = DonationType(rawValue: coffeeDonation.id) else {
-                firebaseLogger.logError(message: "Found unidentified coffee donation id", extraParameters: ["donation_id": coffeeDonation.id])
+                firebaseLogger.logError(
+                    UnidentifiedCoffeeDonationId(errorDescription: "Found unidentified coffee donation id"),
+                    extraParameters: ["donation_id": coffeeDonation.id])
                 return nil
             }
             return (donationType: donationType, coffeeDonation: coffeeDonation)
@@ -37,12 +39,12 @@ class DonationViewModel: ObservableObject {
     @MainActor
     func initiatePurchase(donationType: DonationType) async {
         guard let coffeeDonation = donationTypeToDonation[donationType] else {
-            firebaseLogger.logError(message: "Unrecognized coffee donation selection made. This should never happen",
-                                    extraParameters: ["donation_type": String(describing: donationType)])
+            firebaseLogger.logError(
+                UnidentifiedCoffeeDonationId(errorDescription: "Unrecognized coffee donation selection made. This should never happen."),
+                extraParameters: ["donation_type": String(describing: donationType)])
             self.resultBinding = .success(.donate(.other))
             return
         }
-
         do {
             let purchaseResult = try await coffeeDonation.purchase(options: [])
             firebaseLogger.logDonation(product: coffeeDonation, result: purchaseResult)
@@ -55,8 +57,7 @@ class DonationViewModel: ObservableObject {
                 self.resultBinding = .success(.donate(.other))
             }
         } catch {
-            firebaseLogger.logError(message: "Purchase failed",
-                                    error: error,
+            firebaseLogger.logError(error, message: "Purchase failed",
                                     extraParameters: ["donation_type": String(describing: donationType),
                                                       "coffee_donation": String(describing: coffeeDonation)])
             self.resultBinding = .failure(error)

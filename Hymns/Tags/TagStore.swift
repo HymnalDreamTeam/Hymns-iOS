@@ -31,7 +31,7 @@ class TagStoreRealmImpl: TagStore {
                 realm.add(TagEntity(tagObject: tag, created: Date()), update: .modified)
             }
         } catch {
-            firebaseLogger.logError(message: "error occurred when storing tag", error: error,
+            firebaseLogger.logError(error, message: "error occurred when storing tag",
                                     extraParameters: ["primaryKey": tag.primaryKey])
         }
     }
@@ -42,7 +42,7 @@ class TagStoreRealmImpl: TagStore {
                 realm.add(tagEntity, update: .modified)
             }
         } catch {
-            firebaseLogger.logError(message: "error occurred when storing tag", error: error,
+            firebaseLogger.logError(error, message: "error occurred when storing tag",
                                     extraParameters: ["primaryKey": tagEntity.primaryKey])
         }
     }
@@ -56,7 +56,7 @@ class TagStoreRealmImpl: TagStore {
                 realm.delete(entitiesToDelete)
             }
         } catch {
-            firebaseLogger.logError(message: "error occurred when deleting tag", error: error, extraParameters: ["primaryKey": primaryKey])
+            firebaseLogger.logError(error, message: "error occurred when deleting tag", extraParameters: ["primaryKey": primaryKey])
         }
     }
 
@@ -150,7 +150,10 @@ extension Resolver {
                                 guard let hymnType = hymnType,
                                       let hymnType = HymnType(rawValue: hymnType),
                                         let hymnNumber = hymnNumber else {
-                                    Crashlytics.crashlytics().record(error: AppError(errorDescription: "Unable to migrate favorite \(hymnIdentifierEntity)"))
+                                    Crashlytics.crashlytics().record(error: HistoryMigrationError(errorDescription: "Unable to migrate tags"),
+                                                                     userInfo: [
+                                                                        "oldSchemaVersion": oldSchemaVersion,
+                                                                        "hymnIdentifierEntity": hymnIdentifierEntity])
                                     return nil
                                 }
 

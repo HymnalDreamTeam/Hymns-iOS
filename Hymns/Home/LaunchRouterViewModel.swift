@@ -62,13 +62,13 @@ class LaunchRouterViewModel: ObservableObject {
 
             try pathsToDelete.forEach { pathToDelete in
                 if !fileManager.isDeletableFile(atPath: pathToDelete) {
-                    self.firebaseLogger.logError(message: "Songbase file \(pathToDelete) is not deletable")
+                    self.firebaseLogger.logError(DatabaseDeletionError(errorDescription: "Songbase file \(pathToDelete) is not deletable"))
                     return
                 }
                 try fileManager.removeItem(atPath: pathToDelete)
             }
         } catch {
-            firebaseLogger.logError(message: "Error occurred while trying to delete songbase database files", error: error)
+            firebaseLogger.logError(error, message: "Error occurred while trying to delete songbase database files")
         }
     }
 

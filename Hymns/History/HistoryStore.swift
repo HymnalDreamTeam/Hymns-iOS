@@ -60,11 +60,11 @@ class HistoryStoreRealmImpl: HistoryStore {
                     for (index, entity) in entitiesToDelete.enumerated() {
                         extraParameters["primary_key \(index)"] = entity.primaryKey
                     }
-                    firebaseLogger.logError(message: "error occurred when deleting recent songs", error: error, extraParameters: extraParameters)
+                    firebaseLogger.logError(error, message: "error occurred when deleting recent songs", extraParameters: extraParameters)
                 }
             }
         } catch {
-            firebaseLogger.logError(message: "error occurred when storing recent song", error: error,
+            firebaseLogger.logError(error, message: "error occurred when storing recent song",
                                     extraParameters: ["hymnIdentifier": String(describing: hymnIdentifier), "title": songTitle])
         }
     }
@@ -109,7 +109,10 @@ extension Resolver {
                                 guard let hymnType = hymnType,
                                       let hymnType = HymnType(rawValue: hymnType),
                                         let hymnNumber = hymnNumber else {
-                                    Crashlytics.crashlytics().record(error: AppError(errorDescription: "Unable to migrate favorite \(hymnIdentifierEntity)"))
+                                    Crashlytics.crashlytics().record(error: HistoryMigrationError(errorDescription: "Unable to migrate history"),
+                                                                     userInfo: [
+                                                                        "oldSchemaVersion": oldSchemaVersion,
+                                                                        "hymnIdentifierEntity": hymnIdentifierEntity])
                                     return nil
                                 }
 

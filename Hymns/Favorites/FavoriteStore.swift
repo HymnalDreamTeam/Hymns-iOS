@@ -29,13 +29,14 @@ class FavoriteStoreRealmImpl: FavoriteStore {
                 realm.add(entity, update: .modified)
             }
         } catch {
-            firebaseLogger.logError(message: "error orccured when storing favorite", error: error, extraParameters: ["primaryKey": entity.primaryKey])
+            firebaseLogger.logError(error, message: "error orccured when storing favorite", extraParameters: ["primaryKey": entity.primaryKey])
         }
     }
 
     func deleteFavorite(primaryKey: String) {
         guard let entityToDelete = realm.object(ofType: FavoriteEntity.self, forPrimaryKey: primaryKey) else {
-            firebaseLogger.logError(message: "tried to delete a favorite that doesn't exist", extraParameters: ["primaryKey": primaryKey])
+            firebaseLogger.logError(FavoriteDeletionError(errorDescription: "tried to delete a favorite that doesn't exist"),
+                                    extraParameters: ["primaryKey": primaryKey])
             return
         }
 
@@ -44,8 +45,8 @@ class FavoriteStoreRealmImpl: FavoriteStore {
                 realm.delete(entityToDelete)
             }
         } catch {
-            firebaseLogger.logError(message: "error orccured when deleting favorite",
-                                    error: error, extraParameters: ["primaryKey": primaryKey])
+            firebaseLogger.logError(error, message: "error orccured when deleting favorite",
+                                    extraParameters: ["primaryKey": primaryKey])
         }
     }
 
@@ -55,7 +56,7 @@ class FavoriteStoreRealmImpl: FavoriteStore {
                 realm.deleteAll()
             }
         } catch {
-            firebaseLogger.logError(message: "error orccured when clearing favorites table", error: error)
+            firebaseLogger.logError(error, message: "error orccured when clearing favorites table")
         }
     }
 
@@ -117,7 +118,10 @@ extension Resolver {
                                 guard let hymnType = hymnType,
                                       let hymnType = HymnType(rawValue: hymnType),
                                         let hymnNumber = hymnNumber else {
-                                    Crashlytics.crashlytics().record(error: AppError(errorDescription: "Unable to migrate favorite \(hymnIdentifierEntity)"))
+                                    Crashlytics.crashlytics().record(error: FavoritesMigrationError(errorDescription: "Unable to migrate favorites"),
+                                                                     userInfo: [
+                                                                        "oldSchemaVersion": oldSchemaVersion,
+                                                                        "hymnIdentifierEntity": hymnIdentifierEntity])
                                     return nil
                                 }
 
