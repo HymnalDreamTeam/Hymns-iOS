@@ -1,8 +1,11 @@
+import Resolver
 import SwiftUI
 
 class NavigationCoordinator: ObservableObject {
 
     @Published var stack = [Route]()
+
+    private let firebaseLogger: FirebaseLogger = Resolver.resolve()
 
     func route(_ route: Route) -> AnyView {
         switch route {
@@ -32,7 +35,12 @@ class NavigationCoordinator: ObservableObject {
     }
 
     func goBack() {
-        stack.removeLast()
+        if stack.isEmpty {
+            firebaseLogger.logError(BackStackError(errorDescription: "Back stack is empty on back click"))
+            stack.removeAll()
+        } else {
+            stack.removeLast()
+        }
     }
 
     func showVersionInformation() {

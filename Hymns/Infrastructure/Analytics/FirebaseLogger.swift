@@ -17,6 +17,7 @@ protocol FirebaseLogger {
     func logLoadMusicPdf(url: URL)
     func logDisplayMusicPdfSuccess(url: URL)
     func logDisplayMusicPdfFailed(url: URL)
+    func logButtonClick(_ buttonName: String, file: String)
 
     /// By definition, logging an error is logging a non fatal because if it were fatal, we the app would be crashing
     /// https://firebase.google.com/docs/crashlytics/customize-crash-reports?platform=ios#log-excepts
@@ -111,6 +112,15 @@ class FirebaseLoggerImpl: FirebaseLogger {
         backgroundThread.async {
             Analytics.logEvent(DisplayMusicPdfFailed.name, parameters: [
                 DisplayMusicPdfFailed.Params.pdf_url.rawValue: url.absoluteString
+            ])
+        }
+    }
+
+    func logButtonClick(_ buttonName: String, file: String) {
+        backgroundThread.async {
+            Analytics.logEvent(ButtonClick.name, parameters: [
+                ButtonClick.Params.button_name.rawValue: buttonName,
+                ButtonClick.Params.file.rawValue: file
             ])
         }
     }

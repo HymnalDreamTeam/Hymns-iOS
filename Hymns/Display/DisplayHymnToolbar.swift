@@ -7,14 +7,20 @@ struct DisplayHymnToolbar: View {
     @ObservedObject private var viewModel: DisplayHymnViewModel
     @ObservedObject private var coordinator: NavigationCoordinator
 
-    init(viewModel: DisplayHymnViewModel, coordinator: NavigationCoordinator = Resolver.resolve()) {
+    private let firebaseLogger: FirebaseLogger
+
+    init(viewModel: DisplayHymnViewModel,
+         coordinator: NavigationCoordinator = Resolver.resolve(),
+         firebaseLogger: FirebaseLogger = Resolver.resolve()) {
         self.coordinator = coordinator
+        self.firebaseLogger = firebaseLogger
         self.viewModel = viewModel
     }
 
     var body: some View {
         HStack {
             Button(action: {
+                firebaseLogger.logButtonClick("back", file: #file)
                 coordinator.goBack()
             }, label: {
                 Image(systemName: "chevron.left")
@@ -26,6 +32,7 @@ struct DisplayHymnToolbar: View {
             Spacer()
             HStack {
                 Button(action: {
+                    firebaseLogger.logButtonClick("jumpBackToRoot", file: #file)
                     coordinator.jumpBackToRoot()
                 }, label: {
                     Image(systemName: "magnifyingglass")
@@ -34,6 +41,7 @@ struct DisplayHymnToolbar: View {
                 })
                 viewModel.isFavorited.map { isFavorited in
                     Button(action: {
+                        firebaseLogger.logButtonClick("toggleFavorite", file: #file)
                         self.viewModel.toggleFavorited()
                     }, label: {
                         isFavorited ?

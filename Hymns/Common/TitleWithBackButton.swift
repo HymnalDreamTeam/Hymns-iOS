@@ -5,16 +5,21 @@ struct TitleWithBackButton: View {
 
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject private var coordinator: NavigationCoordinator
+    private let firebaseLogger: FirebaseLogger
     private let title: String
 
-    init(_ title: String, coordinator: NavigationCoordinator = Resolver.resolve()) {
+    init(_ title: String,
+         coordinator: NavigationCoordinator = Resolver.resolve(),
+         firebaseLogger: FirebaseLogger = Resolver.resolve()) {
         self.coordinator = coordinator
+        self.firebaseLogger = firebaseLogger
         self.title = title
     }
 
     var body: some View {
         HStack {
             Button(action: {
+                firebaseLogger.logButtonClick("back", file: #file)
                 if #available(iOS 16, *) {
                     self.coordinator.goBack()
                 } else {

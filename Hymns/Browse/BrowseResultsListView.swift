@@ -15,7 +15,6 @@ struct BrowseResultsListView: View {
     var body: some View {
         VStack {
             TitleWithBackButton(viewModel.title)
-
             Group { () -> AnyView in
                 guard let songResults = self.viewModel.songResults else {
                     return ActivityIndicator().maxSize().eraseToAnyView()

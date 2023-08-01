@@ -79,3 +79,7 @@ struct TagMigrationError: AppError {
 struct HistoryMigrationError: AppError {
     let errorDescription: String
 }
+
+struct BackStackError: AppError {
+    let errorDescription: String
+}

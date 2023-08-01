@@ -109,3 +109,14 @@ struct DisplayMusicPdfFailed: AnalyticsEvent {
     }
     // swiftlint:enable identifier_name
 }
+
+struct ButtonClick: AnalyticsEvent {
+    static let name = "button_click"
+
+    // swiftlint:disable identifier_name
+    enum Params: String {
+        case button_name
+        case file
+    }
+    // swiftlint:enable identifier_name
+}
