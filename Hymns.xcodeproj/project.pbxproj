@@ -213,6 +213,7 @@
 		3BC53646243EDB8100DA728F /* TestConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC53645243EDB8100DA728F /* TestConstants.swift */; };
 		3BC5B15C247F7B0400F5D63A /* CategoryEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC5B15B247F7B0400F5D63A /* CategoryEntity.swift */; };
 		3BC5B15E247F7DDC00F5D63A /* HymnDataStoreGrdbImpl_BrowseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC5B15D247F7DDC00F5D63A /* HymnDataStoreGrdbImpl_BrowseSpec.swift */; };
+		3BC6DB002A81818500FAE847 /* __Snapshots__ in Resources */ = {isa = PBXBuildFile; fileRef = 3BC6DAFF2A81818500FAE847 /* __Snapshots__ */; };
 		3BCC243E24B24AEF00B8B8AB /* SongResultViewModelSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC243D24B24AEF00B8B8AB /* SongResultViewModelSpec.swift */; };
 		3BCC244024B24C9A00B8B8AB /* TagSheetViewModelSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC243F24B24C9A00B8B8AB /* TagSheetViewModelSpec.swift */; };
 		3BCC54CB24C80B2100F0D6FC /* ToastSnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BCC54CA24C80B2100F0D6FC /* ToastSnapshots.swift */; };
@@ -556,6 +557,7 @@
 		3BC53645243EDB8100DA728F /* TestConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestConstants.swift; sourceTree = "<group>"; };
 		3BC5B15B247F7B0400F5D63A /* CategoryEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryEntity.swift; sourceTree = "<group>"; };
 		3BC5B15D247F7DDC00F5D63A /* HymnDataStoreGrdbImpl_BrowseSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HymnDataStoreGrdbImpl_BrowseSpec.swift; sourceTree = "<group>"; };
+		3BC6DAFF2A81818500FAE847 /* __Snapshots__ */ = {isa = PBXFileReference; lastKnownFileType = folder; path = __Snapshots__; sourceTree = "<group>"; };
 		3BCC243D24B24AEF00B8B8AB /* SongResultViewModelSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongResultViewModelSpec.swift; sourceTree = "<group>"; };
 		3BCC243F24B24C9A00B8B8AB /* TagSheetViewModelSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagSheetViewModelSpec.swift; sourceTree = "<group>"; };
 		3BCC54CA24C80B2100F0D6FC /* ToastSnapshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastSnapshots.swift; sourceTree = "<group>"; };
@@ -1342,6 +1344,7 @@
 				3BB9319E24E1E65D00E0C873 /* ToolTipSnapshots.swift */,
 				3BBFFF5427D32ED900AE60C5 /* WrappedHStackSnapshots.swift */,
 				3BE7C91D249CAB2700B04A1F /* Info.plist */,
+				3BC6DAFF2A81818500FAE847 /* __Snapshots__ */,
 			);
 			path = HymnsSnapshotTests;
 			sourceTree = "<group>";
@@ -1637,6 +1640,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3BC6DB002A81818500FAE847 /* __Snapshots__ in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
