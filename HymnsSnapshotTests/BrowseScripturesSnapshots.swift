@@ -38,7 +38,7 @@ class BrowseScripturesSnapshots: XCTestCase {
             as: .image(layout: .sizeThatFits))
     }
 
-    func test_scripture_song() {
+    func test_scripture_song_medium() {
         let viewModel = ScriptureSongViewModel(reference: "1:19", title: "And we have the prophetic word",
                                                hymnIdentifier: PreviewHymnIdentifiers.cupOfChrist)
         assertVersionedSnapshot(
@@ -46,16 +46,31 @@ class BrowseScripturesSnapshots: XCTestCase {
                 .environment(\.sizeCategory, .medium)
                 .ignoresSafeArea(),
             as: .swiftUiImage(size: CGSize(width: 400, height: 200)))
+    }
+
+    func test_scripture_song_extraExtraExtraLarge() {
+        let viewModel = ScriptureSongViewModel(reference: "1:19", title: "And we have the prophetic word",
+                                               hymnIdentifier: PreviewHymnIdentifiers.cupOfChrist)
         assertVersionedSnapshot(
             matching: ScriptureSongView(viewModel: viewModel)
                 .environment(\.sizeCategory, .extraExtraExtraLarge)
                 .ignoresSafeArea(),
             as: .swiftUiImage(size: CGSize(width: 400, height: 200)))
+    }
+
+    func test_scripture_song_accessibilityMedium() {
+        let viewModel = ScriptureSongViewModel(reference: "1:19", title: "And we have the prophetic word",
+                                               hymnIdentifier: PreviewHymnIdentifiers.cupOfChrist)
         assertVersionedSnapshot(
             matching: ScriptureSongView(viewModel: viewModel)
                 .environment(\.sizeCategory, .accessibilityMedium)
                 .ignoresSafeArea(),
             as: .swiftUiImage(size: CGSize(width: 400, height: 200)))
+    }
+
+    func test_scripture_song_accessibilityExtraExtraExtraLarge() {
+        let viewModel = ScriptureSongViewModel(reference: "1:19", title: "And we have the prophetic word",
+                                               hymnIdentifier: PreviewHymnIdentifiers.cupOfChrist)
         assertVersionedSnapshot(
             matching: ScriptureSongView(viewModel: viewModel)
                 .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)

@@ -12,6 +12,7 @@ class BrowseAllSongsSnapshots: XCTestCase {
 
     func test_allSongsView() {
         let viewModel = AllSongsViewModel()
-        assertVersionedSnapshot(matching: AllSongsView(viewModel: viewModel).ignoresSafeArea(), as: .image(layout: .sizeThatFits))
+        assertVersionedSnapshot(matching: AllSongsView(viewModel: viewModel).ignoresSafeArea(),
+                                as: .swiftUiImage())
     }
 }

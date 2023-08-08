@@ -43,7 +43,8 @@ public func assertVersionedSnapshot<Value, Format>(matching value: @autoclosure 
             // Check bundled snapshot so it will work with Xcode Cloud
             // https://jaanus.com/snapshot-testing-xcode-cloud/
             // https://gist.github.com/jaanus/7e14b31f7f445435aadac09d24397da8
-            if let bundledSnapshotDirectory = Bundle.main.resourceURL?
+            if !isRecording, !recording,
+                let bundledSnapshotDirectory = Bundle.main.resourceURL?
                 .appendingPathComponent("PlugIns")
                 .appendingPathComponent("HymnsSnapshotTests.xctest")
                 .appendingPathComponent("__Snapshots__")
