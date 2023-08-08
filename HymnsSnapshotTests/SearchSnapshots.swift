@@ -78,15 +78,11 @@ class SearchSnapshots: XCTestCase {
         viewModel.searchActive = true
         viewModel.searchParameter = "Do you love me?"
         viewModel.songResults = [hymn480_songResult, hymn1334_songResult, hymn1151_songResult]
-        if #available(iOS 16, *) {
-            let view = NavigationStack {
-                SearchView(viewModel: viewModel).ignoresSafeArea()
-            }
-            assertVersionedSnapshot(matching: view.ignoresSafeArea(),
-                                    as: .image(layout: .sizeThatFits, traits: .init(userInterfaceStyle: .dark)))
-        } else {
-            assertVersionedSnapshot(matching: SearchView15(viewModel: viewModel).ignoresSafeArea(), as: .swiftUiImage(traits: .init(userInterfaceStyle: .dark)))
+        let view = NavigationStack {
+            SearchView(viewModel: viewModel).ignoresSafeArea()
         }
+        assertVersionedSnapshot(matching: view.ignoresSafeArea(),
+                                as: .image(layout: .sizeThatFits, traits: .init(userInterfaceStyle: .dark)))
     }
 
     func test_searchResults_withToolTip() {
@@ -110,14 +106,9 @@ class SearchSnapshots: XCTestCase {
                                 file: StaticString = #file,
                                 testName: String = #function,
                                 line: UInt = #line) {
-        if #available(iOS 16, *) {
-            let view = NavigationStack {
-                SearchView(viewModel: viewModel).ignoresSafeArea()
-            }
-            assertVersionedSnapshot(matching: view.ignoresSafeArea(), as: .image(layout: .sizeThatFits), file: file, testName: testName, line: line)
-        } else {
-            let view = SearchView15(viewModel: viewModel).ignoresSafeArea()
-            assertVersionedSnapshot(matching: view, as: .swiftUiImage(), file: file, testName: testName, line: line)
+        let view = NavigationStack {
+            SearchView(viewModel: viewModel).ignoresSafeArea()
         }
+        assertVersionedSnapshot(matching: view.ignoresSafeArea(), as: .image(layout: .sizeThatFits), file: file, testName: testName, line: line)
     }
 }

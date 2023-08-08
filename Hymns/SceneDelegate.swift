@@ -27,11 +27,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let isTesting = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil || CommandLine.arguments.contains(AppDelegate.uiTestingFlag)
         // If we are in a test, then we go straight to the home container and we skip the launcher
         if isTesting {
-            if #available(iOS 16, *) {
-                rootView = HomeContainerView().environment(\.managedObjectContext, context).eraseToAnyView()
-            } else {
-                rootView = HomeContainerView15().environment(\.managedObjectContext, context).eraseToAnyView()
-            }
+            rootView = HomeContainerView().environment(\.managedObjectContext, context).eraseToAnyView()
         }
 
         if isTesting, let appDomain = Bundle.main.bundleIdentifier {

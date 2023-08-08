@@ -26,11 +26,7 @@ struct LaunchRouterView: View {
     var body: some View {
         Group { () -> AnyView in
             if viewModel.oldDatabaseFilesDeleted && favoritesMigrated && tagsMigrated && historyMigrated {
-                if #available(iOS 16, *) {
-                    return HomeContainerView().eraseToAnyView()
-                } else {
-                    return HomeContainerView15().eraseToAnyView()
-                }
+                return HomeContainerView().eraseToAnyView()
             } else {
                 return LottieView(fileName: "firstLaunchAnimation", shouldLoop: true).eraseToAnyView()
             }

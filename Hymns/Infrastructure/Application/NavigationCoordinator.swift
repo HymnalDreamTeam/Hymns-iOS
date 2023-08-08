@@ -10,11 +10,7 @@ class NavigationCoordinator: ObservableObject {
     func route(_ route: Route) -> AnyView {
         switch route {
         case .home:
-            if #available(iOS 16, *) {
-                return HomeContainerView().eraseToAnyView()
-            } else {
-                return HomeContainerView15().eraseToAnyView()
-            }
+            return HomeContainerView().eraseToAnyView()
         case .display(let viewModel):
             return DisplayHymnContainerView(viewModel: viewModel).eraseToAnyView()
         case .browseResults(let viewModel):

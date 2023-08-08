@@ -172,8 +172,6 @@
 		3BADB429248461D1008CEDAB /* chineseSupplement216.json in Resources */ = {isa = PBXBuildFile; fileRef = 3BADB428248461D1008CEDAB /* chineseSupplement216.json */; };
 		3BB10D77299754AF00E84EB5 /* CoffeeDonation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB10D76299754AF00E84EB5 /* CoffeeDonation.swift */; };
 		3BB10D7A29975BF700E84EB5 /* DonationViewModelSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB10D7929975BF700E84EB5 /* DonationViewModelSpec.swift */; };
-		3BB1474A29551E8A0021494E /* SearchView15.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB1474929551E8A0021494E /* SearchView15.swift */; };
-		3BB1474E295523310021494E /* HomeContainerView15.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB1474D295523310021494E /* HomeContainerView15.swift */; };
 		3BB14750295524660021494E /* DisplayHymnToolbar15.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB1474F295524660021494E /* DisplayHymnToolbar15.swift */; };
 		3BB1475629552B3E0021494E /* NavigationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB1475529552B3E0021494E /* NavigationCoordinator.swift */; };
 		3BB1475A2955408C0021494E /* DisplayHymnBottomBar15.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BB147592955408C0021494E /* DisplayHymnBottomBar15.swift */; };
@@ -514,8 +512,6 @@
 		3BADB428248461D1008CEDAB /* chineseSupplement216.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = chineseSupplement216.json; sourceTree = "<group>"; };
 		3BB10D76299754AF00E84EB5 /* CoffeeDonation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoffeeDonation.swift; sourceTree = "<group>"; };
 		3BB10D7929975BF700E84EB5 /* DonationViewModelSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DonationViewModelSpec.swift; sourceTree = "<group>"; };
-		3BB1474929551E8A0021494E /* SearchView15.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView15.swift; sourceTree = "<group>"; };
-		3BB1474D295523310021494E /* HomeContainerView15.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeContainerView15.swift; sourceTree = "<group>"; };
 		3BB1474F295524660021494E /* DisplayHymnToolbar15.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayHymnToolbar15.swift; sourceTree = "<group>"; };
 		3BB1475529552B3E0021494E /* NavigationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationCoordinator.swift; sourceTree = "<group>"; };
 		3BB147592955408C0021494E /* DisplayHymnBottomBar15.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayHymnBottomBar15.swift; sourceTree = "<group>"; };
@@ -1230,10 +1226,8 @@
 			isa = PBXGroup;
 			children = (
 				5CA784A3242D1CF800B57903 /* SearchView.swift */,
-				3BB1474929551E8A0021494E /* SearchView15.swift */,
 				3B45B8FE243BE87300D38BEF /* SearchViewModel.swift */,
 				3BC1329624385A580082A274 /* HomeContainerView.swift */,
-				3BB1474D295523310021494E /* HomeContainerView15.swift */,
 				3BD768C52757646300FA4C6C /* HomeTabView.swift */,
 				3BC1329824385C420082A274 /* HomeTab.swift */,
 				B5915C6124CE8F8400342D7E /* LaunchRouterView.swift */,
@@ -1986,7 +1980,6 @@
 				3BB1475629552B3E0021494E /* NavigationCoordinator.swift in Sources */,
 				B5915C6224CE8F8400342D7E /* LaunchRouterView.swift in Sources */,
 				B595A4A824438CC2005F7A14 /* DisplayHymnViewModel.swift in Sources */,
-				3BB1474E295523310021494E /* HomeContainerView15.swift in Sources */,
 				3BE9EE98244AB8650098699E /* PrivacyPolicySettingView.swift in Sources */,
 				3BD4AE8F27D69DE500B4040A /* HymnTab.swift in Sources */,
 				B56305B7244223A5003BC132 /* CustomTitleView.swift in Sources */,
@@ -2014,7 +2007,6 @@
 				3B58D2102480D0EA00C66445 /* BrowseCategoriesView.swift in Sources */,
 				3B1B90132429CF55009FDCC5 /* AppDelegate.swift in Sources */,
 				3BAC029424F608DC005A96E9 /* RepeatChorusViewModel.swift in Sources */,
-				3BB1474A29551E8A0021494E /* SearchView15.swift in Sources */,
 				3BC5B15C247F7B0400F5D63A /* CategoryEntity.swift in Sources */,
 				B582E4432493235E00329DA5 /* TagSheetView.swift in Sources */,
 				3B1AF92B24C38B1D0082C27B /* Toast.swift in Sources */,

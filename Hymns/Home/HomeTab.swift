@@ -15,18 +15,8 @@ extension HomeTab: TabItem {
 
     var content: some View {
         switch self {
-        case .none:
-            if #available(iOS 16, *) {
-                return SearchView().eraseToAnyView()
-            } else {
-                return SearchView15().eraseToAnyView()
-            }
-        case .search:
-            if #available(iOS 16, *) {
-                return SearchView().eraseToAnyView()
-            } else {
-                return SearchView15().eraseToAnyView()
-            }
+        case .none, .search:
+            return SearchView().eraseToAnyView()
         case .browse:
             return BrowseView().eraseToAnyView()
         case .favorites:

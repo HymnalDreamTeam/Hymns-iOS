@@ -86,7 +86,6 @@ struct SearchView: View {
 }
 
 #if DEBUG
-@available(iOS 16, *)
 struct SearchView_Previews: PreviewProvider {
     static var previews: some View {
         let defaultViewModel = SearchViewModel()
