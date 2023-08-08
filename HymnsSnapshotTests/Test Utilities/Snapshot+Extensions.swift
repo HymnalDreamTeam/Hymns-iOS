@@ -37,46 +37,42 @@ public func assertVersionedSnapshot<Value, Format>(matching value: @autoclosure 
     let fileName = fileUrl.deletingPathExtension().lastPathComponent
 
     let locales = [Locale(identifier: "en_US")]
-    do {
-        try locales.forEach { locale in
-            let snapshotDirectory: String
-            // Check bundled snapshot so it will work with Xcode Cloud
-            // https://jaanus.com/snapshot-testing-xcode-cloud/
-            // https://gist.github.com/jaanus/7e14b31f7f445435aadac09d24397da8
-            if !isRecording, !recording,
-                let bundledSnapshotDirectory = Bundle.main.resourceURL?
-                .appendingPathComponent("PlugIns")
-                .appendingPathComponent("HymnsSnapshotTests.xctest")
+    for locale in locales {
+        let snapshotDirectory: String
+        // Check bundled snapshot so it will work with Xcode Cloud
+        // https://jaanus.com/snapshot-testing-xcode-cloud/
+        // https://gist.github.com/jaanus/7e14b31f7f445435aadac09d24397da8
+        if !isRecording, !recording,
+           let bundledSnapshotDirectory = Bundle.main.resourceURL?
+            .appendingPathComponent("PlugIns")
+            .appendingPathComponent("HymnsSnapshotTests.xctest")
+            .appendingPathComponent("__Snapshots__")
+            .appendingPathComponent(osVersion)
+            .appendingPathComponent(fileName)
+            .path(percentEncoded: false),
+           case let bundledSnapshot = "\(bundledSnapshotDirectory)\(sanitizePathComponent(testName)).\(locale.identifier).png",
+           FileManager.default.fileExists(atPath: bundledSnapshot) {
+            snapshotDirectory = bundledSnapshotDirectory
+        } else {
+            snapshotDirectory = fileUrl
+                .deletingLastPathComponent()
                 .appendingPathComponent("__Snapshots__")
                 .appendingPathComponent(osVersion)
                 .appendingPathComponent(fileName)
-                .path(percentEncoded: false),
-               case let bundledSnapshot = "\(bundledSnapshotDirectory)\(sanitizePathComponent(testName)).\(locale.identifier).png",
-               FileManager.default.fileExists(atPath: bundledSnapshot) {
-                snapshotDirectory = bundledSnapshotDirectory
-            } else {
-                snapshotDirectory = fileUrl
-                    .deletingLastPathComponent()
-                    .appendingPathComponent("__Snapshots__")
-                    .appendingPathComponent(osVersion)
-                    .appendingPathComponent(fileName)
-                    .absoluteString
-            }
-            if let failureMessage = verifySnapshot(
-                matching: try value(),
-                as: snapshotting,
-                named: locale.identifier,
-                record: recording,
-                snapshotDirectory: snapshotDirectory,
-                timeout: timeout,
-                file: file,
-                testName: testName,
-                line: line) {
-                XCTFail(failureMessage, file: file, line: line)
-            }
+                .absoluteString
         }
-    } catch {
-        XCTFail(String(describing: error), file: file, line: line)
+        if let failureMessage = verifySnapshot(
+            matching: try value(),
+            as: snapshotting,
+            named: locale.identifier,
+            record: recording,
+            snapshotDirectory: snapshotDirectory,
+            timeout: timeout,
+            file: file,
+            testName: testName,
+            line: line) {
+            XCTFail(failureMessage, file: file, line: line)
+        }
     }
 }
 
