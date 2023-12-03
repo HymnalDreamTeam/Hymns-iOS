@@ -19,6 +19,8 @@ class SearchViewModel: ObservableObject {
     @Published var label: String?
     @Published var state: HomeResultState = .loading
 
+    @Environment(\.locale) var locale: Locale
+
     private var currentPage = 1
     private var hasMorePages = false
     private var isLoading = false
