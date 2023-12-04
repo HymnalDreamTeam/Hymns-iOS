@@ -457,7 +457,7 @@ typedef void (^RLMNotificationBlock)(RLMNotification notification, RLMRealm *rea
 
  KVO observers on any objects which were modified during the transaction will
  be notified about the change back to their initial values, but no other
- notifcations are produced by a cancelled write transaction.
+ notifications are produced by a cancelled write transaction.
 
  @warning This method may only be called during a write transaction.
  */
@@ -578,7 +578,7 @@ typedef void (^RLMNotificationBlock)(RLMNotification notification, RLMRealm *rea
          to cancel the pending invocation of the block. Note that this does
          *not* cancel the commit itself.
 */
-- (RLMAsyncTransactionId)commitAsyncWriteTransaction:(nullable void(^)(NSError *))completionBlock
+- (RLMAsyncTransactionId)commitAsyncWriteTransaction:(nullable void(^)(NSError *_Nullable))completionBlock
                                        allowGrouping:(BOOL)allowGrouping;
 
 /**
@@ -597,7 +597,7 @@ typedef void (^RLMNotificationBlock)(RLMNotification notification, RLMRealm *rea
          to cancel the pending invocation of the block. Note that this does
          *not* cancel the commit itself.
 */
-- (RLMAsyncTransactionId)commitAsyncWriteTransaction:(void(^)(NSError *))completionBlock;
+- (RLMAsyncTransactionId)commitAsyncWriteTransaction:(void(^)(NSError *_Nullable))completionBlock;
 
 /**
  Asynchronously commits a write transaction.
@@ -865,8 +865,6 @@ NS_REFINED_FOR_SWIFT;
  Represents the active subscriptions for this realm, which can be used to add/remove/update
  and search flexible sync subscriptions.
  Getting the subscriptions from a local or partition-based configured realm will thrown an exception.
-
- @warning This feature is currently in beta and its API is subject to change.
  */
 @property (nonatomic, readonly, nonnull) RLMSyncSubscriptionSet *subscriptions;
 
@@ -896,7 +894,8 @@ typedef void (^RLMMigrationBlock)(RLMMigration *migration, uint64_t oldSchemaVer
 
  @return The version of the Realm at `fileURL`, or `RLMNotVersioned` if the version cannot be read.
  */
-+ (uint64_t)schemaVersionAtURL:(NSURL *)fileURL encryptionKey:(nullable NSData *)key error:(NSError **)error
++ (uint64_t)schemaVersionAtURL:(NSURL *)fileURL encryptionKey:(nullable NSData *)key
+                         error:(NSError **)error
 NS_REFINED_FOR_SWIFT;
 
 /**
@@ -950,7 +949,9 @@ NS_REFINED_FOR_SWIFT;
 RLM_SWIFT_SENDABLE // is internally thread-safe
 @interface RLMNotificationToken : NSObject
 /// Stops notifications for the change subscription that returned this token.
-- (void)invalidate;
+///
+/// @return True if the token was previously valid, and false if it was already invalidated.
+- (bool)invalidate;
 
 /// Stops notifications for the change subscription that returned this token.
 - (void)stop __attribute__((unavailable("Renamed to -invalidate."))) NS_REFINED_FOR_SWIFT;

@@ -20,8 +20,6 @@
 #import <Realm/RLMSwiftValueStorage.h>
 #import <Realm/RLMValue.h>
 
-#import <objc/runtime.h>
-
 #import <realm/array.hpp>
 #import <realm/binary_data.hpp>
 #import <realm/object-store/object.hpp>
@@ -29,10 +27,13 @@
 #import <realm/timestamp.hpp>
 #import <realm/util/file.hpp>
 
+#import <objc/runtime.h>
+#import <os/lock.h>
+
 namespace realm {
 class Decimal128;
+class Exception;
 class Mixed;
-class RealmFileException;
 }
 
 class RLMClassInfo;
@@ -43,14 +44,11 @@ class RLMClassInfo;
 __attribute__((format(NSString, 1, 2)))
 NSException *RLMException(NSString *fmt, ...);
 NSException *RLMException(std::exception const& exception);
-
-NSError *RLMMakeError(RLMError code, NSString *msg);
-NSError *RLMMakeError(RLMError code, std::exception const& exception);
-NSError *RLMMakeError(RLMError code, const realm::util::File::AccessError&);
-NSError *RLMMakeError(RLMError code, const realm::RealmFileException&);
-NSError *RLMMakeError(std::system_error const& exception);
+NSException *RLMException(realm::Exception const& exception);
 
 void RLMSetErrorOrThrow(NSError *error, NSError **outError);
+
+RLM_HIDDEN_BEGIN
 
 // returns if the object can be inserted as the given type
 BOOL RLMIsObjectValidForProperty(id obj, RLMProperty *prop);
@@ -107,7 +105,7 @@ id RLMBridgeSwiftValue(id obj);
 bool RLMIsSwiftObjectClass(Class cls);
 
 // String conversion utilities
-static inline NSString * RLMStringDataToNSString(realm::StringData stringData) {
+static inline NSString *RLMStringDataToNSString(realm::StringData stringData) {
     static_assert(sizeof(NSUInteger) >= sizeof(size_t),
                   "Need runtime overflow check for size_t to NSUInteger conversion");
     if (stringData.is_null()) {
@@ -120,7 +118,7 @@ static inline NSString * RLMStringDataToNSString(realm::StringData stringData) {
     }
 }
 
-static inline NSString * RLMStringViewToNSString(std::string_view stringView) {
+static inline NSString *RLMStringViewToNSString(std::string_view stringView) {
     if (stringView.size() == 0) {
         return nil;
     }
@@ -218,6 +216,7 @@ realm::UUID RLMObjcToUUID(__unsafe_unretained id const value);
 
 // Given a bundle identifier, return the base directory on the disk within which Realm database and support files should
 // be stored.
+FOUNDATION_EXTERN RLM_VISIBLE
 NSString *RLMDefaultDirectoryForBundleIdentifier(NSString *bundleIdentifier);
 
 // Get a NSDateFormatter for ISO8601-formatted strings
@@ -290,3 +289,27 @@ static inline bool numberIsDouble(__unsafe_unretained NSNumber *const obj) {
            data_type == *@encode(unsigned long) ||
            data_type == *@encode(unsigned long long);
 }
+
+class RLMUnfairMutex {
+public:
+    RLMUnfairMutex() = default;
+
+    void lock() noexcept {
+        os_unfair_lock_lock(&_lock);
+    }
+
+    bool try_lock() noexcept {
+        return os_unfair_lock_trylock(&_lock);
+    }
+
+    void unlock() noexcept {
+        os_unfair_lock_unlock(&_lock);
+    }
+
+private:
+    os_unfair_lock _lock = OS_UNFAIR_LOCK_INIT;
+    RLMUnfairMutex(RLMUnfairMutex const&) = delete;
+    RLMUnfairMutex& operator=(RLMUnfairMutex const&) = delete;
+};
+
+RLM_HIDDEN_END

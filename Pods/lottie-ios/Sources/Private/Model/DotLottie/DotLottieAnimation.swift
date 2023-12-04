@@ -7,6 +7,8 @@
 
 import Foundation
 
+// MARK: - DotLottieAnimation
+
 struct DotLottieAnimation: Codable {
   /// Id of Animation
   var id: String
@@ -21,14 +23,16 @@ struct DotLottieAnimation: Codable {
   var direction: Int? = 1
 
   /// mode - "bounce" | "normal"
-  var mode: String? = "normal"
-
-  /// URL to animation, to be set internally
-  var animationUrl: URL?
+  var mode: DotLottieAnimationMode? = .normal
 
   /// Loop mode for animation
   var loopMode: LottieLoopMode {
-    mode == "bounce" ? .autoReverse : ((loop ?? false) ? .loop : .playOnce)
+    switch mode {
+    case .bounce:
+      return .autoReverse
+    case .normal, nil:
+      return (loop ?? false) ? .loop : .playOnce
+    }
   }
 
   /// Animation speed
@@ -38,12 +42,16 @@ struct DotLottieAnimation: Codable {
 
   /// Loads `LottieAnimation` from `animationUrl`
   /// - Returns: Deserialized `LottieAnimation`. Optional.
-  func animation() throws -> LottieAnimation {
-    guard let animationUrl = animationUrl else {
-      throw DotLottieError.animationNotAvailable
-    }
+  func animation(url: URL) throws -> LottieAnimation {
+    let animationUrl = url.appendingPathComponent("\(id).json")
     let data = try Data(contentsOf: animationUrl)
     return try LottieAnimation.from(data: data)
   }
+}
 
+// MARK: - DotLottieAnimationMode
+
+enum DotLottieAnimationMode: String, Codable {
+  case normal
+  case bounce
 }

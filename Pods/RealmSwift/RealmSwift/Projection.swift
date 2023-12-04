@@ -18,9 +18,7 @@
 
 import Realm
 import Realm.Private
-#if canImport(Combine)
 import Combine
-#endif
 
 private protocol AnyProjected {
     var projectedKeyPath: AnyKeyPath { get }
@@ -36,9 +34,9 @@ private protocol AnyProjected {
 /// public class Person: Object {
 ///     @Persisted var firstName = ""
 ///     @Persisted var lastName = ""
-///     @Persisted var address: Address? = nil
-///     @Persisted var friends = List<Person>()
-///     @Persisted var reviews = List<String>()
+///     @Persisted var address: Address?
+///     @Persisted var friends: List<Person>
+///     @Persisted var reviews: List<String>
 /// }
 ///
 /// class PersonProjection: Projection<Person> {
@@ -97,7 +95,7 @@ public struct Projected<T: ObjectBase, Value>: AnyProjected {
  
  ProjectionObservable is a Combine publisher
  */
-public protocol ProjectionObservable: AnyObject {
+public protocol ProjectionObservable: AnyObject, ThreadConfined {
     /// The Projection's underlying type - a child of Realm `Object` or `EmbeddedObject`.
     associatedtype Root: ObjectBase
     /// The object being projected
@@ -114,9 +112,9 @@ public protocol ProjectionObservable: AnyObject {
 /// public class Person: Object {
 ///     @Persisted var firstName = ""
 ///     @Persisted var lastName = ""
-///     @Persisted var address: Address? = nil
-///     @Persisted var friends = List<Person>()
-///     @Persisted var reviews = List<String>()
+///     @Persisted var address: Address?
+///     @Persisted var friends: List<Person>
+///     @Persisted var reviews: List<String>
 /// }
 ///
 /// public class Address: EmbeddedObject {
@@ -158,7 +156,7 @@ public protocol ProjectionObservable: AnyObject {
 /// let personObject = realm.create(Person.self)
 /// let singleProjection = PersonProjection(projecting: personObject)
 /// ```
-open class Projection<Root: ObjectBase & RealmCollectionValue>: RealmCollectionValue, ProjectionObservable {
+open class Projection<Root: ObjectBase & RealmCollectionValue & ThreadConfined>: RealmCollectionValue, ProjectionObservable {
     /// :nodoc:
     public typealias PersistedType = Root
 
@@ -220,12 +218,12 @@ extension ProjectionObservable {
      any nested, linked objects. If a key path or key paths are provided,
      then the block will be called for changes which occur only on the
      provided key paths. For example, if:
-     
+
      ```swift
      class Person: Object {
          @Persisted var firstName: String
          @Persisted var lastName = ""
-         @Persisted public var friends = List<Person>()
+         @Persisted public var friends: List<Person>
      }
 
      class PersonProjection: Projection<Person> {
@@ -271,6 +269,29 @@ extension ProjectionObservable {
 
      - warning: This method cannot be called during a write transaction, or when
                 the containing Realm is read-only.
+     - warning: For projected properties where the original property has the same root property name,
+                this will trigger a `PropertyChange` for each of the Projected properties even though
+                the change only corresponds to one of them.
+                For the following `Projection` object
+                ```swift
+                class PersonProjection: Projection<Person> {
+                    @Projected(\Person.firstName) var name
+                    @Projected(\Person.address.country) originCountry
+                    @Projected(\Person.address.phone.number) mobile
+                }
+
+                let token = projectedPerson.observe { changes in
+                    if case .change(_, let propertyChanges) = changes {
+                        propertyChanges[0].newValue as? String, "Winterfell" // Will notify the new value
+                        propertyChanges[1].newValue as? String, "555-555-555" // Will notify with the current value, which hasn't change.
+                    }
+                })
+
+                try realm.write {
+                    person.address.country = "Winterfell"
+                }
+                ```
+
      - parameter keyPaths: Only properties contained in the key paths array will trigger
                            the block when they are modified. If `nil`, notifications
                            will be delivered for any projected property change on the object.
@@ -281,12 +302,14 @@ extension ProjectionObservable {
      - parameter block: The block to call with information about changes to the object.
      - returns: A token which must be held for as long as you want updates to be delivered.
      */
-    public func observe(keyPaths: [String] = [],
+    public func observe(keyPaths: [String]? = nil,
                         on queue: DispatchQueue? = nil,
                         _ block: @escaping (ObjectChange<Self>) -> Void) -> NotificationToken {
         var kps: [String] = schema.map(\.originPropertyKeyPathString)
-        if !keyPaths.isEmpty {
-            kps = kps.filter { keyPaths.contains($0) }
+
+        // NEXT-MAJOR: stop conflating empty array and nil
+        if keyPaths?.isEmpty == false {
+            kps = kps.filter { keyPaths!.contains($0) }
         }
 
         // If we're observing on a different queue, we need a projection which
@@ -321,15 +344,27 @@ extension ProjectionObservable {
 
             var projectedChanges = [PropertyChange]()
             for i in 0..<newValues.count {
-                for property in schema.filter({ $0.originPropertyKeyPathString == names[i] }) {
+                let filter: (ProjectionProperty) -> Bool = { prop in
+                    if prop.originPropertyKeyPathString.components(separatedBy: ".").first != names[i] {
+                        return false
+                    }
+                    guard let keyPaths, !keyPaths.isEmpty else {
+                        return true
+                    }
+
+                    // This will allow us to notify `PropertyChange`s associated only to the keyPaths passed by the user, instead of any Property which has the same root as the notified one.
+                    return keyPaths.contains(prop.originPropertyKeyPathString)
+                }
+                for property in schema.filter(filter) {
+                    // If the root is marked as modified this will build a `PropertyChange` for each of the Projection properties with the same original root, even if there is no change on their value.
                     var changeOldValue: Any?
                     if oldValues != nil {
                         changeOldValue = unmanagedRoot![keyPath: property.projectedKeyPath]
                     }
-                    let changeNewValue = object[keyPath: property.projectedKeyPath]
+                    let changedNewValue = object[keyPath: property.projectedKeyPath]
                     projectedChanges.append(.init(name: property.label,
                                                   oldValue: changeOldValue,
-                                                  newValue: changeNewValue))
+                                                  newValue: changedNewValue))
                 }
             }
 
@@ -363,7 +398,7 @@ extension ProjectionObservable {
      class Person: Object {
          @Persisted var firstName: String
          @Persisted var lastName = ""
-         @Persisted public var friends = List<Person>()
+         @Persisted public var friends: List<Person>
      }
 
      class PersonProjection: Projection<Person> {
@@ -420,25 +455,192 @@ extension ProjectionObservable {
     public func observe(keyPaths: [PartialKeyPath<Self>],
                         on queue: DispatchQueue? = nil,
                         _ block: @escaping (ObjectChange<Self>) -> Void) -> NotificationToken {
-        var kps: [String]
-        if keyPaths.isEmpty {
-            kps = schema.map(\.originPropertyKeyPathString)
-        } else {
-            kps = []
-            let names = NSMutableArray()
-            let root = Root.keyPathRecorder(with: names)
-            let projection = Self(projecting: root)
-            for keyPath in keyPaths {
-                names.removeAllObjects()
-                _ = projection[keyPath: keyPath]
-                kps.append(names.componentsJoined(by: "."))
-            }
-        }
-        return observe(keyPaths: kps, on: queue, block)
+        observe(keyPaths: map(keyPaths: keyPaths), on: queue, block)
     }
+
+#if swift(>=5.8)
+    /**
+     Registers a block to be called each time the projection's underlying object changes.
+
+     The block will be asynchronously called on the actor after each write transaction which
+     deletes the underlying object or modifies any of the projected properties of the object,
+     including self-assignments that set a property to its existing value.
+
+     For write transactions performed on different threads or in different
+     processes, the block will be called when the managing Realm is
+     (auto)refreshed to a version including the changes, while for local write
+     transactions it will be called at some point in the future after the write
+     transaction is committed.
+
+     If no key paths are given, the block will be executed on any insertion,
+     modification, or deletion for all projected  properties, including projected properties of
+     any nested, linked objects. If a key path or key paths are provided,
+     then the block will be called for changes which occur only on the
+     provided key paths. For example, if:
+
+     ```swift
+     class Person: Object {
+         @Persisted var firstName: String
+         @Persisted var lastName = ""
+         @Persisted public var friends: List<Person>
+     }
+
+     class PersonProjection: Projection<Person> {
+         @Projected(\Person.firstName) var name
+         @Projected(\Person.lastName.localizedUppercase) var lastNameCaps
+         @Projected(\Person.friends.projectTo.firstName) var firstFriendsName: ProjectedCollection<String>
+     }
+
+     let token = projectedPerson.observe(keyPaths: ["name"], { changes in
+        // ...
+     })
+     ```
+     - The above notification block fires for changes to the
+     `Person.firstName` property of the the projection's underlying `Person` Object,
+     but not for any changes made to `Person.lastName` or `Person.friends` list.
+     - The notification block fires for changes of `PersonProjection.name` property, but not  for
+     another projection's property change.
+     - If the observed key path were `["firstFriendsName"]`, then any insertion,
+     deletion, or modification of the `firstName` of the `friends` list will trigger the block. A change to
+     `someFriend.lastName` would not trigger the block (where `someFriend`
+     is an element contained in `friends`)
+
+     Notifications are delivered to a function isolated to the given actor, on that
+     actors executor. If the actor is performing blocking work, multiple
+     notifications may be coalesced into a single notification.
+
+     Unlike with Collection notifications, there is no "Initial" notification
+     and there is no gap between when this function returns and when changes
+     will first be captured.
+
+     You must retain the returned token for as long as you want updates to be sent
+     to the block. To stop receiving updates, call `invalidate()` on the token.
+
+     - warning: This method cannot be called during a write transaction, or when
+                the containing Realm is read-only.
+     - parameter keyPaths: Only properties contained in the key paths array will trigger
+                           the block when they are modified. If `nil`, notifications
+                           will be delivered for any projected property change on the object.
+                           String key paths which do not correspond to a valid projected property
+                           will throw an exception.
+     - parameter actor: The actor which notifications should be delivered on. The
+                        block is passed this actor as an isolated parameter,
+                        allowing you to access the actor synchronously from within the callback.
+     - parameter block: The block to call with information about changes to the object.
+     - returns: A token which must be held for as long as you want updates to be delivered.
+     */
+    @available(macOS 10.15, tvOS 13.0, iOS 13.0, watchOS 6.0, *)
+    @_unsafeInheritExecutor
+    public func observe<A: Actor>(
+        keyPaths: [String]? = nil, on actor: A,
+        _ block: @Sendable @escaping (isolated A, ObjectChange<Self>) -> Void
+    ) async -> NotificationToken {
+        await with(self, on: actor) { actor, obj in
+            obj.observe(keyPaths: keyPaths, on: nil) { (change: ObjectChange<Self>) in
+                assumeOnActorExecutor(actor) { actor in
+                    block(actor, change)
+                }
+            }
+        } ?? NotificationToken()
+    }
+
+    /**
+     Registers a block to be called each time the projection's underlying object changes.
+
+     The block will be asynchronously called on the actor after each write transaction which
+     deletes the underlying object or modifies any of the projected properties of the object,
+     including self-assignments that set a property to its existing value.
+
+     For write transactions performed on different threads or in different
+     processes, the block will be called when the managing Realm is
+     (auto)refreshed to a version including the changes, while for local write
+     transactions it will be called at some point in the future after the write
+     transaction is committed.
+
+     If no key paths are given, the block will be executed on any insertion,
+     modification, or deletion for all projected  properties, including projected properties of
+     any nested, linked objects. If a key path or key paths are provided,
+     then the block will be called for changes which occur only on the
+     provided key paths. For example, if:
+
+     ```swift
+     class Person: Object {
+         @Persisted var firstName: String
+         @Persisted var lastName = ""
+         @Persisted public var friends: List<Person>
+     }
+
+     class PersonProjection: Projection<Person> {
+         @Projected(\Person.firstName) var name
+         @Projected(\Person.lastName.localizedUppercase) var lastNameCaps
+         @Projected(\Person.friends.projectTo.firstName) var firstFriendsName: ProjectedCollection<String>
+     }
+
+     let token = projectedPerson.observe(keyPaths: [\PersonProjection.name], { changes in
+        // ...
+     })
+     ```
+     - The above notification block fires for changes to the
+     `Person.firstName` property of the the projection's underlying `Person` Object,
+     but not for any changes made to `Person.lastName` or `Person.friends` list.
+     - The notification block fires for changes of `PersonProjection.name` property, but not  for
+     another projection's property change.
+     - If the observed key path were `[\.firstFriendsName]`, then any insertion,
+     deletion, or modification of the `firstName` of the `friends` list will trigger the block. A change to
+     `someFriend.lastName` would not trigger the block (where `someFriend`
+     is an element contained in `friends`)
+
+     Notifications are delivered to a function isolated to the given actor, on that
+     actors executor. If the actor is performing blocking work, multiple
+     notifications may be coalesced into a single notification.
+
+     Unlike with Collection notifications, there is no "Initial" notification
+     and there is no gap between when this function returns and when changes
+     will first be captured.
+
+     You must retain the returned token for as long as you want updates to be sent
+     to the block. To stop receiving updates, call `invalidate()` on the token.
+
+     - warning: This method cannot be called during a write transaction, or when
+                the containing Realm is read-only.
+     - parameter keyPaths: Only properties contained in the key paths array will trigger
+                           the block when they are modified. If `nil`, notifications
+                           will be delivered for any projected property change on the object.
+                           String key paths which do not correspond to a valid projected property
+                           will throw an exception.
+     - parameter actor: The actor which notifications should be delivered on. The
+                        block is passed this actor as an isolated parameter,
+                        allowing you to access the actor synchronously from within the callback.
+     - parameter block: The block to call with information about changes to the object.
+     - returns: A token which must be held for as long as you want updates to be delivered.
+     */
+    @available(macOS 10.15, tvOS 13.0, iOS 13.0, watchOS 6.0, *)
+    @_unsafeInheritExecutor
+    public func observe<A: Actor>(
+        keyPaths: [PartialKeyPath<Self>], on actor: A,
+        _ block: @Sendable @escaping (isolated A, ObjectChange<Self>) -> Void
+    ) async -> NotificationToken {
+        await observe(keyPaths: map(keyPaths: keyPaths), on: actor, block)
+    }
+#endif
 
     fileprivate var schema: [ProjectionProperty] {
         projectionSchemaCache.schema(for: self)
+    }
+
+    private func map(keyPaths: [PartialKeyPath<Self>]) -> [String]? {
+        if keyPaths.isEmpty {
+            return nil
+        }
+
+        let names = NSMutableArray()
+        let root = Root.keyPathRecorder(with: names)
+        let projection = Self(projecting: root)
+        return keyPaths.map {
+            names.removeAllObjects()
+            _ = projection[keyPath: $0]
+            return names.componentsJoined(by: ".")
+        }
     }
 }
 /**
@@ -471,7 +673,7 @@ extension ProjectionObservable {
 }
 
 // MARK: Notifications
-@available(OSX 10.15, watchOS 6.0, iOS 13.0, iOSApplicationExtension 13.0, OSXApplicationExtension 10.15, tvOS 13.0, *)
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 public extension Projection {
     /// :nodoc:
     func addObserver(_ observer: NSObject,
@@ -545,9 +747,8 @@ extension Projection: ThreadConfined where Root: ThreadConfined {
     }
 }
 
-#if canImport(Combine)
 // MARK: - RealmSubscribable
-@available(OSX 10.15, watchOS 6.0, iOS 13.0, iOSApplicationExtension 13.0, OSXApplicationExtension 10.15, tvOS 13.0, *)
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension ProjectionObservable {
     /// :nodoc:
     public func _observe<S>(_ keyPaths: [String]?, on queue: DispatchQueue?, _ subscriber: S) -> NotificationToken where S: Subscriber, S.Input == Self {
@@ -568,8 +769,8 @@ extension ProjectionObservable {
         return observe(keyPaths: [PartialKeyPath<Self>](), { _ in _ = subscriber.receive() })
     }
 }
-#if !(os(iOS) && (arch(i386) || arch(arm)))
-@available(OSX 10.15, watchOS 6.0, iOS 13.0, iOSApplicationExtension 13.0, OSXApplicationExtension 10.15, tvOS 13.0, *)
+
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension Projection: ObservableObject, RealmSubscribable where Root: ThreadConfined {
     /// A publisher that emits Void each time the projection changes.
     ///
@@ -578,9 +779,6 @@ extension Projection: ObservableObject, RealmSubscribable where Root: ThreadConf
         RealmPublishers.WillChange(self)
     }
 }
-#endif // !(os(iOS) && (arch(i386) || arch(arm)))
-
-#endif // canImport(Combine)
 
 // MARK: Implementation
 
@@ -591,7 +789,7 @@ private struct ProjectionProperty: @unchecked Sendable {
 }
 
 // An adaptor for os_unfair_lock to make it implement NSLocking
-@available(OSX 10.12, watchOS 3.0, iOS 10.0, iOSApplicationExtension 10.0, OSXApplicationExtension 10.12, tvOS 10.0, *)
+@available(OSX 10.12, watchOS 3.0, iOS 10.0, tvOS 10.0, *)
 private final class UnfairLock: NSLocking, Sendable {
     func lock() {
         os_unfair_lock_lock(impl)
@@ -608,30 +806,23 @@ private final class UnfairLock: NSLocking, Sendable {
 
 // We want to use os_unfair_lock when it's available, but fall back to NSLock otherwise
 private func createLock() -> NSLocking {
-    if #available(OSX 10.12, watchOS 3.0, iOS 10.0, iOSApplicationExtension 10.0, OSXApplicationExtension 10.12, tvOS 10.0, *) {
+    if #available(macOS 10.12, watchOS 3.0, iOS 10.0, tvOS 10.0, *) {
         return UnfairLock()
     }
     return NSLock()
 }
 
-// withLock() was added in Xcode 14.1
-#if compiler(<5.7.1)
-extension NSLocking {
-    func withLock<R>(_ body: () throws -> R) rethrows -> R {
-        lock()
-        defer { unlock() }
-        return try body()
-    }
-}
-#endif
-
 // A property wrapper which unsafely disables concurrency checking for a property
 // This is required when a property is guarded by something which concurrency
 // checking doesn't understand (i.e. a lock instead of an actor)
+@usableFromInline
 @propertyWrapper
-public struct Unchecked<Wrapped>: @unchecked Sendable {
+internal struct Unchecked<Wrapped>: @unchecked Sendable {
     public var wrappedValue: Wrapped
     public init(wrappedValue: Wrapped) {
+        self.wrappedValue = wrappedValue
+    }
+    public init(_ wrappedValue: Wrapped) {
         self.wrappedValue = wrappedValue
     }
 }

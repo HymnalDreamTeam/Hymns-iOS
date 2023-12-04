@@ -25,48 +25,33 @@ public final class DotLottieFile {
     try decompress(data: data, to: fileUrl)
   }
 
-  // MARK: Internal
+  // MARK: Public
 
   /// Definition for a single animation within a `DotLottieFile`
-  struct Animation {
-    let animation: LottieAnimation
-    let configuration: DotLottieConfiguration
+  public struct Animation {
+    public let animation: LottieAnimation
+    public let configuration: DotLottieConfiguration
   }
 
   /// List of `LottieAnimation` in the file
-  private(set) var animations: [Animation] = []
+  public private(set) var animations: [Animation] = []
+
+  // MARK: Internal
 
   /// Image provider for animations
-  private(set) var imageProvider: AnimationImageProvider?
-
-  /// Manifest.json file loading
-  lazy var manifest: DotLottieManifest? = {
-    let path = fileUrl.appendingPathComponent(DotLottieFile.manifestFileName)
-    return try? DotLottieManifest.load(from: path)
-  }()
-
-  /// Animation url for main animation
-  lazy var animationUrl: URL? = {
-    guard let animationId = manifest?.animations.first?.id else { return nil }
-    let dotLottieJson = "\(DotLottieFile.animationsFolderName)/\(animationId).json"
-    return fileUrl.appendingPathComponent(dotLottieJson)
-  }()
+  private(set) var imageProvider: DotLottieImageProvider?
 
   /// Animations folder url
   lazy var animationsUrl: URL = fileUrl.appendingPathComponent("\(DotLottieFile.animationsFolderName)")
 
   /// All files in animations folder
-  lazy var animationUrls: [URL] = {
-    FileManager.default.urls(for: animationsUrl) ?? []
-  }()
+  lazy var animationUrls: [URL] = FileManager.default.urls(for: animationsUrl) ?? []
 
   /// Images folder url
   lazy var imagesUrl: URL = fileUrl.appendingPathComponent("\(DotLottieFile.imagesFolderName)")
 
   /// All images in images folder
-  lazy var imageUrls: [URL] = {
-    FileManager.default.urls(for: imagesUrl) ?? []
-  }()
+  lazy var imageUrls: [URL] = FileManager.default.urls(for: imagesUrl) ?? []
 
   /// The `LottieAnimation` and `DotLottieConfiguration` for the given animation ID in this file
   func animation(for id: String? = nil) -> DotLottieFile.Animation? {
@@ -77,6 +62,12 @@ public final class DotLottieFile {
     }
   }
 
+  /// The `LottieAnimation` and `DotLottieConfiguration` for the given animation index in this file
+  func animation(at index: Int) -> DotLottieFile.Animation? {
+    guard index < animations.count else { return nil }
+    return animations[index]
+  }
+
   // MARK: Private
 
   private static let manifestFileName = "manifest.json"
@@ -84,14 +75,6 @@ public final class DotLottieFile {
   private static let imagesFolderName = "images"
 
   private let fileUrl: URL
-
-  private var dotLottieAnimations: [DotLottieAnimation] {
-    manifest?.animations.map {
-      var animation = $0
-      animation.animationUrl = animationsUrl.appendingPathComponent("\($0.id).json")
-      return animation
-    } ?? []
-  }
 
   /// Decompresses .lottie file from `URL` and saves to local temp folder
   ///
@@ -102,7 +85,7 @@ public final class DotLottieFile {
     try? FileManager.default.removeItem(at: destinationURL)
     try FileManager.default.createDirectory(at: destinationURL, withIntermediateDirectories: true, attributes: nil)
     try FileManager.default.unzipItem(at: url, to: destinationURL)
-    loadContent()
+    try loadContent()
     try? FileManager.default.removeItem(at: destinationURL)
     try? FileManager.default.removeItem(at: url)
   }
@@ -120,14 +103,11 @@ public final class DotLottieFile {
   }
 
   /// Loads file content to memory
-  private func loadContent() {
+  private func loadContent() throws {
     imageProvider = DotLottieImageProvider(filepath: imagesUrl)
 
-    animations = dotLottieAnimations.compactMap { dotLottieAnimation -> DotLottieFile.Animation? in
-      guard let animation = try? dotLottieAnimation.animation() else {
-        return nil
-      }
-
+    animations = try loadManifest().animations.map { dotLottieAnimation in
+      let animation = try dotLottieAnimation.animation(url: animationsUrl)
       let configuration = DotLottieConfiguration(
         id: dotLottieAnimation.id,
         imageProvider: imageProvider,
@@ -138,6 +118,11 @@ public final class DotLottieFile {
         animation: animation,
         configuration: configuration)
     }
+  }
+
+  private func loadManifest() throws -> DotLottieManifest {
+    let path = fileUrl.appendingPathComponent(DotLottieFile.manifestFileName)
+    return try DotLottieManifest.load(from: path)
   }
 }
 
@@ -159,3 +144,10 @@ extension String {
     (self as NSString).deletingPathExtension
   }
 }
+
+// MARK: - DotLottieFile + Sendable
+
+// Mark `DotLottieFile` as `@unchecked Sendable` to allow it to be used when strict concurrency is enabled.
+// In the future, it may be necessary to make changes to the internal implementation of `DotLottieFile`
+// to make it truly thread-safe.
+extension DotLottieFile: @unchecked Sendable { }

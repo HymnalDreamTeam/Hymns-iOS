@@ -6,36 +6,36 @@
 /// Values can support equal by supporting the Equatable protocol.
 public func equal<T1: Equatable, T2: Equatable>(
     _ expectedValue: (T1, T2)?
-) -> Predicate<(T1, T2)> {
+) -> Matcher<(T1, T2)> {
     equal(expectedValue, by: ==)
 }
 
-public func ==<T1: Equatable, T2: Equatable>(
+public func == <T1: Equatable, T2: Equatable>(
     lhs: SyncExpectation<(T1, T2)>,
     rhs: (T1, T2)?
 ) {
     lhs.to(equal(rhs))
 }
 
-public func ==<T1: Equatable, T2: Equatable>(
+public func == <T1: Equatable, T2: Equatable>(
     lhs: AsyncExpectation<(T1, T2)>,
     rhs: (T1, T2)?
-) {
-    lhs.to(equal(rhs))
+) async {
+    await lhs.to(equal(rhs))
 }
 
-public func !=<T1: Equatable, T2: Equatable>(
+public func != <T1: Equatable, T2: Equatable>(
     lhs: SyncExpectation<(T1, T2)>,
     rhs: (T1, T2)?
 ) {
     lhs.toNot(equal(rhs))
 }
 
-public func !=<T1: Equatable, T2: Equatable>(
+public func != <T1: Equatable, T2: Equatable>(
     lhs: AsyncExpectation<(T1, T2)>,
     rhs: (T1, T2)?
-) {
-    lhs.toNot(equal(rhs))
+) async {
+    await lhs.toNot(equal(rhs))
 }
 
 // MARK: Tuple3
@@ -44,37 +44,37 @@ public func !=<T1: Equatable, T2: Equatable>(
 /// Values can support equal by supporting the Equatable protocol.
 public func equal<T1: Equatable, T2: Equatable, T3: Equatable>(
     _ expectedValue: (T1, T2, T3)?
-) -> Predicate<(T1, T2, T3)> {
+) -> Matcher<(T1, T2, T3)> {
     equal(expectedValue, by: ==)
 }
 
-public func ==<T1: Equatable, T2: Equatable, T3: Equatable>(
+public func == <T1: Equatable, T2: Equatable, T3: Equatable>(
     lhs: SyncExpectation<(T1, T2, T3)>,
     rhs: (T1, T2, T3)?
 ) {
     lhs.to(equal(rhs))
 }
 
-public func ==<T1: Equatable, T2: Equatable, T3: Equatable>(
+public func == <T1: Equatable, T2: Equatable, T3: Equatable>(
     lhs: AsyncExpectation<(T1, T2, T3)>,
     rhs: (T1, T2, T3)?
-) {
-    lhs.to(equal(rhs))
+) async {
+    await lhs.to(equal(rhs))
 }
 
 
-public func !=<T1: Equatable, T2: Equatable, T3: Equatable>(
+public func != <T1: Equatable, T2: Equatable, T3: Equatable>(
     lhs: SyncExpectation<(T1, T2, T3)>,
     rhs: (T1, T2, T3)?
 ) {
     lhs.toNot(equal(rhs))
 }
 
-public func !=<T1: Equatable, T2: Equatable, T3: Equatable>(
+public func != <T1: Equatable, T2: Equatable, T3: Equatable>(
     lhs: AsyncExpectation<(T1, T2, T3)>,
     rhs: (T1, T2, T3)?
-) {
-    lhs.toNot(equal(rhs))
+) async {
+    await lhs.toNot(equal(rhs))
 }
 
 
@@ -84,36 +84,36 @@ public func !=<T1: Equatable, T2: Equatable, T3: Equatable>(
 /// Values can support equal by supporting the Equatable protocol.
 public func equal<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable>(
     _ expectedValue: (T1, T2, T3, T4)?
-) -> Predicate<(T1, T2, T3, T4)> {
+) -> Matcher<(T1, T2, T3, T4)> {
     equal(expectedValue, by: ==)
 }
 
-public func ==<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable>(
+public func == <T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable>(
     lhs: SyncExpectation<(T1, T2, T3, T4)>,
     rhs: (T1, T2, T3, T4)?
 ) {
     lhs.to(equal(rhs))
 }
 
-public func ==<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable>(
+public func == <T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable>(
     lhs: AsyncExpectation<(T1, T2, T3, T4)>,
     rhs: (T1, T2, T3, T4)?
-) {
-    lhs.to(equal(rhs))
+) async {
+    await lhs.to(equal(rhs))
 }
 
-public func !=<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable>(
+public func != <T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable>(
     lhs: SyncExpectation<(T1, T2, T3, T4)>,
     rhs: (T1, T2, T3, T4)?
 ) {
     lhs.toNot(equal(rhs))
 }
 
-public func !=<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable>(
+public func != <T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable>(
     lhs: AsyncExpectation<(T1, T2, T3, T4)>,
     rhs: (T1, T2, T3, T4)?
-) {
-    lhs.toNot(equal(rhs))
+) async {
+    await lhs.toNot(equal(rhs))
 }
 
 
@@ -123,37 +123,37 @@ public func !=<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable>(
 /// Values can support equal by supporting the Equatable protocol.
 public func equal<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: Equatable>(
     _ expectedValue: (T1, T2, T3, T4, T5)?
-) -> Predicate<(T1, T2, T3, T4, T5)> {
+) -> Matcher<(T1, T2, T3, T4, T5)> {
     equal(expectedValue, by: ==)
 }
 
-public func ==<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: Equatable>(
+public func == <T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: Equatable>(
     lhs: SyncExpectation<(T1, T2, T3, T4, T5)>,
     rhs: (T1, T2, T3, T4, T5)?
 ) {
     lhs.to(equal(rhs))
 }
 
-public func ==<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: Equatable>(
+public func == <T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: Equatable>(
     lhs: AsyncExpectation<(T1, T2, T3, T4, T5)>,
     rhs: (T1, T2, T3, T4, T5)?
-) {
-    lhs.to(equal(rhs))
+) async {
+    await lhs.to(equal(rhs))
 }
 
 
-public func !=<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: Equatable>(
+public func != <T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: Equatable>(
     lhs: SyncExpectation<(T1, T2, T3, T4, T5)>,
     rhs: (T1, T2, T3, T4, T5)?
 ) {
     lhs.toNot(equal(rhs))
 }
 
-public func !=<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: Equatable>(
+public func != <T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: Equatable>(
     lhs: AsyncExpectation<(T1, T2, T3, T4, T5)>,
     rhs: (T1, T2, T3, T4, T5)?
-) {
-    lhs.toNot(equal(rhs))
+) async {
+    await lhs.toNot(equal(rhs))
 }
 
 
@@ -163,36 +163,36 @@ public func !=<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: E
 /// Values can support equal by supporting the Equatable protocol.
 public func equal<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: Equatable, T6: Equatable>(
     _ expectedValue: (T1, T2, T3, T4, T5, T6)?
-) -> Predicate<(T1, T2, T3, T4, T5, T6)> {
+) -> Matcher<(T1, T2, T3, T4, T5, T6)> {
     equal(expectedValue, by: ==)
 }
 
-public func ==<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: Equatable, T6: Equatable>(
+public func == <T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: Equatable, T6: Equatable>(
     lhs: SyncExpectation<(T1, T2, T3, T4, T5, T6)>,
     rhs: (T1, T2, T3, T4, T5, T6)?
 ) {
     lhs.to(equal(rhs))
 }
 
-public func ==<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: Equatable, T6: Equatable>(
+public func == <T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: Equatable, T6: Equatable>(
     lhs: AsyncExpectation<(T1, T2, T3, T4, T5, T6)>,
     rhs: (T1, T2, T3, T4, T5, T6)?
-) {
-    lhs.to(equal(rhs))
+) async {
+    await lhs.to(equal(rhs))
 }
 
-public func !=<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: Equatable, T6: Equatable>(
+public func != <T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: Equatable, T6: Equatable>(
     lhs: SyncExpectation<(T1, T2, T3, T4, T5, T6)>,
     rhs: (T1, T2, T3, T4, T5, T6)?
 ) {
     lhs.toNot(equal(rhs))
 }
 
-public func !=<T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: Equatable, T6: Equatable>(
+public func != <T1: Equatable, T2: Equatable, T3: Equatable, T4: Equatable, T5: Equatable, T6: Equatable>(
     lhs: AsyncExpectation<(T1, T2, T3, T4, T5, T6)>,
     rhs: (T1, T2, T3, T4, T5, T6)?
-) {
-    lhs.toNot(equal(rhs))
+) async {
+    await lhs.toNot(equal(rhs))
 }
 
 // swiftlint:enable large_tuple vertical_whitespace

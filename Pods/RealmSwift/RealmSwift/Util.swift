@@ -18,6 +18,7 @@
 
 import Foundation
 import Realm
+import os.log
 
 #if BUILDING_REALM_SWIFT_TESTS
 import RealmSwift
@@ -134,4 +135,59 @@ internal func staticBridgeCast<T: _ObjcBridgeable>(fromObjectiveC x: Any) -> T {
 @usableFromInline
 internal func failableStaticBridgeCast<T: _ObjcBridgeable>(fromObjectiveC x: Any) -> T? {
     return T._rlmFromObjc(x)
+}
+
+internal func logRuntimeIssue(_ message: StaticString) {
+    if #available(macOS 10.14, iOS 12.0, watchOS 5.0, tvOS 12.0, *) {
+        // Reporting a runtime issue to Xcode requires pretending to be
+        // one of the system libraries which are allowed to do so. We do
+        // this by looking up a symbol defined by SwiftUI, getting the
+        // dso information from that, and passing that to os_log() to
+        // claim that we're SwiftUI. As this is obviously not a particularly legal thing to do, we only do it in debug and simulator builds.
+        var dso = #dsohandle
+        #if DEBUG || targetEnvironment(simulator)
+        let sym = dlsym(dlopen(nil, RTLD_LAZY), "$s7SwiftUI3AppMp")
+        var info = Dl_info()
+        dladdr(sym, &info)
+        if let base = info.dli_fbase {
+            dso = UnsafeRawPointer(base)
+        }
+        #endif
+        let log = OSLog(subsystem: "com.apple.runtime-issues", category: "Realm")
+        os_log(.fault, dso: dso, log: log, message)
+    } else {
+        print(message)
+    }
+}
+
+@_unavailableFromAsync
+internal func assumeOnMainActorExecutor<T>(_ operation: @MainActor () throws -> T,
+                                           file: StaticString = #fileID, line: UInt = #line
+) rethrows -> T {
+#if swift(>=5.9)
+    if #available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *) {
+        return try MainActor.assumeIsolated(operation)
+    }
+#endif
+
+    precondition(Thread.isMainThread, file: file, line: line)
+    return try withoutActuallyEscaping(operation) { fn in
+        try unsafeBitCast(fn, to: (() throws -> T).self)()
+    }
+}
+
+@_unavailableFromAsync
+@available(macOS 10.15, tvOS 13.0, iOS 13.0, watchOS 6.0, *)
+internal func assumeOnActorExecutor<A: Actor, T>(_ actor: A,
+                                                 _ operation: (isolated A) throws -> T
+) rethrows -> T {
+#if swift(>=5.9)
+    if #available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *) {
+        return try actor.assumeIsolated(operation)
+    }
+#endif
+
+    return try withoutActuallyEscaping(operation) { fn in
+        try unsafeBitCast(fn, to: ((A) throws -> T).self)(actor)
+    }
 }

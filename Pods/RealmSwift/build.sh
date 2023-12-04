@@ -37,18 +37,10 @@ Usage: sh $0 command [argument]
 command:
   clean:                clean up/remove all generated files
   download-core:        downloads core library (binary version)
-  build:                builds all iOS and macOS frameworks
-  ios-static:           builds fat iOS static framework
-  ios-dynamic:          builds iOS dynamic frameworks
-  ios-swift:            builds RealmSwift frameworks for iOS
-  watchos:              builds watchOS framwork
-  watchos-swift:        builds RealmSwift framework for watchOS
-  tvos:                 builds tvOS framework
-  tvos-swift:           builds RealmSwift framework for tvOS
-  osx:                  builds macOS framework
-  osx-swift:            builds RealmSwift framework for macOS
-  xcframework [plats]:  builds xcframeworks for Realm and RealmSwift for given platforms
+  build [platforms]:    builds xcframeworks for Realm and RealmSwift for given platforms (default all)
+  build-static [plats]: builds static xcframework for Realm platforms (default all)
   analyze-osx:          analyzes macOS framework
+
   test:                 tests all iOS and macOS frameworks
   test-all:             tests all iOS and macOS frameworks in both Debug and Release configurations
   test-ios-static:      tests static iOS framework on 32-bit and 64-bit simulators
@@ -67,24 +59,40 @@ command:
   test-swiftpm:         tests ObjC and Swift macOS frameworks via SwiftPM
   test-swiftui-ios:         tests SwiftUI framework UI tests
   test-swiftui-server-osx:  tests Server Sync in SwiftUI
-  verify:               verifies docs, osx, osx-swift, ios-static, ios-dynamic, ios-swift, ios-device, swiftui-ios in both Debug and Release configurations, swiftlint
+  verify:               verifies docs, osx, osx-swift, ios-static, ios-dynamic, ios-swift, ios-device, swiftui-ios in both Debug and Release configurations, swiftlint, ios-xcode-spm
   verify-osx-object-server:  downloads the Realm Object Server and runs the Objective-C and Swift integration tests
+
   docs:                 builds docs in docs/output
   examples:             builds all examples
   examples-ios:         builds all static iOS examples
   examples-ios-swift:   builds all Swift iOS examples
   examples-osx:         builds all macOS examples
-  get-version:          get the current version
-  set-version version:  set the version
-  cocoapods-setup:      download realm-core and create a stub RLMPlatform.h file to enable building via CocoaPods
 
+  get-version:          get the current version
+  get-ioplatformuuid:   get io platform uuid
+  set-version version:  set the version
+  set-core-version version: set the version of core to use
+
+  package platform:     build release package for the given platform
+  package-release:      assemble per-platform release packages into a combined one
+  package-docs:         build release package the docs
+  package-examples:     build release package the examples
+  package-test-examples: test a built examples release package
+  test-package-release: locally build a complete release package for all platforms
+
+  publish-tag branch:   create and push a git tag for the given branch
+  publish-github:       create a Github release for the currently checked-out tag
+  publish-docs:         publish a built docs release to the website
+  publish-cocoapods tag: publish the requested tag to CocoaPods
 
 argument:
   version: version in the x.y.z format
+  platform: exactly one of "osx ios watchos tvos visionos"
+  platforms: one or more of "osx ios watchos tvos visionos"
 
 environment variables:
   XCMODE: xcodebuild (default), xcpretty or xctool
-  CONFIGURATION: Debug or Release (default)
+  CONFIGURATION: Debug, Release (default), or Static
   REALM_CORE_VERSION: version in x.y.z format or "current" to use local build
   REALM_EXTRA_BUILD_ARGUMENTS: additional arguments to pass to the build tool
   REALM_XCODE_VERSION: the version number of Xcode to use (e.g.: 13.3.1)
@@ -111,17 +119,16 @@ xcode() {
 xc() {
     # Logs xcodebuild output in realtime
     : "${NSUnbufferedIO:=YES}"
-    args=("SWIFT_VERSION=$REALM_SWIFT_VERSION" $REALM_EXTRA_BUILD_ARGUMENTS)
     if [[ "$XCMODE" == "xcodebuild" ]]; then
-        xcode "$@" "${args[@]}"
+        xcode "$@" "${REALM_EXTRA_BUILD_ARGUMENTS[@]}"
     elif [[ "$XCMODE" == "xcpretty" ]]; then
         mkdir -p build
-        xcode "$@" "${args[@]}" | tee build/build.log | xcpretty -c "${XCPRETTY_PARAMS[@]}" || {
+        xcode "$@" "${REALM_EXTRA_BUILD_ARGUMENTS[@]}" | tee build/build.log | xcpretty -c "${XCPRETTY_PARAMS[@]}" || {
             echo "The raw xcodebuild output is available in build/build.log"
             exit 1
         }
     elif [[ "$XCMODE" == "xctool" ]]; then
-        xctool "$@" "${args[@]}"
+        xctool "$@" "${REALM_EXTRA_BUILD_ARGUMENTS[@]}"
     fi
 }
 
@@ -132,61 +139,70 @@ xctest() {
 }
 
 build_combined() {
-    local scheme="$1"
-    local module_name="$2"
-    local os="$3"
-    local simulator="$4"
-    local scope_suffix="$5"
-    local version_suffix="$6"
+    local product="$1"
+    local platform="$2"
     local config="$CONFIGURATION"
 
-    local os_name=""
-    if [[ "$os" == "iphoneos" ]]; then
-        os_name="ios"
-    elif [[ "$os" == "watchos"  ]]; then
-        os_name="$os"
-    elif [[ "$os" == "appletvos"  ]]; then
-        os_name="tvos"
-    fi
+    local config_suffix simulator_suffix destination build_args
+    case "$platform" in
+        osx)
+            destination='generic/platform=macOS'
+            config_suffix=
+            ;;
+        ios)
+            destination='generic/platform=iOS'
+            config_suffix=-iphoneos
+            simulator_suffix=iphonesimulator
+            ;;
+        watchos)
+            destination='generic/platform=watchOS'
+            config_suffix=-watchos
+            simulator_suffix=watchsimulator
+            ;;
+        tvos)
+            destination='generic/platform=tvOS'
+            config_suffix=-appletvos
+            simulator_suffix=appletvsimulator
+            ;;
+        visionos)
+            destination='generic/platform=visionOS'
+            config_suffix=-xros
+            simulator_suffix=xrsimulator
+            ;;
+        catalyst)
+            destination='generic/platform=macOS,variant=Mac Catalyst'
+            config_suffix=-maccatalyst
+            ;;
+    esac
+
+    build_args=(-scheme "$product" -configuration "$config" build REALM_HIDE_SYMBOLS=YES)
 
     # Derive build paths
     local build_products_path="build/DerivedData/Realm/Build/Products"
-    local product_name="$module_name.framework"
-    local os_path="$build_products_path/$config-$os$scope_suffix/$product_name"
-    local simulator_path="$build_products_path/$config-$simulator$scope_suffix/$product_name"
-    local out_path="build/$os_name$scope_suffix$version_suffix"
-    local xcframework_path="$out_path/$module_name.xcframework"
+    local product_name="$product.framework"
+    local os_path="$build_products_path/$config${config_suffix}/$product_name"
+    local simulator_path="$build_products_path/$config-$simulator_suffix/$product_name"
+    local out_path="build/$config/$platform"
+    local xcframework_path="$out_path/$product.xcframework"
 
     # Build for each platform
-    xc -scheme "$scheme" -configuration "$config" -sdk "$os" build
-    xc -scheme "$scheme" -configuration "$config" -sdk "$simulator" build ONLY_ACTIVE_ARCH=NO
+    xc -destination "$destination" "${build_args[@]}"
+    simulator_framework=()
+    if [[ -n "$simulator_suffix" ]]; then
+        xc -destination "$destination Simulator" "${build_args[@]}"
+        simulator_framework+=(-framework "$simulator_path")
+    fi
 
     # Create the xcframework
     rm -rf "$xcframework_path"
     xcodebuild -create-xcframework -allow-internal-distribution -output "$xcframework_path" \
-        -framework "$os_path" -framework "$simulator_path"
-}
-
-copy_realm_framework() {
-    local platform="$1"
-    rm -rf "build/$platform/swift-$REALM_XCODE_VERSION/Realm.xcframework"
-    cp -R "build/$platform/Realm.xcframework" "build/$platform/swift-$REALM_XCODE_VERSION"
+        -framework "$os_path" "${simulator_framework[@]}"
 }
 
 clean_retrieve() {
   mkdir -p "$2"
   rm -rf "$2/$3"
   cp -R "$1" "$2"
-}
-
-move_to_clean_dir() {
-    rm -rf "$2"
-    mkdir -p "$2"
-    mv "$1" "$2"
-}
-
-test_ios_static() {
-    xctest 'Realm iOS static' -configuration "$CONFIGURATION" -sdk iphonesimulator -destination "$1"
 }
 
 plist_get() {
@@ -251,7 +267,6 @@ build_docs() {
         objc=""
     fi
 
-    touch Realm/RLMPlatform.h # jazzy will fail if it can't find all public header files
     jazzy \
       "${objc}" \
       --clean \
@@ -266,8 +281,6 @@ build_docs() {
       --output "docs/${language}_output" \
       --head "$(cat docs/custom_head.html)" \
       --exclude 'RealmSwift/Impl/*'
-
-    rm Realm/RLMPlatform.h
 }
 
 ######################################
@@ -291,14 +304,17 @@ case "$COMMAND" in
         COMMAND="${COMMAND%-debug}"
         CONFIGURATION="Debug"
         ;;
+    *-static)
+        COMMAND="${COMMAND%-static}"
+        CONFIGURATION="Static"
+        ;;
 esac
 export CONFIGURATION=${CONFIGURATION:-Release}
 
-# Pre-choose Xcode and Swift versions for those operations that do not set them
+# Pre-choose Xcode version for those operations that do not override it
 REALM_XCODE_VERSION=${xcode_version:-$REALM_XCODE_VERSION}
-REALM_SWIFT_VERSION=${swift_version:-$REALM_SWIFT_VERSION}
 source "${source_root}/scripts/swift-version.sh"
-set_xcode_and_swift_versions
+set_xcode_version
 
 ######################################
 # Commands
@@ -337,143 +353,122 @@ case "$COMMAND" in
     # Building
     ######################################
     "build")
-        sh build.sh ios-static
-        sh build.sh ios-dynamic
-        sh build.sh ios-swift
-        sh build.sh watchos
-        sh build.sh watchos-swift
-        sh build.sh tvos
-        sh build.sh tvos-swift
-        sh build.sh osx
-        sh build.sh osx-swift
+        sh build.sh xcframework
         exit 0
         ;;
 
-    "ios-static")
-        build_combined 'Realm iOS static' Realm iphoneos iphonesimulator "-static"
-        exit 0
-        ;;
-
-    "ios-dynamic")
-        build_combined Realm Realm iphoneos iphonesimulator
+    "ios")
+        build_combined Realm ios
         exit 0
         ;;
 
     "ios-swift")
-        sh build.sh ios-dynamic
-        build_combined RealmSwift RealmSwift iphoneos iphonesimulator '' "/swift-$REALM_XCODE_VERSION"
-        copy_realm_framework ios
+        build_combined Realm ios
+        build_combined RealmSwift ios
         exit 0
         ;;
 
     "watchos")
-        build_combined Realm Realm watchos watchsimulator
+        build_combined Realm watchos
         exit 0
         ;;
 
     "watchos-swift")
-        sh build.sh watchos
-        build_combined RealmSwift RealmSwift watchos watchsimulator '' "/swift-$REALM_XCODE_VERSION"
-        copy_realm_framework watchos
+        build_combined Realm watchos
+        build_combined RealmSwift watchos
         exit 0
         ;;
 
     "tvos")
-        build_combined Realm Realm appletvos appletvsimulator
+        build_combined Realm tvos
         exit 0
         ;;
 
     "tvos-swift")
-        sh build.sh tvos
-        build_combined RealmSwift RealmSwift appletvos appletvsimulator '' "/swift-$REALM_XCODE_VERSION"
-        copy_realm_framework tvos
+        build_combined Realm tvos
+        build_combined RealmSwift tvos
         exit 0
         ;;
 
     "osx")
-        xc -scheme Realm -configuration "$CONFIGURATION"
-        clean_retrieve "build/DerivedData/Realm/Build/Products/$CONFIGURATION/Realm.framework" "build/osx" "Realm.framework"
+        build_combined Realm osx
         exit 0
         ;;
 
     "osx-swift")
-        sh build.sh osx
-        xc -scheme RealmSwift -configuration "$CONFIGURATION" build
-        destination="build/osx/swift-$REALM_XCODE_VERSION"
-        clean_retrieve "build/DerivedData/Realm/Build/Products/$CONFIGURATION/RealmSwift.framework" "$destination" "RealmSwift.framework"
-        clean_retrieve "build/osx/Realm.framework" "$destination" "Realm.framework"
+        build_combined Realm osx
+        build_combined RealmSwift osx
         exit 0
         ;;
 
-    "swiftui")
-        xc -scheme SwiftUITestHost -configuration $CONFIGURATION -sdk iphonesimulator build
-        ;;
-
     "catalyst")
-        export REALM_SDKROOT=iphoneos
-        xc -scheme Realm -configuration "$CONFIGURATION" -destination variant='Mac Catalyst'
-        clean_retrieve "build/DerivedData/Realm/Build/Products/$CONFIGURATION-maccatalyst/Realm.framework" "build/catalyst" "Realm.framework"
+        build_combined Realm catalyst
         ;;
 
     "catalyst-swift")
-        sh build.sh catalyst
-        export REALM_SDKROOT=iphoneos
-        xc -scheme 'RealmSwift' -configuration "$CONFIGURATION" -destination variant='Mac Catalyst' build
-        destination="build/catalyst/swift-$REALM_XCODE_VERSION"
-        clean_retrieve "build/DerivedData/Realm/Build/Products/$CONFIGURATION-maccatalyst/RealmSwift.framework" "$destination" "RealmSwift.framework"
-        clean_retrieve "build/catalyst/Realm.framework" "$destination" "Realm.framework"
+        build_combined Realm catalyst
+        build_combined RealmSwift catalyst
+        ;;
+
+    "visionos")
+        build_combined Realm visionos
+        ;;
+
+    "visionos-swift")
+        build_combined Realm visionos
+        build_combined RealmSwift visionos
         ;;
 
     "xcframework")
         # Build all of the requested frameworks
         shift
-        PLATFORMS="${*:-osx ios watchos tvos catalyst}"
+        if (( $(xcode_version_major) < 15 )); then
+            PLATFORMS="${*:-osx ios watchos tvos catalyst}"
+        else
+            PLATFORMS="${*:-osx ios watchos tvos catalyst visionos}"
+        fi
         for platform in $PLATFORMS; do
             sh build.sh "$platform-swift"
         done
 
         # Assemble them into xcframeworks
-        rm -rf build/*.xcframework
-        find build/DerivedData/Realm/Build/Products -name 'Realm.framework' \
-            | grep -v '\-static' \
+        rm -rf "build/$CONFIGURATION/"*.xcframework
+        find "build/$CONFIGURATION" -name 'Realm.framework' \
             | sed 's/.*/-framework &/' \
-            | xargs xcodebuild -create-xcframework -allow-internal-distribution -output build/Realm.xcframework
-        find build/DerivedData/Realm/Build/Products -name 'RealmSwift.framework' \
+            | xargs xcodebuild -create-xcframework -allow-internal-distribution -output "build/$CONFIGURATION/Realm.xcframework"
+        find "build/$CONFIGURATION" -name 'RealmSwift.framework' \
             | sed 's/.*/-framework &/' \
-            | xargs xcodebuild -create-xcframework -allow-internal-distribution -output build/RealmSwift.xcframework
+            | xargs xcodebuild -create-xcframework -allow-internal-distribution -output "build/$CONFIGURATION/RealmSwift.xcframework"
 
         # Because we have a module named Realm and a type named Realm we need to manually resolve the naming
         # collisions that are happening. These collisions create a red herring which tells the user the xcframework
         # was compiled with an older Swift version and is not compatible with the current compiler.
-        find build/RealmSwift.xcframework -name "*.swiftinterface" -exec sed -i '' 's/Realm\.//g' {} \; \
-        -exec sed -i '' 's/import Private/import Realm.Private/g' {} \; \
-        -exec sed -i '' 's/RealmSwift.Configuration/RealmSwift.Realm.Configuration/g' {} \; \
-        -exec sed -i '' 's/extension Configuration/extension Realm.Configuration/g' {} \; \
-        -exec sed -i '' 's/RealmSwift.Error[[:>:]]/RealmSwift.Realm.Error/g' {} \; \
-        -exec sed -i '' 's/extension Error/extension Realm.Error/g' {} \; \
-        -exec sed -i '' 's/RealmSwift.AsyncOpenTask/RealmSwift.Realm.AsyncOpenTask/g' {} \; \
-        -exec sed -i '' 's/RealmSwift.UpdatePolicy/RealmSwift.Realm.UpdatePolicy/g' {} \; \
-        -exec sed -i '' 's/RealmSwift.Notification[[:>:]]/RealmSwift.Realm.Notification/g' {} \; \
-        -exec sed -i '' 's/RealmSwift.OpenBehavior/RealmSwift.Realm.OpenBehavior/g' {} \; \
-        -exec sed -i '' 's/τ_1_0/V/g' {} \; # Generics will use τ_1_0 which needs to be changed to the correct type name.
+        find "build/$CONFIGURATION/RealmSwift.xcframework" -name "*.swiftinterface" \
+            -exec sed -i '' 's/Realm\.//g' {} \; \
+            -exec sed -i '' 's/import Private/import Realm.Private\nimport Realm.Swift/g' {} \; \
+            -exec sed -i '' 's/RealmSwift.Configuration/RealmSwift.Realm.Configuration/g' {} \; \
+            -exec sed -i '' 's/extension Configuration/extension Realm.Configuration/g' {} \; \
+            -exec sed -i '' 's/RealmSwift.Error[[:>:]]/RealmSwift.Realm.Error/g' {} \; \
+            -exec sed -i '' 's/extension Error/extension Realm.Error/g' {} \; \
+            -exec sed -i '' 's/RealmSwift.AsyncOpenTask/RealmSwift.Realm.AsyncOpenTask/g' {} \; \
+            -exec sed -i '' 's/RealmSwift.UpdatePolicy/RealmSwift.Realm.UpdatePolicy/g' {} \; \
+            -exec sed -i '' 's/RealmSwift.Notification[[:>:]]/RealmSwift.Realm.Notification/g' {} \; \
+            -exec sed -i '' 's/RealmSwift.OpenBehavior/RealmSwift.Realm.OpenBehavior/g' {} \; \
+            -exec sed -i '' 's/τ_1_0/V/g' {} \; # Generics will use τ_1_0 which needs to be changed to the correct type name.
 
         exit 0
         ;;
 
     "verify-xcframework-evolution-mode")
         export REALM_EXTRA_BUILD_ARGUMENTS="$REALM_EXTRA_BUILD_ARGUMENTS REALM_BUILD_LIBRARY_FOR_DISTRIBUTION=YES"
-        # set the Xcode version to the oldest
-        export REALM_XCODE_VERSION=$REALM_XCODE_OLDEST_VERSION
         unset REALM_SWIFT_VERSION
-        sh build.sh xcframework osx
-        # copy the xcframework to the testing target
-        rm -rf examples/installation/xcframework-evolution
-        mkdir examples/installation/xcframework-evolution
-        cp -cr build/*.xcframework examples/installation/xcframework-evolution
-        export REALM_XCODE_VERSION=$REALM_XCODE_LATEST_VERSION
-        unset REALM_SWIFT_VERSION
+
+        # Build with the oldest supported Xcode version
+        REALM_XCODE_VERSION=$REALM_XCODE_OLDEST_VERSION sh build.sh xcframework osx
+
+        # Try to import the built framework using the newest supported version
         cd examples/installation
-        sh build.sh "test-osx-swift-xcframework"
+        REALM_XCODE_VERSION=$REALM_XCODE_LATEST_VERSION ./build.rb osx xcframework
 
         exit 0
         ;;
@@ -493,8 +488,7 @@ case "$COMMAND" in
     "test")
         set +e # Run both sets of tests even if the first fails
         failed=0
-        sh build.sh test-ios-static || failed=1
-        sh build.sh test-ios-dynamic || failed=1
+        sh build.sh test-ios || failed=1
         sh build.sh test-ios-swift || failed=1
         sh build.sh test-ios-devices || failed=1
         sh build.sh test-tvos-devices || failed=1
@@ -513,18 +507,13 @@ case "$COMMAND" in
         exit $failed
         ;;
 
-    "test-ios-static")
-        test_ios_static "name=iPhone 8"
-        exit 0
-        ;;
-
-    "test-ios-dynamic")
-        xctest Realm -configuration "$CONFIGURATION" -sdk iphonesimulator -destination 'name=iPhone 8'
+    "test-ios")
+        xctest Realm -configuration "$CONFIGURATION" -sdk iphonesimulator -destination 'name=iPhone 11'
         exit 0
         ;;
 
     "test-ios-swift")
-        xctest RealmSwift -configuration "$CONFIGURATION" -sdk iphonesimulator -destination 'name=iPhone 8'
+        xctest RealmSwift -configuration "$CONFIGURATION" -sdk iphonesimulator -destination 'name=iPhone 11'
         exit 0
         ;;
 
@@ -572,7 +561,7 @@ case "$COMMAND" in
         ;;
 
     "test-osx-swift")
-        xctest RealmSwift -configuration $CONFIGURATION -destination "platform=macOS,arch=$(uname -m)"
+        xctest RealmSwift -configuration "$CONFIGURATION" -destination "platform=macOS,arch=$(uname -m)"
         exit 0
         ;;
 
@@ -581,15 +570,18 @@ case "$COMMAND" in
         exit 0
         ;;
 
-    test-swiftpm-ios)
+    test-ios-xcode-spm)
         cd examples/installation
-        sh build.sh test-ios-swift-spm
+        ./build.rb ios spm
         exit 0
         ;;
 
     test-swiftpm*)
         SANITIZER=$(echo "$COMMAND" | cut -d - -f 3)
-        SWIFT_TEST_FLAGS=(-Xcc -g0)
+        # FIXME: throwing an exception from a property getter corrupts Swift's
+        # runtime exclusivity checking state. Unfortunately, this is something
+        # we do a lot in tests.
+        SWIFT_TEST_FLAGS=(-Xcc -g0 -Xswiftc -enforce-exclusivity=none)
         if [ -n "$SANITIZER" ]; then
             SWIFT_TEST_FLAGS+=(--sanitize "$SANITIZER")
             export ASAN_OPTIONS='check_initialization_order=true:detect_stack_use_after_return=true'
@@ -600,18 +592,16 @@ case "$COMMAND" in
         ;;
 
     "test-swiftui-ios")
-        xctest 'SwiftUITestHost' -configuration "$CONFIGURATION" -sdk iphonesimulator -destination 'name=iPhone 8'
+        xctest 'SwiftUITestHost' -configuration "$CONFIGURATION" -sdk iphonesimulator -destination 'name=iPhone 11'
         exit 0
         ;;
 
     "test-catalyst")
-        export REALM_SDKROOT=iphoneos
         xctest Realm -configuration "$CONFIGURATION" -destination 'platform=macOS,variant=Mac Catalyst' CODE_SIGN_IDENTITY=''
         exit 0
         ;;
 
     "test-catalyst-swift")
-        export REALM_SDKROOT=iphoneos
         xctest RealmSwift -configuration "$CONFIGURATION" -destination 'platform=macOS,variant=Mac Catalyst' CODE_SIGN_IDENTITY=''
         exit 0
         ;;
@@ -653,10 +643,11 @@ case "$COMMAND" in
         ;;
 
     "verify-cocoapods")
+        export REALM_TEST_BRANCH="$sha"
         if [[ -d .git ]]; then
           # Verify the current branch, unless one was already specified in the sha environment variable.
           if [[ -z $sha ]]; then
-            export sha=$(git rev-parse --abbrev-ref HEAD)
+            export REALM_TEST_BRANCH=$(git rev-parse --abbrev-ref HEAD)
           fi
 
           if [[ $(git log -1 '@{push}..') != "" ]] || ! git diff-index --quiet HEAD; then
@@ -667,40 +658,24 @@ case "$COMMAND" in
           fi
         fi
 
-        sh build.sh verify-cocoapods-ios
-        sh build.sh verify-cocoapods-ios-dynamic
-        sh build.sh verify-cocoapods-osx
-        sh build.sh verify-cocoapods-watchos
-
-        # https://github.com/CocoaPods/CocoaPods/issues/7708
-        export EXPANDED_CODE_SIGN_IDENTITY=''
         cd examples/installation
-        sh build.sh test-ios-objc-cocoapods
-        sh build.sh test-ios-objc-cocoapods-dynamic
-        sh build.sh test-ios-swift-cocoapods
-        sh build.sh test-osx-objc-cocoapods
-        sh build.sh test-osx-swift-cocoapods
-        sh build.sh test-catalyst-objc-cocoapods
-        sh build.sh test-catalyst-objc-cocoapods-dynamic
-        sh build.sh test-catalyst-swift-cocoapods
-        sh build.sh test-watchos-objc-cocoapods
-        sh build.sh test-watchos-swift-cocoapods
+        ./build.rb ios cocoapods static
+        ./build.rb ios cocoapods dynamic
+        ./build.rb osx cocoapods
+        ./build.rb tvos cocoapods
+        ./build.rb watchos cocoapods
+        ./build.rb catalyst cocoapods
         ;;
 
     verify-cocoapods-ios-dynamic)
-        PLATFORM=$(echo "$COMMAND" | cut -d - -f 3)
-        # https://github.com/CocoaPods/CocoaPods/issues/7708
-        export EXPANDED_CODE_SIGN_IDENTITY=''
         cd examples/installation
-        sh build.sh test-ios-objc-cocoapods-dynamic
+        REALM_TEST_BRANCH="$sha" ./build.rb ios cocoapods
         ;;
 
     verify-cocoapods-*)
         PLATFORM=$(echo "$COMMAND" | cut -d - -f 3)
-        # https://github.com/CocoaPods/CocoaPods/issues/7708
-        export EXPANDED_CODE_SIGN_IDENTITY=''
         cd examples/installation
-        sh build.sh "test-$PLATFORM-swift-cocoapods"
+        REALM_TEST_BRANCH="$sha" ./build.rb "$PLATFORM" cocoapods
         ;;
 
     "verify-osx-encryption")
@@ -720,21 +695,6 @@ case "$COMMAND" in
         exit 0
         ;;
 
-    "verify-osx-swift")
-        sh build.sh test-osx-swift
-        exit 0
-        ;;
-
-    "verify-swiftui-ios")
-        sh build.sh test-swiftui-ios
-        exit 0
-        ;;
-
-    "verify-swiftui-server-osx")
-        sh build.sh test-swiftui-server-osx
-        exit 0
-        ;;
-
     "verify-osx-swift-evolution")
         export REALM_EXTRA_BUILD_ARGUMENTS="$REALM_EXTRA_BUILD_ARGUMENTS REALM_BUILD_LIBRARY_FOR_DISTRIBUTION=YES"
         sh build.sh test-osx-swift
@@ -747,10 +707,6 @@ case "$COMMAND" in
         sh build.sh examples-ios
         ;;
 
-    "verify-ios-dynamic")
-        sh build.sh test-ios-dynamic
-        ;;
-
     "verify-ios-swift")
         REALM_EXTRA_BUILD_ARGUMENTS="$REALM_EXTRA_BUILD_ARGUMENTS -workspace examples/ios/swift/RealmExamples.xcworkspace" \
             sh build.sh test-ios-swift
@@ -760,16 +716,6 @@ case "$COMMAND" in
     "verify-ios-swift-evolution")
         export REALM_EXTRA_BUILD_ARGUMENTS="$REALM_EXTRA_BUILD_ARGUMENTS REALM_BUILD_LIBRARY_FOR_DISTRIBUTION=YES"
         sh build.sh test-ios-swift
-        exit 0
-        ;;
-
-    "verify-ios-device-objc")
-        sh build.sh test-ios-devices-objc
-        exit 0
-        ;;
-
-    "verify-ios-device-swift")
-        sh build.sh test-ios-devices-swift
         exit 0
         ;;
 
@@ -811,11 +757,6 @@ case "$COMMAND" in
         exit 0
         ;;
 
-    "verify-tvos-device")
-        sh build.sh test-tvos-devices
-        exit 0
-        ;;
-
     "verify-swiftlint")
         swiftlint lint --strict
         exit 0
@@ -826,23 +767,18 @@ case "$COMMAND" in
         exit 0
         ;;
 
-    "verify-osx-object-server")
-        sh build.sh test-osx-object-server
-        exit 0
-        ;;
-
-    "verify-catalyst")
-        sh build.sh test-catalyst
-        exit 0
-        ;;
-
-    "verify-catalyst-swift")
-        sh build.sh test-catalyst-swift
-        exit 0
-        ;;
-
     "verify-xcframework")
-        sh build.sh xcframework
+        sh build.sh xcframework osx
+        exit 0
+        ;;
+
+    "verify-ios-xcode-spm")
+        REALM_TEST_BRANCH="$sha" sh build.sh test-ios-xcode-spm
+        exit 0
+        ;;
+
+    verify-*)
+        sh build.sh "test-$(echo "$COMMAND" | cut -d - -f 2-)"
         exit 0
         ;;
 
@@ -872,8 +808,7 @@ case "$COMMAND" in
 
     "examples-ios")
         workspace="examples/ios/objc/RealmExamples.xcworkspace"
-        pod install --project-directory="$workspace/.." --no-repo-update
-        examples="Simple TableView Migration Backlink GroupedTableView RACTableView Encryption Draw"
+        examples="Simple TableView Migration Backlink GroupedTableView Encryption Draw"
         versions="0 1 2 3 4 5"
         for example in $examples; do
             if [ "$example" = "Migration" ]; then
@@ -952,6 +887,11 @@ case "$COMMAND" in
         exit 0
         ;;
 
+    "get-ioplatformuuid")
+        ioreg -d2 -c IOPlatformExpertDevice | awk -F\" '/IOPlatformUUID/{print $(NF-1)}'
+        exit 0
+        ;;
+
     "set-version")
         realm_version="$2"
         version_files="Realm/Realm-Info.plist"
@@ -968,9 +908,19 @@ case "$COMMAND" in
             PlistBuddy -c "Set :CFBundleShortVersionString $realm_version" "$version_file"
         done
         sed -i '' "s/^VERSION=.*/VERSION=$realm_version/" dependencies.list
-        sed -i '' "s/^let coreVersionStr =.*/let coreVersionStr = \"$REALM_CORE_VERSION\"/" Package.swift
-        sed -i '' "s/^let cocoaVersionStr =.*/let cocoaVersionStr = \"$realm_version\"/" Package.swift
+        sed -i '' "s/^let cocoaVersion =.*/let cocoaVersion = Version(\"$realm_version\")/" Package.swift
         sed -i '' "s/x.y.z Release notes (yyyy-MM-dd)/$realm_version Release notes ($(date '+%Y-%m-%d'))/" CHANGELOG.md
+
+        exit 0
+        ;;
+
+    "set-core-version")
+        new_version="$2"
+        old_version="$(sed -n 's/^REALM_CORE_VERSION=\(.*\)$/\1/p' "${source_root}/dependencies.list")"
+
+        sed -i '' "s/^REALM_CORE_VERSION=.*/REALM_CORE_VERSION=$new_version/" dependencies.list
+        sed -i '' "s/^let coreVersion =.*/let coreVersion = Version(\"$new_version\")/" Package.swift
+        sed -i '' "s/Upgraded realm-core from ? to ?/Upgraded realm-core from $old_version to $new_version/" CHANGELOG.md
 
         exit 0
         ;;
@@ -1020,7 +970,7 @@ case "$COMMAND" in
 
             failed=0
             sh build.sh "verify-$target" 2>&1 | tee build/build.log | xcpretty -r junit -o build/reports/junit.xml || failed=1
-            if [ "$failed" = "1" ] && grep -E 'DTXProxyChannel|DTXChannel|out of date and needs to be rebuilt|operation never finished bootstrapping' build/build.log ; then
+            if [ "$failed" = "1" ] && grep -E 'DTXProxyChannel|DTXChannel|out of date and needs to be rebuilt|operation never finished bootstrapping|thread is already initializing this class' build/build.log ; then
                 echo "Known Xcode error detected. Running job again."
                 if grep -E 'out of date and needs to be rebuilt' build/build.log; then
                     rm -rf build/DerivedData
@@ -1051,144 +1001,58 @@ case "$COMMAND" in
     # Release packaging
     ######################################
 
+    "package-docs")
+        sh scripts/reset-simulators.sh
+        sh build.sh docs
+        cd docs
+        zip -r realm-docs.zip objc_output swift_output
+        ;;
+
     "package-examples")
         ./scripts/package_examples.rb
         zip --symlinks -r realm-examples.zip examples -x "examples/installation/*"
         ;;
 
-    "package-test-examples-objc")
-        if ! VERSION=$(echo realm-objc-*.zip | grep -E -o '\d*\.\d*\.\d*-[a-z]*(\.\d*)?'); then
-            VERSION=$(echo realm-objc-*.zip | grep -E -o '\d*\.\d*\.\d*')
-        fi
-        OBJC="realm-objc-${VERSION}"
-        unzip "${OBJC}.zip"
+    "package-build-scripts")
+        zip -r build-scripts.zip build.sh dependencies.list scripts examples/installation
+        ;;
 
-        cp "$0" "${OBJC}"
-        cp -r "${source_root}/scripts" "${OBJC}"
-        cd "${OBJC}"
+    "package-test-examples")
+        VERSION="$(sed -n 's/^VERSION=\(.*\)$/\1/p' "${source_root}/dependencies.list")"
+        dir="realm-swift-${VERSION}"
+        unzip "${dir}.zip"
+
+        cp "$0" "${dir}"
+        cp -r "${source_root}/scripts" "${dir}"
+        cd "${dir}"
         sh build.sh examples-ios
         sh build.sh examples-tvos
         sh build.sh examples-osx
-        cd ..
-        rm -rf "${OBJC}"
-        ;;
-
-    "package-test-examples-swift")
-        if ! VERSION=$(echo realm-swift-*.zip | grep -E -o '\d*\.\d*\.\d*-[a-z]*(\.\d*)?'); then
-            VERSION=$(echo realm-swift-*.zip | grep -E -o '\d*\.\d*\.\d*')
-        fi
-        SWIFT="realm-swift-${VERSION}"
-        unzip "${SWIFT}.zip"
-
-        cp "$0" "${SWIFT}"
-        cp -r "${source_root}/scripts" "${SWIFT}"
-        cd "${SWIFT}"
         sh build.sh examples-ios-swift
         sh build.sh examples-tvos-swift
         cd ..
-        rm -rf "${SWIFT}"
-        ;;
-
-    "package-ios-static")
-        sh build.sh prelaunch-simulator
-        sh build.sh ios-static
-
-        cd build/ios-static
-        zip --symlinks -r realm-framework-ios-static.zip Realm.xcframework
+        rm -rf "${dir}"
         ;;
 
     "package")
         PLATFORM="$2"
-        REALM_SWIFT_VERSION=
-
-        set_xcode_and_swift_versions
-
         sh build.sh "$PLATFORM-swift"
+        if [[ "$PLATFORM" == ios ]]; then
+            sh build.sh "$PLATFORM-static"
+        else
+            mkdir -p Static
+        fi
 
-        cd "build/$PLATFORM"
-        zip --symlinks -r "realm-framework-$PLATFORM-$REALM_XCODE_VERSION.zip" "swift-$REALM_XCODE_VERSION"
+        cd build
+        zip --symlinks -r "realm-$PLATFORM-$REALM_XCODE_VERSION.zip" "Release/$PLATFORM" "Static/$PLATFORM"
         ;;
 
     "package-release")
-        LANG="$2"
-        tempdir="$(mktemp -d "$TMPDIR"/realm-release-package-"${LANG}".XXXX)"
-        extract_dir="$(mktemp -d "$TMPDIR"/realm-release-package-"${LANG}".XXXX)"
-        version="$(sh build.sh get-version)"
-        package_dir="${tempdir}/realm-${LANG}-${version}"
-
-        mkdir -p "${package_dir}"
-
-        if [[ "${LANG}" == "objc" ]]; then
-            mkdir -p "${extract_dir}"
-            unzip "${WORKSPACE}/realm-framework-ios-static.zip" -d "${package_dir}/ios-static"
-            for platform in osx ios watchos tvos catalyst; do
-                unzip "${WORKSPACE}/realm-framework-${platform}-${REALM_XCODE_VERSION}.zip" -d "${extract_dir}/${platform}"
-            done
-
-            # Add the arm64 slice to the watchOS library
-            # The arm64 arch was added in Xcode 14, but we need the other
-            # slices to be built with Xcode 13 so that they have bitcode.
-            unzip "${WORKSPACE}/realm-framework-watchos-14.0.1.zip" -d "${extract_dir}/watchos"
-            lipo "${extract_dir}/watchos/swift-14.0.1/Realm.xcframework/watchos-arm64_arm64_32_armv7k/Realm.framework/Realm" -thin arm64 -output watchos-arm64-slice
-            lipo "${extract_dir}/watchos/swift-${REALM_XCODE_VERSION}/Realm.xcframework/watchos-arm64_32_armv7k/Realm.framework/Realm" watchos-arm64-slice -create -output watchos-fat
-            mv watchos-fat "${extract_dir}/watchos/swift-${REALM_XCODE_VERSION}/Realm.xcframework/watchos-arm64_32_armv7k/Realm.framework/Realm"
-            rm -r "${extract_dir}/watchos/swift-14.0.1"
-
-            find "${extract_dir}" -name 'Realm.framework' \
-                | sed 's/.*/-framework &/' \
-                | xargs xcodebuild -create-xcframework -allow-internal-distribution -output "${package_dir}/Realm.xcframework"
-
-            cp "${WORKSPACE}/Realm/Swift/RLMSupport.swift" "${package_dir}"
-            rm -r "${extract_dir}"
-        else
-            xcode_versions=$(find . -name 'realm-framework-*-1*' | sed 's@./realm-framework-[a-z]*-\(.*\).zip@\1@' | sort -u)
-            for xcode_version in $xcode_versions; do
-                mkdir -p "${extract_dir}"
-                for platform in osx ios watchos tvos catalyst; do
-                    unzip "realm-framework-$platform-$xcode_version.zip" -d "${extract_dir}/${platform}"
-                done
-                find "${extract_dir}" -name 'Realm.framework' \
-                    | sed 's/.*/-framework &/' \
-                    | xargs xcodebuild -create-xcframework -allow-internal-distribution -output "${package_dir}/${xcode_version}/Realm.xcframework"
-                find "${extract_dir}" -name 'RealmSwift.framework' \
-                    | sed 's/.*/-framework &/' \
-                    | xargs xcodebuild -create-xcframework -allow-internal-distribution -output "${package_dir}/${xcode_version}/RealmSwift.xcframework"
-                rm -r "${extract_dir}"
-            done
-        fi
-
-        (
-            cd "${WORKSPACE}"
-            cp -R plugin LICENSE "${package_dir}"
-        )
-
-        (
-            cd "${package_dir}"
-            unzip "${WORKSPACE}/realm-examples.zip"
-            cd examples
-            if [[ "${LANG}" == "objc" ]]; then
-                rm -rf ios/swift-* tvos/swift-*
-            else
-                rm -rf ios/objc osx tvos/objc
-            fi
-        )
-
-        cat > "${package_dir}"/docs.webloc <<EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>URL</key>
-    <string>https://www.mongodb.com/docs/realm-sdks/${LANG}/${version}</string>
-</dict>
-</plist>
-EOF
-
-        (
-          cd "${tempdir}"
-          zip --symlinks -r "realm-${LANG}-${version}.zip" "realm-${LANG}-${version}"
-          mv "realm-${LANG}-${version}.zip" "${WORKSPACE}"
-        )
+        version="$(sed -n 's/^VERSION=\(.*\)$/\1/p' "${source_root}/dependencies.list")"
+        find . -name 'realm-*-1*.zip' -maxdepth 1 \
+            | sed 's@./realm-[a-z]*-\(.*\).zip@\1@' \
+            | sort -u --version-sort \
+            | xargs ./scripts/create-release-package.rb "${WORKSPACE}/pkg" "${version}"
         ;;
 
     "test-package-release")
@@ -1212,46 +1076,91 @@ EOF
         cd realm-swift
 
         echo 'Packaging iOS'
-        sh build.sh package-ios-static
-        cp build/ios-static/realm-framework-ios-static.zip .
         sh build.sh package ios
-        cp "build/ios/realm-framework-ios-$REALM_XCODE_VERSION.zip" .
+        cp "build/realm-ios-$REALM_XCODE_VERSION.zip" .
 
         echo 'Packaging macOS'
         sh build.sh package osx
-        cp "build/osx/realm-framework-osx-$REALM_XCODE_VERSION.zip" .
+        cp "build/realm-osx-$REALM_XCODE_VERSION.zip" .
 
         echo 'Packaging watchOS'
         sh build.sh package watchos
-        cp "build/watchos/realm-framework-watchos-$REALM_XCODE_VERSION.zip" .
+        cp "build/realm-watchos-$REALM_XCODE_VERSION.zip" .
 
         echo 'Packaging tvOS'
         sh build.sh package tvos
-        cp "build/tvos/realm-framework-tvos-$REALM_XCODE_VERSION.zip" .
+        cp "build/realm-tvos-$REALM_XCODE_VERSION.zip" .
 
         echo 'Packaging Catalyst'
         sh build.sh package catalyst
-        cp "build/catalyst/realm-framework-catalyst-$REALM_XCODE_VERSION.zip" .
+        cp "build/realm-catalyst-$REALM_XCODE_VERSION.zip" .
+
+        if (( "$(xcode_version_major)" >= 15 )); then
+            echo 'Packaging visionOS'
+            sh build.sh package visionOS
+            cp "build/realm-visionOS-$REALM_XCODE_VERSION.zip" .
+        fi
 
         echo 'Packaging examples'
         sh build.sh package-examples
 
         echo 'Building final release packages'
         export WORKSPACE="${WORKSPACE}/realm-swift"
-        sh build.sh package-release objc
-        sh build.sh package-release swift
+        sh build.sh package-release
 
         echo 'Testing packaged examples'
-        sh build.sh package-test-examples-objc
-        sh build.sh package-test-examples-swift
+        sh build.sh package-test-examples
         ;;
 
-    "github-release")
-        if [ -z "${GITHUB_ACCESS_TOKEN}" ]; then
-            echo 'GITHUB_ACCESS_TOKEN must be set to create GitHub releases'
-            exit 1
+    "publish-github")
+        VERSION="$(sed -n 's/^VERSION=\(.*\)$/\1/p' "${source_root}/dependencies.list")"
+        ./scripts/github_release.rb "$VERSION"
+        ;;
+
+    "publish-docs")
+        VERSION="$(sed -n 's/^VERSION=\(.*\)$/\1/p' "${source_root}/dependencies.list")"
+        PRERELEASE_REGEX='alpha|beta|rc|preview'
+        if [[ $VERSION =~ $PRERELEASE_REGEX ]]; then
+          exit 0
         fi
-        ./scripts/github_release.rb
+        rm -rf swift_output objc_output
+        unzip realm-docs.zip
+        s3cmd put --recursive --acl-public --access_key=${AWS_ACCESS_KEY_ID} --secret_key=${AWS_SECRET_ACCESS_KEY} swift_output/ s3://realm-sdks/docs/realm-sdks/swift/${VERSION}/
+        s3cmd put --recursive --acl-public --access_key=${AWS_ACCESS_KEY_ID} --secret_key=${AWS_SECRET_ACCESS_KEY} swift_output/ s3://realm-sdks/docs/realm-sdks/swift/latest/
+
+        s3cmd put --recursive --acl-public --access_key=${AWS_ACCESS_KEY_ID} --secret_key=${AWS_SECRET_ACCESS_KEY} objc_output/ s3://realm-sdks/docs/realm-sdks/objc/${VERSION}/
+        s3cmd put --recursive --acl-public --access_key=${AWS_ACCESS_KEY_ID} --secret_key=${AWS_SECRET_ACCESS_KEY} objc_output/ s3://realm-sdks/docs/realm-sdks/objc/latest/
+        ;;
+
+    "publish-update-checker")
+        VERSION="$(sed -n 's/^VERSION=\(.*\)$/\1/p' "${source_root}/dependencies.list")"
+        PRERELEASE_REGEX='alpha|beta|rc|preview'
+        if [[ $VERSION =~ $PRERELEASE_REGEX ]]; then
+          exit 0
+        fi
+
+        # update static.realm.io/update/cocoa
+        printf "%s" "${VERSION}" > cocoa
+        s3cmd put cocoa s3://static.realm.io/update/
+        rm cocoa
+        ;;
+
+    "publish-tag")
+        git clone git@github.com:realm/realm-swift.git
+        cd realm-swift
+        git checkout "$2"
+        VERSION="$(sed -n 's/^VERSION=\(.*\)$/\1/p' dependencies.list)"
+        git tag -m "Release ${VERSION}" "v${VERSION}"
+        git push origin "v${VERSION}"
+        ;;
+
+    "publish-cocoapods")
+        git clone https://github.com/realm/realm-swift
+        cd realm-swift
+        git checkout "$2"
+        ./scripts/reset-simulators.rb
+        pod trunk push Realm.podspec --verbose --allow-warnings
+        pod trunk push RealmSwift.podspec --verbose --allow-warnings --synchronous
         ;;
 
     "add-empty-changelog")
@@ -1268,11 +1177,11 @@ x.y.z Release notes (yyyy-MM-dd)
 <!-- ### Breaking Changes - ONLY INCLUDE FOR NEW MAJOR version -->
 
 ### Compatibility
-* Realm Studio: 13.0.2 or later.
+* Realm Studio: 14.0.1 or later.
 * APIs are backwards compatible with all previous releases in the 10.x.y series.
-* Carthage release for Swift is built with Xcode 14.2.
+* Carthage release for Swift is built with Xcode 15.0.0.
 * CocoaPods: 1.10 or later.
-* Xcode: 13.3-14.2.
+* Xcode: 14.1-15.0.0.
 
 ### Internal
 * Upgraded realm-core from ? to ?

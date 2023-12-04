@@ -5,7 +5,7 @@ source_root="$(dirname "$0")/.."
 readonly source_root
 
 # override this env variable if you need to download from a private mirror
-: "${REALM_BASE_URL:="https://static.realm.io/downloads"}"
+: "${REALM_BASE_URL:="https://static.realm.io/downloads/core"}"
 # set to "current" to always use the current build
 : "${REALM_CORE_VERSION:=$(sed -n 's/^REALM_CORE_VERSION=\(.*\)$/\1/p' "${source_root}/dependencies.list")}"
 # Provide a fallback value for TMPDIR, relevant for Xcode Bots
@@ -21,15 +21,14 @@ copy_core() {
     # XCFramework processing only copies the "realm" headers, so put the third-party ones in a known location
     mkdir -p "$dst/include"
     find "$src" -name external -exec ditto "{}" "$dst/include/external" \; -quit
+
+    # Remove the C API header to avoid accidentally pulling it in
+    find "$dst" -name realm.h -delete
 }
 
 tries_left=3
 readonly version="$REALM_CORE_VERSION"
-nightly_version=""
-if [[ "$REALM_CORE_VERSION" == *"nightly"* ]]; then
-  nightly_version="v${version}/cocoa/"
-fi
-readonly url="${REALM_BASE_URL}/core/${nightly_version}realm-monorepo-xcframework-v${version}.tar.xz"
+readonly url="${REALM_BASE_URL}/v${version}/cocoa/realm-monorepo-xcframework-v${version}.tar.xz"
 # First check if we need to do anything
 if [ -e "$dst" ]; then
     if [ -e "$dst/version.txt" ]; then

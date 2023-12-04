@@ -22,7 +22,7 @@
 #import "RLMRealm_Private.hpp"
 #import "RLMRealmConfiguration_Private.hpp"
 #import "RLMScheduler.h"
-#import "RLMSyncSubscription_Private.h"
+#import "RLMSyncSubscription_Private.hpp"
 #import "RLMUtil.hpp"
 
 #import <realm/exceptions.hpp>
@@ -245,6 +245,7 @@ __attribute__((objc_direct_members))
         if (subscriptions.state == RLMSyncSubscriptionStatePending) {
             // FIXME: need cancellation for waiting for the subscription
             return [subscriptions waitForSynchronizationOnQueue:nil
+                                                        timeout:0
                                                 completionBlock:^(NSError *error) {
                 if (error) {
                     std::lock_guard lock(_mutex);
@@ -368,5 +369,190 @@ __attribute__((objc_direct_members))
         _session->force_close();
     }
     _session = nullptr;
+}
+@end
+
+__attribute__((objc_direct_members))
+@implementation RLMAsyncRefreshTask {
+    RLMUnfairMutex _mutex;
+    void (^_completion)(bool);
+    bool _complete;
+    bool _didRefresh;
+}
+
+- (void)complete:(bool)didRefresh {
+    void (^completion)(bool);
+    {
+        std::lock_guard lock(_mutex);
+        std::swap(completion, _completion);
+        _complete = true;
+        // If we're both cancelled and did complete a refresh then continue
+        // to report true
+        _didRefresh = _didRefresh || didRefresh;
+    }
+    if (completion) {
+        completion(didRefresh);
+    }
+}
+
+- (void)wait:(void (^)(bool))completion {
+    bool didRefresh;
+    {
+        std::lock_guard lock(_mutex);
+        if (!_complete) {
+            _completion = completion;
+            return;
+        }
+        didRefresh = _didRefresh;
+    }
+    completion(didRefresh);
+}
+
++ (RLMAsyncRefreshTask *)completedRefresh {
+    static RLMAsyncRefreshTask *shared = [] {
+        auto refresh = [[RLMAsyncRefreshTask alloc] init];
+        refresh->_complete = true;
+        refresh->_didRefresh = true;
+        return refresh;
+    }();
+    return shared;
+}
+@end
+
+@implementation RLMAsyncWriteTask {
+    // Mutex guards _realm and _completion
+    RLMUnfairMutex _mutex;
+
+    // _realm is non-nil only while waiting for an async write to begin. It is
+    // set to `nil` when it either completes or is cancelled.
+    RLMRealm *_realm;
+    dispatch_block_t _completion;
+
+    RLMAsyncTransactionId _id;
+}
+
+// No locking needed for these two as they have to be called before the
+// cancellation handler is set up
+- (instancetype)initWithRealm:(RLMRealm *)realm {
+    if (self = [super init]) {
+        _realm = realm;
+    }
+    return self;
+}
+- (void)setTransactionId:(RLMAsyncTransactionId)transactionID {
+    _id = transactionID;
+}
+
+- (void)complete:(bool)cancel {
+    // The swap-under-lock pattern is used to avoid invoking the callback with
+    // a lock held
+    dispatch_block_t completion;
+    {
+        std::lock_guard lock(_mutex);
+        std::swap(completion, _completion);
+        if (cancel) {
+            // This is a no-op if cancellation is coming after the wait completed
+            [_realm cancelAsyncTransaction:_id];
+        }
+        _realm = nil;
+    }
+    if (completion) {
+        completion();
+    }
+}
+
+- (void)wait:(void (^)())completion {
+    {
+        std::lock_guard lock(_mutex);
+        // `_realm` being non-nil means it's neither completed nor been cancelled
+        if (_realm) {
+            _completion = completion;
+            return;
+        }
+    }
+
+    // It has either been completed or cancelled, so call the callback immediately
+    completion();
+}
+@end
+
+@implementation RLMAsyncSubscriptionTask {
+    RLMUnfairMutex _mutex;
+
+    RLMSyncSubscriptionSet *_subscriptionSet;
+    dispatch_queue_t _queue;
+    NSTimeInterval _timeout;
+    void (^_completion)(NSError *);
+
+    dispatch_block_t _worker;
+}
+
+- (instancetype)initWithSubscriptionSet:(RLMSyncSubscriptionSet *)subscriptionSet
+                                  queue:(nullable dispatch_queue_t)queue
+                                timeout:(NSTimeInterval)timeout
+                             completion:(void(^)(NSError *))completion {
+    if (!(self = [super init])) {
+        return self;
+    }
+
+    _subscriptionSet = subscriptionSet;
+    _queue = queue;
+    _timeout = timeout;
+    _completion = completion;
+
+    return self;
+}
+
+- (void)waitForSubscription {
+    std::lock_guard lock(_mutex);
+
+    if (_timeout != 0) {
+        // Setup timer
+        dispatch_time_t time = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(_timeout * NSEC_PER_SEC));
+        // If the call below doesn't return after `time` seconds, the internal completion is called with an error.
+        _worker = dispatch_block_create(DISPATCH_BLOCK_ASSIGN_CURRENT, ^{
+            NSString* errorMessage = [NSString stringWithFormat:@"Waiting for update timed out after %.01f seconds.", _timeout];
+            NSError* error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ETIMEDOUT userInfo:@{NSLocalizedDescriptionKey: errorMessage}];
+            [self invokeCompletionWithError:error];
+        });
+
+        dispatch_after(time, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), _worker);
+    }
+
+    [self waitForSync];
+}
+
+-(void)waitForSync {
+    if (_completion) {
+        _subscriptionSet->_subscriptionSet->get_state_change_notification(realm::sync::SubscriptionSet::State::Complete)
+            .get_async([self](realm::StatusWith<realm::sync::SubscriptionSet::State> state) noexcept {
+                NSError *error = makeError(state);
+                [self invokeCompletionWithError:error];
+            });
+    }
+}
+
+-(void)invokeCompletionWithError:(NSError * _Nullable)error {
+    void (^completion)(NSError *);
+    {
+        std::lock_guard lock(_mutex);
+        std::swap(completion, _completion);
+    }
+
+    if (_worker) {
+        dispatch_block_cancel(_worker);
+        _worker = nil;
+    }
+
+    if (completion) {
+        if (_queue) {
+            dispatch_async(_queue, ^{
+                completion(error);
+            });
+            return;
+        }
+
+        completion(error);
+    }
 }
 @end

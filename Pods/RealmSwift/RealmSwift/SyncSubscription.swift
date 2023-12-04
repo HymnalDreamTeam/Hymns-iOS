@@ -16,13 +16,10 @@
  //
  ////////////////////////////////////////////////////////////////////////////
 
+import Combine
 import Foundation
 import Realm
 import Realm.Private
-
-#if !(os(iOS) && (arch(i386) || arch(arm)))
-import Combine
-#endif
 
 /// An enum representing different states for the Subscription Set.
 @frozen public enum SyncSubscriptionState: Equatable {
@@ -220,8 +217,8 @@ import Combine
      - parameter onComplete: The block called upon synchronization of subscriptions to the server. Otherwise
                              an `Error`describing what went wrong will be returned by the block
      */
-    public func update(_ block: (() -> Void), onComplete: ((Error?) -> Void)? = nil) {
-        rlmSyncSubscriptionSet.update(block, onComplete: onComplete ?? { _ in })
+    public func update(_ block: (() -> Void), onComplete: (@Sendable (Error?) -> Void)? = nil) {
+        rlmSyncSubscriptionSet.update(block, onComplete: onComplete)
     }
 
     /// :nodoc:
@@ -374,12 +371,17 @@ import Combine
     /**
      Removes all subscriptions from the subscription set.
 
+     - parameter unnamedOnly: If true, only unnamed subscriptions are removed.
      - warning: This method may only be called during a write subscription block.
      - warning: Removing all subscriptions will result in an error if no new subscription is added. Server should
                 acknowledge at least one subscription.
      */
-    public func removeAll() {
-        rlmSyncSubscriptionSet.removeAllSubscriptions()
+    public func removeAll(unnamedOnly: Bool = false) {
+        if unnamedOnly {
+            rlmSyncSubscriptionSet.removeAllUnnamedSubscriptions()
+        } else {
+            rlmSyncSubscriptionSet.removeAllSubscriptions()
+        }
     }
 
     /**
@@ -452,8 +454,7 @@ extension SyncSubscriptionSet: Sequence {
     }
 }
 
-#if canImport(_Concurrency)
-@available(macOS 10.15, tvOS 13.0, iOS 13.0, watchOS 6.0, *)
+@available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension SyncSubscriptionSet {
     /**
      Creates and commits a transaction, updating the subscription set,
@@ -466,15 +467,7 @@ extension SyncSubscriptionSet {
      */
     @MainActor
     public func update(_ block: (() -> Void)) async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            update(block) { error in
-                if let error = error {
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume()
-                }
-            }
-        }
+        try await rlmSyncSubscriptionSet.update(block)
     }
 
     /// :nodoc:
@@ -483,9 +476,7 @@ extension SyncSubscriptionSet {
         fatalError("This API is unavailable, , please use `.update` instead.")
     }
 }
-#endif // swift(>=5.6)
 
-#if !(os(iOS) && (arch(i386) || arch(arm)))
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 extension SyncSubscriptionSet {
     /**
@@ -497,15 +488,8 @@ extension SyncSubscriptionSet {
      - returns: A publisher that eventually returns `Result.success` or `Error`.
      */
     public func updateSubscriptions(_ block: @escaping (() -> Void)) -> Future<Void, Error> {
-        return Future<Void, Error> { promise in
-            update(block) { error in
-                if let error = error {
-                    promise(.failure(error))
-                } else {
-                    promise(.success(()))
-                }
-            }
+        promisify {
+            update(block, onComplete: $0)
         }
     }
 }
-#endif // canImport(Combine)

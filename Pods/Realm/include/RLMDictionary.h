@@ -40,6 +40,8 @@ RLM_HEADER_AUDIT_BEGIN(nullability, sendability)
  `RLMDictionary`s cannot be created directly. `RLMDictionary` properties on `RLMObject`s are
  lazily created when accessed, or can be obtained by querying a Realm.
 
+ `RLMDictionary` only supports `NSString` as a key.  Realm disallows the use of `.` or `$` characters within a dictionary key.
+
  ### Key-Value Observing
 
  `RLMDictionary` supports dictionary key-value observing on `RLMDictionary` properties on `RLMObject`
@@ -346,7 +348,7 @@ RLM_HEADER_AUDIT_BEGIN(nullability, sendability)
  which keys in the dictionary were added, modified or deleted. If a write transaction
  did not modify any keys or values in the dictionary, the block is not called at all.
 
- The error parameter is present only for backwards compatiblity and will always
+ The error parameter is present only for backwards compatibility and will always
  be `nil`.
 
  Notifications are delivered via the standard run loop, and so can't be
@@ -401,7 +403,7 @@ __attribute__((warn_unused_result));
  which keys in the dictionary were added or modified. If a write transaction
  did not modify any objects in the dictionary, the block is not called at all.
 
- The error parameter is present only for backwards compatiblity and will always
+ The error parameter is present only for backwards compatibility and will always
  be `nil`.
 
  Notifications are delivered on the given queue. If the queue is blocked and
@@ -436,7 +438,7 @@ __attribute__((warn_unused_result));
  which keys in the dictionary were added or modified. If a write transaction
  did not modify any objects in the dictionary, the block is not called at all.
 
- The error parameter is present only for backwards compatiblity and will always
+ The error parameter is present only for backwards compatibility and will always
  be `nil`.
 
  Notifications are delivered on the given queue. If the queue is blocked and
@@ -473,7 +475,7 @@ __attribute__((warn_unused_result));
  which keys in the dictionary were added or modified. If a write transaction
  did not modify any objects in the dictionary, the block is not called at all.
 
- The error parameter is present only for backwards compatiblity and will always
+ The error parameter is present only for backwards compatibility and will always
  be `nil`.
 
  You must retain the returned token for as long as you want updates to continue

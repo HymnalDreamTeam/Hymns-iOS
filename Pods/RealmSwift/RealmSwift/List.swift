@@ -31,9 +31,7 @@ import Realm.Private
  is opened as read-only.
 
  Lists can be filtered and sorted with the same predicates as `Results<Element>`.
-
- Properties of `List` type defined on `Object` subclasses must be declared as `let` and cannot be `dynamic`.
- */
+*/
 public final class List<Element: RealmCollectionValue>: RLMSwiftCollectionBase, RealmCollectionImpl {
     internal var lastAccessedNames: NSMutableArray?
 
@@ -350,7 +348,7 @@ extension List: MutableCollection {
     public func move(fromOffsets offsets: IndexSet, toOffset destination: Int) {
         for offset in offsets {
             var d = destination
-            if destination >= count {
+            if destination > offset {
                 d = destination - 1
             }
             move(from: offset, to: d)

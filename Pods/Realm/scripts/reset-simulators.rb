@@ -58,6 +58,7 @@ begin
   print 'Killing running Simulator processes...'
   while system('pgrep -q Simulator')
     system('pkill Simulator 2>/dev/null')
+    system('pkill -9 update_dyld_sim_shared_cache 2>/dev/null')
     # CoreSimulatorService doesn't exit when sent SIGTERM
     system('pkill -9 Simulator 2>/dev/null')
   end
@@ -163,13 +164,14 @@ begin
     print 'Booting Apple TV simulator...'
     system("xcrun simctl boot 'Apple TV'") or raise "Failed to boot Apple TV simulator"
   else
-    print 'Booting iPhone 8 simulator...'
-    system("xcrun simctl boot 'iPhone 8'") or raise "Failed to boot iPhone 8 simulator"
+    print 'Booting iPhone 11 simulator...'
+    system("xcrun simctl boot 'iPhone 11'") or raise "Failed to boot iPhone 11 simulator"
   end
   puts ' done!'
 
   print 'Waiting for dyld shared cache to update...'
-  while system('pgrep -q update_dyld_sim_shared_cache')
+  10.times do
+    break unless system('pgrep -q update_dyld_sim_shared_cache')
     sleep 15
   end
   puts ' done!'

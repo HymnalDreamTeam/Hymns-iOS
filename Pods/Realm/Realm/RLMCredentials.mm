@@ -19,7 +19,6 @@
 #import "RLMCredentials_Private.hpp"
 
 #import "RLMBSON_Private.hpp"
-#import "RLMSyncUtil_Private.h"
 #import "RLMUtil.hpp"
 
 #import <realm/object-store/util/bson/bson.hpp>
@@ -67,11 +66,11 @@ using namespace realm::app;
 }
 
 + (instancetype)credentialsWithUserAPIKey:(NSString *)apiKey {
-    return [[self alloc] initWithAppCredentials:AppCredentials::user_api_key(apiKey.UTF8String)];
+    return [[self alloc] initWithAppCredentials:AppCredentials::api_key(apiKey.UTF8String)];
 }
 
 + (instancetype)credentialsWithServerAPIKey:(NSString *)apiKey {
-    return [[self alloc] initWithAppCredentials:AppCredentials::server_api_key(apiKey.UTF8String)];
+    return [[self alloc] initWithAppCredentials:AppCredentials::api_key(apiKey.UTF8String)];
 }
 
 + (instancetype)anonymousCredentials {

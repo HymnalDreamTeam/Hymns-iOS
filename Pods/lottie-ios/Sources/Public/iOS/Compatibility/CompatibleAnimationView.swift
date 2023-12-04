@@ -30,7 +30,7 @@ public final class CompatibleAnimation: NSObject {
 
   // MARK: Internal
 
-  internal var animation: LottieAnimation? {
+  var animation: LottieAnimation? {
     LottieAnimation.named(name, bundle: bundle, subdirectory: subdirectory)
   }
 
@@ -88,6 +88,32 @@ public enum CompatibleRenderingEngineOption: Int {
       return LottieConfiguration(renderingEngine: .coreAnimation)
     }
   }
+}
+
+/// An Objective-C compatible version of `LottieBackgroundBehavior`.
+@objc
+public enum CompatibleBackgroundBehavior: Int {
+  /// Stop the animation and reset it to the beginning of its current play time. The completion block is called.
+  case stop
+
+  /// Pause the animation in its current state. The completion block is called.
+  case pause
+
+  /// Pause the animation and restart it when the application moves to the foreground.
+  /// The completion block is stored and called when the animation completes.
+  ///  - This is the default when using the Main Thread rendering engine.
+  case pauseAndRestore
+
+  /// Stops the animation and sets it to the end of its current play time. The completion block is called.
+  case forceFinish
+
+  /// The animation continues playing in the background.
+  ///  - This is the default when using the Core Animation rendering engine.
+  ///    Playing an animation using the Core Animation engine doesn't come with any CPU overhead,
+  ///    so using `.continuePlaying` avoids the need to stop and then resume the animation
+  ///    (which does come with some CPU overhead).
+  ///  - This mode should not be used with the Main Thread rendering engine.
+  case continuePlaying
 }
 
 /// An Objective-C compatible wrapper around Lottie's LottieAnimationView.
@@ -167,8 +193,10 @@ public final class CompatibleAnimationView: UIView {
     commonInit()
   }
 
-  required init?(coder _: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
+  required init?(coder: NSCoder) {
+    animationView = LottieAnimationView()
+    super.init(coder: coder)
+    commonInit()
   }
 
   // MARK: Public
@@ -184,6 +212,13 @@ public final class CompatibleAnimationView: UIView {
   public var loopAnimationCount: CGFloat = 0 {
     didSet {
       animationView.loopMode = loopAnimationCount == -1 ? .loop : .repeat(Float(loopAnimationCount))
+    }
+  }
+
+  @objc
+  public var compatibleDictionaryTextProvider: CompatibleDictionaryTextProvider? {
+    didSet {
+      animationView.textProvider = compatibleDictionaryTextProvider?.textProvider ?? DefaultTextProvider()
     }
   }
 
@@ -247,6 +282,38 @@ public final class CompatibleAnimationView: UIView {
   @objc
   public var isAnimationPlaying: Bool {
     animationView.isAnimationPlaying
+  }
+
+  @objc
+  public var backgroundMode: CompatibleBackgroundBehavior {
+    get {
+      switch animationView.backgroundBehavior {
+      case .stop:
+        return .stop
+      case .pause:
+        return .pause
+      case .pauseAndRestore:
+        return .pauseAndRestore
+      case .forceFinish:
+        return .forceFinish
+      case .continuePlaying:
+        return .continuePlaying
+      }
+    }
+    set {
+      switch newValue {
+      case .stop:
+        animationView.backgroundBehavior = .stop
+      case .pause:
+        animationView.backgroundBehavior = .pause
+      case .pauseAndRestore:
+        animationView.backgroundBehavior = .pauseAndRestore
+      case .forceFinish:
+        animationView.backgroundBehavior = .forceFinish
+      case .continuePlaying:
+        animationView.backgroundBehavior = .continuePlaying
+      }
+    }
   }
 
   @objc
@@ -450,5 +517,30 @@ public final class CompatibleAnimationView: UIView {
     animationView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
     animationView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
   }
+}
+
+/// An Objective-C compatible wrapper around Lottie's DictionaryTextProvider.
+/// Use in tandem with CompatibleAnimationView to supply text to LottieAnimationView
+/// when using Lottie in Objective-C.
+@objc
+public final class CompatibleDictionaryTextProvider: NSObject {
+
+  // MARK: Lifecycle
+
+  @objc
+  public init(values: [String: String]) {
+    self.values = values
+    super.init()
+  }
+
+  // MARK: Internal
+
+  var textProvider: AnimationKeypathTextProvider? {
+    DictionaryTextProvider(values)
+  }
+
+  // MARK: Private
+
+  private let values: [String: String]
 }
 #endif

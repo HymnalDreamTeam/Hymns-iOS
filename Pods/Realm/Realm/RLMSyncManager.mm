@@ -36,28 +36,10 @@
 
 using namespace realm;
 
+// NEXT-MAJOR: All the code associated to the logger from sync manager should be removed.
 using Level = realm::util::Logger::Level;
 
 namespace {
-
-#if __clang_major__ >= 14
-class UnfairMutex {
-public:
-    void lock() {
-        os_unfair_lock_lock(&_lock);
-    }
-
-    void unlock() {
-        os_unfair_lock_unlock(&_lock);
-    }
-
-private:
-    os_unfair_lock _lock = OS_UNFAIR_LOCK_INIT;
-};
-#else
-using UnfairMutex = std::mutex;
-#endif
-
 Level levelForSyncLogLevel(RLMSyncLogLevel logLevel) {
     switch (logLevel) {
         case RLMSyncLogLevelOff:    return Level::off;
@@ -122,15 +104,8 @@ std::shared_ptr<realm::util::Logger> RLMWrapLogFunction(RLMSyncLogFunction fn) {
 
 #pragma mark - RLMSyncManager
 
-@interface RLMSyncTimeoutOptions () {
-    @public
-    realm::SyncClientTimeouts _options;
-}
-- (instancetype)initWithOptions:(realm::SyncClientTimeouts)options;
-@end
-
 @implementation RLMSyncManager {
-    UnfairMutex _mutex;
+    RLMUnfairMutex _mutex;
     std::shared_ptr<SyncManager> _syncManager;
     NSDictionary<NSString *,NSString *> *_customRequestHeaders;
     RLMSyncLogFunction _logger;
@@ -143,26 +118,6 @@ std::shared_ptr<realm::util::Logger> RLMWrapLogFunction(RLMSyncLogFunction fn) {
         return self;
     }
     return nil;
-}
-
-+ (SyncClientConfig)configurationWithRootDirectory:(NSURL *)rootDirectory appId:(NSString *)appId {
-    SyncClientConfig config;
-    bool should_encrypt = !getenv("REALM_DISABLE_METADATA_ENCRYPTION") && !RLMIsRunningInPlayground();
-    config.logger_factory = defaultSyncLogger;
-    config.metadata_mode = should_encrypt ? SyncManager::MetadataMode::Encryption
-                                          : SyncManager::MetadataMode::NoEncryption;
-    @autoreleasepool {
-        rootDirectory = rootDirectory ?: [NSURL fileURLWithPath:RLMDefaultDirectoryForBundleIdentifier(nil)];
-        config.base_file_path = rootDirectory.path.UTF8String;
-
-        bool isSwift = !!NSClassFromString(@"RealmSwiftObjectUtil");
-        config.user_agent_binding_info =
-            util::format("Realm%1/%2", isSwift ? "Swift" : "ObjectiveC",
-                         RLMStringDataWithNSString(REALM_COCOA_VERSION));
-        config.user_agent_application_info = RLMStringDataWithNSString(appId);
-    }
-
-    return config;
 }
 
 - (std::weak_ptr<realm::app::App>)app {
