@@ -22,7 +22,7 @@ class FavoritesSnapshots: XCTestCase {
         assertSnapshot(viewModel: viewModel)
     }
 
-    func test_searchActive() {
+    func test_favorites() {
         viewModel.favorites = [cupOfChrist_songResult, hymn1151_songResult, joyUnspeakable_songResult, sinfulPast_songResult]
         assertSnapshot(viewModel: viewModel)
     }
