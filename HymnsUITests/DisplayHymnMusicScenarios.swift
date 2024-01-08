@@ -58,7 +58,7 @@ class DisplayHymnMusicScenarios: BaseTestCase {
             .tapFontPicker()
             .adjustFontPickerToSmallest()
             .assertSmallestFontPickerValue()
-            .verifyStaticTextSize(size: CGSize(width: 58.6666, height: 15), text: "Songbase")
+            .verifyStaticTextSize(size: CGSize(width: 63.3333, height: 16.3333), text: "Songbase")
             .adjustFontPickerToLargest()
             .assertLargestFontPickerValue()
             .verifyStaticTextSize(size: CGSize(width: 108.3333, height: 27.6666), text: "Songbase")

@@ -70,9 +70,7 @@ public class BrowseViewCan: BaseViewCan {
     }
 
     public func goToScriptureSongs() -> BrowseViewCan {
-        while !app.buttons["Scripture Songs"].exists {
-            app.scrollViews.element.swipeLeft()
-        }
+        app.scrollViews.element.swipeLeft()
         app.buttons["Scripture Songs"].tap()
         return self
     }
@@ -100,9 +98,7 @@ public class BrowseViewCan: BaseViewCan {
     }
 
     public func goToAllSongs() -> BrowseViewCan {
-        while !app.buttons["All Songs"].exists {
-            app.scrollViews.element.swipeLeft()
-        }
+        app.scrollViews.element.swipeLeft()
         app.buttons["All Songs"].tap()
         return self
     }

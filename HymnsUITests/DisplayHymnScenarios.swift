@@ -63,7 +63,7 @@ class DisplayHymnScenarios: BaseTestCase {
             .verifyStaticTextSize(size: CGSize(width: 89.3333, height: 17.3333), text: "verse 1 line 1")
             .adjustFontPickerToSmallest()
             .assertSmallestFontPickerValue()
-            .verifyStaticTextSize(size: CGSize(width: 77.3333, height: 15), text: "verse 1 line 1")
+            .verifyStaticTextSize(size: CGSize(width: 83.3333, height: 16.3333), text: "verse 1 line 1")
             .adjustFontPickerToLargest()
             .assertLargestFontPickerValue()
             .verifyStaticTextSize(size: CGSize(width: 143.0, height: 27.6666), text: "verse 1 line 1")
