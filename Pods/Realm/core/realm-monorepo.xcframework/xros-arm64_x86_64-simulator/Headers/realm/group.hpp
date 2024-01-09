@@ -24,7 +24,7 @@
 #include <optional>
 #include <stdexcept>
 #include <string>
-#include <vector>
+#include <set>
 #include <chrono>
 
 #include <realm/alloc_slab.hpp>
@@ -44,10 +44,11 @@ namespace _impl {
 class GroupFriend;
 } // namespace _impl
 
-
 /// A group is a collection of named tables.
 ///
 class Group : public ArrayParent {
+    static constexpr StringData g_class_name_prefix = "class_";
+
 public:
     /// Construct a free-standing group. This group instance will be
     /// in the attached state, but neither associated with a file, nor
@@ -273,7 +274,8 @@ public:
     ///
     //@{
 
-    static const size_t max_table_name_length = 63;
+    static constexpr size_t max_table_name_length = 63;
+    static constexpr size_t max_class_name_length = max_table_name_length - g_class_name_prefix.size();
 
     bool has_table(StringData name) const noexcept;
     TableKey find_table(StringData name) const noexcept;
@@ -294,6 +296,7 @@ public:
     using TableNameBuffer = std::array<char, max_table_name_length>;
     static StringData class_name_to_table_name(StringData class_name, TableNameBuffer& buffer)
     {
+        REALM_ASSERT(class_name.size() <= max_class_name_length);
         char* p = std::copy_n(g_class_name_prefix.data(), g_class_name_prefix.size(), buffer.data());
         size_t len = std::min(class_name.size(), buffer.size() - g_class_name_prefix.size());
         std::copy_n(class_name.data(), len, p);
@@ -536,20 +539,6 @@ protected:
     }
 
 private:
-    static constexpr StringData g_class_name_prefix = "class_";
-
-    struct ToDeleteRef {
-        ToDeleteRef(TableKey tk, ObjKey k)
-            : table_key(tk)
-            , obj_key(k)
-            , ttl(std::chrono::steady_clock::now())
-        {
-        }
-        TableKey table_key;
-        ObjKey obj_key;
-        std::chrono::steady_clock::time_point ttl;
-    };
-
     // nullptr, if we're sharing an allocator provided during initialization
     std::unique_ptr<SlabAlloc> m_local_alloc;
     // in-use allocator. If local, then equal to m_local_alloc.
@@ -614,7 +603,7 @@ private:
 
     util::UniqueFunction<void(const CascadeNotification&)> m_notify_handler;
     util::UniqueFunction<void()> m_schema_change_handler;
-    std::vector<ToDeleteRef> m_objects_to_delete;
+    std::set<TableKey> m_tables_to_clear;
 
     Group(SlabAlloc* alloc) noexcept;
     void init_array_parents() noexcept;
@@ -809,6 +798,7 @@ private:
                                    std::optional<size_t> read_lock_file_size = util::none,
                                    std::optional<uint_fast64_t> read_lock_version = util::none);
 
+    Table* get_table_unchecked(TableKey);
     size_t find_table_index(StringData name) const noexcept;
     TableKey ndx2key(size_t ndx) const;
     size_t key2ndx(TableKey key) const;
@@ -946,11 +936,16 @@ inline TableKey Group::find_table(StringData name) const noexcept
     return (ndx != npos) ? ndx2key(ndx) : TableKey{};
 }
 
+inline Table* Group::get_table_unchecked(TableKey key)
+{
+    auto ndx = key2ndx_checked(key);
+    return do_get_table(ndx); // Throws
+}
+
 inline TableRef Group::get_table(TableKey key)
 {
     check_attached();
-    auto ndx = key2ndx_checked(key);
-    Table* table = do_get_table(ndx); // Throws
+    Table* table = get_table_unchecked(key);
     return TableRef(table, table ? table->m_alloc.get_instance_version() : 0);
 }
 

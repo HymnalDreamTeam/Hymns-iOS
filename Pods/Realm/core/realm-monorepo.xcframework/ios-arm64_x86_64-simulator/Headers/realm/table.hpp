@@ -335,6 +335,8 @@ public:
     // - turns the object into a tombstone if links exist
     // - otherwise works just as remove_object()
     ObjKey invalidate_object(ObjKey key);
+    // Remove several objects
+    void batch_erase_objects(std::vector<ObjKey>& keys);
     Obj try_get_tombstone(ObjKey key) const
     {
         REALM_ASSERT(key.is_unresolved());
@@ -381,6 +383,8 @@ public:
     // Used by upgrade
     void set_sequence_number(uint64_t seq);
     void set_collision_map(ref_type ref);
+    // Used for testing purposes.
+    void set_col_key_sequence_number(uint64_t seq);
 
     // Get the key of this table directly, without needing a Table accessor.
     static TableKey get_key_direct(Allocator& alloc, ref_type top_ref);
@@ -703,7 +707,6 @@ private:
     TableRef m_own_ref;
 
     void batch_erase_rows(const KeyColumn& keys);
-    void batch_erase_objects(std::vector<ObjKey>& keys);
     size_t do_set_link(ColKey col_key, size_t row_ndx, size_t target_row_ndx);
 
     void populate_search_index(ColKey col_key);
@@ -902,10 +905,10 @@ public:
 
 private:
     friend class ColKeys;
-    const Table* m_table;
+    ConstTableRef m_table;
     size_t m_pos;
 
-    ColKeyIterator(const Table* t, size_t p)
+    ColKeyIterator(const ConstTableRef& t, size_t p)
         : m_table(t)
         , m_pos(p)
     {
@@ -914,8 +917,8 @@ private:
 
 class ColKeys {
 public:
-    ColKeys(const Table* t)
-        : m_table(t)
+    ColKeys(ConstTableRef&& t)
+        : m_table(std::move(t))
     {
     }
 
@@ -946,7 +949,7 @@ public:
     }
 
 private:
-    const Table* m_table;
+    ConstTableRef m_table;
 };
 
 // Class used to collect a chain of links when building up a Query following links.
@@ -1078,7 +1081,7 @@ private:
 
 inline ColKeys Table::get_column_keys() const
 {
-    return ColKeys(this);
+    return ColKeys(ConstTableRef(this, m_alloc.get_instance_version()));
 }
 
 inline uint_fast64_t Table::get_content_version() const noexcept
