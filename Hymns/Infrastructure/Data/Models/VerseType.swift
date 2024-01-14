@@ -6,6 +6,8 @@ import Foundation
 enum VerseType: String, Codable {
     case verse
     case chorus
-    case doNotDisplay = "do_not_display"
     case other
+    case copyright
+    case note
+    case doNotDisplay = "do_not_display"
 }

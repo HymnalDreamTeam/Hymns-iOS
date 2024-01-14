@@ -27,7 +27,7 @@ class DisplayHymnPdfSnapshots: XCTestCase {
     }
 
     func test_displayPdf() {
-        let view = DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(preloader: preloader, url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=gtpdf")!)).ignoresSafeArea()
+        let view = DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(preloader: preloader, url: URL(string: "/en/hymn/h/1151/f=gtpdf")!)).ignoresSafeArea()
         assertVersionedSnapshot(matching: view, as: .image(layout: .sizeThatFits))
     }
 }

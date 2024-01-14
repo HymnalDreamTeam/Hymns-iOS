@@ -86,7 +86,6 @@
 		3B5322BC2A04B7AD00D53A61 /* HymnIdEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5322BB2A04B7AD00D53A61 /* HymnIdEntity.swift */; };
 		3B5322BE2A04D51200D53A61 /* HymnReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5322BD2A04D51200D53A61 /* HymnReference.swift */; };
 		3B5322C22A0730E700D53A61 /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5322C12A0730E700D53A61 /* AppError.swift */; };
-		3B556EA52496AB800025D12F /* HymnalNetSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B556EA42496AB800025D12F /* HymnalNetSpec.swift */; };
 		3B556EA72496C75A0025D12F /* UiTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B556EA62496C75A0025D12F /* UiTag.swift */; };
 		3B57568E243E96B1007013FE /* search_drink.json in Resources */ = {isa = PBXBuildFile; fileRef = 3B57568D243E96B1007013FE /* search_drink.json */; };
 		3B575690243E9DAB007013FE /* search_drink_page_3.json in Resources */ = {isa = PBXBuildFile; fileRef = 3B57568F243E9DAB007013FE /* search_drink_page_3.json */; };
@@ -113,6 +112,7 @@
 		3B5D5BFE24CA9C13006BD730 /* AudioPlayerViewModelSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5D5BFD24CA9C13006BD730 /* AudioPlayerViewModelSpec.swift */; };
 		3B5D5C0024CA9F6F006BD730 /* e0767_i.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3B5D5BFF24CA9F6F006BD730 /* e0767_i.mp3 */; };
 		3B5FD7242436B20A00B65132 /* HymnsRepositoryImpl_dbInitialized_dbHitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B5FD7232436B20A00B65132 /* HymnsRepositoryImpl_dbInitialized_dbHitTests.swift */; };
+		3B6754572B4CE38A00CA0D8C /* hymnaldb-v27.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 3B6754562B4CE38A00CA0D8C /* hymnaldb-v27.sqlite */; };
 		3B67A50B244653F1004B9F4A /* View+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B67A50A244653F1004B9F4A /* View+Extensions.swift */; };
 		3B6AB01626126CB1003A3C68 /* HymnalApiServiceTestImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B6AB01526126CB1003A3C68 /* HymnalApiServiceTestImpl.swift */; };
 		3B6DA63F24A87B3400A9277F /* SettingsScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B6DA63E24A87B3400A9277F /* SettingsScenarios.swift */; };
@@ -141,7 +141,6 @@
 		3B87B82A2449497A00AEC7E9 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B87B8292449497A00AEC7E9 /* SettingsViewModel.swift */; };
 		3B87B831244988B100AEC7E9 /* SettingsViewModelSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B87B830244988B100AEC7E9 /* SettingsViewModelSpec.swift */; };
 		3B8DD373249F2AC2001C6A7F /* HistoryStoreTestImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B8DD372249F2AC2001C6A7F /* HistoryStoreTestImpl.swift */; };
-		3B904ACF2A72D6E200267DEE /* hymnaldb-v25.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 3B904ACE2A72D6E200267DEE /* hymnaldb-v25.sqlite */; };
 		3B909698245F78D8000229A2 /* HymnDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B909697245F78D8000229A2 /* HymnDataStore.swift */; };
 		3B90969B245F7F14000229A2 /* HymnEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B90969A245F7F14000229A2 /* HymnEntity.swift */; };
 		3B978BE427CAB15100AD084A /* Transformers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B978BE327CAB15100AD084A /* Transformers.swift */; };
@@ -425,7 +424,6 @@
 		3B5322BB2A04B7AD00D53A61 /* HymnIdEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HymnIdEntity.swift; sourceTree = "<group>"; };
 		3B5322BD2A04D51200D53A61 /* HymnReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HymnReference.swift; sourceTree = "<group>"; };
 		3B5322C12A0730E700D53A61 /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
-		3B556EA42496AB800025D12F /* HymnalNetSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HymnalNetSpec.swift; sourceTree = "<group>"; };
 		3B556EA62496C75A0025D12F /* UiTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UiTag.swift; sourceTree = "<group>"; };
 		3B57568D243E96B1007013FE /* search_drink.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = search_drink.json; sourceTree = "<group>"; };
 		3B57568F243E9DAB007013FE /* search_drink_page_3.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = search_drink_page_3.json; sourceTree = "<group>"; };
@@ -452,6 +450,7 @@
 		3B5D5BFD24CA9C13006BD730 /* AudioPlayerViewModelSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerViewModelSpec.swift; sourceTree = "<group>"; };
 		3B5D5BFF24CA9F6F006BD730 /* e0767_i.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = e0767_i.mp3; sourceTree = "<group>"; };
 		3B5FD7232436B20A00B65132 /* HymnsRepositoryImpl_dbInitialized_dbHitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HymnsRepositoryImpl_dbInitialized_dbHitTests.swift; sourceTree = "<group>"; };
+		3B6754562B4CE38A00CA0D8C /* hymnaldb-v27.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; name = "hymnaldb-v27.sqlite"; path = "../../../Desktop/hymnaldb-v27.sqlite"; sourceTree = "<group>"; };
 		3B67A50A244653F1004B9F4A /* View+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Extensions.swift"; sourceTree = "<group>"; };
 		3B6AB01526126CB1003A3C68 /* HymnalApiServiceTestImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HymnalApiServiceTestImpl.swift; sourceTree = "<group>"; };
 		3B6DA63E24A87B3400A9277F /* SettingsScenarios.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScenarios.swift; sourceTree = "<group>"; };
@@ -480,7 +479,6 @@
 		3B87B8292449497A00AEC7E9 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		3B87B830244988B100AEC7E9 /* SettingsViewModelSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModelSpec.swift; sourceTree = "<group>"; };
 		3B8DD372249F2AC2001C6A7F /* HistoryStoreTestImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryStoreTestImpl.swift; sourceTree = "<group>"; };
-		3B904ACE2A72D6E200267DEE /* hymnaldb-v25.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = "hymnaldb-v25.sqlite"; sourceTree = "<group>"; };
 		3B909697245F78D8000229A2 /* HymnDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HymnDataStore.swift; sourceTree = "<group>"; };
 		3B90969A245F7F14000229A2 /* HymnEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HymnEntity.swift; sourceTree = "<group>"; };
 		3B978BE327CAB15100AD084A /* Transformers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transformers.swift; sourceTree = "<group>"; };
@@ -742,7 +740,6 @@
 				3B09F900243D3BDC00252C15 /* HymnalApiService_SearchTest.swift */,
 				3B11E29B2461F93100F27E73 /* HymnDataStoreGrdbImplSpec.swift */,
 				3BC5B15D247F7DDC00F5D63A /* HymnDataStoreGrdbImpl_BrowseSpec.swift */,
-				3B556EA42496AB800025D12F /* HymnalNetSpec.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -1436,7 +1433,7 @@
 				B5915C6324CE900100342D7E /* firstLaunchAnimation.json */,
 				3BB931A824E3801500E0C873 /* soundCloudPlayingAnimation.json */,
 				3B1B90202429CF57009FDCC5 /* LaunchScreen.storyboard */,
-				3B904ACE2A72D6E200267DEE /* hymnaldb-v25.sqlite */,
+				3B6754562B4CE38A00CA0D8C /* hymnaldb-v27.sqlite */,
 				3B1B90232429CF57009FDCC5 /* Info.plist */,
 				3B1B90162429CF55009FDCC5 /* Hymns.xcdatamodeld */,
 				3B23BD132A13584B00040A16 /* songbase_v3_migration_changed.txt */,
@@ -1591,12 +1588,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3B904ACF2A72D6E200267DEE /* hymnaldb-v25.sqlite in Resources */,
 				3B08FE9A27F4F7C10091594D /* classic1151.json in Resources */,
 				3B08FE9B27F4F7C10091594D /* classic40.json in Resources */,
 				3B23BD1A2A13622600040A16 /* songbase_v3_migration_unchanged.txt in Resources */,
 				3B08FE9C27F4F7C10091594D /* classic1334.json in Resources */,
 				3B1B90222429CF57009FDCC5 /* LaunchScreen.storyboard in Resources */,
+				3B6754572B4CE38A00CA0D8C /* hymnaldb-v27.sqlite in Resources */,
 				3B23BD182A13621500040A16 /* songbase_v3_migration_dropped.txt in Resources */,
 				3BB931A924E3801500E0C873 /* soundCloudPlayingAnimation.json in Resources */,
 				B5E61B34242E613D00EF497D /* Localizable.strings in Resources */,
@@ -2149,7 +2146,6 @@
 				3B5D5BFE24CA9C13006BD730 /* AudioPlayerViewModelSpec.swift in Sources */,
 				B5C0A59B2489C0590048FA46 /* FavoriteStoreRealmImplSpec.swift in Sources */,
 				3BDBEAA4247A3FC0007D903A /* SearchViewModelTest.swift in Sources */,
-				3B556EA52496AB800025D12F /* HymnalNetSpec.swift in Sources */,
 				3B51E99F2A18317600A2A7F1 /* LaunchRouterViewModelSpec.swift in Sources */,
 				3BF3BDC62467C39A0046228C /* HymnsRepositoryImpl_dbInitialized_dbMissTests.swift in Sources */,
 				3B575699243EA4DB007013FE /* RegexUtilSpec.swift in Sources */,

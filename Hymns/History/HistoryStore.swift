@@ -7,7 +7,7 @@ import Resolver
 protocol HistoryStore {
     func clearHistory() throws
     func recentSongs() -> AnyPublisher<[RecentSong], ErrorType>
-    func storeRecentSong(hymnToStore hymnIdentifier: HymnIdentifier, songTitle: String)
+    func storeRecentSong(hymnToStore hymnIdentifier: HymnIdentifier, songTitle: String?)
 }
 
 class HistoryStoreRealmImpl: HistoryStore {
@@ -39,7 +39,7 @@ class HistoryStoreRealmImpl: HistoryStore {
             }).eraseToAnyPublisher()
     }
 
-    func storeRecentSong(hymnToStore hymnIdentifier: HymnIdentifier, songTitle: String) {
+    func storeRecentSong(hymnToStore hymnIdentifier: HymnIdentifier, songTitle: String?) {
         do {
             try realm.write {
                 realm.add(
@@ -65,7 +65,7 @@ class HistoryStoreRealmImpl: HistoryStore {
             }
         } catch {
             firebaseLogger.logError(error, message: "error occurred when storing recent song",
-                                    extraParameters: ["hymnIdentifier": String(describing: hymnIdentifier), "title": songTitle])
+                                    extraParameters: ["hymnIdentifier": String(describing: hymnIdentifier), "title": songTitle ?? "nil"])
         }
     }
 

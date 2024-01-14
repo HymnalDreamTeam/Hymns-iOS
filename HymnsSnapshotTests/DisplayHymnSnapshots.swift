@@ -116,7 +116,7 @@ class DisplayHymnSnapshots: XCTestCase {
         viewModel.title = "Hymn 1151"
         viewModel.isFavorited = false
 
-        let pdfView = DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(preloader: preloader, url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=gtpdf")!))
+        let pdfView = DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(preloader: preloader, url: URL(string: "/en/hymn/h/1151/f=gtpdf")!))
 
         viewModel.currentTab = .music(HymnMusicView(viewModel: HymnMusicViewModel(musicViews: [.piano(pdfView.eraseToAnyView())])).eraseToAnyView())
         viewModel.tabItems = [.lyrics(EmptyView().eraseToAnyView()), viewModel.currentTab]

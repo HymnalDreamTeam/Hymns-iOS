@@ -137,13 +137,13 @@ class NavigationScenarios: BaseTestCase {
         displayHymnViewCan
             .waitForStaticTexts("verse 1 line 1")
             .openRelevant()
-            .pressButton("New Tune")
+            .pressButton("Hymn 2")
             .waitForStaticTexts("classic hymn 2 verse 1")
             // "Back" goes to the original song.
             .goBack()
             .waitForStaticTexts("verse 1 line 1")
             .openRelevant()
-            .pressButton("New Tune")
+            .pressButton("Hymn 2")
             .waitForStaticTexts("classic hymn 2 verse 1")
             .close()
     }

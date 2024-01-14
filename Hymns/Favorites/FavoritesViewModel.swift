@@ -22,9 +22,10 @@ class FavoritesViewModel: ObservableObject {
             .map({ entities -> [SongResultViewModel] in
                 entities.map { entity -> SongResultViewModel in
                     let identifier = HymnIdentifier(entity.hymnIdentifierEntity)
-                    let label = String(format: identifier.hymnType.displayLabel, identifier.hymnNumber)
+                    let title = entity.songTitle ?? identifier.displayTitle
+                    let label = entity.songTitle != nil ? identifier.displayTitle : nil
                     let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: identifier)).eraseToAnyView()
-                    return SongResultViewModel(stableId: String(describing: identifier), title: entity.songTitle,
+                    return SongResultViewModel(stableId: String(describing: identifier), title: title,
                                                label: label, destinationView: destination)
                 }
             })

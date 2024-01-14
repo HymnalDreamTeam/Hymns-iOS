@@ -4,13 +4,13 @@ import RealmSwift
 class FavoriteEntity: Object, Identifiable {
     @objc dynamic var primaryKey: String!
     @objc dynamic var hymnIdentifierEntity: HymnIdentifierEntity!
-    @objc dynamic var songTitle: String!
+    @objc dynamic var songTitle: String?
 
     override required init() {
         super.init()
     }
 
-    init(hymnIdentifier: HymnIdentifier, songTitle: String) {
+    init(hymnIdentifier: HymnIdentifier, songTitle: String?) {
         super.init()
         self.primaryKey = Self.createPrimaryKey(hymnIdentifier: hymnIdentifier)
         self.hymnIdentifierEntity = HymnIdentifierEntity(hymnIdentifier)

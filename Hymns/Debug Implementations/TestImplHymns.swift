@@ -32,12 +32,12 @@ let classic1151Entity = HymnEntityBuilder(id: classic1151.songId)
     .subcategory("song's subcategory")
     .music(["mp3": "/en/hymn/h/1151/f=mp3", "MIDI": "/en/hymn/h/1151/f=mid", "Tune (MIDI)": "/en/hymn/h/1151/f=tune"])
     .pdfSheet(["Piano": "/en/hymn/h/1151/f=ppdf"])
-    .languages([SongLink(reference: HymnIdentifier(hymnType: .cebuano, hymnNumber: "1151"), name: "Cebuano"),
-                SongLink(reference: HymnIdentifier(hymnType: .chineseSupplementSimplified, hymnNumber: "216"), name: "\u{8bd7}\u{6b4c}(\u{7b80})"),
-                SongLink(reference: HymnIdentifier(hymnType: .chineseSupplement, hymnNumber: "216"), name: "\u{8a69}\u{6b4c}(\u{7e41})"),
-                SongLink(reference: HymnIdentifier(hymnType: .dutch, hymnNumber: "35"), name: "Dutch"),
-                SongLink(reference: HymnIdentifier(hymnType: .tagalog, hymnNumber: "1151"), name: "Tagalog")])
-    .relevant([SongLink(reference: HymnIdentifier(hymnType: .classic, hymnNumber: "2"), name: "New Tune")])
+    .languages([HymnIdentifier(hymnType: .cebuano, hymnNumber: "1151"),
+                HymnIdentifier(hymnType: .chineseSupplementSimplified, hymnNumber: "216"),
+                HymnIdentifier(hymnType: .chineseSupplement, hymnNumber: "216"),
+                HymnIdentifier(hymnType: .dutch, hymnNumber: "35"),
+                HymnIdentifier(hymnType: .tagalog, hymnNumber: "1151")])
+    .relevant([HymnIdentifier(hymnType: .classic, hymnNumber: "2")])
     .build()
 let classic1152Entity = HymnEntityBuilder(id: classic1152.songId)
     .title(Optional("Classic 1152"))
@@ -70,7 +70,7 @@ let chineseSupplement216Entity = HymnEntityBuilder(id: chineseSupplement216.song
 let howardHigashi2Entity = HymnEntityBuilder(id: howardiHigsashi2.songId)
     .title(Optional("Hymn: Howard Higashi\'s  second "))
     .lyrics([VerseEntity(verseType: .verse, lines: [LineEntity(lineContent: "howard higashi verse 1 line 2")])])
-    .languages([SongLink(reference: HymnIdentifier(hymnType: .chineseSupplement, hymnNumber: "216"), name: "ZhongWen")])
+    .languages([HymnIdentifier(hymnType: .chineseSupplement, hymnNumber: "216")])
     .build()
 let blueSongbook2Entity = HymnEntityBuilder(id: blueSongbook2.songId)
     .title("Songbase version of Hymn 1151 title")

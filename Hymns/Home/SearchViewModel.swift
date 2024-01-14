@@ -128,9 +128,10 @@ class SearchViewModel: ObservableObject {
             .map({ recentSongs -> [SongResultViewModel] in
                 recentSongs.map { recentSong -> SongResultViewModel in
                     let identifier = HymnIdentifier(recentSong.hymnIdentifierEntity)
+                    let title = recentSong.songTitle ?? identifier.displayTitle
+                    let label = recentSong.songTitle != nil ? identifier.displayTitle : nil
                     let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: identifier, storeInHistoryStore: true)).eraseToAnyView()
-                    let label = String(format: identifier.hymnType.displayLabel, identifier.hymnNumber)
-                    return SongResultViewModel(stableId: String(describing: identifier), title: recentSong.songTitle,
+                    return SongResultViewModel(stableId: String(describing: identifier), title: title,
                                                label: label, destinationView: destination)
                 }
             })
@@ -244,7 +245,7 @@ class SearchViewModel: ObservableObject {
                 let songResults = songResultsPage.results.map { songResult -> SongResultViewModel in
                     let identifier = songResult.identifier
                     let title = songResult.name
-                    let label =  String(format: identifier.hymnType.displayLabel, identifier.hymnNumber)
+                    let label = identifier.displayTitle
                     let destination = DisplayHymnContainerView(viewModel:
                                                                 DisplayHymnContainerViewModel(hymnToDisplay: identifier,
                                                                                               storeInHistoryStore: true)).eraseToAnyView()

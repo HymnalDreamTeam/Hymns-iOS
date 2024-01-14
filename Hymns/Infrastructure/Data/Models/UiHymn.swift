@@ -5,7 +5,7 @@ import Foundation
  */
 struct UiHymn: Equatable {
     let hymnIdentifier: HymnIdentifier
-    let title: String
+    let title: String?
     let lyrics: [VerseEntity]?
     let inlineChords: [ChordLine]?
     let pdfSheet: [String: String]?
@@ -18,15 +18,15 @@ struct UiHymn: Equatable {
     let meter: String?
     let scriptures: String?
     let hymnCode: String?
-    let languages: [SongLink]?
+    let languages: [HymnIdentifier]?
     let music: [String: String]?
-    let relevant: [SongLink]?
+    let relevant: [HymnIdentifier]?
     // add more fields as needed
 
-    init(hymnIdentifier: HymnIdentifier, title: String, lyrics: [VerseEntity]? = nil, inlineChords: [ChordLine]? = nil,
+    init(hymnIdentifier: HymnIdentifier, title: String? = nil, lyrics: [VerseEntity]? = nil, inlineChords: [ChordLine]? = nil,
          pdfSheet: [String: String]? = nil, category: String? = nil, subcategory: String? = nil, author: String? = nil,
          composer: String? = nil, key: String? = nil, time: String? = nil, meter: String? = nil, scriptures: String? = nil,
-         hymnCode: String? = nil, languages: [SongLink]? = nil, music: [String: String]? = nil, relevant: [SongLink]? = nil) {
+         hymnCode: String? = nil, languages: [HymnIdentifier]? = nil, music: [String: String]? = nil, relevant: [HymnIdentifier]? = nil) {
         self.hymnIdentifier = hymnIdentifier
         self.title = title
         self.lyrics = lyrics
@@ -69,7 +69,7 @@ struct UiHymn: Equatable {
 class UiHymnBuilder {
 
     private (set) var hymnIdentifier: HymnIdentifier
-    private (set) var title: String
+    private (set) var title: String?
     private (set) var lyrics: [VerseEntity]?
     private (set) var inlineChords: [ChordLine]?
     private (set) var pdfSheet: [String: String]?
@@ -82,11 +82,11 @@ class UiHymnBuilder {
     private (set) var meter: String?
     private (set) var scriptures: String?
     private (set) var hymnCode: String?
-    private (set) var languages: [SongLink]?
+    private (set) var languages: [HymnIdentifier]?
     private (set) var music: [String: String]?
-    private (set) var relevant: [SongLink]?
+    private (set) var relevant: [HymnIdentifier]?
 
-    init(hymnIdentifier: HymnIdentifier, title: String) {
+    init(hymnIdentifier: HymnIdentifier, title: String?) {
         self.hymnIdentifier = hymnIdentifier
         self.title = title
     }
@@ -151,7 +151,7 @@ class UiHymnBuilder {
         return self
     }
 
-    public func languages(_ languages: [SongLink]?) -> UiHymnBuilder {
+    public func languages(_ languages: [HymnIdentifier]?) -> UiHymnBuilder {
         self.languages = languages
         return self
     }
@@ -161,7 +161,7 @@ class UiHymnBuilder {
         return self
     }
 
-    public func relevant(_ relevant: [SongLink]?) -> UiHymnBuilder {
+    public func relevant(_ relevant: [HymnIdentifier]?) -> UiHymnBuilder {
         self.relevant = relevant
         return self
     }

@@ -23,8 +23,8 @@ struct HymnEntity: Equatable {
     let music: [String: String]?
     let svgSheet: [String: String]?
     let pdfSheet: [String: String]?
-    let languages: [SongLink]?
-    let relevant: [SongLink]?
+    let languages: [HymnIdentifier]?
+    let relevant: [HymnIdentifier]?
 
     // https://developer.apple.com/documentation/foundation/archives_and_serialization/encoding_and_decoding_custom_types
     enum CodingKeys: String, CodingKey {
@@ -99,8 +99,8 @@ extension HymnEntity: FetchableRecord, MutablePersistableRecord {
         self.music = try! decoder.decodeJson([String: String].self, from: row[CodingKeys.music.rawValue])
         self.svgSheet = try! decoder.decodeJson([String: String].self, from: row[CodingKeys.svgSheet.rawValue])
         self.pdfSheet = try! decoder.decodeJson([String: String].self, from: row[CodingKeys.pdfSheet.rawValue])
-        self.languages = try! decoder.decodeJson([SongLink].self, from: row[CodingKeys.languages.rawValue])
-        self.relevant = try! decoder.decodeJson([SongLink].self, from: row[CodingKeys.relevant.rawValue])
+        self.languages = try! decoder.decodeJson([HymnIdentifier].self, from: row[CodingKeys.languages.rawValue])
+        self.relevant = try! decoder.decodeJson([HymnIdentifier].self, from: row[CodingKeys.relevant.rawValue])
     }
 }
 
@@ -136,8 +136,8 @@ class HymnEntityBuilder {
     private (set) var music: [String: String]?
     private (set) var svgSheet: [String: String]?
     private (set) var pdfSheet: [String: String]?
-    private (set) var languages: [SongLink]?
-    private (set) var relevant: [SongLink]?
+    private (set) var languages: [HymnIdentifier]?
+    private (set) var relevant: [HymnIdentifier]?
 
     init(id: Int64? = nil) {
         self.id = id
@@ -244,12 +244,12 @@ class HymnEntityBuilder {
         return self
     }
 
-    public func languages(_ languages: [SongLink]?) -> HymnEntityBuilder {
+    public func languages(_ languages: [HymnIdentifier]?) -> HymnEntityBuilder {
         self.languages = languages
         return self
     }
 
-    public func relevant(_ relevant: [SongLink]?) -> HymnEntityBuilder {
+    public func relevant(_ relevant: [HymnIdentifier]?) -> HymnEntityBuilder {
         self.relevant = relevant
         return self
     }

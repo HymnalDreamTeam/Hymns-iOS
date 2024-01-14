@@ -4,13 +4,13 @@ import RealmSwift
 class RecentSong: Object {
     @objc dynamic var primaryKey: String!
     @objc dynamic var hymnIdentifierEntity: HymnIdentifierEntity!
-    @objc dynamic var songTitle: String!
+    @objc dynamic var songTitle: String?
 
     override required init() {
         super.init()
     }
 
-    init(hymnIdentifier: HymnIdentifier, songTitle: String) {
+    init(hymnIdentifier: HymnIdentifier, songTitle: String?) {
         super.init()
         self.primaryKey = "\(hymnIdentifier.hymnType):\(hymnIdentifier.hymnNumber)"
         self.hymnIdentifierEntity = HymnIdentifierEntity(hymnIdentifier)
@@ -26,7 +26,7 @@ class RecentSong: Object {
     }
 
     override var hash: Int {
-        primaryKey.hash + hymnIdentifierEntity.hash + songTitle.hash
+        primaryKey.hash + hymnIdentifierEntity.hash + (songTitle?.hash ?? 0)
     }
 
     func copy() -> RecentSong {

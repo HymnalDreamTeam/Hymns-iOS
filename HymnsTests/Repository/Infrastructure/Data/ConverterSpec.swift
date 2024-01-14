@@ -23,26 +23,6 @@ class ConverterSpec: QuickSpec {
                         expect(try! target.toUiHymn(hymnIdentifier: classic1151, hymnEntity: nil)).to(beNil())
                     }
                 }
-                context("nil title") {
-                    let nilTitle = HymnEntityBuilder(id: 2).build()
-                    it("should throw type conversion error") {
-                        expect {
-                            try target.toUiHymn(hymnIdentifier: classic1151, hymnEntity: nilTitle)
-                        }.to(throwError { (error: TypeConversionError) in
-                            expect(error.triggeringError).to(matchError(ErrorType.parsing(description: "title was empty")))
-                        })
-                    }
-                }
-                context("empty title") {
-                    let emptyTitle = HymnEntityBuilder(id: 2).title("").build()
-                    it("should throw type conversion error") {
-                        expect {
-                            try target.toUiHymn(hymnIdentifier: classic1151, hymnEntity: emptyTitle)
-                        }.to(throwError { (error: TypeConversionError) in
-                            expect(error.triggeringError).to(matchError(ErrorType.parsing(description: "title was empty")))
-                        })
-                    }
-                }
                 describe("inline chords") {
                     context("single line, chords not found") {
                         let hymnEntity = HymnEntityBuilder(id: 2)
@@ -126,12 +106,12 @@ class ConverterSpec: QuickSpec {
                         .hymnCode("This is the hymnCode")
                         .pdfSheet(["Piano": "/en/hymn/h/1151/f=ppdf", "Guitar": "/en/hymn/h/1151/f=pdf",
                                    "Text": "/en/hymn/h/1151/f=gtpdf"])
-                        .languages([SongLink(reference: HymnIdentifier(hymnType: .cebuano, hymnNumber: "1151"), name: "Cebuano"),
-                                    SongLink(reference: HymnIdentifier(hymnType: .chineseSupplementSimplified, hymnNumber: "216"), name: "诗歌(简)"),
-                                    SongLink(reference: HymnIdentifier(hymnType: .tagalog, hymnNumber: "1151"), name: "Tagalog")])
-                        .relevant([SongLink(reference: HymnIdentifier(hymnType: .classic, hymnNumber: "152"), name: "Original Tune"),
-                                   SongLink(reference: HymnIdentifier(hymnType: .newTune, hymnNumber: "152"), name: "New Tune"),
-                                   SongLink(reference: HymnIdentifier(hymnType: .classic, hymnNumber: "152b"), name: "Alternate Tune")])
+                        .languages([HymnIdentifier(hymnType: .cebuano, hymnNumber: "1151"),
+                                    HymnIdentifier(hymnType: .chineseSupplementSimplified, hymnNumber: "216"),
+                                    HymnIdentifier(hymnType: .tagalog, hymnNumber: "1151")])
+                        .relevant([HymnIdentifier(hymnType: .classic, hymnNumber: "152"),
+                                   HymnIdentifier(hymnType: .newTune, hymnNumber: "152"),
+                                   HymnIdentifier(hymnType: .classic, hymnNumber: "152b")])
                         .build()
 
                     let expected
@@ -150,12 +130,12 @@ class ConverterSpec: QuickSpec {
                                  meter: "This is the meter",
                                  scriptures: "This is the scriptures",
                                  hymnCode: "This is the hymnCode",
-                                 languages: [SongLink(reference: HymnIdentifier(hymnType: .cebuano, hymnNumber: "1151"), name: "Cebuano"),
-                                             SongLink(reference: HymnIdentifier(hymnType: .chineseSupplementSimplified, hymnNumber: "216"), name: "诗歌(简)"),
-                                             SongLink(reference: HymnIdentifier(hymnType: .tagalog, hymnNumber: "1151"), name: "Tagalog")],
-                                 relevant: [SongLink(reference: HymnIdentifier(hymnType: .classic, hymnNumber: "152"), name: "Original Tune"),
-                                            SongLink(reference: HymnIdentifier(hymnType: .newTune, hymnNumber: "152"), name: "New Tune"),
-                                            SongLink(reference: HymnIdentifier(hymnType: .classic, hymnNumber: "152b"), name: "Alternate Tune")])
+                                 languages: [HymnIdentifier(hymnType: .cebuano, hymnNumber: "1151"),
+                                             HymnIdentifier(hymnType: .chineseSupplementSimplified, hymnNumber: "216"),
+                                             HymnIdentifier(hymnType: .tagalog, hymnNumber: "1151")],
+                                 relevant: [HymnIdentifier(hymnType: .classic, hymnNumber: "152"),
+                                            HymnIdentifier(hymnType: .newTune, hymnNumber: "152"),
+                                            HymnIdentifier(hymnType: .classic, hymnNumber: "152b")])
                     it("should correctly convert to a UiHymn") {
                         expect(try! target.toUiHymn(hymnIdentifier: classic1151, hymnEntity: filledHymn)).to(equal(expected))
                     }

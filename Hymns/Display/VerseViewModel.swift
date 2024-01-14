@@ -57,7 +57,7 @@ class VerseViewModel {
 
     let verseLines: [VerseLineViewModel]
 
-    init(verseNumber: String, verseLines: [LineEntity], shouldTransliterate: Binding<Bool>? = nil) {
+    init(verseNumber: String?, verseLines: [LineEntity], shouldTransliterate: Binding<Bool>? = nil) {
         self.verseLines = verseLines.enumerated().map { (index, lineEntity) -> VerseLineViewModel in
             return VerseLineViewModel(verseNumber: index == 0 ? verseNumber : nil, lineEntity: lineEntity)
         }

@@ -6,7 +6,7 @@ import GRDBCombine
 import Resolver
 
 // swiftlint:disable:next identifier_name
-let HYMN_DATA_STORE_VERISON = 25
+let HYMN_DATA_STORE_VERISON = 27
 
 /**
  * Service to contact the local Hymn database.
@@ -66,7 +66,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
                 do {
                     // CREATE TABLE IF NOT EXISTS SONG_DATA(
                     //   ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                    //   SONG_TITLE TEXT NOT NULL,
+                    //   SONG_TITLE TEXT,
                     //   SONG_LYRICS TEXT,
                     //   INLINE_CHORDS TEXT,
                     //   SONG_META_DATA_CATEGORY TEXT,
@@ -141,7 +141,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
                                         ifNotExists: true)
 
                     // CREATE VIRTUAL TABLE IF NOT EXISTS SEARCH_VIRTUAL_SONG_DATA USING FTS4(
-                    //   SONG_TITLE TEXT NOT NULL,
+                    //   SONG_TITLE TEXT,
                     //   SONG_LYRICS TEXT NOT NULL,
                     //   tokenize=porter,
                     //   content=SONG_DATA

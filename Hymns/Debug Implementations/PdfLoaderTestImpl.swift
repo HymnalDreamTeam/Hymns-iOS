@@ -8,12 +8,12 @@ import PDFKit
 class PdfLoaderTestImpl: PDFLoader {
 
     private var pdfStore = [
-        "http://www.hymnal.net/en/hymn/h/1151/f=ppdf": "Hymn 1151's Piano",
-        "http://www.hymnal.net/en/hymn/h/1151/f=gtpdf": "Hymn 1151's Chords",
-        "http://www.hymnal.net/en/hymn/h/3/f=ppdf": "Hymn 3's Piano",
-        "http://www.hymnal.net/en/hymn/h/3/f=gtpdf": "Hymn 3's Chords",
-        "http://www.hymnal.net/en/hymn/h/40/f=ppdf": "Hymn 40's Piano",
-        "http://www.hymnal.net/en/hymn/h/40/f=gpdf": "Hymn 40's Guitar"]
+        "/en/hymn/h/1151/f=ppdf": "Hymn 1151's Piano",
+        "/en/hymn/h/1151/f=gtpdf": "Hymn 1151's Chords",
+        "/en/hymn/h/3/f=ppdf": "Hymn 3's Piano",
+        "/en/hymn/h/3/f=gtpdf": "Hymn 3's Chords",
+        "/en/hymn/h/40/f=ppdf": "Hymn 40's Piano",
+        "/en/hymn/h/40/f=gpdf": "Hymn 40's Guitar"]
 
     func load(url: URL) {
         // no-op

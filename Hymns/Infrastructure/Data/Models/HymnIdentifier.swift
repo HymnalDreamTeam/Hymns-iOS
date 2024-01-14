@@ -36,6 +36,12 @@ extension HymnIdentifier: CustomStringConvertible {
     }
 }
 
+extension HymnIdentifier {
+    var displayTitle: String {
+        String(format: hymnType.displayLabel, hymnNumber)
+    }
+}
+
 extension HymnIdentifier: Codable {
 
     enum CodingKeys: String, CodingKey {

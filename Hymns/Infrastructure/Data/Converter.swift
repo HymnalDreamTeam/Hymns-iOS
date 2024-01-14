@@ -6,6 +6,7 @@ protocol Converter {
     func toUiHymn(hymnIdentifier: HymnIdentifier, hymnEntity: HymnEntity?) throws -> UiHymn?
     func toSongResultEntities(songResultsPage: SongResultsPage) -> ([SongResultEntity], Bool)
     func toUiSongResultsPage(songResultsEntities: [SongResultEntity], hasMorePages: Bool) -> UiSongResultsPage
+    func toTitle(hymnIdentifier: HymnIdentifier, title: String?) -> String
 }
 
 class ConverterImpl: Converter {
@@ -32,8 +33,8 @@ class ConverterImpl: Converter {
             .music(extractValues(hymn.getMetaDatum(name: .music)))
             .svgSheet(extractValues(hymn.getMetaDatum(name: .svgSheet)))
             .pdfSheet(extractValues(hymn.getMetaDatum(name: .pdfSheet)))
-            .languages(extractSongLinks(hymn.getMetaDatum(name: .languages)))
-            .relevant(extractSongLinks(hymn.getMetaDatum(name: .relevant)))
+            .languages(extractHymnIdentifiers(hymn.getMetaDatum(name: .languages)))
+            .relevant(extractHymnIdentifiers(hymn.getMetaDatum(name: .relevant)))
             .build()
     }
 
@@ -84,13 +85,12 @@ class ConverterImpl: Converter {
         return !values.isEmpty ? values : nil
     }
 
-    private func extractSongLinks(_ metaDatum: MetaDatum?) -> [SongLink]? {
+    private func extractHymnIdentifiers(_ metaDatum: MetaDatum?) -> [HymnIdentifier]? {
         guard let metaDatum = metaDatum else {
             return nil
         }
 
-        let songLinks = metaDatum.data.compactMap { datum -> SongLink? in
-            let value = datum.value
+        let songLinks = metaDatum.data.compactMap { datum -> HymnIdentifier? in
             let hymnType = RegexUtil.getHymnType(path: datum.path)
             let hymnNumber = RegexUtil.getHymnNumber(path: datum.path)
 
@@ -99,9 +99,22 @@ class ConverterImpl: Converter {
                                         extraParameters: ["datum": String(describing: datum)])
                 return nil
             }
-            return SongLink(reference: HymnIdentifier(hymnType: hymnType, hymnNumber: hymnNumber), name: value)
+            return HymnIdentifier(hymnType: hymnType, hymnNumber: hymnNumber)
         }
         return !songLinks.isEmpty ? songLinks : nil
+    }
+    
+    func toTitle(hymnIdentifier: HymnIdentifier, title: String?) -> String {
+        let defaultTitle = hymnIdentifier.displayTitle
+        guard let title = title else {
+            return defaultTitle
+        }
+        switch hymnIdentifier.hymnType {
+        case .newTune, .newSong, .children, .howardHigashi, .beFilled, .blueSongbook, .songbaseOther:
+            return title
+        default:
+            return defaultTitle
+        }
     }
 
     func toUiHymn(hymnIdentifier: HymnIdentifier, hymnEntity: HymnEntity?) throws -> UiHymn? {
@@ -109,10 +122,7 @@ class ConverterImpl: Converter {
             return nil
         }
 
-        guard let title = hymnEntity.title, !title.isEmpty else {
-            throw TypeConversionError(triggeringError: ErrorType.parsing(description: "title was empty"))
-        }
-
+        let title = hymnEntity.title
         let lyrics = hymnEntity.lyrics
         let inlineChords = toChordLines(hymnEntity.inlineChords)
         let category = hymnEntity.category

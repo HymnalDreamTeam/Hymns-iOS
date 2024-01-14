@@ -19,7 +19,7 @@ class HistoryStoreTestImpl: HistoryStore {
         }).eraseToAnyPublisher()
     }
 
-    func storeRecentSong(hymnToStore hymnIdentifier: HymnIdentifier, songTitle: String) {
+    func storeRecentSong(hymnToStore hymnIdentifier: HymnIdentifier, songTitle: String?) {
         let songToStore = RecentSong(hymnIdentifier: hymnIdentifier, songTitle: songTitle)
         if let index = results.firstIndex(of: songToStore) {
             results.remove(at: index)

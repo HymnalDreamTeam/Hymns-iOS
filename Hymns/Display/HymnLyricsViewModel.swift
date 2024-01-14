@@ -44,17 +44,20 @@ class HymnLyricsViewModel: ObservableObject {
         var verseViewModels = [VerseViewModel]()
         var verseNumber = 0
         for verse in lyrics {
-            if verse.verseType == .doNotDisplay {
-                continue
-            } else if verse.verseType == .chorus {
-                verseViewModels.append(VerseViewModel(verseNumber: NSLocalizedString("Chorus", comment: "Indicator that that the verse is of type 'chorus'."),
-                                                      verseLines: verse.lines))
-            } else if verse.verseType == .other {
-                verseViewModels.append(VerseViewModel(verseNumber: NSLocalizedString("Other", comment: "Indicator that that the verse is of type 'other'."),
-                                                      verseLines: verse.lines))
-            } else {
+            switch verse.verseType {
+            case .verse:
                 verseNumber += 1
                 verseViewModels.append(VerseViewModel(verseNumber: "\(verseNumber)", verseLines: verse.lines))
+            case .chorus:
+                verseViewModels.append(VerseViewModel(verseNumber: NSLocalizedString("Chorus", comment: "Indicator that that the verse is of type 'chorus'."),
+                                                      verseLines: verse.lines))
+            case .other:
+                verseViewModels.append(VerseViewModel(verseNumber: NSLocalizedString("Other", comment: "Indicator that that the verse is of type 'other'."),
+                                                      verseLines: verse.lines))
+            case .note:
+                verseViewModels.append(VerseViewModel(verseNumber: nil, verseLines: verse.lines))
+            case .copyright, .doNotDisplay:
+                continue
             }
         }
         return verseViewModels

@@ -63,9 +63,9 @@ class DisplayHymnViewModelSpec: QuickSpec {
                                                           pdfPreloader: pdfLoader, systemUtil: systemUtil, storeInHistoryStore: true)
                             let hymn = UiHymn(hymnIdentifier: classic1151, title: "title",
                                               lyrics: [VerseEntity(verseType: .verse, lineStrings: ["verse line"])],
-                                              pdfSheet: ["Piano": "/en/hymn/c/1151/f=ppdf",
-                                                         "Guitar": "/en/hymn/c/1151/f=pdf",
-                                                         "Text": "/en/hymn/c/1151/f=gtpdf"])
+                                              pdfSheet: ["Piano": "https://www.hymnal.net/Hymns/Hymnal/pdfs/e0226_p.pdf",
+                                                         "Guitar": "https://www.hymnal.net/Hymns/Hymnal/pdfs/e0226_g.pdf",
+                                                         "Text": "https://www.hymnal.net/Hymns/Hymnal/pdfs/e0226_gt.pdf"])
                             given(hymnsRepository.getHymn(classic1151)) ~> { _ in
                                 Just(hymn).assertNoFailure().eraseToAnyPublisher()
                             }
@@ -105,11 +105,11 @@ class DisplayHymnViewModelSpec: QuickSpec {
                             it("should call favoriteStore.isFavorite") {
                                 verify(favoriteStore.isFavorite(hymnIdentifier: classic1151)).wasCalled(exactly(1))
                             }
-                            let pianoUrl = URL(string: "http://www.hymnal.net/en/hymn/c/1151/f=ppdf")!
+                            let pianoUrl = URL(string: "https://www.hymnal.net/Hymns/Hymnal/pdfs/e0226_p.pdf")!
                             it("piano url should be prefetched") {
                                 verify(pdfLoader.load(url: pianoUrl)).wasCalled(exactly(1))
                             }
-                            let chordsUrl = URL(string: "http://www.hymnal.net/en/hymn/c/1151/f=gtpdf")!
+                            let chordsUrl = URL(string: "https://www.hymnal.net/Hymns/Hymnal/pdfs/e0226_gt.pdf")!
                             it("chords url should be prefetched") {
                                 verify(pdfLoader.load(url: chordsUrl)).wasCalled(exactly(1))
                             }
@@ -225,8 +225,9 @@ class DisplayHymnViewModelSpec: QuickSpec {
                             beforeEach {
                                 let hymnWithHymnColonTitle = UiHymn(hymnIdentifier: newSong145, title: "In my spirit, I can see You as You are",
                                                                     lyrics: [VerseEntity(verseType: .chorus, lineStrings: ["chorus line"])],
-                                                                    pdfSheet: ["Piano": "/en/hymn/c/1151/f=ppdf", "Guitar": "/en/hymn/c/1151/f=pdf",
-                                                                               "Text": "/en/hymn/c/1151/f=gtpdf"])
+                                                                    pdfSheet: ["Piano": "https://www.hymnal.net/Hymns/Hymnal/pdfs/e1151_p.pdf",
+                                                                               "Guitar": "https://www.hymnal.net/Hymns/Hymnal/pdfs/e1151_g.pdf",
+                                                                               "Text": "https://www.hymnal.net/Hymns/Hymnal/pdfs/e1151_gt.pdf"])
                                 given(hymnsRepository.getHymn(newSong145)) ~> { _ in
                                     Just(hymnWithHymnColonTitle).assertNoFailure().eraseToAnyPublisher()
                                 }
@@ -257,11 +258,11 @@ class DisplayHymnViewModelSpec: QuickSpec {
                             it("should call favoriteStore.isFavorite") {
                                 verify(favoriteStore.isFavorite(hymnIdentifier: newSong145)).wasCalled(exactly(1))
                             }
-                            let pianoUrl = URL(string: "http://www.hymnal.net/en/hymn/c/1151/f=ppdf")!
+                            let pianoUrl = URL(string: "https://www.hymnal.net/Hymns/Hymnal/pdfs/e1151_p.pdf")!
                             it("piano url should be prefetched") {
                                 verify(pdfLoader.load(url: pianoUrl)).wasCalled(exactly(1))
                             }
-                            let chordsUrl = URL(string: "http://www.hymnal.net/en/hymn/c/1151/f=gtpdf")!
+                            let chordsUrl = URL(string: "https://www.hymnal.net/Hymns/Hymnal/pdfs/e1151_gt.pdf")!
                             it("chords url should be prefetched") {
                                 verify(pdfLoader.load(url: chordsUrl)).wasCalled(exactly(1))
                             }
@@ -303,8 +304,9 @@ class DisplayHymnViewModelSpec: QuickSpec {
                             beforeEach {
                                 let hymn = UiHymn(hymnIdentifier: newSong145, title: "title'",
                                                   lyrics: [VerseEntity(verseType: .verse, lineStrings: ["verse content"])],
-                                                  pdfSheet: ["Piano": "/en/hymn/c/1151/f=ppdf", "Guitar": "/en/hymn/c/1151/f=pdf",
-                                                             "Text": "/en/hymn/c/1151/f=gtpdf"])
+                                                  pdfSheet: ["Piano": "https://www.hymnal.net/Hymns/Hymnal/pdfs/e1151_p.pdf",
+                                                             "Guitar": "https://www.hymnal.net/Hymns/Hymnal/pdfs/e1151_g.pdf",
+                                                             "Text": "https://www.hymnal.net/Hymns/Hymnal/pdfs/e1151_gt.pdf"])
                                 given(systemUtil.isNetworkAvailable()) ~> false
                                 given(hymnsRepository.getHymn(newSong145)) ~> { _ in
                                     Just(hymn).assertNoFailure().eraseToAnyPublisher()
@@ -343,7 +345,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                         }
                         given(systemUtil.isNetworkAvailable()) ~> true
                     }
-                    let expectedTitle = "Songbase 1"
+                    let expectedTitle = "Songbase song"
                     context("is not favorited") {
                         beforeEach {
                             given(favoriteStore.isFavorite(hymnIdentifier: songbase1)) ~> { _ in
@@ -405,7 +407,6 @@ class DisplayHymnViewModelSpec: QuickSpec {
                         }
                         given(systemUtil.isNetworkAvailable()) ~> true
                     }
-                    let expectedTitle = "Songbase 1"
                     context("is favorited") {
                         beforeEach {
                             given(favoriteStore.isFavorite(hymnIdentifier: songbase1)) ~> { _ in
@@ -424,6 +425,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                         it("should be done loading") {
                             expect(target.isLoaded).to(beTrue())
                         }
+                        let expectedTitle = "Songbase song"
                         it("title should be '\(expectedTitle)'") {
                             expect(target.title).to(equal(expectedTitle))
                         }
@@ -470,7 +472,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                         }
                         given(systemUtil.isNetworkAvailable()) ~> true
                     }
-                    let expectedTitle = "Songbase 1"
+                    let expectedTitle = "Songbase song"
                     context("is favorited") {
                         beforeEach {
                             given(favoriteStore.isFavorite(hymnIdentifier: songbase1)) ~> { _ in
@@ -528,8 +530,8 @@ class DisplayHymnViewModelSpec: QuickSpec {
                         let hymn = UiHymn(hymnIdentifier: classic1151, title: "title",
                                           lyrics: [VerseEntity(verseType: .verse, lineStrings: ["verse line"])],
                                           inlineChords: [ChordLine("[G]Songbase chords")],
-                                          pdfSheet: ["Piano": "/en/hymn/c/1151/f=ppdf", "Guitar": "/en/hymn/c/1151/f=pdf",
-                                                     "Text": "/en/hymn/c/1151/f=gtpdf"])
+                                          pdfSheet: ["Piano": "https://www.hymnal.net/Hymns/Hymnal/pdfs/e1151_p.pdf",
+                                                     "Guitar": "https://www.hymnal.net/Hymns/Hymnal/pdfs/e1151_g.pdf"])
                         given(hymnsRepository.getHymn(classic1151)) ~> { _ in
                             Just(hymn).assertNoFailure().eraseToAnyPublisher()
                         }
@@ -557,11 +559,11 @@ class DisplayHymnViewModelSpec: QuickSpec {
                     it("should call hymnsRepository.getHymn") {
                         verify(hymnsRepository.getHymn(classic1151)).wasCalled(exactly(1))
                     }
-                    let pianoUrl = URL(string: "http://www.hymnal.net/en/hymn/c/1151/f=ppdf")!
+                    let pianoUrl = URL(string: "https://www.hymnal.net/Hymns/Hymnal/pdfs/e1151_p.pdf")!
                     it("piano url should be prefetched") {
                         verify(pdfLoader.load(url: pianoUrl)).wasCalled(exactly(1))
                     }
-                    let chordsUrl = URL(string: "http://www.hymnal.net/en/hymn/c/1151/f=gtpdf")!
+                    let chordsUrl = URL(string: "https://www.hymnal.net/Hymns/Hymnal/pdfs/e1151_g.pdf")!
                     it("chords url should be prefetched") {
                         verify(pdfLoader.load(url: chordsUrl)).wasCalled(exactly(1))
                     }

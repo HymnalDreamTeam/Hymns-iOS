@@ -90,12 +90,12 @@ class DisplayHymnScenarios: BaseTestCase {
         _ = DisplayHymnViewCan(app, testCase: self)
             .openRelevant()
             .waitForStaticTexts("Relevant songs", "Change to a relevant hymn")
-            .waitForButtons("New Tune")
+            .waitForButtons("Hymn 2")
             .pressCancel()
             .waitForStaticTexts("verse 1 line 1")
             .verifyStaticTextsNotExists("Relevant songs", "Change to a relevant hymn")
             .openRelevant()
-            .pressButton("New Tune")
+            .pressButton("Hymn 2")
             .waitForStaticTexts("Hymn 2", "classic hymn 2 verse 1")
     }
 

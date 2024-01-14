@@ -19,6 +19,7 @@ class DisplayHymnViewModel: ObservableObject {
 
     private let analytics: FirebaseLogger
     private let backgroundQueue: DispatchQueue
+    private let converter: Converter
     private let favoriteStore: FavoriteStore
     private let historyStore: HistoryStore
     private let mainQueue: DispatchQueue
@@ -30,11 +31,12 @@ class DisplayHymnViewModel: ObservableObject {
     /**
      * Title of song for when the song is displayed as a song result in a list of results. Used to store into the Favorites/Recents store.
      */
-    private var resultsTitle: String = ""
+    private var resultsTitle: String?
     private var disposables = Set<AnyCancellable>()
 
     init(analytics: FirebaseLogger = Resolver.resolve(),
          backgroundQueue: DispatchQueue = Resolver.resolve(name: "background"),
+         converter: Converter = Resolver.resolve(),
          favoriteStore: FavoriteStore = Resolver.resolve(),
          hymnToDisplay identifier: HymnIdentifier,
          hymnsRepository repository: HymnsRepository = Resolver.resolve(),
@@ -45,6 +47,7 @@ class DisplayHymnViewModel: ObservableObject {
          storeInHistoryStore: Bool = false) {
         self.analytics = analytics
         self.backgroundQueue = backgroundQueue
+        self.converter = converter
         self.currentTab = .lyrics(HymnNotExistsView().maxSize().eraseToAnyView())
         self.favoriteStore = favoriteStore
         self.historyStore = historyStore
@@ -72,12 +75,8 @@ class DisplayHymnViewModel: ObservableObject {
                         return
                     }
 
-                    switch self.identifier.hymnType {
-                    case .newTune, .newSong, .children, .howardHigashi:
-                        self.title = hymn.title
-                    default:
-                        self.title = String(format: self.identifier.hymnType.displayLabel, self.identifier.hymnNumber)
-                    }
+                    self.title = converter.toTitle(hymnIdentifier: identifier, title: hymn.title)
+
                     self.resultsTitle = hymn.title
 
                     self.tabItems.removeAll()
@@ -114,22 +113,20 @@ class DisplayHymnViewModel: ObservableObject {
 
         if self.systemUtil.isNetworkAvailable() {
             let chordsUrl = hymn.pdfSheet?[DatumValue.text.rawValue].flatMap({ path -> URL? in
-                HymnalNet.url(path: path)
+                URLComponents(string: path)?.url
             })
             let guitarSheetUrl = hymn.pdfSheet?[DatumValue.guitar.rawValue].flatMap({ path -> URL? in
-                HymnalNet.url(path: path)
+                URLComponents(string: path)?.url
             })
             let guitarUrl = chordsUrl ?? guitarSheetUrl
             if let guitarUrl = guitarUrl {
                 self.pdfLoader.load(url: guitarUrl)
                 hymnMusic.append(.guitar(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: guitarUrl)).eraseToAnyView()))
             }
-        }
 
-        if self.systemUtil.isNetworkAvailable() {
             let pianoPath = hymn.pdfSheet?[DatumValue.piano.rawValue]
             if let pianoUrl = pianoPath.flatMap({ path -> URL? in
-                HymnalNet.url(path: path)
+                URLComponents(string: path)?.url
             }) {
                 self.pdfLoader.load(url: pianoUrl)
                 hymnMusic.append(.piano(DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(url: pianoUrl)).eraseToAnyView()))

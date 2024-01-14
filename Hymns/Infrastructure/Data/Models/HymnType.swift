@@ -21,6 +21,7 @@ import Foundation
     case indonesian
     case farsi
     case russian
+    case portuguese
     case blueSongbook
     case chineseSimplified
     case chineseSupplementSimplified
@@ -31,7 +32,7 @@ import Foundation
     static var allCases: [HymnType] {
         return [classic, newTune, newSong, children, howardHigashi, dutch, german, chinese, chineseSimplified,
                 chineseSupplement, chineseSupplementSimplified, cebuano, tagalog, french, spanish, korean,
-                japanese, indonesian, farsi, russian, beFilled, liederbuch, blueSongbook, songbaseOther]
+                japanese, indonesian, farsi, russian, portuguese, beFilled, liederbuch, blueSongbook, songbaseOther]
     }
 }
 
@@ -109,6 +110,8 @@ extension HymnType {
             return "F"
         case .russian:
             return "R"
+        case .portuguese:
+            return "pt"
         case .beFilled:
             return "bf"
         case .liederbuch:
@@ -172,6 +175,8 @@ extension HymnType {
             return NSLocalizedString("Farsi Songs", comment: "Display name of 'Farsi Songs'. Usually appears just by itself (i.e. as a title).")
         case .russian:
             return NSLocalizedString("Russian Songs", comment: "Display name of 'Russian Songs'. Usually appears just by itself (i.e. as a title).")
+        case .portuguese:
+            return NSLocalizedString("Portuguese Songs", comment: "Display name of 'Portuguese Songs'. Usually appears just by itself (i.e. as a title).")
         case .beFilled:
             return NSLocalizedString("Be Filled Songs", comment: "Display name of 'Be Filled Songs'. Usually appears just by itself (i.e. as a title).")
         case .liederbuch:
@@ -229,6 +234,8 @@ extension HymnType {
             return NSLocalizedString("Farsi %@", comment: "Will appear in conjunction with something else (e.g. Farsi 7).")
         case .russian:
             return NSLocalizedString("Russian %@", comment: "Will appear in conjunction with something else (e.g. Russian 7).")
+        case .portuguese:
+            return NSLocalizedString("Portuguese %@", comment: "Will appear in conjunction with something else (e.g. Portuguese 7).")
         case .beFilled:
             return NSLocalizedString("Be Filled %@", comment: "Will appear in conjunction with something else (e.g. Be Filled 7).")
         case .liederbuch:
