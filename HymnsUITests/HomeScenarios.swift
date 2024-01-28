@@ -20,8 +20,8 @@ class HomeScenarios: BaseTestCase {
             .activateSearch()
             .waitForButtons("Cancel")
             .typeSearchText("1151")
-            .waitForButtons("Hymn 1151")
-            .tapResult("Hymn 1151")
+            .waitForButtons("Hymn 1151, Hymn 1151")
+            .tapResult("Hymn 1151, Hymn 1151")
             .waitForStaticTexts("Hymn 1151", "verse 1 line 1")
     }
 

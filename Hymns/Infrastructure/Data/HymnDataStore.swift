@@ -24,7 +24,7 @@ protocol HymnDataStore {
     func getHymn(_ hymnIdentifier: HymnIdentifier) -> AnyPublisher<HymnReference?, ErrorType>
     func getHymnsByTitleSync(_ title: String) throws -> [HymnReference]
     func searchHymn(_ searchParameter: String) -> AnyPublisher<[SearchResultEntity], ErrorType>
-    func getHymnNumbers(by hymnType: HymnType) -> AnyPublisher<[String], ErrorType>
+    func getHymns(by hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType>
     func getCategories(by hymnType: HymnType) -> AnyPublisher<[CategoryEntity], ErrorType>
     func getResultsBy(category: String) -> AnyPublisher<[SongResultEntity], ErrorType>
     func getResultsBy(category: String, hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType>
@@ -210,11 +210,15 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
         }
     }
 
-    func getHymnNumbers(by hymnType: HymnType) -> AnyPublisher<[String], ErrorType> {
+    func getHymns(by hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType> {
         databaseQueue.readPublisher { database in
-            try String.fetchAll(
+            try SongResultEntity.fetchAll(
                 database,
-                sql: "SELECT HYMN_NUMBER FROM SONG_IDS WHERE HYMN_TYPE = ?",
+                sql:
+                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER " +
+                    "FROM SONG_DATA " +
+                    "JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID " +
+                    "WHERE HYMN_TYPE = ?",
                 arguments: [hymnType.abbreviatedValue])
         }.mapError({error -> ErrorType in
             .data(description: error.localizedDescription)

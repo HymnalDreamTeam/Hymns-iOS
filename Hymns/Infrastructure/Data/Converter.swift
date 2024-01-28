@@ -177,10 +177,10 @@ class ConverterImpl: Converter {
 
     func toUiSongResultsPage(songResultsEntities: [SongResultEntity], hasMorePages: Bool) -> UiSongResultsPage {
         let songResults = songResultsEntities.map { songResultsEntity -> UiSongResult in
-            let title = songResultsEntity.title
             let hymnType = songResultsEntity.hymnType
             let hymnNumber = songResultsEntity.hymnNumber
             let hymnIdentifier = HymnIdentifier(hymnType: hymnType, hymnNumber: hymnNumber)
+            let title = songResultsEntity.title ?? hymnIdentifier.displayTitle
             return UiSongResult(name: title, identifier: hymnIdentifier)
         }
         return UiSongResultsPage(results: songResults, hasMorePages: hasMorePages)

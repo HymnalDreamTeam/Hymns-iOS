@@ -41,12 +41,14 @@ class DisplayHymnContainerViewModel: ObservableObject {
 
     func populateHymns() {
         let hymnType = identifier.hymnType
-        dataStore.getHymnNumbers(by: hymnType)
+        dataStore.getHymns(by: hymnType)
             .subscribe(on: backgroundQueue)
-            .replaceError(with: [String]())
-            .map { hymnNumbers in
-                hymnNumbers
-                    .filter({ hymnNumber in
+            .replaceError(with: [SongResultEntity]())
+            .map { songResultEntities in
+                songResultEntities
+                    .map({ songResultEntity in
+                        songResultEntity.hymnNumber
+                    }).filter({ hymnNumber in
                         hymnNumber.isPositiveInteger
                     }).compactMap({ hymnNumber in
                         hymnNumber.toInteger

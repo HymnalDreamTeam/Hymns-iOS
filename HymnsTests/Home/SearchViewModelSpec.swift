@@ -201,15 +201,7 @@ class SearchViewModelSpec: QuickSpec {
                 describe("clear mock invocations called from setup") {
                     beforeEach {
                         clearInvocations(on: historyStore)
-                        given(dataStore.getHymnNumbers(by: .classic)) ~> { _  in
-                            Just([1...1360].flatMap { range in
-                                range.map { number in
-                                    String(number)
-                                }
-                            }).mapError({ _ -> ErrorType in
-                                // This will never be triggered.
-                            }).eraseToAnyPublisher()
-                        }
+                        givenSwift(dataStore.getHymns(by: .classic)) ~> self.createNumbers(.classic)
                     }
                     describe("with numeric search parameter") {
                         beforeEach {
@@ -259,14 +251,7 @@ class SearchViewModelSpec: QuickSpec {
                     }
                     context("non-classic hymn type where numbers are found") {
                         beforeEach {
-                            given(dataStore.getHymnNumbers(by: .chinese)) ~> { _  in
-                                return Just(["1", "2", "3", "10", "11", "12",
-                                             "100", "110", "111", "112", "113",
-                                             "1000", "1001", "1010", "1100",
-                                             "1100", "1110", "1101", "1111"]).mapError({ _ -> ErrorType in
-                                    // This will never be triggered.
-                                }).eraseToAnyPublisher()
-                            }
+                            givenSwift(dataStore.getHymns(by: .chinese)) ~> self.createNumbers(.chinese)
                             target.searchParameter = "ChINEsE 111 "
                             sleep(1) // allow time for the debouncer to trigger.
                         }
@@ -294,8 +279,8 @@ class SearchViewModelSpec: QuickSpec {
                     }
                     context("numbers not found") {
                         beforeEach {
-                            given(dataStore.getHymnNumbers(by: .newTune)) ~> { _  in
-                                return Just([String]()).mapError({ _ -> ErrorType in
+                            given(dataStore.getHymns(by: .newTune)) ~> { _  in
+                                return Just([SongResultEntity]()).mapError({ _ -> ErrorType in
                                     // This will never be triggered.
                                 }).eraseToAnyPublisher()
                             }
@@ -314,6 +299,32 @@ class SearchViewModelSpec: QuickSpec {
                     }
                 }
             }
+        }
+    }
+    
+    private func createNumbers(_ hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType> {
+        switch hymnType {
+        case .classic:
+            return Just([1...1360].flatMap { range in
+                range.map { number in
+                    SongResultEntity(hymnType: hymnType, hymnNumber: String(number))
+                }
+            }).mapError({ _ -> ErrorType in
+                // This will never be triggered.
+            }).eraseToAnyPublisher()
+        case .chinese:
+            return Just(["1", "2", "3", "10", "11", "12",
+                         "100", "110", "111", "112", "113",
+                         "1000", "1001", "1010", "1100",
+                         "1100", "1110", "1101", "1111"]
+                .map {SongResultEntity(hymnType: .chinese, hymnNumber: $0)})
+            .mapError({ _ -> ErrorType in
+                // This will never be triggered.
+            }).eraseToAnyPublisher()
+        default:
+            return Just([SongResultEntity]()).mapError({ _ -> ErrorType in
+                // This will never be triggered.
+            }).eraseToAnyPublisher()
         }
     }
 }

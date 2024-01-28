@@ -192,7 +192,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         it("should return hymn numbers of that type") {
                             let completion = XCTestExpectation(description: "completion received")
                             let value = XCTestExpectation(description: "value received")
-                            let publisher = target.getHymnNumbers(by: .classic)
+                            let publisher = target.getHymns(by: .classic)
                                 .print(self.description)
                                 .receive(on: testQueue)
                                 .sink(receiveCompletion: { state in
@@ -200,7 +200,12 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                                     expect(state).to(equal(.finished))
                                 }, receiveValue: { entities in
                                     value.fulfill()
-                                    expect(entities).to(equal(["1151", "3", "4", "5"]))
+                                    expect(entities).to(equal([
+                                        SongResultEntity(hymnType: .classic, hymnNumber: "1151",
+                                                         title: "Hymn: Drink! A river pure and clear that\'s flowing from the throne"),
+                                        SongResultEntity(hymnType: .classic, hymnNumber: "3", title: "classic 3"),
+                                        SongResultEntity(hymnType: .classic, hymnNumber: "4", title: "classic 4"),
+                                        SongResultEntity(hymnType: .classic, hymnNumber: "5", title: "classic 5")]))
                                 })
                             testQueue.sync {}
                             testQueue.sync {}
@@ -214,7 +219,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         it("should return empty list") {
                             let completion = XCTestExpectation(description: "completion received")
                             let value = XCTestExpectation(description: "value received")
-                            let publisher = target.getHymnNumbers(by: .liederbuch)
+                            let publisher = target.getHymns(by: .liederbuch)
                                 .print(self.description)
                                 .receive(on: testQueue)
                                 .sink(receiveCompletion: { state in

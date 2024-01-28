@@ -4,7 +4,7 @@ import GRDB
 struct SearchResultEntity: Decodable {
     let hymnType: HymnType
     let hymnNumber: String
-    let title: String
+    let title: String?
     let matchInfo: Data
     let songId: Int
 
@@ -22,7 +22,7 @@ extension SearchResultEntity: FetchableRecord {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         hymnType = try container.decode(HymnType.self, forKey: .hymnType)
         hymnNumber = try container.decode(String.self, forKey: .hymnNumber)
-        title = try container.decode(String.self, forKey: .title)
+        title = try container.decodeIfPresent(String.self, forKey: .title)
         matchInfo = try container.decode(Data.self, forKey: .matchInfo)
         songId = try container.decode(Int.self, forKey: .songId)
     }

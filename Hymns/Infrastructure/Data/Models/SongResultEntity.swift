@@ -4,7 +4,13 @@ import GRDB
 struct SongResultEntity: Decodable, Equatable {
     let hymnType: HymnType
     let hymnNumber: String
-    let title: String
+    let title: String?
+
+    init(hymnType: HymnType, hymnNumber: String, title: String? = nil) {
+        self.hymnType = hymnType
+        self.hymnNumber = hymnNumber
+        self.title = title
+    }
 
     enum CodingKeys: String, CodingKey {
         case hymnType = "HYMN_TYPE"
@@ -18,6 +24,6 @@ extension SongResultEntity: FetchableRecord {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         hymnType = try container.decode(HymnType.self, forKey: .hymnType)
         hymnNumber = try container.decode(String.self, forKey: .hymnNumber)
-        title = try container.decode(String.self, forKey: .title)
+        title = try container.decodeIfPresent(String.self, forKey: .title)
     }
 }

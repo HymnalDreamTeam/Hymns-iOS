@@ -80,15 +80,7 @@ class SearchViewModelTest: XCTestCase {
     }
 
     func test_searchActive_numericSearchParameter() {
-        given(dataStore.getHymnNumbers(by: .classic)) ~> { _  in
-            Just([1...1360].flatMap { range in
-                range.map { number in
-                    String(number)
-                }
-            }).mapError({ _ -> ErrorType in
-                // This will never be triggered.
-            }).eraseToAnyPublisher()
-        }
+        givenSwift(dataStore.getHymns(by: .classic)) ~> self.createNumbers(.classic)
 
         target.searchActive = true
         clearInvocations(on: historyStore) // clear invocations called from activating search
@@ -105,15 +97,7 @@ class SearchViewModelTest: XCTestCase {
     }
 
     func test_searchActive_invalidNumericSearchParameter() {
-        given(dataStore.getHymnNumbers(by: .classic)) ~> { _  in
-            Just([1...1360].flatMap { range in
-                range.map { number in
-                    String(number)
-                }
-            }).mapError({ _ -> ErrorType in
-                // This will never be triggered.
-            }).eraseToAnyPublisher()
-        }
+        givenSwift(dataStore.getHymns(by: .classic)) ~> self.createNumbers(.classic)
 
         target.searchActive = true
         clearInvocations(on: historyStore) // clear invocations called from activating search
@@ -125,5 +109,15 @@ class SearchViewModelTest: XCTestCase {
         expect(self.target.songResults).to(beEmpty())
         verify(historyStore.recentSongs()).wasNeverCalled()
         verify(songResultsRepository.search(searchParameter: any(), pageNumber: any())).wasNeverCalled()
+    }
+
+    private func createNumbers(_ hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType> {
+        return Just([1...1360].flatMap { range in
+            range.map { number in
+                SongResultEntity(hymnType: hymnType, hymnNumber: String(number))
+            }
+        }).mapError({ _ -> ErrorType in
+            // This will never be triggered.
+        }).eraseToAnyPublisher()
     }
 }

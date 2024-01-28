@@ -157,11 +157,15 @@ class BrowseResultsListViewModel: ObservableObject {
                         } else {
                             return result1.hymnNumber < result2.hymnNumber
                         }
-                    }).map({ songResult -> SongResultViewModel in
+                    }).compactMap({ songResult -> SongResultViewModel? in
                         let hymnIdentifier = HymnIdentifier(hymnType: songResult.hymnType, hymnNumber: songResult.hymnNumber)
-                        let title = "\(songResult.hymnNumber). \(songResult.title)"
+                        guard let title = songResult.title else {
+                            return nil
+                        }
                         let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: hymnIdentifier)).eraseToAnyView()
-                        return SongResultViewModel(stableId: String(describing: hymnIdentifier), title: title, destinationView: destination)
+                        return SongResultViewModel(stableId: String(describing: hymnIdentifier),
+                                                   title: "\(songResult.hymnNumber). \(title)",
+                                                   destinationView: destination)
                     })
             })
             .replaceError(with: [SongResultViewModel]())

@@ -152,33 +152,38 @@ class SearchViewModel: ObservableObject {
                 }
             }).store(in: &disposables)
     }
-
+    
     private func fetchByHymnType(hymnType: HymnType, hymnNumber: String, searchParameter: String) {
         label = nil
         let hymnIdentifier = HymnIdentifier(hymnType: hymnType, hymnNumber: hymnNumber)
-        dataStore.getHymnNumbers(by: hymnIdentifier.hymnType)
-            .replaceError(with: [String]())
-            .map({ hymnNumbers -> [SongResultViewModel] in
+        dataStore.getHymns(by: hymnIdentifier.hymnType)
+            .replaceError(with: [SongResultEntity]())
+            .map({ songResults -> [SongResultViewModel] in
                 guard !hymnIdentifier.hymnNumber.isEmpty else {
                     return [SongResultViewModel]()
                 }
-                return hymnNumbers
-                    .filter {$0.contains(hymnIdentifier.hymnNumber)}
-                    .compactMap({ hymnNumber in
-                        hymnNumber.toInteger
-                    }).sorted().map({ hymnNumber in
-                        String(hymnNumber)
-                    }).map({ number -> SongResultViewModel in
-                        let title = String(format: hymnIdentifier.hymnType.displayLabel, number)
-                        let identifier = HymnIdentifier(hymnType: hymnIdentifier.hymnType, hymnNumber: number)
-                        let destination = DisplayHymnContainerView(viewModel:
-                                                                    DisplayHymnContainerViewModel(hymnToDisplay: identifier,
-                                                                                                  storeInHistoryStore: true)).eraseToAnyView()
-                        return SongResultViewModel(
-                            stableId: String(describing: identifier),
-                            title: title,
-                            destinationView: destination)
-                    })
+                return songResults
+                    .filter({ songResultEntity in
+                        songResultEntity.hymnNumber.contains(hymnIdentifier.hymnNumber)
+                    }).sorted(by: { entity1, entity2 in
+                        guard let number1 = entity1.hymnNumber.toInteger else {
+                            return false
+                        }
+                        guard let number2 = entity2.hymnNumber.toInteger else {
+                            return true
+                        }
+                        return number1 < number2
+                    }).map { songResultEntity -> SongResultViewModel in
+                        let identifier = HymnIdentifier(hymnType: songResultEntity.hymnType, hymnNumber: songResultEntity.hymnNumber)
+                        let stableId = String(describing: identifier)
+                        let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: identifier, storeInHistoryStore: true)).eraseToAnyView()
+                        if let title = songResultEntity.title {
+                            return SongResultViewModel(stableId: stableId, title: title, label: identifier.displayTitle,destinationView: destination)
+                        } else {
+                            return SongResultViewModel(stableId: stableId, title: identifier.displayTitle,destinationView: destination)
+                        }
+                    }
+
             }).subscribe(on: backgroundQueue)
             .receive(on: mainQueue)
             .sink(receiveValue: { [weak self] songResults in

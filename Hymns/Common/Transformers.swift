@@ -6,11 +6,16 @@ class Transformers: ObservableObject {
     static func toSongResultsViewModel(entity: SongResultEntity, storeInHistoryStore: Bool = false) -> SongResultViewModel {
         let hymnIdentifier = HymnIdentifier(hymnType: entity.hymnType, hymnNumber: entity.hymnNumber)
         let stableId = String(describing: hymnIdentifier)
-        let title = entity.title
-        let label = hymnIdentifier.displayTitle
         let destination =
         DisplayHymnContainerView(
             viewModel: DisplayHymnContainerViewModel(hymnToDisplay: hymnIdentifier, storeInHistoryStore: storeInHistoryStore)).eraseToAnyView()
-        return SongResultViewModel(stableId: stableId, title: title, label: label, destinationView: destination)
+        if let title = entity.title {
+            return SongResultViewModel(stableId: stableId, title: title,
+                                       label: hymnIdentifier.displayTitle,
+                                       destinationView: destination)
+        } else {
+            return SongResultViewModel(stableId: stableId,title: hymnIdentifier.displayTitle,
+                                       destinationView: destination)
+        }
     }
 }

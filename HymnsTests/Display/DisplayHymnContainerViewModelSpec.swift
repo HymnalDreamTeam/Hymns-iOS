@@ -15,8 +15,15 @@ class DisplayHymnContainerViewModelSpec: QuickSpec {
             var target: DisplayHymnContainerViewModel!
             beforeEach {
                 dataStore = mock(HymnDataStore.self)
-                given(dataStore.getHymnNumbers(by: .classic)) ~> { _  in
-                    Just(["1333", "2", "3", "13", "13a", "14", "113", "1330"]).mapError({ _ -> ErrorType in
+                given(dataStore.getHymns(by: .classic)) ~> { _  in
+                    Just([SongResultEntity(hymnType: .classic, hymnNumber: "1333"),
+                          SongResultEntity(hymnType: .classic, hymnNumber: "2"),
+                          SongResultEntity(hymnType: .classic, hymnNumber: "3"),
+                          SongResultEntity(hymnType: .classic, hymnNumber: "13"),
+                          SongResultEntity(hymnType: .classic, hymnNumber: "13a"),
+                          SongResultEntity(hymnType: .classic, hymnNumber: "14"),
+                          SongResultEntity(hymnType: .classic, hymnNumber: "113"),
+                          SongResultEntity(hymnType: .classic, hymnNumber: "1330")]).mapError({ _ -> ErrorType in
                         // This will never be triggered.
                     }).eraseToAnyPublisher()
                 }
@@ -46,8 +53,8 @@ class DisplayHymnContainerViewModelSpec: QuickSpec {
             }
             context("hymn numbers not found") {
                 beforeEach {
-                    given(dataStore.getHymnNumbers(by: .classic)) ~> { _  in
-                        Just([String]()).mapError({ _ -> ErrorType in
+                    given(dataStore.getHymns(by: .classic)) ~> { _  in
+                        Just([SongResultEntity]()).mapError({ _ -> ErrorType in
                             // This will never be triggered.
                         }).eraseToAnyPublisher()
                     }
@@ -103,9 +110,9 @@ class DisplayHymnContainerViewModelSpec: QuickSpec {
             }
             context("data store error") {
                 beforeEach {
-                    given(dataStore.getHymnNumbers(by: .classic)) ~> { _  in
-                        Just([String]())
-                            .tryMap({ _ -> [String] in
+                    given(dataStore.getHymns(by: .classic)) ~> { _  in
+                        Just([SongResultEntity]())
+                            .tryMap({ _ -> [SongResultEntity] in
                                 throw URLError(.badURL)
                             }).mapError({ _ -> ErrorType in
                                     .data(description: "forced data error")
