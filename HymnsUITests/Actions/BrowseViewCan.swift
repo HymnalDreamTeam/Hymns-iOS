@@ -70,7 +70,9 @@ public class BrowseViewCan: BaseViewCan {
     }
 
     public func goToScriptureSongs() -> BrowseViewCan {
-        app.scrollViews.element.swipeLeft()
+        while !app.buttons["Scripture Songs"].isHittable {
+            app.scrollViews.element.swipeLeft()
+        }
         app.buttons["Scripture Songs"].tap()
         return self
     }
