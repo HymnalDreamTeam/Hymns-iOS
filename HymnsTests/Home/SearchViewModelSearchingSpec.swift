@@ -169,6 +169,22 @@ class SearchViewModelSearchingSpec: QuickSpec {
                     it("should fetch the first page") {
                         verify(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 1)).wasCalled(exactly(1))
                     }
+                    describe("re-enter same search parameter") {
+                        beforeEach {
+                            clearInvocations(on: historyStore, songResultsRepository)
+                            target.searchParameter = searchParameter
+                            sleep(1) // allow time for the debouncer to trigger.
+                        }
+                        it("nothing should change") {
+                            expect(target.label).to(beNil())
+                            expect(target.state).to(equal(HomeResultState.results))
+                            expect(target.songResults).to(haveCount(2))
+                            expect(target.songResults[0].title).to(equal("classic594"))
+                            expect(target.songResults[1].title).to(equal("newTune7"))
+                            verify(historyStore.recentSongs()).wasNeverCalled()
+                            verify(songResultsRepository.search(searchParameter: any(), pageNumber: any())).wasNeverCalled()
+                        }
+                    }
                     let recentHymns = "Recent hymns"
                     context("search parameter cleared") {
                         beforeEach {

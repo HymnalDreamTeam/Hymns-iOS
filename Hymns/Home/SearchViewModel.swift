@@ -25,6 +25,7 @@ class SearchViewModel: ObservableObject {
     private var currentPage = 1
     private var hasMorePages = false
     private var isLoading = false
+    private var currentQuery = ""
 
     private var disposables = Set<AnyCancellable>()
     private let analytics: FirebaseLogger
@@ -75,7 +76,11 @@ class SearchViewModel: ObservableObject {
             // Debounce works by waiting a bit until the user stops typing and before sending a value
             .debounce(for: .seconds(0.3), scheduler: mainQueue)
             .sink { searchParameter in
+                if searchParameter == self.currentQuery {
+                    return
+                }
                 self.analytics.logQueryChanged(queryText: searchParameter)
+                self.currentQuery = searchParameter
                 self.refreshSearchResults()
         }.store(in: &disposables)
     }
