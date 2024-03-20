@@ -36,10 +36,16 @@ class SongResultsRepositorySpec: QuickSpec {
                                                                  matchInfo: Data([0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]),
                                                                  songId: 0)
     static let maxMatchesInBoth = SongResultEntity(hymnType: .classic, hymnNumber: "7", title: "max matches in both")
-    let databaseResults = [noMatchesSearchResult, singleMatchInLyricsSearchResult, singleMatchInTitleSearchResult, twoMatchesInLyricsSearchResult,
+    static let maxMatchesInBothButWrongTypeSearchResult = SearchResultEntity(hymnType: .portuguese, hymnNumber: "7",
+                                                                             title: "max matches in both but wrong type",
+                                                                 matchInfo: Data([0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]),
+                                                                 songId: 0)
+    static let maxMatchesInBothButWrongType = SongResultEntity(hymnType: .portuguese, hymnNumber: "7", 
+                                                               title: "max matches in both but wrong type")
+    let databaseResults = [noMatchesSearchResult, singleMatchInLyricsSearchResult, singleMatchInTitleSearchResult,
+                           maxMatchesInBothButWrongTypeSearchResult, twoMatchesInLyricsSearchResult,
                            maxMatchesInLyricsSearchResult, maxMatchesInTitleSearchResult, maxMatchesInBothSearchResult]
-    let sortedDatabaseResults = [maxMatchesInBoth, maxMatchesInTitle, maxMatchesInLyrics, singleMatchInTitle, twoMatchesInLyrics,
-                                 singleMatchInLyrics, noMatches]
+    let sortedDatabaseResults = [maxMatchesInBoth, maxMatchesInTitle, maxMatchesInLyrics, singleMatchInTitle, twoMatchesInLyrics, singleMatchInLyrics, noMatches, maxMatchesInBothButWrongType]
 
     static let noMatchesSongbaseResult = SongbaseSearchResultEntity(bookId: 1, bookIndex: 1, title: "First Songbase song",
                                                                     matchInfo: Data([0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]))
@@ -116,6 +122,25 @@ class SongResultsRepositorySpec: QuickSpec {
                                 // This will never be triggered.
                             }).eraseToAnyPublisher()
                         }
+                    }
+                    it("should return only data store results") {
+                        // Since we're mocking out the converter, we can conveniently just return one result in the page for succinctness.
+                        let convertedResultPage = UiSongResultsPage(results: [UiSongResult(name: "classic 1151", identifier: classic1151)], hasMorePages: false)
+                        given(converter.toUiSongResultsPage(songResultsEntities: self.sortedDatabaseResults, hasMorePages: false)) ~> convertedResultPage
+
+                        let cancellable = target.search(searchParameter: "Chenaniah", pageNumber: 1)
+                            .print(self.description)
+                            .sink(receiveCompletion: { state in
+                                completion.fulfill()
+                                expect(state).to(equal(.finished))
+                            }, receiveValue: { page in
+                                value.fulfill()
+                                expect(page).to(equal(convertedResultPage))
+                            })
+                        verify(dataStore.getDatabaseInitializedProperly()).wasCalled(exactly(2))
+                        verify(dataStore.searchHymn("Chenaniah")).wasCalled(exactly(1))
+                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
+                        cancellable.cancel()
                     }
                 }
             }
