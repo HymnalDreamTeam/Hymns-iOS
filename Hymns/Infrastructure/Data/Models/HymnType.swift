@@ -134,6 +134,10 @@ extension HymnType {
         for hymnType in HymnType.allCases where abbreviatedValue == hymnType.abbreviatedValue {
             return hymnType
         }
+        // In Hymnal.net, Spanish is hs.
+        if abbreviatedValue == "hs" {
+            return .spanish
+        }
         return nil
     }
 
