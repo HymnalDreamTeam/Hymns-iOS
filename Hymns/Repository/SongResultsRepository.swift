@@ -153,7 +153,7 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
                 }
                 let defaultSearchType = sortedSongResults.filter { $0.hymnType == self.userDefaultsManager.defaultSearchType.hymnType }
                 let nonDefaultSearchType = sortedSongResults.filter { $0.hymnType != self.userDefaultsManager.defaultSearchType.hymnType }
-                return ((defaultSearchType + nonDefaultSearchType), false)
+                return (Array((defaultSearchType + nonDefaultSearchType).prefix(50)), false)
         }.eraseToAnyPublisher()
     }
 
