@@ -27,13 +27,11 @@ class SongResultViewModel: Identifiable {
 
 extension SongResultViewModel: Hashable {
     static func == (lhs: SongResultViewModel, rhs: SongResultViewModel) -> Bool {
-        lhs.stableId == rhs.stableId && lhs.title == rhs.title && lhs.label == rhs.label
+        lhs.stableId == rhs.stableId
     }
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(stableId)
-        hasher.combine(title)
-        hasher.combine(label)
     }
 }
 
