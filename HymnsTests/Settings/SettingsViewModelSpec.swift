@@ -22,9 +22,9 @@ class SettingsViewModelSpec: QuickSpec {
                     beforeEach {
                         given(systemUtil.donationProducts) ~> [coffeeDonation!]
                     }
-                    var settingsSize = 7
+                    var settingsSize = 8
                     if #available(iOS 16, *) { // iOS 16+ has "version information", which is the 8th item
-                        settingsSize = 8
+                        settingsSize = 9
                     }
                     it("should contain exactly \(settingsSize) item") {
                         target.populateSettings(result: .constant(nil))
@@ -35,9 +35,9 @@ class SettingsViewModelSpec: QuickSpec {
                     beforeEach {
                         given(systemUtil.donationProducts) ~> []
                     }
-                    var settingsSize = 6
+                    var settingsSize = 7
                     if #available(iOS 16, *) { // iOS 16+ has "version information", which is the 7th item
-                        settingsSize = 7
+                        settingsSize = 8
                     }
                     it("should contain exactly \(settingsSize) item") {
                         target.populateSettings(result: .constant(nil))

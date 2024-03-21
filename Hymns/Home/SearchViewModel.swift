@@ -11,6 +11,7 @@ class SearchViewModel: ObservableObject {
             self.showSearchByTypeToolTip = !newValue
         }
     }
+    @AppStorage("default_search_type") var defaultSearchType: DefaultSearchType = .english
 
     @Published var searchActive: Bool = false
     @Published var searchParameter = ""
@@ -108,7 +109,8 @@ class SearchViewModel: ObservableObject {
                 self.fetchByHymnCode(searchParameter.trim(), searchParameter: searchParameter)
                 return
             }
-            self.fetchByHymnType(hymnType: .classic, hymnNumber: searchParameter.trim(), searchParameter: searchParameter)
+            self.fetchByHymnType(hymnType: defaultSearchType.hymnType, hymnNumber: searchParameter.trim(),
+                                 searchParameter: searchParameter)
             return
         }
 
