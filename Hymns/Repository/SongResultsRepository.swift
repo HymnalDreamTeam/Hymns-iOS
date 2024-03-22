@@ -144,20 +144,14 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
         return dataStoreResults
             .reduce(([SongResultEntity](), false)) { (_, searchResultEntities) -> ([SongResultEntity], Bool) in
                 let sortedSongResults = searchResultEntities.sorted { (entity1, entity2) -> Bool in
-                    let rank1 = self.calculateRank(entity1.matchInfo)
-                    let rank2 = self.calculateRank(entity2.matchInfo)
+                    let rank1 = self.calculateRank(entity1)
+                    let rank2 = self.calculateRank(entity2)
                     return rank1 > rank2
                 }.map { searchResultEntity -> SongResultEntity in
                     let title = searchResultEntity.title
                     return SongResultEntity(hymnType: searchResultEntity.hymnType, hymnNumber: searchResultEntity.hymnNumber, title: title)
                 }
-                let defaultSearchLanguages = sortedSongResults.filter {
-                    $0.hymnType.language == self.userDefaultsManager.defaultSearchType.hymnType.language
-                }
-                let nonDefaultSearchLanguages = sortedSongResults.filter {
-                    $0.hymnType.language != self.userDefaultsManager.defaultSearchType.hymnType.language
-                }
-                return (Array((defaultSearchLanguages + nonDefaultSearchLanguages).prefix(50)), false)
+                return (Array(sortedSongResults.prefix(50)), false)
         }.eraseToAnyPublisher()
     }
 
@@ -168,14 +162,18 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
      depends on both the query and the value of the second argument (if any) passed to the matchinfo function.
      https://sqlite.org/fts3.html#matchinfo
      */
-    private func calculateRank(_ matchInfo: Data) -> UInt64 {
-        let matchArray = matchInfo.toArray(type: UInt32.self)
+    private func calculateRank(_ entity: SearchResultEntity) -> UInt64 {
+        let matchArray = entity.matchInfo.toArray(type: UInt32.self)
         if matchArray.count < 2 {
             return 0
         }
 
+        let isDefaultSearchLanguage = entity.hymnType.language == userDefaultsManager.defaultSearchType.language
+
         // Weight the match of the title twice as much as the match of the lyrics.
-        return UInt64(matchArray[0]) * 2 + UInt64(matchArray[1])
+        // If the hymn is the same as the default search language, then give it extra weight. This has the
+        //   effect of bubbling the songs of the default search type to the top.
+        return UInt64(matchArray[0]) * 2 + UInt64(matchArray[1]) + UInt64(isDefaultSearchLanguage ? 3 : 0)
     }
 
     func createNetworkCall() -> AnyPublisher<SongResultsPage, ErrorType> {

@@ -45,7 +45,7 @@ class SongResultsRepositorySpec: QuickSpec {
     let databaseResults = [noMatchesSearchResult, singleMatchInLyricsSearchResult, singleMatchInTitleSearchResult,
                            maxMatchesInBothButWrongTypeSearchResult, twoMatchesInLyricsSearchResult,
                            maxMatchesInLyricsSearchResult, maxMatchesInTitleSearchResult, maxMatchesInBothSearchResult]
-    let sortedDatabaseResults = [maxMatchesInBoth, maxMatchesInTitle, maxMatchesInLyrics, singleMatchInTitle, twoMatchesInLyrics, singleMatchInLyrics, noMatches, maxMatchesInBothButWrongType]
+    let sortedDatabaseResults = [maxMatchesInBoth, maxMatchesInBothButWrongType, maxMatchesInTitle, maxMatchesInLyrics, singleMatchInTitle, twoMatchesInLyrics, singleMatchInLyrics, noMatches]
 
     static let noMatchesSongbaseResult = SongbaseSearchResultEntity(bookId: 1, bookIndex: 1, title: "First Songbase song",
                                                                     matchInfo: Data([0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]))
