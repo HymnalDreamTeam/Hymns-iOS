@@ -45,7 +45,7 @@ enum DefaultSearchType: Int {
         case .dutch:
             return .dutch
         case .german:
-            return .german
+            return .liederbuch
         case .french:
             return .french
         case .spanish:
