@@ -64,6 +64,41 @@ enum DefaultSearchType: Int {
             return .russian
         }
     }
+
+    var language: Language {
+        switch self {
+        case .english:
+            return .english
+        case .chinese:
+            return .chinese
+        case .chineseSimplified:
+            return .chineseSimplified
+        case .cebuano:
+            return .cebuano
+        case .tagalog:
+            return .tagalog
+        case .dutch:
+            return .dutch
+        case .german:
+            return .german
+        case .french:
+            return .french
+        case .spanish:
+            return .spanish
+        case .portuguese:
+            return .portuguese
+        case .korean:
+            return .korean
+        case .japanese:
+            return .japanese
+        case .indonesian:
+            return .indonesian
+        case .farsi:
+            return .farsi
+        case .russian:
+            return .russian
+        }
+    }
 }
 
 extension DefaultSearchType: Identifiable {
@@ -77,14 +112,14 @@ struct DefaultSearchTypeView: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 5) {
-                Text("Default search type", comment: "Title for the settings item to change the default search type.")
-                Text("Hymn type to search by when only a number is entered into the search bar", comment: "Subtitle for the settings item to change the default search type.")
+                Text("Default search language", comment: "Title for the settings item to change the default search language.")
+                Text("Language to search by when only a number is entered into the search bar", comment: "Subtitle for the settings item to change the default search language.")
                     .font(.caption)
             }
             Spacer()
             Picker("Default search type", selection: $defaultSearchType) {
                 ForEach(DefaultSearchType.allValues) { defaultSearchType in
-                    Text(defaultSearchType.hymnType.displayTitle).tag(defaultSearchType)
+                    Text(defaultSearchType.language.displayTitle).tag(defaultSearchType)
                 }
             }
         }.padding()

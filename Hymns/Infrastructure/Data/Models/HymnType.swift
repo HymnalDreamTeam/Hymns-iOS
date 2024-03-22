@@ -250,6 +250,41 @@ extension HymnType {
             return NSLocalizedString("Songbase %@", comment: "Will appear in conjunction with something else (e.g. Songbase 7).")
         }
     }
+
+    var language: Language {
+        switch self {
+        case .classic, .newTune, .newSong, .children, .howardHigashi, .beFilled, .blueSongbook, .songbaseOther:
+            return .english
+        case .dutch:
+            return .dutch
+        case .german, .liederbuch:
+            return .german
+        case .chinese, .chineseSupplement:
+            return .chinese
+        case .chineseSimplified, .chineseSupplementSimplified:
+            return .chineseSimplified
+        case .cebuano:
+            return .cebuano
+        case .tagalog:
+            return .tagalog
+        case .french:
+            return .french
+        case .spanish:
+            return .spanish
+        case .korean:
+            return .korean
+        case .japanese:
+            return .japanese
+        case .indonesian:
+            return .indonesian
+        case .farsi:
+            return .farsi
+        case .russian:
+            return .russian
+        case .portuguese:
+            return .portuguese
+        }
+    }
 }
 
 extension HymnType: CustomStringConvertible {
@@ -281,6 +316,59 @@ extension HymnType {
             return 2
         default:
             return nil
+        }
+    }
+}
+
+enum Language {
+    case english
+    case dutch
+    case german
+    case chinese
+    case chineseSimplified
+    case cebuano
+    case tagalog
+    case french
+    case spanish
+    case korean
+    case japanese
+    case indonesian
+    case farsi
+    case russian
+    case portuguese
+
+    var displayTitle: String {
+        switch self {
+        case .english:
+            return NSLocalizedString("English", comment: "Display name of the 'English' language.")
+        case .dutch:
+            return NSLocalizedString("Dutch", comment: "Display name of the 'Dutch' language.")
+        case .german:
+            return NSLocalizedString("German", comment: "Display name of the 'German' language.")
+        case .chinese:
+            return NSLocalizedString("Chinese (Trad.)", comment: "Display name of the traditional 'Chinese' language.")
+        case .chineseSimplified:
+            return NSLocalizedString("Chinese (Simp.)", comment: "Display name of the simplified 'Chinese' language.")
+        case .cebuano:
+            return NSLocalizedString("Cebuano", comment: "Display name of the 'Cebuano' language.")
+        case .tagalog:
+            return NSLocalizedString("Tagalog", comment: "Display name of the 'Tagalog' language.")
+        case .french:
+            return NSLocalizedString("French", comment: "Display name of the 'French' language.")
+        case .spanish:
+            return NSLocalizedString("Spanish", comment: "Display name of the 'Spanish' language.")
+        case .korean:
+            return NSLocalizedString("Korean", comment: "Display name of the 'Korean' language.")
+        case .japanese:
+            return NSLocalizedString("Japanese", comment: "Display name of the 'Japanese' language.")
+        case .indonesian:
+            return NSLocalizedString("Indonesian", comment: "Display name of the 'Indonesian' language.")
+        case .farsi:
+            return NSLocalizedString("Farsi", comment: "Display name of the 'Farsi' language.")
+        case .russian:
+            return NSLocalizedString("Russian", comment: "Display name of the 'Russian' language.")
+        case .portuguese:
+            return NSLocalizedString("Portuguese", comment: "Display name of the 'Portuguese' language.")
         }
     }
 }

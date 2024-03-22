@@ -151,9 +151,13 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
                     let title = searchResultEntity.title
                     return SongResultEntity(hymnType: searchResultEntity.hymnType, hymnNumber: searchResultEntity.hymnNumber, title: title)
                 }
-                let defaultSearchType = sortedSongResults.filter { $0.hymnType == self.userDefaultsManager.defaultSearchType.hymnType }
-                let nonDefaultSearchType = sortedSongResults.filter { $0.hymnType != self.userDefaultsManager.defaultSearchType.hymnType }
-                return (Array((defaultSearchType + nonDefaultSearchType).prefix(50)), false)
+                let defaultSearchLanguages = sortedSongResults.filter {
+                    $0.hymnType.language == self.userDefaultsManager.defaultSearchType.hymnType.language
+                }
+                let nonDefaultSearchLanguages = sortedSongResults.filter {
+                    $0.hymnType.language != self.userDefaultsManager.defaultSearchType.hymnType.language
+                }
+                return (Array((defaultSearchLanguages + nonDefaultSearchLanguages).prefix(50)), false)
         }.eraseToAnyPublisher()
     }
 
