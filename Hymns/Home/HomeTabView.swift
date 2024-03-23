@@ -2,6 +2,8 @@ import SwiftUI
 
 struct HomeTabView: View {
 
+    @AppStorage("show_default_search_type_announcement") var showDefaultSearchTypeAnnouncement = true
+
     @Binding var selectedTab: HomeTab
 
     var body: some View {
@@ -44,6 +46,12 @@ struct HomeTabView: View {
                     .foregroundColor(self.selectedTab == .settings ? .accentColor : .secondary)
                     .font(.system(size: buttonSize))
                     .accessibility(label: HomeTab.settings.a11yLabel)
+                    .badge(shouldShow: Binding(get: {
+                        // Can add future values here with OR operator (||)
+                        showDefaultSearchTypeAnnouncement
+                    }, set: { value in
+                        // Do nothing, since this should only ever read the value, not write it.
+                    }))
             })
         }
     }
