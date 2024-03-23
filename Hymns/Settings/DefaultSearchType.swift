@@ -108,6 +108,7 @@ extension DefaultSearchType: Identifiable {
 struct DefaultSearchTypeView: View {
 
     @AppStorage("default_search_type") var defaultSearchType: DefaultSearchType = .english
+    @AppStorage("show_default_search_type_announcement") var showDefaultSearchTypeAnnouncement = true
 
     var body: some View {
         HStack {
@@ -122,7 +123,18 @@ struct DefaultSearchTypeView: View {
                     Text(defaultSearchType.language.displayTitle).tag(defaultSearchType)
                 }
             }
-        }.padding()
+        }.padding().toolTip(tapAction: {
+            showDefaultSearchTypeAnnouncement = false
+        }, label: {
+            HStack(alignment: .center, spacing: CGFloat.zero) {
+                Image(systemName: "xmark").padding()
+                Text("Try changing the default search language!").font(.caption).padding(.trailing)
+            }
+        }, configuration: ToolTipConfiguration(alignment: .top,
+                                               cornerRadius: 10,
+                                               arrowPosition: ToolTipConfiguration.ArrowPosition(midX: 0.5, alignmentType: .percentage),
+                                               arrowHeight: 7),
+           shouldShow: $showDefaultSearchTypeAnnouncement)
     }
 }
 

@@ -1,5 +1,52 @@
 import SwiftUI
 
+struct ToolTipModifier<Label: View>: ViewModifier {
+
+    @Binding var shouldShow: Bool
+
+    let tapAction: () -> Void
+    let label: () -> Label
+    let configuration: ToolTipConfiguration
+
+    init(tapAction: @escaping () -> Void,
+         @ViewBuilder label: @escaping () -> Label,
+         configuration: ToolTipConfiguration,
+         shouldShow: Binding<Bool>) {
+        self.tapAction = tapAction
+        self.label = label
+        self.configuration = configuration
+        self._shouldShow = shouldShow
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .alignmentGuide(.toolTipHorizontalAlignment, computeValue: { dimens -> CGFloat in
+                dimens[HorizontalAlignment.center] // middle of tool tip to middle of view
+            })
+            .alignmentGuide(configuration.verticalAlignmentGuide.toolTipAlignment, computeValue: { dimens -> CGFloat in
+                dimens[configuration.verticalAlignmentGuide.viewDimensionAlignment]
+            })
+            .overlay(alignment: Alignment(horizontal: .toolTipHorizontalAlignment,
+                                          vertical: configuration.verticalAlignmentGuide.toolTipAlignment)) {
+                if shouldShow {
+                    ToolTipView(tapAction: tapAction, label: label, configuration: configuration)
+                        .alignmentGuide(.toolTipHorizontalAlignment, computeValue: { dimens -> CGFloat in
+                            dimens[HorizontalAlignment.center]
+                        })
+                }
+            }.zIndex(1)
+    }
+}
+
+extension View {
+    func toolTip<Label: View>(tapAction: @escaping () -> Void,
+                              @ViewBuilder label: @escaping () -> Label,
+                              configuration: ToolTipConfiguration,
+                              shouldShow: Binding<Bool>) -> some View {
+        self.modifier(ToolTipModifier(tapAction: tapAction, label: label, configuration: configuration, shouldShow: shouldShow))
+    }
+}
+
 /**
  * Creates a rounded rectangle shape with a little arrow on the top to serve as a tool tip.
  */
@@ -74,10 +121,34 @@ struct ToolTipShape_Previews: PreviewProvider {
 }
 #endif
 
+// Configuration of the tool tip, including arrow height, arrow position, and tool tip corner radius.
 struct ToolTipConfiguration {
+    /// Alignment of the tool tip with respect to the content
+    let alignment: Alignment
     let cornerRadius: CGFloat
     let arrowPosition: ArrowPosition
     let arrowHeight: CGFloat
+
+    init(alignment: Alignment = .bottom, cornerRadius: CGFloat, arrowPosition: ArrowPosition, arrowHeight: CGFloat) {
+        self.alignment = alignment
+        self.cornerRadius = cornerRadius
+        self.arrowPosition = arrowPosition
+        self.arrowHeight = arrowHeight
+    }
+
+    enum Alignment {
+        case top // Show tool tip above the content view
+        case bottom // Show tool tip below the content view
+    }
+
+    var verticalAlignmentGuide: (toolTipAlignment: VerticalAlignment, viewDimensionAlignment: VerticalAlignment) {
+        switch alignment {
+        case .top:
+            return (toolTipAlignment: .bottom, viewDimensionAlignment: .top) // align top of tool tip to bottom of view
+        case .bottom:
+            return (toolTipAlignment: .top, viewDimensionAlignment: .bottom) // align bottom of tool tip to top of view
+        }
+    }
 
     struct ArrowPosition {
         /**
@@ -89,18 +160,19 @@ struct ToolTipConfiguration {
          * What the horizontal midpoint of the tool tip arrow refers to.
          */
         let alignmentType: AlignmentType
-    }
 
-    enum AlignmentType {
-        /**
-         * Horizontal midpoint of the tool tip arrow will be a percentage of the size of the entire tool tip box
-         */
-        case percentage
+        // Different ways to align the tool tip arrow
+        enum AlignmentType {
+            /**
+             * Horizontal midpoint of the tool tip arrow will be a percentage of the size of the entire tool tip box
+             */
+            case percentage
 
-        /**
-         * Horizontal midpoint of the tool tip arrow will be an offset based on the starting edge of the tool tip box
-         */
-        case offset
+            /**
+             * Horizontal midpoint of the tool tip arrow will be an offset based on the starting edge of the tool tip box
+             */
+            case offset
+        }
     }
 }
 
@@ -155,16 +227,6 @@ struct ToolTipView_Previews: PreviewProvider {
 }
 #endif
 
-extension VerticalAlignment {
-    private enum ToolTipVerticalAlignment: AlignmentID {
-        static func defaultValue(in dimens: ViewDimensions) -> CGFloat {
-            dimens[.top]
-        }
-    }
-
-    static let toolTipVerticalAlignment = VerticalAlignment(ToolTipVerticalAlignment.self)
-}
-
 extension HorizontalAlignment {
     private enum ToolTipHorizontal: AlignmentID {
         static func defaultValue(in dimens: ViewDimensions) -> CGFloat {
@@ -176,5 +238,5 @@ extension HorizontalAlignment {
 }
 
 extension Alignment {
-    static let toolTipAlignment = Alignment(horizontal: .toolTipHorizontalAlignment, vertical: .toolTipVerticalAlignment)
+    static let toolTipAlignment = Alignment(horizontal: .toolTipHorizontalAlignment, vertical: .top)
 }
