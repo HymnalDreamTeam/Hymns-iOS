@@ -34,9 +34,14 @@ struct SearchView: View {
                     Image(systemName: "xmark").padding()
                     Text("Try searching by hymn type (e.g. ns151, ch1, s3)", comment: "Tooltip showing the user how to best utilize search.").font(.caption).padding(.trailing)
                 }
-            }, configuration: ToolTipConfiguration(cornerRadius: 10,
-                                                   arrowPosition: ToolTipConfiguration.ArrowPosition(midX: 0.5, alignmentType: .percentage),
-                                                   arrowHeight: 7),
+            }, configuration: ToolTipConfiguration(arrowConfiguration:
+                                                    ToolTipConfiguration.ArrowConfiguration(
+                                                        height: 7,
+                                                        position:
+                                                            ToolTipConfiguration.ArrowConfiguration.Position(
+                                                                midX: 0.5,alignmentType: .percentage)),
+                                                   bodyConfiguration:
+                                                    ToolTipConfiguration.BodyConfiguration(cornerRadius: 10)),
                      shouldShow: self.$viewModel.showSearchByTypeToolTip)
 
             viewModel.label.map {

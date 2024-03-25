@@ -15,6 +15,7 @@ public class SettingsHymnViewCan: BaseViewCan {
     }
 
     public func tapClearHistory() -> SettingsHymnViewCan {
+        _ = waitForButtons("Clear recent songs")
         app.buttons["Clear recent songs"].tap()
         return self
     }
@@ -41,6 +42,13 @@ public class SettingsHymnViewCan: BaseViewCan {
 
     public func tapVersionInformation() -> SettingsHymnViewCan {
         app.buttons["Version information"].tap()
+        return self
+    }
+
+    public func checkAndDismissToolTip() -> SettingsHymnViewCan {
+        XCTAssertTrue(app.staticTexts["You can change the default language in search!"].exists)
+        app.staticTexts["You can change the default language in search!"].tap()
+        XCTAssertFalse(app.staticTexts["You can change the default language in search!"].exists)
         return self
     }
 

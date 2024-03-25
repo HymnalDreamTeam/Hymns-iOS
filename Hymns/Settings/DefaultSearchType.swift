@@ -123,18 +123,26 @@ struct DefaultSearchTypeView: View {
                     Text(defaultSearchType.language.displayTitle).tag(defaultSearchType)
                 }
             }
-        }.padding().toolTip(tapAction: {
+        }.toolTip(tapAction: {
             showDefaultSearchTypeAnnouncement = false
         }, label: {
             HStack(alignment: .center, spacing: CGFloat.zero) {
                 Image(systemName: "xmark").padding()
-                Text("Try changing the default search language!").font(.caption).padding(.trailing)
+                Text("You can change the default language in search!",
+                     comment: "Text of the tool tip announcing the default search language feature")
+                .font(.caption).padding(.trailing)
             }
-        }, configuration: ToolTipConfiguration(alignment: .top,
-                                               cornerRadius: 10,
-                                               arrowPosition: ToolTipConfiguration.ArrowPosition(midX: 0.5, alignmentType: .percentage),
-                                               arrowHeight: 7),
-           shouldShow: $showDefaultSearchTypeAnnouncement)
+        }, configuration: ToolTipConfiguration(arrowConfiguration:
+                                                ToolTipConfiguration.ArrowConfiguration(
+                                                    height: 10,
+                                                    position:
+                                                        ToolTipConfiguration.ArrowConfiguration.Position(
+                                                            midX: 0.9, alignmentType: .percentage)),
+                                               bodyConfiguration:
+                                                ToolTipConfiguration.BodyConfiguration(
+                                                    cornerRadius: 10)),
+                            shouldShow: $showDefaultSearchTypeAnnouncement)
+        .padding()
     }
 }
 

@@ -47,7 +47,14 @@ struct SoundCloudView: View {
                     // Invisible tool tip used for calculating tool tip size. Not actually used.
                     Text("Tap to keep playing song in the background").font(.caption).padding(.trailing)
                 }
-            }, configuration: ToolTipConfiguration(cornerRadius: 10, arrowPosition: ToolTipConfiguration.ArrowPosition(midX: 0.5, alignmentType: .percentage), arrowHeight: 7))
+            }, configuration: ToolTipConfiguration(arrowConfiguration:
+                                                    ToolTipConfiguration.ArrowConfiguration(
+                                                        height: 10,
+                                                        position:
+                                                            ToolTipConfiguration.ArrowConfiguration.Position(
+                                                                midX: 0.5, alignmentType: .percentage)),
+                                                   bodyConfiguration:
+                                                    ToolTipConfiguration.BodyConfiguration(cornerRadius: 10)))
                 .transformAnchorPreference(key: ToolTipPreferenceKey.self,
                                            value: .bounds,
                                            transform: { (value: inout ToolTipPreferenceData, anchor: Anchor<CGRect>) in
@@ -76,20 +83,24 @@ struct SoundCloudView: View {
         let toolTipSize = geometry[toolTipAnchor].size
         let indicatorPoint = geometry[indicatorAnchor]
 
-        return
-            ToolTipView(tapAction: {
-                self.viewModel.dismissToolTip()
-            }, label: {
-                HStack(alignment: .center, spacing: CGFloat.zero) {
-                    Image(systemName: "xmark").padding()
-                    Text("Tap to keep playing song in the background", comment: "Tooltip text for minimizing SoundCloud and to keep the song playing.")
-                        .font(.caption).padding(.trailing)
-                }
-            }, configuration: ToolTipConfiguration(
-                cornerRadius: 10,
-                arrowPosition: ToolTipConfiguration.ArrowPosition(midX: toolTipSize.width - (indicatorPoint.maxX - indicatorPoint.minX)/2 + 7, alignmentType: .offset),
-                arrowHeight: 7))
-                .offset(x: indicatorPoint.maxX - toolTipSize.width - 7, y: indicatorPoint.maxY + 7).eraseToAnyView()
+        return ToolTipView(tapAction: {
+            self.viewModel.dismissToolTip()
+        }, label: {
+            HStack(alignment: .center, spacing: CGFloat.zero) {
+                Image(systemName: "xmark").padding()
+                Text("Tap to keep playing song in the background", comment: "Tooltip text for minimizing SoundCloud and to keep the song playing.")
+                    .font(.caption).padding(.trailing)
+            }
+        }, configuration: ToolTipConfiguration(arrowConfiguration:
+                                                ToolTipConfiguration.ArrowConfiguration(
+                                                    height: 10,
+                                                    position:
+                                                        ToolTipConfiguration.ArrowConfiguration.Position(
+                                                            midX: toolTipSize.width - (indicatorPoint.maxX - indicatorPoint.minX)/2 + 7,
+                                                            alignmentType: .offset)),
+                                               bodyConfiguration:
+                                                ToolTipConfiguration.BodyConfiguration(cornerRadius: 10)))
+        .offset(x: indicatorPoint.maxX - toolTipSize.width - 7, y: indicatorPoint.maxY + 7).eraseToAnyView()
     }
 }
 

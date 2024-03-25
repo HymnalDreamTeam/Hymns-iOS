@@ -28,6 +28,7 @@ class SettingsScenarios: BaseTestCase {
         _ = HomeViewCan(app, testCase: self)
             .waitForButtons("Hymn 1151, classic1151")
             .goToSettings()
+            .checkAndDismissToolTip()
             .tapClearHistory()
             .waitForStaticTexts("Recent songs cleared")
             .returnToHome()

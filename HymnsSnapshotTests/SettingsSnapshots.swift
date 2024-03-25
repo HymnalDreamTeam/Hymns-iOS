@@ -15,6 +15,9 @@ class SettingsSnapshots: XCTestCase {
     }
 
     func test_settings_withDonationOption() {
+        let originalValue = UserDefaults.standard.bool(forKey: "show_default_search_type_announcement")
+        UserDefaults.standard.setValue(false, forKey: "show_default_search_type_announcement")
+
         let systemUtil = SystemUtilImpl()
         systemUtil.donationProducts = [MockDonation()]
         viewModel = SettingsViewModel(systemUtil: systemUtil)
@@ -22,13 +25,32 @@ class SettingsSnapshots: XCTestCase {
         assertVersionedSnapshot(
             matching: SettingsView(viewModel: viewModel).ignoresSafeArea(),
             as: .swiftUiImage())
+
+        UserDefaults.standard.setValue(originalValue, forKey: "show_default_search_type_announcement")
     }
 
     func test_settings_withoutDonationOption() {
+        let originalValue = UserDefaults.standard.bool(forKey: "show_default_search_type_announcement")
+        UserDefaults.standard.setValue(false, forKey: "show_default_search_type_announcement")
+        
         viewModel.settings = [.privacyPolicy, .feedback(.constant(nil)), .aboutUs]
         assertVersionedSnapshot(
             matching: SettingsView(viewModel: viewModel).ignoresSafeArea(),
             as: .swiftUiImage())
+
+        UserDefaults.standard.setValue(originalValue, forKey: "show_default_search_type_announcement")
+    }
+
+    func test_settings_withDefaultLangaugeTooltip() {
+        let originalValue = UserDefaults.standard.bool(forKey: "show_default_search_type_announcement")
+        UserDefaults.standard.setValue(true, forKey: "show_default_search_type_announcement")
+
+        viewModel.settings = [.privacyPolicy, .feedback(.constant(nil)), .aboutUs]
+        assertVersionedSnapshot(
+            matching: SettingsView(viewModel: viewModel).ignoresSafeArea(),
+            as: .swiftUiImage())
+
+        UserDefaults.standard.setValue(originalValue, forKey: "show_default_search_type_announcement")
     }
 }
 

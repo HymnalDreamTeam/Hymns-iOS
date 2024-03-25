@@ -12,13 +12,13 @@ class ToolTipSnapshots: XCTestCase {
 
     func test_toolTipShape_filled() {
         assertVersionedSnapshot(
-            matching: ToolTipShape(cornerRadius: 15, toolTipMidX: 300).fill().ignoresSafeArea(),
+            matching: ToolTipShape(cornerRadius: 15, direction: .up, toolTipMidX: 300).fill().ignoresSafeArea(),
             as: .image())
     }
 
     func test_toolTipShape_oulined() {
         assertVersionedSnapshot(
-            matching: ToolTipShape(cornerRadius: 15, toolTipMidX: 300).stroke().ignoresSafeArea(),
+            matching: ToolTipShape(cornerRadius: 15, direction: .up, toolTipMidX: 300).stroke().ignoresSafeArea(),
             as: .image())
     }
 
@@ -26,19 +26,43 @@ class ToolTipSnapshots: XCTestCase {
         let toolTip = ToolTipView(tapAction: {}, label: {
             Text("tool tip text").padding()
         }, configuration:
-            ToolTipConfiguration(cornerRadius: 10,
-                                 arrowPosition: ToolTipConfiguration.ArrowPosition(midX: 30, alignmentType: .offset),
-                                 arrowHeight: 7)).ignoresSafeArea()
+            ToolTipConfiguration(arrowConfiguration:
+                                    ToolTipConfiguration.ArrowConfiguration(
+                                        height: 7,
+                                        position:
+                                            ToolTipConfiguration.ArrowConfiguration.Position(
+                                                midX: 30, alignmentType: .offset)),
+                                 bodyConfiguration: ToolTipConfiguration.BodyConfiguration(cornerRadius: 10))).ignoresSafeArea()
         assertVersionedSnapshot(matching: toolTip, as: .image(layout: .fixed(width: 250, height: 100)))
     }
 
     func test_toolTipView_percentage() {
-        let toolTip =             ToolTipView(tapAction: {}, label: {
+        let toolTip = ToolTipView(tapAction: {}, label: {
             Text("tool tip text").padding()
         }, configuration:
-            ToolTipConfiguration(cornerRadius: 10,
-                                 arrowPosition: ToolTipConfiguration.ArrowPosition(midX: 0.7, alignmentType: .percentage),
-                                 arrowHeight: 7)).ignoresSafeArea()
+            ToolTipConfiguration(arrowConfiguration:
+                                    ToolTipConfiguration.ArrowConfiguration(
+                                        height: 7,
+                                        position:
+                                            ToolTipConfiguration.ArrowConfiguration.Position(
+                                                midX: 0.7, alignmentType: .percentage)),
+                                 bodyConfiguration: ToolTipConfiguration.BodyConfiguration(cornerRadius: 10))).ignoresSafeArea()
+        assertVersionedSnapshot(matching: toolTip, as: .image(layout: .fixed(width: 250, height: 100)))
+    }
+
+    func test_toolTipView_topAlignment() {
+        let toolTip = ToolTipView(tapAction: {}, label: {
+            Text("tool tip text").padding()
+        }, configuration:
+            ToolTipConfiguration(
+                alignment: .top,
+                arrowConfiguration:
+                    ToolTipConfiguration.ArrowConfiguration(
+                        height: 7,
+                        position:
+                            ToolTipConfiguration.ArrowConfiguration.Position(
+                                midX: 0.7, alignmentType: .percentage)),
+                bodyConfiguration: ToolTipConfiguration.BodyConfiguration(cornerRadius: 10))).ignoresSafeArea()
         assertVersionedSnapshot(matching: toolTip, as: .image(layout: .fixed(width: 250, height: 100)))
     }
 }
