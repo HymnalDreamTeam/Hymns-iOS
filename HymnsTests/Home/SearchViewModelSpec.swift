@@ -201,7 +201,48 @@ class SearchViewModelSpec: QuickSpec {
                 describe("clear mock invocations called from setup") {
                     beforeEach {
                         clearInvocations(on: historyStore)
-                        givenSwift(dataStore.getHymns(by: .classic)) ~> self.createNumbers(.classic)
+                        givenSwift(dataStore.getHymns(by: [.classic])) ~> self.createNumbers(.classic)
+                    }
+                    context("chinese preferred search language") {
+                        var originalPreferredSearchLanguage: Language?
+                        beforeEach {
+                            originalPreferredSearchLanguage = Language(rawValue: UserDefaults.standard.integer(forKey: "preferred_search_language"))
+                            UserDefaults.standard.setValue(Language.chinese.rawValue, forKey: "preferred_search_language")
+                            given(dataStore.getHymns(by: [.chinese, .chineseSupplement])) ~> { _  in
+                                Just([SongResultEntity(hymnType: .chinese, hymnNumber: "3"),
+                                      SongResultEntity(hymnType: .chinese, hymnNumber: "23"),
+                                      SongResultEntity(hymnType: .chinese, hymnNumber: "2"),
+                                      SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "3"),
+                                      SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "13"),
+                                      SongResultEntity(hymnType: .chinese, hymnNumber: "135"),
+                                      SongResultEntity(hymnType: .chinese, hymnNumber: "33"),
+                                      SongResultEntity(hymnType: .chinese, hymnNumber: "1"),
+                                      SongResultEntity(hymnType: .chinese, hymnNumber: "2"),
+                                      SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "2"),
+                                      SongResultEntity(hymnType: .chinese, hymnNumber: "5")]).mapError({ _ -> ErrorType in
+                                    // This will never be triggered.
+                                }).eraseToAnyPublisher()
+                            }
+                        }
+                        afterEach {
+                            originalPreferredSearchLanguage.map { UserDefaults.standard.setValue($0.rawValue, forKey: "preferred_search_language") }
+                            originalPreferredSearchLanguage = nil
+                        }
+                        describe("with numeric search parameter") {
+                            beforeEach {
+                                target.searchParameter = " 3 "
+                                sleep(1) // allow time for the debouncer to trigger.
+                            }
+                            it("song results should contain sorted matching numbers") {
+                                expect(target.songResults).to(haveCount(6))
+                                expect(target.songResults.map{$0.title}).to(equal(["Chinese 3 (Trad.)",
+                                                                                   "Chinese Supplement 3 (Trad.)",
+                                                                                   "Chinese Supplement 13 (Trad.)",
+                                                                                   "Chinese 23 (Trad.)",
+                                                                                   "Chinese 33 (Trad.)",
+                                                                                   "Chinese 135 (Trad.)"]))
+                            }
+                        }
                     }
                     describe("with numeric search parameter") {
                         beforeEach {
@@ -214,7 +255,7 @@ class SearchViewModelSpec: QuickSpec {
                         it("should be showing results") {
                             expect(target.state).to(equal(HomeResultState.results))
                         }
-                        it("song results should contain matching numbers") {
+                        it("song results should contain sorted matching numbers") {
                             expect(target.songResults).to(haveCount(2))
                             expect(target.songResults[0].title).to(equal("Hymn 198"))
                             expect(target.songResults[0].label).to(beNil())
@@ -251,7 +292,7 @@ class SearchViewModelSpec: QuickSpec {
                     }
                     context("non-classic hymn type where numbers are found") {
                         beforeEach {
-                            givenSwift(dataStore.getHymns(by: .chinese)) ~> self.createNumbers(.chinese)
+                            givenSwift(dataStore.getHymns(by: [.chinese])) ~> self.createNumbers(.chinese)
                             target.searchParameter = "ChINEsE 111 "
                             sleep(1) // allow time for the debouncer to trigger.
                         }
@@ -279,7 +320,7 @@ class SearchViewModelSpec: QuickSpec {
                     }
                     context("numbers not found") {
                         beforeEach {
-                            given(dataStore.getHymns(by: .newTune)) ~> { _  in
+                            given(dataStore.getHymns(by: [.newTune])) ~> { _  in
                                 return Just([SongResultEntity]()).mapError({ _ -> ErrorType in
                                     // This will never be triggered.
                                 }).eraseToAnyPublisher()

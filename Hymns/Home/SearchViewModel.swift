@@ -11,7 +11,7 @@ class SearchViewModel: ObservableObject {
             self.showSearchByTypeToolTip = !newValue
         }
     }
-    @AppStorage("default_search_type") var defaultSearchType: DefaultSearchType = .english
+    @AppStorage("preferred_search_language") var preferredSearchLanguage: Language = .english
 
     @Published var searchActive: Bool = false
     @Published var searchParameter = ""
@@ -96,6 +96,44 @@ class SearchViewModel: ObservableObject {
         state = .loading
     }
 
+    /// Hymn types to search for, give a certain language.
+    private func searchTypes(language: Language) -> [HymnType] {
+        switch language {
+        case .english:
+            return [.classic]
+        case .chinese:
+            // Special case to return both Chinese and Chinese supplement hymns if the language is Chinese.
+            return [.chinese, .chineseSupplement]
+        case .chineseSimplified:
+            // Special case to return both Chinese and Chinese supplement hymns if the language is Chinese.
+            return [.chineseSimplified, .chineseSupplementSimplified]
+        case .cebuano:
+            return [.cebuano]
+        case .tagalog:
+            return [.tagalog]
+        case .dutch:
+            return [.dutch]
+        case .german:
+            return [.liederbuch]
+        case .french:
+            return [.french]
+        case .spanish:
+            return [.spanish]
+        case .portuguese:
+            return [.portuguese]
+        case .korean:
+            return [.korean]
+        case .japanese:
+            return [.japanese]
+        case .indonesian:
+            return [.indonesian]
+        case .farsi:
+            return [.farsi]
+        case .russian:
+            return [.russian]
+        }
+    }
+
     private func refreshSearchResults() {
         // Changes in searchActive are taken care of already by $searchActive
         if !self.searchActive {
@@ -114,14 +152,15 @@ class SearchViewModel: ObservableObject {
                 self.fetchByHymnCode(searchParameter.trim(), searchParameter: searchParameter)
                 return
             }
-            self.fetchByHymnType(hymnType: defaultSearchType.hymnType, hymnNumber: searchParameter.trim(),
-                                 searchParameter: searchParameter)
+
+            let hymnTypes = searchTypes(language: preferredSearchLanguage)
+            fetchByHymnTypes(hymnTypes: hymnTypes, hymnNumber: searchParameter.trim(), searchParameter: searchParameter)
             return
         }
 
         if let hymnType = RegexUtil.getHymnType(searchQuery: searchParameter.trim()),
            let hymnNumber = RegexUtil.getHymnNumber(searchQuery: searchParameter.trim()) {
-            fetchByHymnType(hymnType: hymnType, hymnNumber: hymnNumber, searchParameter: searchParameter)
+            fetchByHymnTypes(hymnTypes: [hymnType], hymnNumber: hymnNumber, searchParameter: searchParameter)
             return
         }
 
@@ -159,19 +198,19 @@ class SearchViewModel: ObservableObject {
                 }
             }).store(in: &disposables)
     }
-    
-    private func fetchByHymnType(hymnType: HymnType, hymnNumber: String, searchParameter: String) {
+
+    private func fetchByHymnTypes(hymnTypes: [HymnType], hymnNumber: String, searchParameter: String) {
         label = nil
-        let hymnIdentifier = HymnIdentifier(hymnType: hymnType, hymnNumber: hymnNumber)
-        dataStore.getHymns(by: hymnIdentifier.hymnType)
+        // let hymnIdentifier = HymnIdentifier(hymnType: hymnType, hymnNumber: hymnNumber)
+        dataStore.getHymns(by: hymnTypes)
             .replaceError(with: [SongResultEntity]())
             .map({ songResults -> [SongResultViewModel] in
-                guard !hymnIdentifier.hymnNumber.isEmpty else {
+                guard !hymnNumber.isEmpty else {
                     return [SongResultViewModel]()
                 }
                 return songResults
                     .filter({ songResultEntity in
-                        songResultEntity.hymnNumber.contains(hymnIdentifier.hymnNumber)
+                        songResultEntity.hymnNumber.contains(hymnNumber)
                     }).sorted(by: { entity1, entity2 in
                         guard let number1 = entity1.hymnNumber.toInteger else {
                             return false

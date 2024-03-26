@@ -46,7 +46,7 @@ extension HymnType {
         partialResult[hymnType.abbreviatedValue.lowercased()] = hymnType
         return partialResult
     }.merging([
-        "classic": classic, "hymn": classic,
+        "en": classic, "english": classic, "classic": classic, "hymn": classic,
         "new tune": .newTune,
         "new song": .newSong,
         "chidren": .children,
@@ -320,7 +320,7 @@ extension HymnType {
     }
 }
 
-enum Language {
+enum Language: Int {
     case english
     case dutch
     case german
@@ -336,6 +336,12 @@ enum Language {
     case farsi
     case russian
     case portuguese
+
+    static let allValues = [
+        english, chinese, chineseSimplified, cebuano,
+        tagalog, dutch, german, french, spanish, portuguese,
+        korean, japanese, indonesian, farsi, russian
+    ]
 
     var displayTitle: String {
         switch self {
@@ -371,4 +377,8 @@ enum Language {
             return NSLocalizedString("Portuguese", comment: "Display name of the 'Portuguese' language.")
         }
     }
+}
+
+extension Language: Identifiable {
+    var id: String { String(rawValue) }
 }

@@ -8,16 +8,23 @@ import XCTest
 class SettingsSnapshots: XCTestCase {
 
     var viewModel: SettingsViewModel!
+    
+    private var originalShowPreferredSearchLanguageValue: Bool?
 
     override func setUp() {
         super.setUp()
+        originalShowPreferredSearchLanguageValue = UserDefaults.standard.bool(forKey: "show_preferred_search_language_announcement")
+        UserDefaults.standard.setValue(false, forKey: "show_preferred_search_language_announcement")
+
         viewModel = SettingsViewModel()
+    }
+    
+    override func tearDown() {
+        originalShowPreferredSearchLanguageValue.map { UserDefaults.standard.setValue($0, forKey: "show_preferred_search_language_announcement") }
+        originalShowPreferredSearchLanguageValue = nil
     }
 
     func test_settings_withDonationOption() {
-        let originalValue = UserDefaults.standard.bool(forKey: "show_default_search_type_announcement")
-        UserDefaults.standard.setValue(false, forKey: "show_default_search_type_announcement")
-
         let systemUtil = SystemUtilImpl()
         systemUtil.donationProducts = [MockDonation()]
         viewModel = SettingsViewModel(systemUtil: systemUtil)
@@ -25,32 +32,22 @@ class SettingsSnapshots: XCTestCase {
         assertVersionedSnapshot(
             matching: SettingsView(viewModel: viewModel).ignoresSafeArea(),
             as: .swiftUiImage())
-
-        UserDefaults.standard.setValue(originalValue, forKey: "show_default_search_type_announcement")
     }
 
     func test_settings_withoutDonationOption() {
-        let originalValue = UserDefaults.standard.bool(forKey: "show_default_search_type_announcement")
-        UserDefaults.standard.setValue(false, forKey: "show_default_search_type_announcement")
-        
         viewModel.settings = [.privacyPolicy, .feedback(.constant(nil)), .aboutUs]
         assertVersionedSnapshot(
             matching: SettingsView(viewModel: viewModel).ignoresSafeArea(),
             as: .swiftUiImage())
-
-        UserDefaults.standard.setValue(originalValue, forKey: "show_default_search_type_announcement")
     }
 
     func test_settings_withDefaultLangaugeTooltip() {
-        let originalValue = UserDefaults.standard.bool(forKey: "show_default_search_type_announcement")
-        UserDefaults.standard.setValue(true, forKey: "show_default_search_type_announcement")
+        UserDefaults.standard.setValue(true, forKey: "show_preferred_search_language_announcement")
 
         viewModel.settings = [.privacyPolicy, .feedback(.constant(nil)), .aboutUs]
         assertVersionedSnapshot(
             matching: SettingsView(viewModel: viewModel).ignoresSafeArea(),
             as: .swiftUiImage())
-
-        UserDefaults.standard.setValue(originalValue, forKey: "show_default_search_type_announcement")
     }
 }
 

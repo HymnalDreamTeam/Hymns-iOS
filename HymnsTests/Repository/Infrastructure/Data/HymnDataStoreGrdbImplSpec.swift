@@ -187,6 +187,14 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                         hymnIdentifier = HymnIdentifier(hymnType: .classic, hymnNumber: "5")
                         songId = target.saveHymn(HymnEntityBuilder(id: 9).title("classic 5").build())
                         target.saveHymn(HymnIdEntity(hymnIdentifier: hymnIdentifier, songId: songId!))
+
+                        hymnIdentifier = HymnIdentifier(hymnType: .chineseSupplementSimplified, hymnNumber: "3")
+                        songId = target.saveHymn(HymnEntityBuilder(id: 10).title("chineseSupplementSimplified 3").build())
+                        target.saveHymn(HymnIdEntity(hymnIdentifier: hymnIdentifier, songId: songId!))
+
+                        hymnIdentifier = HymnIdentifier(hymnType: .tagalog, hymnNumber: "2")
+                        songId = target.saveHymn(HymnEntityBuilder(id: 11).title("tagalog 2").build())
+                        target.saveHymn(HymnIdEntity(hymnIdentifier: hymnIdentifier, songId: songId!))
                     }
                     context("hymn type exists") {
                         it("should return hymn numbers of that type") {
@@ -206,6 +214,34 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                                         SongResultEntity(hymnType: .classic, hymnNumber: "3", title: "classic 3"),
                                         SongResultEntity(hymnType: .classic, hymnNumber: "4", title: "classic 4"),
                                         SongResultEntity(hymnType: .classic, hymnNumber: "5", title: "classic 5")]))
+                                })
+                            testQueue.sync {}
+                            testQueue.sync {}
+                            testQueue.sync {}
+                            testQueue.sync {}
+                            await self.fulfillment(of: [completion, value], timeout: testTimeout)
+                            publisher.cancel()
+                        }
+                    }
+                    context("hymn types exists") {
+                        it("should return hymn numbers of those types") {
+                            let completion = XCTestExpectation(description: "completion received")
+                            let value = XCTestExpectation(description: "value received")
+                            let publisher = target.getHymns(by: [.classic, .chineseSupplementSimplified])
+                                .print(self.description)
+                                .receive(on: testQueue)
+                                .sink(receiveCompletion: { state in
+                                    completion.fulfill()
+                                    expect(state).to(equal(.finished))
+                                }, receiveValue: { entities in
+                                    value.fulfill()
+                                    expect(entities).to(equal([
+                                        SongResultEntity(hymnType: .classic, hymnNumber: "1151",
+                                                         title: "Hymn: Drink! A river pure and clear that\'s flowing from the throne"),
+                                        SongResultEntity(hymnType: .classic, hymnNumber: "3", title: "classic 3"),
+                                        SongResultEntity(hymnType: .classic, hymnNumber: "4", title: "classic 4"),
+                                        SongResultEntity(hymnType: .classic, hymnNumber: "5", title: "classic 5"),
+                                        SongResultEntity(hymnType: .chineseSupplementSimplified, hymnNumber: "3", title: "chineseSupplementSimplified 3"),]))
                                 })
                             testQueue.sync {}
                             testQueue.sync {}

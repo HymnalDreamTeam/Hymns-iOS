@@ -18,7 +18,6 @@ class SongResultsRepositoryImpl: SongResultsRepository {
     private let mainQueue: DispatchQueue
     private let service: HymnalApiService
     private let systemUtil: SystemUtil
-    private let userDefaultsManager: UserDefaultsManager
 
     private var disposables = Set<AnyCancellable>()
 
@@ -26,20 +25,17 @@ class SongResultsRepositoryImpl: SongResultsRepository {
          dataStore: HymnDataStore = Resolver.resolve(),
          mainQueue: DispatchQueue = Resolver.resolve(name: "main"),
          service: HymnalApiService = Resolver.resolve(),
-         systemUtil: SystemUtil = Resolver.resolve(),
-         userDefaultsManager: UserDefaultsManager = Resolver.resolve()) {
+         systemUtil: SystemUtil = Resolver.resolve()) {
         self.converter = converter
         self.dataStore = dataStore
         self.mainQueue = mainQueue
         self.service = service
         self.systemUtil = systemUtil
-        self.userDefaultsManager = userDefaultsManager
     }
 
     func search(searchParameter: String, pageNumber: Int) -> AnyPublisher<UiSongResultsPage, ErrorType> {
         SearchPublisher(pageNumber: pageNumber, searchParameter: searchParameter, converter: converter,
-                        dataStore: dataStore, disposables: &disposables, service: service, systemUtil: systemUtil,
-                        userDefaultsManager: userDefaultsManager)
+                        dataStore: dataStore, disposables: &disposables, service: service, systemUtil: systemUtil)
         .eraseToAnyPublisher()
     }
 
@@ -60,11 +56,9 @@ private class SearchPublisher: NetworkBoundPublisher {
     private let searchParameter: String
     private let service: HymnalApiService
     private let systemUtil: SystemUtil
-    private let userDefaultsManager: UserDefaultsManager
 
     fileprivate init(pageNumber: Int, searchParameter: String, converter: Converter, dataStore: HymnDataStore,
-                     disposables: inout Set<AnyCancellable>, service: HymnalApiService, systemUtil: SystemUtil,
-                     userDefaultsManager: UserDefaultsManager) {
+                     disposables: inout Set<AnyCancellable>, service: HymnalApiService, systemUtil: SystemUtil) {
         self.converter = converter
         self.dataStore = dataStore
         self.disposables = disposables
@@ -72,17 +66,17 @@ private class SearchPublisher: NetworkBoundPublisher {
         self.searchParameter = searchParameter
         self.service = service
         self.systemUtil = systemUtil
-        self.userDefaultsManager = userDefaultsManager
     }
 
     func createSubscription<S>(_ subscriber: S) -> Subscription where S: Subscriber, S.Failure == ErrorType, S.Input == UIResultType {
         SearchSubscription(pageNumber: pageNumber, searchParameter: searchParameter, converter: converter, dataStore: dataStore,
-                           disposables: &disposables, service: service, subscriber: subscriber, systemUtil: systemUtil,
-                           userDefaultsManager: userDefaultsManager)
+                           disposables: &disposables, service: service, subscriber: subscriber, systemUtil: systemUtil)
     }
 }
 
 private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscription where SubscriberType.Input == UiSongResultsPage, SubscriberType.Failure == ErrorType {
+
+    @AppStorage("preferred_search_language") var preferredSearchLanguage: Language = .english
 
     private let analytics: FirebaseLogger
     private let converter: Converter
@@ -91,15 +85,13 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
     private let searchParameter: String
     private let service: HymnalApiService
     private let systemUtil: SystemUtil
-    private let userDefaultsManager: UserDefaultsManager
 
     var subscriber: SubscriberType?
     var disposables: Set<AnyCancellable>
 
     fileprivate init(pageNumber: Int, searchParameter: String, analytics: FirebaseLogger = Resolver.resolve(),
                      converter: Converter, dataStore: HymnDataStore, disposables: inout Set<AnyCancellable>,
-                     service: HymnalApiService, subscriber: SubscriberType, systemUtil: SystemUtil,
-                     userDefaultsManager: UserDefaultsManager) {
+                     service: HymnalApiService, subscriber: SubscriberType, systemUtil: SystemUtil) {
         // okay to inject analytics because wse aren't mocking it in the unit tests
         self.analytics = analytics
         self.converter = converter
@@ -110,7 +102,6 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
         self.service = service
         self.subscriber = subscriber
         self.systemUtil = systemUtil
-        self.userDefaultsManager = userDefaultsManager
     }
 
     func saveToDatabase(databaseResult: ([SongResultEntity], Bool)?, convertedNetworkResult: ([SongResultEntity], Bool)) {
@@ -168,12 +159,12 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
             return 0
         }
 
-        let isDefaultSearchLanguage = entity.hymnType.language == userDefaultsManager.defaultSearchType.language
+        let isPreferredSearchLanguage = entity.hymnType.language == preferredSearchLanguage
 
         // Weight the match of the title twice as much as the match of the lyrics.
         // If the hymn is the same as the default search language, then give it extra weight. This has the
         //   effect of bubbling the songs of the default search type to the top.
-        return UInt64(matchArray[0]) * 2 + UInt64(matchArray[1]) + UInt64(isDefaultSearchLanguage ? 3 : 0)
+        return UInt64(matchArray[0]) * 2 + UInt64(matchArray[1]) + UInt64(isPreferredSearchLanguage ? 3 : 0)
     }
 
     func createNetworkCall() -> AnyPublisher<SongResultsPage, ErrorType> {

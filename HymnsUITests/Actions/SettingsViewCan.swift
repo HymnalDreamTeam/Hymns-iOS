@@ -46,9 +46,9 @@ public class SettingsHymnViewCan: BaseViewCan {
     }
 
     public func checkAndDismissToolTip() -> SettingsHymnViewCan {
-        XCTAssertTrue(app.staticTexts["You can change the default language in search!"].exists)
-        app.staticTexts["You can change the default language in search!"].tap()
-        XCTAssertFalse(app.staticTexts["You can change the default language in search!"].exists)
+        XCTAssertTrue(app.staticTexts["You can change your preferred search language!"].exists)
+        app.staticTexts["You can change your preferred search language!"].tap()
+        XCTAssertFalse(app.staticTexts["You can change your preferred search language!"].exists)
         return self
     }
 

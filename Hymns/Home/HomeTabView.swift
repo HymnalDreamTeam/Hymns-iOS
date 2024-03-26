@@ -2,7 +2,7 @@ import SwiftUI
 
 struct HomeTabView: View {
 
-    @AppStorage("show_default_search_type_announcement") var showDefaultSearchTypeAnnouncement = true
+    @AppStorage("show_preferred_search_language_announcement") var showPreferredSearchLanguageAnnouncement = true
 
     @Binding var selectedTab: HomeTab
 
@@ -48,7 +48,7 @@ struct HomeTabView: View {
                     .accessibility(label: HomeTab.settings.a11yLabel)
                     .badge(shouldShow: Binding(get: {
                         // Can add future values here with OR operator (||)
-                        showDefaultSearchTypeAnnouncement
+                        showPreferredSearchLanguageAnnouncement
                     }, set: { value in
                         // Do nothing, since this should only ever read the value, not write it.
                     }))

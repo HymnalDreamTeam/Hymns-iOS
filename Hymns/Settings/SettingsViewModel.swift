@@ -32,7 +32,7 @@ class SettingsViewModel: ObservableObject {
         })
 
         settings = [
-            .repeatChorus(repeatChorusViewModel), .defaultSearchType,
+            .repeatChorus(repeatChorusViewModel), .preferredSearchLanguage,
             .clearHistory(clearHistoryViewModel), .aboutUs, .feedback(result), .privacyPolicy]
 
         if !systemUtil.donationProducts.isEmpty {
@@ -56,7 +56,7 @@ class SettingsViewModel: ObservableObject {
 
 enum SettingsModel {
     case repeatChorus(RepeatChorusViewModel)
-    case defaultSearchType
+    case preferredSearchLanguage
     case clearHistory(SimpleSettingViewModel)
     case aboutUs
     case feedback(Binding<Result<SettingsToastItem, Error>?>)
@@ -86,8 +86,8 @@ extension SettingsModel {
             return SimpleSettingView(viewModel: viewModel).eraseToAnyView()
         case .donate(let coffeeDonations, let resultBinding):
             return DonationButtonView(coffeeDonations: coffeeDonations, resultBinding: resultBinding).eraseToAnyView()
-        case .defaultSearchType:
-            return DefaultSearchTypeView().eraseToAnyView()
+        case .preferredSearchLanguage:
+            return PreferredSearchLanguageView().eraseToAnyView()
         }
     }
 }
@@ -111,7 +111,7 @@ extension SettingsModel: Identifiable {
             return 6
         case .donate:
             return 7
-        case .defaultSearchType:
+        case .preferredSearchLanguage:
             return 8
         }
     }

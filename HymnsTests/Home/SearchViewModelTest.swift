@@ -80,7 +80,7 @@ class SearchViewModelTest: XCTestCase {
     }
 
     func test_searchActive_numericSearchParameter() {
-        givenSwift(dataStore.getHymns(by: .classic)) ~> self.createNumbers(.classic)
+        givenSwift(dataStore.getHymns(by: [.classic])) ~> self.createNumbers(.classic)
 
         target.searchActive = true
         clearInvocations(on: historyStore) // clear invocations called from activating search
@@ -97,7 +97,7 @@ class SearchViewModelTest: XCTestCase {
     }
 
     func test_searchActive_invalidNumericSearchParameter() {
-        givenSwift(dataStore.getHymns(by: .classic)) ~> self.createNumbers(.classic)
+        givenSwift(dataStore.getHymns(by: [.classic])) ~> self.createNumbers(.classic)
 
         target.searchActive = true
         clearInvocations(on: historyStore) // clear invocations called from activating search

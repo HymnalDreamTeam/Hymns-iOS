@@ -55,7 +55,7 @@ class ToolTipSnapshots: XCTestCase {
             Text("tool tip text").padding()
         }, configuration:
             ToolTipConfiguration(
-                alignment: .top,
+                alignment: ToolTipConfiguration.Alignment(horizontal: .leading, vertical: .top),
                 arrowConfiguration:
                     ToolTipConfiguration.ArrowConfiguration(
                         height: 7,

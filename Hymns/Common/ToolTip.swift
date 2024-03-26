@@ -23,22 +23,18 @@ struct ToolTipModifier<Label: View>: ViewModifier {
             .background(GeometryReader { geo in
                 // Use invisible background to calculate and save the container's size
                 Color.clear.preference(key: ToolTipContainerKey.self, value: geo.size)
-            }).alignmentGuide(.toolTipHorizontalAlignment, computeValue: { dimens -> CGFloat in
-                dimens[HorizontalAlignment.center] // middle of tool tip to middle of view
-            })
-            .alignmentGuide(configuration.verticalAlignmentGuide.toolTipAlignment, computeValue: { dimens -> CGFloat in
-                dimens[configuration.verticalAlignmentGuide.viewDimensionAlignment]
+            }).alignmentGuide(configuration.alignment.verticalAlignmentGuide.toolTipAlignment, computeValue: { dimens -> CGFloat in
+                dimens[configuration.alignment.verticalAlignmentGuide.viewDimensionAlignment]
             }).overlayPreferenceValue(
                 ToolTipContainerKey.self,
-                alignment: Alignment(horizontal: .toolTipHorizontalAlignment,
-                                     vertical: configuration.verticalAlignmentGuide.toolTipAlignment),
+                alignment: Alignment(horizontal: configuration.alignment.horizontal,
+                                     vertical: configuration.alignment.verticalAlignmentGuide.toolTipAlignment),
                 { containerSize in
                     if shouldShow {
                         ToolTipView(tapAction: tapAction, label: label, configuration: configuration)
-                            .alignmentGuide(.toolTipHorizontalAlignment, computeValue: { dimens -> CGFloat in
-                                dimens[HorizontalAlignment.center]
-                            }).frame(width: configuration.bodyConfiguration.size(containerSize: containerSize).width,
-                                     height: configuration.bodyConfiguration.size(containerSize: containerSize).height)
+                            .frame(maxWidth: configuration.bodyConfiguration.size(containerSize: containerSize).width,
+                                   maxHeight: configuration.bodyConfiguration.size(containerSize: containerSize).height,
+                                   alignment: Alignment(horizontal: configuration.alignment.horizontal, vertical: .center))
                     }
                 }).zIndex(1)
     }
@@ -163,7 +159,7 @@ struct ToolTipConfiguration {
     let arrowConfiguration: ArrowConfiguration
     let bodyConfiguration: BodyConfiguration
 
-    init(alignment: Alignment = .bottom, 
+    init(alignment: Alignment = Alignment(horizontal: .center, vertical: .bottom),
          arrowConfiguration: ArrowConfiguration,
          bodyConfiguration: BodyConfiguration) {
         self.alignment = alignment
@@ -171,18 +167,23 @@ struct ToolTipConfiguration {
         self.bodyConfiguration = bodyConfiguration
     }
 
-    enum Alignment {
-        case top // Show tool tip above the content view
-        case bottom // Show tool tip below the content view
-    }
+    struct Alignment {
+        let horizontal: HorizontalAlignment
+        let vertical: ToolTipVerticalAlignment
 
-    /// Computed property for how to align the tool tip with respect to the content.
-    var verticalAlignmentGuide: (toolTipAlignment: VerticalAlignment, viewDimensionAlignment: VerticalAlignment) {
-        switch alignment {
-        case .top:
-            return (toolTipAlignment: .bottom, viewDimensionAlignment: .top) // align top of tool tip to bottom of view
-        case .bottom:
-            return (toolTipAlignment: .top, viewDimensionAlignment: .bottom) // align bottom of tool tip to top of view
+        enum ToolTipVerticalAlignment {
+            case top // Show tool tip above the content view
+            case bottom // Show tool tip below the content view
+        }
+
+        /// Computed property for how to align the tool tip with respect to the content.
+        var verticalAlignmentGuide: (toolTipAlignment: VerticalAlignment, viewDimensionAlignment: VerticalAlignment) {
+            switch vertical {
+            case .top:
+                return (toolTipAlignment: .bottom, viewDimensionAlignment: .top) // align top of tool tip to bottom of view
+            case .bottom:
+                return (toolTipAlignment: .top, viewDimensionAlignment: .bottom) // align bottom of tool tip to top of view
+            }
         }
     }
 
@@ -278,7 +279,7 @@ struct ToolTipView<Label>: View where Label: View {
             self.label.foregroundColor(.white)
         }).background( GeometryReader { geometry in
             ToolTipShape(cornerRadius: configuration.bodyConfiguration.cornerRadius,
-                         direction: configuration.alignment == .bottom ? .up : .down,
+                         direction: configuration.alignment.vertical == .bottom ? .up : .down,
                          toolTipMidX: configuration.arrowConfiguration.position.midX(containerWidth: geometry.size.width),
                          toolTipHeight: configuration.arrowConfiguration.height).fill(Color.accentColor)
         })
@@ -302,8 +303,8 @@ struct ToolTipView_Previews: PreviewProvider {
             ToolTipView(tapAction: {}, label: {
                 Text("%_PREVIEW_% tool tip text").padding()
             }, configuration: ToolTipConfiguration(
-                arrowConfiguration: ToolTipConfiguration.ArrowConfiguration(height: 7, 
-                                                                            position: 
+                arrowConfiguration: ToolTipConfiguration.ArrowConfiguration(height: 7,
+                                                                            position:
                                                                                 ToolTipConfiguration.ArrowConfiguration.Position(
                                                                                     midX: 0.7, alignmentType: .percentage)),
                 bodyConfiguration: ToolTipConfiguration.BodyConfiguration(cornerRadius: 10)
@@ -312,7 +313,7 @@ struct ToolTipView_Previews: PreviewProvider {
             ToolTipView(tapAction: {}, label: {
                 Text("%_PREVIEW_% tool tip text").padding()
             }, configuration: ToolTipConfiguration(
-                alignment: .top,
+                alignment: ToolTipConfiguration.Alignment(horizontal: .leading, vertical: .top),
                 arrowConfiguration: ToolTipConfiguration.ArrowConfiguration(height: 7,
                                                                             position:
                                                                                 ToolTipConfiguration.ArrowConfiguration.Position(
@@ -328,7 +329,7 @@ struct ToolTipView_Previews: PreviewProvider {
                                                                                 ToolTipConfiguration.ArrowConfiguration.Position(
                                                                                     midX: 0.5, alignmentType: .percentage)),
                 bodyConfiguration: ToolTipConfiguration.BodyConfiguration(cornerRadius: 10,
-                                                                          size: 
+                                                                          size:
                                                                             ToolTipConfiguration.BodyConfiguration.Size(
                                                                                 height: 0.5, width: 0.5, sizeType: .relative))
             )).previewDisplayName("half-sized")
@@ -336,17 +337,3 @@ struct ToolTipView_Previews: PreviewProvider {
     }
 }
 #endif
-
-extension HorizontalAlignment {
-    private enum ToolTipHorizontal: AlignmentID {
-        static func defaultValue(in dimens: ViewDimensions) -> CGFloat {
-            dimens[.leading]
-        }
-    }
-
-    static let toolTipHorizontalAlignment = HorizontalAlignment(ToolTipHorizontal.self)
-}
-
-extension Alignment {
-    static let toolTipAlignment = Alignment(horizontal: .toolTipHorizontalAlignment, vertical: .top)
-}
