@@ -33,7 +33,7 @@ class SettingsViewModel: ObservableObject {
 
         settings = [
             .repeatChorus(repeatChorusViewModel), .preferredSearchLanguage,
-            .clearHistory(clearHistoryViewModel), .aboutUs, .feedback(result), .privacyPolicy]
+            .aboutUs, .feedback(result), .privacyPolicy, .clearHistory(clearHistoryViewModel)]
 
         if !systemUtil.donationProducts.isEmpty {
             settings?.append(.donate(coffeeDonations: systemUtil.donationProducts, resultBinding: result))
