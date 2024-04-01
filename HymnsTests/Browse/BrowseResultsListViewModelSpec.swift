@@ -456,6 +456,7 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                                       SongResultEntity(hymnType: .chinese, hymnNumber: "-9", title: "negative hymn number"),
                                       SongResultEntity(hymnType: .chinese, hymnNumber: "3", title: "Third song"),
                                       SongResultEntity(hymnType: .chinese, hymnNumber: "abcd333", title: "No leading numbers"),
+                                      SongResultEntity(hymnType: .chinese, hymnNumber: "300", title: nil),
                                       SongResultEntity(hymnType: .chinese, hymnNumber: "11", title: "11")])
                                 .mapError({ _ -> ErrorType in
                                     // This will never be triggered.
@@ -473,14 +474,15 @@ class BrowseResultsListViewModelSpec: QuickSpec {
                         }
                         it("sort the results") {
                             expect(target.songResults).toNot(beNil())
-                            expect(target.songResults!).to(haveCount(7))
+                            expect(target.songResults!).to(haveCount(8))
                             expect(target.songResults![0].title).to(equal("3. Third song"))
                             expect(target.songResults![1].title).to(equal("5. 5th song"))
                             expect(target.songResults![2].title).to(equal("11. 11"))
                             expect(target.songResults![3].title).to(equal("11b. non numeric number"))
                             expect(target.songResults![4].title).to(equal("12. Twelve"))
-                            expect(target.songResults![5].title).to(equal("-9. negative hymn number"))
-                            expect(target.songResults![6].title).to(equal("abcd333. No leading numbers"))
+                            expect(target.songResults![5].title).to(equal("Chinese 300 (Trad.)"))
+                            expect(target.songResults![6].title).to(equal("-9. negative hymn number"))
+                            expect(target.songResults![7].title).to(equal("abcd333. No leading numbers"))
                         }
                     }
                     context("fetch songbase") {

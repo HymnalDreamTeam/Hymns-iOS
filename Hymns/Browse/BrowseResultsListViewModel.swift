@@ -159,12 +159,15 @@ class BrowseResultsListViewModel: ObservableObject {
                         }
                     }).compactMap({ songResult -> SongResultViewModel? in
                         let hymnIdentifier = HymnIdentifier(hymnType: songResult.hymnType, hymnNumber: songResult.hymnNumber)
-                        guard let title = songResult.title else {
-                            return nil
+                        var title = ""
+                        if let songTitle = songResult.title {
+                            title = "\(songResult.hymnNumber). \(songTitle)"
+                        } else {
+                            title = String(format: hymnType.displayLabel, songResult.hymnNumber)
                         }
                         let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: hymnIdentifier)).eraseToAnyView()
                         return SongResultViewModel(stableId: String(describing: hymnIdentifier),
-                                                   title: "\(songResult.hymnNumber). \(title)",
+                                                   title: title,
                                                    destinationView: destination)
                     })
             })
