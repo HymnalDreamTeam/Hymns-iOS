@@ -103,7 +103,7 @@ class ConverterImpl: Converter {
         }
         return !songLinks.isEmpty ? songLinks : nil
     }
-    
+
     func toTitle(hymnIdentifier: HymnIdentifier, title: String?) -> String {
         let defaultTitle = hymnIdentifier.displayTitle
         guard let title = title else {

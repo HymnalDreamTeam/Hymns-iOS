@@ -38,7 +38,7 @@ class PreferredSearchLanguageSnapshots: XCTestCase {
             matching: PreferredSearchLanguageView().ignoresSafeArea(),
             as: .swiftUiImage())
     }
-    
+
     func test_showPreferredSearchLanguageAnnouncement() {
         UserDefaults.standard.setValue(true, forKey: "show_preferred_search_language_announcement")
         assertVersionedSnapshot(

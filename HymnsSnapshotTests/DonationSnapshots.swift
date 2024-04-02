@@ -8,10 +8,6 @@ class DonationHymnSnapshots: XCTestCase {
 
     var viewModel: DonationViewModel!
 
-    override func setUp() {
-        super.setUp()
-    }
-
     func test_button() {
         assertVersionedSnapshot(
             matching: DonationButtonView(coffeeDonations: [], resultBinding: .constant(nil)).ignoresSafeArea(),

@@ -224,9 +224,9 @@ class SearchViewModel: ObservableObject {
                         let stableId = String(describing: identifier)
                         let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: identifier, storeInHistoryStore: true)).eraseToAnyView()
                         if let title = songResultEntity.title {
-                            return SongResultViewModel(stableId: stableId, title: title, label: identifier.displayTitle,destinationView: destination)
+                            return SongResultViewModel(stableId: stableId, title: title, label: identifier.displayTitle, destinationView: destination)
                         } else {
-                            return SongResultViewModel(stableId: stableId, title: identifier.displayTitle,destinationView: destination)
+                            return SongResultViewModel(stableId: stableId, title: identifier.displayTitle, destinationView: destination)
                         }
                     }
 

@@ -24,7 +24,7 @@ class SongResultViewModelSpec: QuickSpec {
                 expect(viewModel1).toNot(equal(viewModel2))
             }
             it("should not be equal if they have the same different stable ids but different labels") {
-                let viewModel1 = SongResultViewModel(stableId: "empty title 1 view", title: "title 1", label: "label 1", 
+                let viewModel1 = SongResultViewModel(stableId: "empty title 1 view", title: "title 1", label: "label 1",
                                                      destinationView: EmptyView().eraseToAnyView())
                 let viewModel2 = SongResultViewModel(stableId: "empty title 1 view", title: "title 1", label: "label 2",
                                                      destinationView: EmptyView().eraseToAnyView())

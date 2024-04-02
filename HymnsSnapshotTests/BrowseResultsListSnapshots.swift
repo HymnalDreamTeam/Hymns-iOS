@@ -8,10 +8,6 @@ class BrowseResultsListSnapshots: XCTestCase {
 
     var viewModel: BrowseResultsListViewModel!
 
-    override func setUp() {
-        super.setUp()
-    }
-
     func test_loading() {
         viewModel = BrowseResultsListViewModel(tag: UiTag(title: "Best songs", color: .none))
         assertVersionedSnapshot(

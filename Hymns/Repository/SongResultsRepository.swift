@@ -7,8 +7,8 @@ import SwiftUI
  * Repository to fetch a list of songs results, both from local storage and from the network.
  */
 protocol SongResultsRepository {
-    func search(searchParameter: String, pageNumber: Int)  -> AnyPublisher<UiSongResultsPage, ErrorType>
-    func search(hymnCode: String)  -> AnyPublisher<[SongResultEntity], ErrorType>
+    func search(searchParameter: String, pageNumber: Int) -> AnyPublisher<UiSongResultsPage, ErrorType>
+    func search(hymnCode: String) -> AnyPublisher<[SongResultEntity], ErrorType>
 }
 
 class SongResultsRepositoryImpl: SongResultsRepository {
@@ -39,7 +39,7 @@ class SongResultsRepositoryImpl: SongResultsRepository {
         .eraseToAnyPublisher()
     }
 
-    func search(hymnCode: String)  -> AnyPublisher<[SongResultEntity], ErrorType> {
+    func search(hymnCode: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
         dataStore.getResultsBy(hymnCode: hymnCode)
     }
 }

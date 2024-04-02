@@ -6,10 +6,6 @@ import XCTest
 // https://troz.net/post/2020/swiftui_snapshots/
 class ToolTipSnapshots: XCTestCase {
 
-    override func setUp() {
-        super.setUp()
-    }
-
     func test_toolTipShape_filled() {
         assertVersionedSnapshot(
             matching: ToolTipShape(cornerRadius: 15, direction: .up, toolTipMidX: 300).fill().ignoresSafeArea(),

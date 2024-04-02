@@ -6,7 +6,7 @@ class Tag: Object, Identifiable {
     @objc dynamic var songTitle: String!
     @objc dynamic var tag: String!
 
-    //https://stackoverflow.com/questions/29123245/using-enum-as-property-of-realm-model
+    // https://stackoverflow.com/questions/29123245/using-enum-as-property-of-realm-model
     @objc private dynamic var privateTagColor: Int = TagColor.none.rawValue
     var color: TagColor {
         get { return TagColor(rawValue: privateTagColor)! }

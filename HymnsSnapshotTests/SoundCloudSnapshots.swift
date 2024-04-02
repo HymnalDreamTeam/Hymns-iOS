@@ -6,10 +6,6 @@ import XCTest
 // https://troz.net/post/2020/swiftui_snapshots/
 class SoundCloudSnapshots: XCTestCase {
 
-    override func setUp() {
-        super.setUp()
-    }
-
     func test_soundCloudPlayer() {
         var published = Published<String?>(initialValue: nil)
         let viewModel = SoundCloudPlayerViewModel(dialogModel: .constant(nil), title: published.projectedValue)

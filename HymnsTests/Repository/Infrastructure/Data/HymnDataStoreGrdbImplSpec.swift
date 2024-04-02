@@ -241,7 +241,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                                         SongResultEntity(hymnType: .classic, hymnNumber: "3", title: "classic 3"),
                                         SongResultEntity(hymnType: .classic, hymnNumber: "4", title: "classic 4"),
                                         SongResultEntity(hymnType: .classic, hymnNumber: "5", title: "classic 5"),
-                                        SongResultEntity(hymnType: .chineseSupplementSimplified, hymnNumber: "3", title: "chineseSupplementSimplified 3"),]))
+                                        SongResultEntity(hymnType: .chineseSupplementSimplified, hymnNumber: "3", title: "chineseSupplementSimplified 3") ]))
                                 })
                             testQueue.sync {}
                             testQueue.sync {}

@@ -12,7 +12,7 @@ struct MarqueeText: View {
         self.autoReverse = autoReverse
     }
 
-    var body : some View {
+    var body: some View {
         // Create an empty view so we can use geometry reader without it taking up a bunch of vertical space
         Text("")
             .padding([.vertical, .trailing]).maxWidth(alignment: .leading)

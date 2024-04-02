@@ -8,10 +8,6 @@ class TagSheetSnapshots: XCTestCase {
 
     var viewModel: TagSheetViewModel!
 
-    override func setUp() {
-        super.setUp()
-    }
-
     func test_noTags() {
         viewModel = TagSheetViewModel(hymnToDisplay: cupOfChrist_identifier)
         assertVersionedSnapshot(

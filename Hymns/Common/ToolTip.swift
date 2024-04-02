@@ -28,8 +28,7 @@ struct ToolTipModifier<Label: View>: ViewModifier {
             }).overlayPreferenceValue(
                 ToolTipContainerKey.self,
                 alignment: Alignment(horizontal: configuration.alignment.horizontal,
-                                     vertical: configuration.alignment.verticalAlignmentGuide.toolTipAlignment),
-                { containerSize in
+                                     vertical: configuration.alignment.verticalAlignmentGuide.toolTipAlignment), { containerSize in
                     if shouldShow {
                         ToolTipView(tapAction: tapAction, label: label, configuration: configuration)
                             .frame(maxWidth: configuration.bodyConfiguration.size(containerSize: containerSize).width,
@@ -118,7 +117,7 @@ struct ToolTipShape: Shape {
                 path.addLine(to: CGPoint(x: toolTipMidX + toolTipHeight, y: height)) // Tool tip caret
                 path.addLine(to: CGPoint(x: width - cornerRadius, y: height))
             }
-            
+
             // Bottom line
             path.addLine(to: CGPoint(x: cornerRadius, y: height))
 
@@ -200,7 +199,7 @@ struct ToolTipConfiguration {
 
             /// What the horizontal midpoint of the tool tip arrow refers to.
             private let alignmentType: AlignmentType
-            
+
             init(midX: CGFloat, alignmentType: AlignmentType) {
                 self.midX = midX
                 self.alignmentType = alignmentType
@@ -226,7 +225,7 @@ struct ToolTipConfiguration {
             }
         }
     }
-    
+
     /// Configuration determining the size and position of the body of the tool tip.
     struct BodyConfiguration {
         let cornerRadius: CGFloat
@@ -293,10 +292,10 @@ struct ToolTipView_Previews: PreviewProvider {
             ToolTipView(tapAction: {}, label: {
                 Text("%_PREVIEW_% tool tip text").padding()
             }, configuration: ToolTipConfiguration(
-                arrowConfiguration: ToolTipConfiguration.ArrowConfiguration(height: 7, 
-                                                                            position: 
+                arrowConfiguration: ToolTipConfiguration.ArrowConfiguration(height: 7,
+                                                                            position:
                                                                                 ToolTipConfiguration.ArrowConfiguration.Position(
-                                                                                    midX: 30,alignmentType: .offset)),
+                                                                                    midX: 30, alignmentType: .offset)),
                 bodyConfiguration: ToolTipConfiguration.BodyConfiguration(cornerRadius: 10)
             )).previewDisplayName("offset arrow positioning")
 

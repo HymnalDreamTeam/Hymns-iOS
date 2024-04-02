@@ -101,7 +101,7 @@ class BrowseScripturesViewModel: ObservableObject {
             .receive(on: mainQueue)
             .sink(receiveCompletion: { state in
                 switch state {
-                case .failure :
+                case .failure:
                     self.scriptures = nil
                 case .finished:
                     break

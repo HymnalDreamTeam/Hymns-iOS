@@ -6,10 +6,6 @@ import XCTest
 // https://troz.net/post/2020/swiftui_snapshots/
 class ToastSnapshots: XCTestCase {
 
-    override func setUp() {
-        super.setUp()
-    }
-
     func test_top() {
         let toast =
             Text("Content here")

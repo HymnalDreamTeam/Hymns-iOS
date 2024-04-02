@@ -57,7 +57,7 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                     }
                     context("only Liederbuch language") {
                         let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "title",
-                                                  languages: [HymnIdentifier(hymnType: .liederbuch, hymnNumber: "2"),])
+                                                  languages: [HymnIdentifier(hymnType: .liederbuch, hymnNumber: "2") ])
                         beforeEach {
                             target = DisplayHymnBottomBarViewModel(hymnToDisplay: classic1151, hymn: hymn, systemUtil: systemUtil)
                         }

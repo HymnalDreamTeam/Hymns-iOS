@@ -4,11 +4,6 @@ struct UiTag {
 
     let title: String
     let color: TagColor
-
-    init(title: String, color: TagColor) {
-        self.title = title
-        self.color = color
-    }
 }
 
 extension UiTag: Hashable {

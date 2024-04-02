@@ -5,7 +5,7 @@ import XCTest
 
 // https://troz.net/post/2020/swiftui_snapshots/
 class HomeSnapshots: XCTestCase {
-    
+
     private var originalHasSeenSearchByTooltip: Bool?
     private var originalShowPreferredSearchLanguageAnnouncementValue: Bool?
 

@@ -6,10 +6,6 @@ import XCTest
 // https://troz.net/post/2020/swiftui_snapshots/
 class BottomSheetSnapshots: XCTestCase {
 
-    override func setUp() {
-        super.setUp()
-    }
-
     func test_shareSheet() {
         assertVersionedSnapshot(
             matching: ShareSheet(activityItems: ["share text"]),

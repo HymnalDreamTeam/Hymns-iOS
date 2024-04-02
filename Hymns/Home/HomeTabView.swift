@@ -49,7 +49,7 @@ struct HomeTabView: View {
                     .badge(shouldShow: Binding(get: {
                         // Can add future values here with OR operator (||)
                         showPreferredSearchLanguageAnnouncement
-                    }, set: { value in
+                    }, set: { _ in
                         // Do nothing, since this should only ever read the value, not write it.
                     }))
             })

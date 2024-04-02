@@ -8,7 +8,7 @@ import XCTest
 class SettingsSnapshots: XCTestCase {
 
     var viewModel: SettingsViewModel!
-    
+
     private var originalShowPreferredSearchLanguageValue: Bool?
 
     override func setUp() {
@@ -18,7 +18,7 @@ class SettingsSnapshots: XCTestCase {
 
         viewModel = SettingsViewModel()
     }
-    
+
     override func tearDown() {
         originalShowPreferredSearchLanguageValue.map { UserDefaults.standard.setValue($0, forKey: "show_preferred_search_language_announcement") }
         originalShowPreferredSearchLanguageValue = nil

@@ -6,10 +6,6 @@ import XCTest
 // https://troz.net/post/2020/swiftui_snapshots/
 class InlineChordsSnapshots: XCTestCase {
 
-    override func setUp() {
-        super.setUp()
-    }
-
     func test_songWithChords() {
         let lyrics = [
             // Verse 1

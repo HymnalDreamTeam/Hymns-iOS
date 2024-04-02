@@ -235,7 +235,7 @@ class SearchViewModelSpec: QuickSpec {
                             }
                             it("song results should contain sorted matching numbers") {
                                 expect(target.songResults).to(haveCount(6))
-                                expect(target.songResults.map{$0.title}).to(equal(["Chinese 3 (Trad.)",
+                                expect(target.songResults.map {$0.title}).to(equal(["Chinese 3 (Trad.)",
                                                                                    "Chinese Supplement 3 (Trad.)",
                                                                                    "Chinese Supplement 13 (Trad.)",
                                                                                    "Chinese 23 (Trad.)",
@@ -342,7 +342,7 @@ class SearchViewModelSpec: QuickSpec {
             }
         }
     }
-    
+
     private func createNumbers(_ hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType> {
         switch hymnType {
         case .classic:

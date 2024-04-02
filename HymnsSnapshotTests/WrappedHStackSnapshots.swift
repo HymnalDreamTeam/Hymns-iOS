@@ -6,10 +6,6 @@ import XCTest
 // https://troz.net/post/2020/swiftui_snapshots/
 class WrappedHStackSnapshots: XCTestCase {
 
-    override func setUp() {
-        super.setUp()
-    }
-
     func test_severalItemsInVStack() {
         let severalItems = Binding.constant([
             "Multiline really relaly long tag name that takes up many lines. So many lines, in fact, that it could be three lines.",

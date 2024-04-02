@@ -14,7 +14,7 @@ class Transformers: ObservableObject {
                                        label: hymnIdentifier.displayTitle,
                                        destinationView: destination)
         } else {
-            return SongResultViewModel(stableId: stableId,title: hymnIdentifier.displayTitle,
+            return SongResultViewModel(stableId: stableId, title: hymnIdentifier.displayTitle,
                                        destinationView: destination)
         }
     }

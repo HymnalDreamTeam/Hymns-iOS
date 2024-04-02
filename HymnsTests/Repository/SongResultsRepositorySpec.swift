@@ -40,7 +40,7 @@ class SongResultsRepositorySpec: QuickSpec {
                                                                              title: "max matches in both but wrong type",
                                                                  matchInfo: Data([0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]),
                                                                  songId: 0)
-    static let maxMatchesInBothButWrongType = SongResultEntity(hymnType: .portuguese, hymnNumber: "7", 
+    static let maxMatchesInBothButWrongType = SongResultEntity(hymnType: .portuguese, hymnNumber: "7",
                                                                title: "max matches in both but wrong type")
     let databaseResults = [noMatchesSearchResult, singleMatchInLyricsSearchResult, singleMatchInTitleSearchResult,
                            maxMatchesInBothButWrongTypeSearchResult, twoMatchesInLyricsSearchResult,

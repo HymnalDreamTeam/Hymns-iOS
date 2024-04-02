@@ -2,7 +2,7 @@ import Combine
 import Resolver
 
 protocol BrowseRepository {
-    func scriptureSongs()  -> AnyPublisher<[ScriptureResult], ErrorType>
+    func scriptureSongs() -> AnyPublisher<[ScriptureResult], ErrorType>
 }
 
 class BrowseRepositoryImpl: BrowseRepository {
@@ -15,7 +15,7 @@ class BrowseRepositoryImpl: BrowseRepository {
         self.firebaseLogger = firebaseLogger
     }
 
-    func scriptureSongs()  -> AnyPublisher<[ScriptureResult], ErrorType> {
+    func scriptureSongs() -> AnyPublisher<[ScriptureResult], ErrorType> {
         dataStore.getScriptureSongs()
             .map({ scriptureEntities -> [ScriptureResult] in
                 let scriptures = [ScriptureResult]()

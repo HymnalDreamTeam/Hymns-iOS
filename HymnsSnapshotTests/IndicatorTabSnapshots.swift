@@ -8,10 +8,6 @@ class IndicatorTabSnapshots: XCTestCase {
 
     private let tabs: [HymnTab] = [.lyrics(Text("Lyrics here").eraseToAnyView()), .music(Text("Music here").eraseToAnyView())]
 
-    override func setUp() {
-        super.setUp()
-    }
-
     func test_firstTabSelected() {
         let view = GeometryReader { geometry in
             IndicatorTabView(geometry: geometry, currentTab: .constant(self.tabs[0]), tabItems: self.tabs)

@@ -6,8 +6,8 @@ import Resolver
  * Repository that stores all hymns that have been searched during this session in memory.
  */
 protocol HymnsRepository {
-    func getHymn(_ hymnIdentifier: HymnIdentifier)  -> AnyPublisher<UiHymn?, Never>
-    func getHymn(_ hymnIdentifier: HymnIdentifier, makeNetworkRequest: Bool)  -> AnyPublisher<UiHymn?, Never>
+    func getHymn(_ hymnIdentifier: HymnIdentifier) -> AnyPublisher<UiHymn?, Never>
+    func getHymn(_ hymnIdentifier: HymnIdentifier, makeNetworkRequest: Bool) -> AnyPublisher<UiHymn?, Never>
 }
 
 class HymnsRepositoryImpl: HymnsRepository {
@@ -36,11 +36,11 @@ class HymnsRepositoryImpl: HymnsRepository {
         self.systemUtil = systemUtil
     }
 
-    func getHymn(_ hymnIdentifier: HymnIdentifier)  -> AnyPublisher<UiHymn?, Never> {
+    func getHymn(_ hymnIdentifier: HymnIdentifier) -> AnyPublisher<UiHymn?, Never> {
         return getHymn(hymnIdentifier, makeNetworkRequest: true)
     }
 
-    func getHymn(_ hymnIdentifier: HymnIdentifier, makeNetworkRequest: Bool)  -> AnyPublisher<UiHymn?, Never> {
+    func getHymn(_ hymnIdentifier: HymnIdentifier, makeNetworkRequest: Bool) -> AnyPublisher<UiHymn?, Never> {
         if let hymn = hymns[hymnIdentifier] {
             return Just(hymn).eraseToAnyPublisher()
         }

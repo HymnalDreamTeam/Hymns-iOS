@@ -39,7 +39,7 @@ struct SearchView: View {
                                                         height: 7,
                                                         position:
                                                             ToolTipConfiguration.ArrowConfiguration.Position(
-                                                                midX: 0.5,alignmentType: .percentage)),
+                                                                midX: 0.5, alignmentType: .percentage)),
                                                    bodyConfiguration:
                                                     ToolTipConfiguration.BodyConfiguration(cornerRadius: 10)),
                      shouldShow: self.$viewModel.showSearchByTypeToolTip)
