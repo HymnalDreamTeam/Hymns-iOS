@@ -1,4 +1,0 @@
-#include "MockingbirdTestsHost.xcconfig"
-
-INDIRECT_TARGET_NAME = ${TARGET_NAME}
-PRODUCT_MODULE_NAME = $(INDIRECT_TARGET_NAME:c99extidentifier)

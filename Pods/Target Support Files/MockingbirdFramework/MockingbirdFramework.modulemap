@@ -1,6 +1,0 @@
-framework module Mockingbird {
-  umbrella header "MockingbirdFramework-umbrella.h"
-
-  export *
-  module * { export * }
-}

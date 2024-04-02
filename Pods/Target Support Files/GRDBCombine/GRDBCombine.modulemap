@@ -1,6 +1,0 @@
-framework module GRDBCombine {
-  umbrella header "GRDBCombine-umbrella.h"
-
-  export *
-  module * { export * }
-}

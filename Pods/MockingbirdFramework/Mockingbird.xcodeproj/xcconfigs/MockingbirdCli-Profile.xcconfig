@@ -1,3 +1,0 @@
-#include "MockingbirdCli.xcconfig"
-
-SWIFT_ACTIVE_COMPILATION_CONDITIONS = $(inherited) PROFILE
