@@ -1,7 +1,6 @@
 import Resolver
 import SwiftUI
 
-@available(iOS 16, *)
 struct SearchView: View {
 
     @ObservedObject private var viewModel: SearchViewModel

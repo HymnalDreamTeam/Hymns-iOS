@@ -1,7 +1,6 @@
 import SwiftUI
 import Resolver
 
-@available(iOS 16, *)
 struct DisplayHymnToolbar: View {
 
     @ObservedObject private var viewModel: DisplayHymnViewModel
@@ -57,7 +56,6 @@ struct DisplayHymnToolbar: View {
 }
 
 #if DEBUG
-@available(iOS 16, *)
 struct DisplayHymnToolbar_Previews: PreviewProvider {
     static var previews: some View {
         let loading = DisplayHymnToolbar(viewModel: DisplayHymnViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151))

@@ -39,24 +39,6 @@ class SongResultViewModelSpec: QuickSpec {
                 target = SongResultViewModel(stableId: "stableid", title: "title",
                                              destinationView: EmptyView().eraseToAnyView(), systemUtil: systemUtil)
             }
-            context("version is higher than iOS 16") {
-                beforeEach {
-                    given(systemUtil.isIOS16Plus()) ~> true
-                }
-                let expectedPadding: CGFloat = 0
-                it("should return \(expectedPadding)") {
-                    expect(target.getVerticalPadding()).to(equal(expectedPadding))
-                }
-            }
-            context("version is lower than iOS 16") {
-                beforeEach {
-                    given(systemUtil.isIOS16Plus()) ~> false
-                }
-                let expectedPadding: CGFloat = 4
-                it("should return \(expectedPadding)") {
-                    expect(target.getVerticalPadding()).to(equal(expectedPadding))
-                }
-            }
         }
         describe("hasher") {
             it("hashes title and stable id") {

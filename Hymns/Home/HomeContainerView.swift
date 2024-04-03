@@ -1,7 +1,6 @@
 import SwiftUI
 import Resolver
 
-@available(iOS 16, *)
 struct HomeContainerView: View {
 
     private let searchView = SearchView()
@@ -53,7 +52,6 @@ struct HomeContainerView: View {
 }
 
 #if DEBUG
-@available(iOS 16, *)
 struct HomeContainerView_Previews: PreviewProvider {
     static var previews: some View {
         Group {

@@ -19,10 +19,6 @@ class SongResultViewModel: Identifiable {
         self.destinationView = destinationView
         self.systemUtil = systemUtil
     }
-
-    func getVerticalPadding() -> CGFloat {
-        return systemUtil.isIOS16Plus() ? 0 : 4
-    }
 }
 
 extension SongResultViewModel: Hashable {

@@ -31,14 +31,9 @@ class FavoritesSnapshots: XCTestCase {
                                 file: StaticString = #file,
                                 testName: String = #function,
                                 line: UInt = #line) {
-        if #available(iOS 16, *) {
-            let view = NavigationStack {
-                FavoritesView(viewModel: viewModel).ignoresSafeArea()
-            }
-            assertVersionedSnapshot(matching: view.ignoresSafeArea(), as: .image(layout: .sizeThatFits), file: file, testName: testName, line: line)
-        } else {
-            let view = FavoritesView(viewModel: viewModel).ignoresSafeArea()
-            assertVersionedSnapshot(matching: view, as: .swiftUiImage(), file: file, testName: testName, line: line)
+        let view = NavigationStack {
+            FavoritesView(viewModel: viewModel).ignoresSafeArea()
         }
+        assertVersionedSnapshot(matching: view.ignoresSafeArea(), as: .image(layout: .sizeThatFits), file: file, testName: testName, line: line)
     }
 }

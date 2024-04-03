@@ -19,11 +19,7 @@ struct DisplayHymnView: View {
                 ActivityIndicator().maxSize()
             } else {
                 VStack(spacing: 0) {
-                    if #available(iOS 16, *) {
-                        DisplayHymnToolbar(viewModel: viewModel)
-                    } else {
-                        DisplayHymnToolbar15(viewModel: viewModel)
-                    }
+                    DisplayHymnToolbar(viewModel: viewModel)
                     if viewModel.tabItems.count > 1 {
                         GeometryReader { geometry in
                             IndicatorTabView(geometry: geometry,
@@ -34,14 +30,8 @@ struct DisplayHymnView: View {
                     } else {
                         viewModel.currentTab.content
                     }
-                    if #available(iOS 16, *) {
-                        viewModel.bottomBar.map { viewModel in
-                            DisplayHymnBottomBar(dialogModel: self.$dialogModel, viewModel: viewModel).maxWidth()
-                        }
-                    } else {
-                        viewModel.bottomBar.map { viewModel in
-                            DisplayHymnBottomBar15(dialogModel: self.$dialogModel, viewModel: viewModel).maxWidth()
-                        }
+                    viewModel.bottomBar.map { viewModel in
+                        DisplayHymnBottomBar(dialogModel: self.$dialogModel, viewModel: viewModel).maxWidth()
                     }
                 }
                 Dialog(viewModel: $dialogModel).map { dialog in
@@ -51,9 +41,9 @@ struct DisplayHymnView: View {
         }.hideNavigationBar()
             .onAppear {
                 self.viewModel.fetchHymn()
-        }.task {
-            firebaseLogger.logScreenView(screenName: "DisplayHymnView")
-        }.background(Color(.systemBackground))
+            }.task {
+                firebaseLogger.logScreenView(screenName: "DisplayHymnView")
+            }.background(Color(.systemBackground))
     }
 }
 
@@ -135,5 +125,5 @@ struct DisplayHymnView_Previews: PreviewProvider {
             classic1334.previewDisplayName("classic 1134")
         }
     }
- }
- #endif
+}
+#endif

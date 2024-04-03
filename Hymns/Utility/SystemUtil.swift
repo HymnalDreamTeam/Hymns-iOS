@@ -16,11 +16,6 @@ protocol SystemUtil {
      */
     func isSmallScreen() -> Bool
 
-    /**
-     * Is the current OS version iOS 16 or greater
-     */
-    func isIOS16Plus() -> Bool
-
     func loadDonationProducts() async
 }
 
@@ -40,13 +35,6 @@ class SystemUtilImpl: SystemUtil {
 
     func isSmallScreen() -> Bool {
         return UIScreen.main.bounds.width <= 350
-    }
-
-    func isIOS16Plus() -> Bool {
-        guard let currentOSVersion = UIDevice.current.systemVersion.toFloat else {
-            return false
-        }
-        return currentOSVersion  >= CGFloat(16)
     }
 
     func loadDonationProducts() async {

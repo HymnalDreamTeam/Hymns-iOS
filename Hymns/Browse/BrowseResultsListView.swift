@@ -23,15 +23,9 @@ struct BrowseResultsListView: View {
                     return ErrorView().maxSize().eraseToAnyView()
                 }
                 return List(songResults, id: \.stableId) { songResult in
-                    if #available(iOS 16, *) {
-                        NavigationLink(value: Route.songResult(songResult)) {
-                            SongResultView(viewModel: songResult)
-                        }.listRowSeparator(.hidden)
-                    } else {
-                        NavigationLink(destination: songResult.destinationView) {
-                            SongResultView(viewModel: songResult)
-                        }.listRowSeparator(.hidden)
-                    }
+                    NavigationLink(value: Route.songResult(songResult)) {
+                        SongResultView(viewModel: songResult)
+                    }.listRowSeparator(.hidden)
                 }.listStyle(.plain).resignKeyboardOnDragGesture().eraseToAnyView()
             }
         }.onAppear {

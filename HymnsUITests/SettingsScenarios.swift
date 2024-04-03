@@ -47,11 +47,9 @@ class SettingsScenarios: BaseTestCase {
     }
 
     func test_goToVersionInformation() {
-        if #available(iOS 16, *) {
-            _ = HomeViewCan(app, testCase: self)
-                .goToSettings()
-                .tapVersionInformation()
-                .waitForStaticTexts("Version information", "Release version", "Build version", "iOS version")
-        }
+        _ = HomeViewCan(app, testCase: self)
+            .goToSettings()
+            .tapVersionInformation()
+            .waitForStaticTexts("Version information", "Release version", "Build version", "iOS version")
     }
 }

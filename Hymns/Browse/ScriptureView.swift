@@ -17,15 +17,9 @@ struct ScriptureView: View {
             }.foregroundColor(isExpanded ? .accentColor : .primary)
             if isExpanded {
                 ForEach(viewModel.scriptureSongs, id: \.self) { scriptureSong in
-                    if #available(iOS 16, *) {
                         NavigationLink(value: Route.display(DisplayHymnContainerViewModel(hymnToDisplay: scriptureSong.hymnIdentifier))) {
                             ScriptureSongView(viewModel: scriptureSong)
                         }
-                    } else {
-                        NavigationLink(destination: DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: scriptureSong.hymnIdentifier))) {
-                            ScriptureSongView(viewModel: scriptureSong)
-                        }
-                    }
                 }
             }
         }

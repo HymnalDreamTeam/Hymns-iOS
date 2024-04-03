@@ -18,49 +18,28 @@ class BottomBarSnapshots: XCTestCase {
 
     func test_noButtons() {
         viewModel.buttons = []
-        if #available(iOS 16, *) {
-            let bottomBar = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
-                get: {self.dialog},
-                set: {self.dialog = $0}), viewModel: viewModel).padding().ignoresSafeArea()
-            assertVersionedSnapshot(matching: bottomBar, as: .image(layout: .fixed(width: 200, height: 50)))
-        } else {
-            let bottomBar = DisplayHymnBottomBar15(dialogModel: Binding<DialogViewModel<AnyView>?>(
-                get: {self.dialog},
-                set: {self.dialog = $0}), viewModel: viewModel).padding().ignoresSafeArea()
-            assertVersionedSnapshot(matching: bottomBar, as: .image(layout: .fixed(width: 200, height: 50)))
-        }
+        let bottomBar = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
+            get: {self.dialog},
+            set: {self.dialog = $0}), viewModel: viewModel).padding().ignoresSafeArea()
+        assertVersionedSnapshot(matching: bottomBar, as: .image(layout: .fixed(width: 200, height: 50)))
     }
 
     func test_oneButton() {
         viewModel.buttons = [.tags]
 
-        if #available(iOS 16, *) {
-            let bottomBar = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
-                get: {self.dialog},
-                set: {self.dialog = $0}), viewModel: viewModel).padding().ignoresSafeArea()
-            assertVersionedSnapshot(matching: bottomBar, as: .image(layout: .sizeThatFits))
-        } else {
-            let bottomBar = DisplayHymnBottomBar15(dialogModel: Binding<DialogViewModel<AnyView>?>(
-                get: {self.dialog},
-                set: {self.dialog = $0}), viewModel: viewModel).padding().ignoresSafeArea()
-            assertVersionedSnapshot(matching: bottomBar, as: .image(layout: .sizeThatFits))
-        }
+        let bottomBar = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
+            get: {self.dialog},
+            set: {self.dialog = $0}), viewModel: viewModel).padding().ignoresSafeArea()
+        assertVersionedSnapshot(matching: bottomBar, as: .image(layout: .sizeThatFits))
     }
 
     func test_twoButtons() {
         viewModel.buttons = [.tags, .fontSize(FontPickerViewModel())]
 
-        if #available(iOS 16, *) {
-            let bottomBar = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
-                get: {self.dialog},
-                set: {self.dialog = $0}), viewModel: viewModel).padding().ignoresSafeArea()
-            assertVersionedSnapshot(matching: bottomBar, as: .image(layout: .sizeThatFits))
-        } else {
-            let bottomBar = DisplayHymnBottomBar15(dialogModel: Binding<DialogViewModel<AnyView>?>(
-                get: {self.dialog},
-                set: {self.dialog = $0}), viewModel: viewModel).padding().ignoresSafeArea()
-            assertVersionedSnapshot(matching: bottomBar, as: .image(layout: .sizeThatFits))
-        }
+        let bottomBar = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
+            get: {self.dialog},
+            set: {self.dialog = $0}), viewModel: viewModel).padding().ignoresSafeArea()
+        assertVersionedSnapshot(matching: bottomBar, as: .image(layout: .sizeThatFits))
     }
 
     func test_maximumButtons() {
@@ -75,17 +54,10 @@ class BottomBarSnapshots: XCTestCase {
                                               hymn: UiHymn(hymnIdentifier: PreviewHymnIdentifiers.hymn40, title: "", lyrics: nil, author: "MC"))!)
         ]
 
-        if #available(iOS 16, *) {
-            let bottomBar = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
-                get: {self.dialog},
-                set: {self.dialog = $0}), viewModel: viewModel).padding().ignoresSafeArea()
-            assertVersionedSnapshot(matching: bottomBar, as: .image(layout: .sizeThatFits))
-        } else {
-            let bottomBar = DisplayHymnBottomBar15(dialogModel: Binding<DialogViewModel<AnyView>?>(
-                get: {self.dialog},
-                set: {self.dialog = $0}), viewModel: viewModel).padding().ignoresSafeArea()
-            assertVersionedSnapshot(matching: bottomBar, as: .image(layout: .sizeThatFits))
-        }
+        let bottomBar = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
+            get: {self.dialog},
+            set: {self.dialog = $0}), viewModel: viewModel).padding().ignoresSafeArea()
+        assertVersionedSnapshot(matching: bottomBar, as: .image(layout: .sizeThatFits))
     }
 
     func test_overflowMenu() {
@@ -104,17 +76,10 @@ class BottomBarSnapshots: XCTestCase {
                                               hymn: UiHymn(hymnIdentifier: PreviewHymnIdentifiers.hymn40, title: "", lyrics: nil, author: "MC"))!)
         ]
 
-        if #available(iOS 16, *) {
-            let bottomBar = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
-                get: {self.dialog},
-                set: {self.dialog = $0}), viewModel: viewModel).padding().ignoresSafeArea()
-            assertVersionedSnapshot(matching: bottomBar, as: .image(layout: .sizeThatFits))
-        } else {
-            let bottomBar = DisplayHymnBottomBar15(dialogModel: Binding<DialogViewModel<AnyView>?>(
-                get: {self.dialog},
-                set: {self.dialog = $0}), viewModel: viewModel).padding().ignoresSafeArea()
-            assertVersionedSnapshot(matching: bottomBar, as: .image(layout: .sizeThatFits))
-        }
+        let bottomBar = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
+            get: {self.dialog},
+            set: {self.dialog = $0}), viewModel: viewModel).padding().ignoresSafeArea()
+        assertVersionedSnapshot(matching: bottomBar, as: .image(layout: .sizeThatFits))
     }
 
     func test_fontSize_selected() {

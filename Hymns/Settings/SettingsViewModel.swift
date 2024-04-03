@@ -39,18 +39,16 @@ class SettingsViewModel: ObservableObject {
             settings?.append(.donate(coffeeDonations: systemUtil.donationProducts, resultBinding: result))
         }
 
-        if #available(iOS 16, *) {
-            let versionViewModel = SimpleSettingViewModel(title: NSLocalizedString("Version information",
-                                                                                   comment: "Displaying information about the app's version and device's version."),
-                                                          action: {
-                self.navigationCoordinator.showVersionInformation()
-            })
-            settings?.append(.version(versionViewModel))
-        }
+        let versionViewModel = SimpleSettingViewModel(title: NSLocalizedString("Version information",
+                                                                               comment: "Displaying information about the app's version and device's version."),
+                                                      action: {
+            self.navigationCoordinator.showVersionInformation()
+        })
+        settings?.append(.version(versionViewModel))
 
-        #if DEBUG
+#if DEBUG
         settings?.append(.clearUserDefaults)
-        #endif
+#endif
     }
 }
 

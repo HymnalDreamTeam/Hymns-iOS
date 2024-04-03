@@ -3,7 +3,6 @@ import SwiftUI
 
 struct TitleWithBackButton: View {
 
-    @Environment(\.presentationMode) var presentationMode
     @ObservedObject private var coordinator: NavigationCoordinator
     private let firebaseLogger: FirebaseLogger
     private let title: String
@@ -20,11 +19,7 @@ struct TitleWithBackButton: View {
         HStack {
             Button(action: {
                 firebaseLogger.logButtonClick("back", file: #file)
-                if #available(iOS 16, *) {
                     self.coordinator.goBack()
-                } else {
-                    self.presentationMode.wrappedValue.dismiss()
-                }
             }, label: {
                 Image(systemName: "chevron.left")
                     .accessibility(label: Text("Go back", comment: "A11y label for going back."))

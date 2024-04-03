@@ -4,7 +4,6 @@ import Resolver
 struct TagListView: View {
 
     @ObservedObject private var viewModel: TagListViewModel
-    @State private var tagToShow: UiTag?
 
     init(viewModel: TagListViewModel = Resolver.resolve()) {
         self.viewModel = viewModel
@@ -32,24 +31,9 @@ struct TagListView: View {
                 }.eraseToAnyView()
             }
             return List(tags, id: \.self) { tag in
-                if #available(iOS 16, *) {
-                    NavigationLink(value: Route.browseResults(BrowseResultsListViewModel(tag: tag))) {
-                        Text(tag.title).tagPill(backgroundColor: tag.color.background, foregroundColor: tag.color.foreground)
-                    }.listRowSeparator(.hidden).maxWidth()
-                } else {
-                    HStack(alignment: .center) {
-                        Button(action: {
-                            self.tagToShow = tag
-                        }, label: {
-                            Text(tag.title).tagPill(backgroundColor: tag.color.background, foregroundColor: tag.color.foreground)
-                        })
-                        Spacer()
-                        NavigationLink(destination: BrowseResultsListView(viewModel: BrowseResultsListViewModel(tag: tag)),
-                                       tag: tag, selection: self.$tagToShow) {
-                            EmptyView()
-                        }.frame(width: 0, height: 0).padding(.trailing)
-                    }.listRowSeparator(.hidden).maxWidth()
-                }
+                NavigationLink(value: Route.browseResults(BrowseResultsListViewModel(tag: tag))) {
+                    Text(tag.title).tagPill(backgroundColor: tag.color.background, foregroundColor: tag.color.foreground)
+                }.listRowSeparator(.hidden).maxWidth()
             }.listStyle(PlainListStyle()).padding(.top).eraseToAnyView()
         }.onAppear {
             self.viewModel.fetchUniqueTags()

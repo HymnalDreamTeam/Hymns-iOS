@@ -1,7 +1,6 @@
 import Resolver
 import SwiftUI
 
-@available(iOS 16, *)
 struct DisplayHymnBottomBar: View {
 
     @Binding var dialogModel: DialogViewModel<AnyView>?
@@ -44,12 +43,12 @@ struct DisplayHymnBottomBar: View {
                         switch button {
                         case .fontSize:
                             return self.fontPicker == nil ?
-                                button.unselectedLabel.eraseToAnyView() :
-                                button.selectedLabel.eraseToAnyView()
+                            button.unselectedLabel.eraseToAnyView() :
+                            button.selectedLabel.eraseToAnyView()
                         case .musicPlayback:
                             return self.audioPlayer == nil ?
-                                button.unselectedLabel.eraseToAnyView() :
-                                button.selectedLabel.eraseToAnyView()
+                            button.unselectedLabel.eraseToAnyView() :
+                            button.selectedLabel.eraseToAnyView()
                         default:
                             return button.unselectedLabel.eraseToAnyView()
                         }
@@ -62,7 +61,7 @@ struct DisplayHymnBottomBar: View {
                     }, label: {
                         BottomBarLabel(image: Image(systemName: "ellipsis"),
                                        a11yLabel: NSLocalizedString("More options", comment: "Bottom bar overflow button."))
-                            .foregroundColor(.primary)
+                        .foregroundColor(.primary)
                     })
                 }
             }
@@ -70,33 +69,33 @@ struct DisplayHymnBottomBar: View {
             switch item {
             case .languages(let viewModels):
                 return
-                    ActionSheet(
-                        title: Text("Languages", comment: "Title for the languages action sheet."),
-                        message: Text("Change to another language", comment: "Message for the languages action sheet."),
-                        buttons: viewModels.map({ viewModel -> Alert.Button in
+                ActionSheet(
+                    title: Text("Languages", comment: "Title for the languages action sheet."),
+                    message: Text("Change to another language", comment: "Message for the languages action sheet."),
+                    buttons: viewModels.map({ viewModel -> Alert.Button in
                             .default(Text(viewModel.title), action: {
                                 coordinator.showSongResult(viewModel)
                             })
-                        }) + [.cancel()])
+                    }) + [.cancel()])
             case .relevant(let viewModels):
                 return
-                    ActionSheet(
-                        title: Text("Relevant songs", comment: "Title for the relevant songs action sheet."),
-                        message: Text("Change to a relevant hymn", comment: "Message for the relevant songs action sheet."),
-                        buttons: viewModels.map({ viewModel -> Alert.Button in
+                ActionSheet(
+                    title: Text("Relevant songs", comment: "Title for the relevant songs action sheet."),
+                    message: Text("Change to a relevant hymn", comment: "Message for the relevant songs action sheet."),
+                    buttons: viewModels.map({ viewModel -> Alert.Button in
                             .default(Text(viewModel.title), action: {
                                 coordinator.showSongResult(viewModel)
                             })
-                        }) + [.cancel()])
+                    }) + [.cancel()])
             case .overflow(let buttons):
                 return
-                    ActionSheet(
-                        title: Text("Additional options", comment: "Title for the overflow menu action sheet."),
-                        buttons: buttons.map({ button -> Alert.Button in
+                ActionSheet(
+                    title: Text("Additional options", comment: "Title for the overflow menu action sheet."),
+                    buttons: buttons.map({ button -> Alert.Button in
                             .default(Text(button.label), action: {
                                 self.performAction(button: button)
                             })
-                        }) + [.cancel()])
+                    }) + [.cancel()])
             }
         }.fullScreenCover(item: $sheet) { tab -> AnyView in
             switch tab {
@@ -140,7 +139,7 @@ struct DisplayHymnBottomBar: View {
                 SoundCloudView(dialogModel: self.$dialogModel,
                                soundCloudPlayer: self.$soundCloudPlayer,
                                viewModel: viewModel)
-                    .eraseToAnyView()
+                .eraseToAnyView()
             }, options: DialogOptions(dimBackground: false, transition: .move(edge: .bottom)))
         case .youTube(let url):
             self.application.open(url)
@@ -184,7 +183,6 @@ extension DisplayHymnSheet: Identifiable {
 }
 
 #if DEBUG
-@available(iOS 16, *)
 struct DisplayHymnBottomBar_Previews: PreviewProvider {
     static var previews: some View {
         var dialogModel: DialogViewModel<AnyView>?
