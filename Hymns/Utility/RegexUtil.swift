@@ -58,6 +58,25 @@ public class RegexUtil {
      */
     static let scripturePatternVerse = "\\A(\\d+(?:-?\\d+)?)\\z"
 
+    /**
+     * Regex format to extract the "O/Oh" out of a string.
+     * ?i -> case insensitive
+     * \b -> word boundary
+     */
+    static let oOhPattern = "(?i)\\b(oh|o)\\b"
+    
+    /**
+     * Regex format to extract words containing single quotes and apostrophes out of a string.
+     * \w -> word character
+     */
+    static let apostrophePattern = "(\\w+)([’'])(\\w+)"
+
+    /**
+     * Regex format to extract the "O/Oh" out of the beginning of a string.
+     * \A -> Start of string
+     */
+    static let dashPattern = "\\A(-*\\s*)"
+
     static func getHymnType(searchQuery: String) -> HymnType? {
         let regex = NSRegularExpression(searchTextPattern, options: .caseInsensitive)
 
@@ -204,6 +223,22 @@ public class RegexUtil {
             }
         }
         return nil
+    }
+
+    /// Essentially creates a wildcard match where "O" and "Oh" will match both.
+    static func replaceOs(_ str: String) -> String {
+        let regex = NSRegularExpression(oOhPattern, options: .caseInsensitive)
+        return regex.stringByReplacingMatches(in: str,
+                                              range: NSRange(location: 0, length: str.utf16.count),
+                                              withTemplate: "(O OR Oh)")
+    }
+
+    /// Essentially creates a wildcard match where single quotes and apostrophes will match both.
+    static func replaceApostrophes(_ str: String) -> String {
+        let regex = NSRegularExpression(apostrophePattern, options: .caseInsensitive)
+        return regex.stringByReplacingMatches(in: str,
+                                              range: NSRange(location: 0, length: str.utf16.count),
+                                              withTemplate: "($1’$3 OR $1'$3)")
     }
 }
 

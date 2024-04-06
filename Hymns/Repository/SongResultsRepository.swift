@@ -129,8 +129,7 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
             }).eraseToAnyPublisher()
         }
 
-        let emptyResults = Just<[SearchResultEntity]>([]) .mapError { _ -> ErrorType in }.eraseToAnyPublisher()
-        let dataStoreResults = dataStore.databaseInitializedProperly ? dataStore.searchHymn(searchParameter) : emptyResults
+        let dataStoreResults = dataStore.searchHymn(santize(searchParameter))
 
         return dataStoreResults
             .reduce(([SongResultEntity](), false)) { (_, searchResultEntities) -> ([SongResultEntity], Bool) in
@@ -144,6 +143,13 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
                 }
                 return (Array(sortedSongResults.prefix(50)), false)
         }.eraseToAnyPublisher()
+    }
+
+    private func santize(_ searchParameter: String) -> String {
+        var sanitizedParam = searchParameter.trim()
+        sanitizedParam = RegexUtil.replaceOs(sanitizedParam.trim())
+        sanitizedParam = RegexUtil.replaceApostrophes(sanitizedParam.trim())
+        return sanitizedParam
     }
 
     /*

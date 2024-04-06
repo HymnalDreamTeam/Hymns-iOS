@@ -243,7 +243,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
     }
 
     func searchHymn(_ searchParameter: String) -> AnyPublisher<[SearchResultEntity], ErrorType> {
-        let pattern = FTS3Pattern(matchingAnyTokenIn: searchParameter)
+        let pattern = try? FTS3Pattern(rawPattern: searchParameter)
 
         /// For each column, the length of the longest subsequence of phrase matches that the column value has in common with the query text. For example, if a table column contains the text 'a b c d e' and the query
         /// is 'a c "d e"', then the length of the longest common subsequence is 2 (phrase "c" followed by phrase "d e").
