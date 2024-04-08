@@ -14,7 +14,11 @@ class SearchViewModel: ObservableObject {
     @AppStorage("preferred_search_language") var preferredSearchLanguage: Language = .english
 
     @Published var searchActive: Bool = false
-    @Published var searchParameter = ""
+    @Published var searchParameter = "" {
+        didSet {
+            self.analytics.logQueryChanged(previousQuery: oldValue, newQuery: searchParameter)
+        }
+    }
     @Published var showSearchByTypeToolTip: Bool = false
     @Published var songResults: [SongResultViewModel] = [SongResultViewModel]()
     @Published var label: String?
@@ -79,7 +83,6 @@ class SearchViewModel: ObservableObject {
                 if searchParameter == self.currentQuery {
                     return
                 }
-                self.analytics.logQueryChanged(queryText: searchParameter)
                 self.currentQuery = searchParameter
                 self.refreshSearchResults()
         }.store(in: &disposables)

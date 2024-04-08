@@ -32,7 +32,9 @@ struct QueryChanged: AnalyticsEvent {
     // Allow non-alphanumeric characters for logging params
     // swiftlint:disable identifier_name
     enum Params: String {
-        case query_text
+        case previous_query
+        case new_query
+        case distance
     }
     // swiftlint:enable identifier_name
 }

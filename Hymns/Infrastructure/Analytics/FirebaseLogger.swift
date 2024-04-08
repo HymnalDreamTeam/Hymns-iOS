@@ -10,7 +10,7 @@ protocol FirebaseLogger {
     func logLaunchTask(description: String)
     func logScreenView(screenName: String)
     func logSearchActive(isActive: Bool)
-    func logQueryChanged(queryText: String)
+    func logQueryChanged(previousQuery: String, newQuery: String)
     func logDisplaySong(hymnIdentifier: HymnIdentifier)
     func logDonation(product: CoffeeDonation, result: PurchaseResultWrapper)
     func logPreloadMusicPdf(url: URL)
@@ -59,10 +59,12 @@ class FirebaseLoggerImpl: FirebaseLogger {
         }
     }
 
-    func logQueryChanged(queryText: String) {
+    func logQueryChanged(previousQuery: String, newQuery: String) {
         backgroundThread.async {
             Analytics.logEvent(QueryChanged.name, parameters: [
-                QueryChanged.Params.query_text.rawValue: queryText
+                QueryChanged.Params.previous_query.rawValue: previousQuery,
+                QueryChanged.Params.new_query.rawValue: newQuery,
+                QueryChanged.Params.distance.rawValue: StringUtil.levenshteinDistance(previousQuery, newQuery),
             ])
         }
     }
