@@ -16,11 +16,9 @@ struct BrowseView: View {
         VStack {
             CustomTitle(title: NSLocalizedString("Browse", comment: "Browse tab title."))
             VStack {
-                GeometryReader { geometry in
-                    IndicatorTabView(geometry: geometry,
-                                     currentTab: self.$viewModel.currentTab,
-                                     tabItems: self.viewModel.tabItems)
-                }
+                IndicatorTabView(
+                    currentTab: self.$viewModel.currentTab,
+                    tabItems: self.viewModel.tabItems)
             }
         }.onAppear {
             firebaseLogger.logScreenView(screenName: "BrowseView")

@@ -21,12 +21,9 @@ struct DisplayHymnView: View {
                 VStack(spacing: 0) {
                     DisplayHymnToolbar(viewModel: viewModel)
                     if viewModel.tabItems.count > 1 {
-                        GeometryReader { geometry in
-                            IndicatorTabView(geometry: geometry,
-                                             currentTab: self.$viewModel.currentTab,
-                                             tabItems: self.viewModel.tabItems,
-                                             tabSpacing: .custom(spacing: 20))
-                        }
+                        IndicatorTabView(currentTab: self.$viewModel.currentTab,
+                                         tabItems: self.viewModel.tabItems,
+                                         tabSpacing: .custom(spacing: 20))
                     } else {
                         viewModel.currentTab.content
                     }

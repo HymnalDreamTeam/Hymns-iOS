@@ -11,14 +11,11 @@ struct HymnMusicView: View {
 
     var body: some View {
         if viewModel.musicViews.count > 1 {
-            return GeometryReader { geometry in
-                IndicatorTabView(geometry: geometry,
-                                 currentTab: self.$viewModel.currentTab,
-                                 tabItems: self.viewModel.musicViews,
-                                 tabSpacing: .custom(spacing: 25),
-                                 showIndicator: false,
-                                 showDivider: false)
-            }.eraseToAnyView()
+            return IndicatorTabView(currentTab: self.$viewModel.currentTab,
+                                    tabItems: self.viewModel.musicViews,
+                                    tabSpacing: .custom(spacing: 25),
+                                    showIndicator: false,
+                                    showDivider: false).eraseToAnyView()
         } else {
             return self.viewModel.currentTab.content
         }
