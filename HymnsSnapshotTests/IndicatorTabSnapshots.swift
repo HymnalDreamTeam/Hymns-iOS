@@ -9,17 +9,13 @@ class IndicatorTabSnapshots: XCTestCase {
     private let tabs: [HymnTab] = [.lyrics(Text("Lyrics here").eraseToAnyView()), .music(Text("Music here").eraseToAnyView())]
 
     func test_firstTabSelected() {
-        let view = GeometryReader { geometry in
-            IndicatorTabView(geometry: geometry, currentTab: .constant(self.tabs[0]), tabItems: self.tabs)
-        }
-        assertVersionedSnapshot(matching: view.ignoresSafeArea(), as: .swiftUiImage())
+        assertVersionedSnapshot(matching: IndicatorTabView(currentTab: .constant(self.tabs[0]), tabItems: self.tabs).ignoresSafeArea(),
+                                as: .swiftUiImage())
     }
 
     func test_secondTabSelected_noDivider() {
-        let view = GeometryReader { geometry in
-            IndicatorTabView(geometry: geometry, currentTab: .constant(self.tabs[1]), tabItems: self.tabs, showDivider: false)
-        }
-        assertVersionedSnapshot(matching: view.ignoresSafeArea(), as: .swiftUiImage())
+        assertVersionedSnapshot(matching: IndicatorTabView(currentTab: .constant(self.tabs[1]), tabItems: self.tabs, showDivider: false).ignoresSafeArea(),
+                                as: .swiftUiImage())
     }
 
     func test_manyTabs() {
@@ -30,42 +26,29 @@ class IndicatorTabSnapshots: XCTestCase {
         let scriptures: BrowseTab = .scripture(EmptyView().eraseToAnyView())
         let all: BrowseTab = .all(EmptyView().eraseToAnyView())
 
-        let view = GeometryReader { geometry in
-            IndicatorTabView(geometry: geometry,
-                             currentTab: .constant(classic),
-                             tabItems: [classic, newTunes, newSongs, childrens, scriptures, all])
-        }
+        let view = IndicatorTabView(currentTab: .constant(classic),
+                                   tabItems: [classic, newTunes, newSongs, childrens, scriptures, all])
         assertVersionedSnapshot(matching: view.ignoresSafeArea(), as: .swiftUiImage())
     }
 
     func test_tabBar_iconTabs_onBottom() {
-        let view = GeometryReader { geometry in
-            IndicatorTabView<HomeTab>(geometry: geometry, currentTab: .constant(.search),
-                                      tabItems: [.search, .browse, .favorites, .settings], tabAlignment: .bottom)
-        }
+        let view = IndicatorTabView<HomeTab>(currentTab: .constant(.search),
+                                             tabItems: [.search, .browse, .favorites, .settings], tabAlignment: .bottom)
         assertVersionedSnapshot(matching: view.ignoresSafeArea(), as: .swiftUiImage())
     }
 
     func test_tabBar_customSpacing() {
-        let view = GeometryReader { geometry in
-            IndicatorTabView<HymnTab>(
-                geometry: geometry,
-                currentTab: .constant(.lyrics(EmptyView().eraseToAnyView())),
-                tabItems: [.lyrics(EmptyView().eraseToAnyView()), .music(EmptyView().eraseToAnyView())],
-                tabSpacing: .custom(spacing: 0))
-        }
+        let view = IndicatorTabView<HymnTab>(currentTab: .constant(.lyrics(EmptyView().eraseToAnyView())),
+                                             tabItems: [.lyrics(EmptyView().eraseToAnyView()), .music(EmptyView().eraseToAnyView())],
+                                             tabSpacing: .custom(spacing: 0))
         assertVersionedSnapshot(matching: view.ignoresSafeArea(), as: .swiftUiImage())
     }
 
     func test_tabBar_noIndicator() {
-        let view = GeometryReader { geometry in
-            IndicatorTabView<HymnTab>(
-                geometry: geometry,
-                currentTab: .constant(.lyrics(EmptyView().eraseToAnyView())),
-                tabItems: [.lyrics(EmptyView().eraseToAnyView()), .music(EmptyView().eraseToAnyView())],
-                tabSpacing: .custom(spacing: 0),
-                showIndicator: false)
-        }
+        let view = IndicatorTabView<HymnTab>(currentTab: .constant(.lyrics(EmptyView().eraseToAnyView())),
+                                            tabItems: [.lyrics(EmptyView().eraseToAnyView()), .music(EmptyView().eraseToAnyView())],
+                                            tabSpacing: .custom(spacing: 0),
+                                            showIndicator: false)
         assertVersionedSnapshot(matching: view.ignoresSafeArea(), as: .swiftUiImage())
     }
 }

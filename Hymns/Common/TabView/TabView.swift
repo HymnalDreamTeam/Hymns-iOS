@@ -25,26 +25,24 @@ public struct IndicatorTabView<TabType: TabItem>: View {
     }
 
     public var body: some View {
-        GeometryReader { geometry in
-            VStack(alignment: .center, spacing: 0) {
-                if tabAlignment == .top {
-                    VStack(spacing: 0) {
-                        TabBar(currentTab: $currentTab, geometry: geometry, tabItems: tabItems, tabSpacing: tabSpacing,
-                               showIndicator: showIndicator)
-                        if showDivider {
-                            Divider()
-                        }
+        VStack(alignment: .center, spacing: 0) {
+            if tabAlignment == .top {
+                VStack(spacing: 0) {
+                    TabBar(currentTab: $currentTab, tabItems: tabItems, tabSpacing: tabSpacing,
+                           showIndicator: showIndicator)
+                    if showDivider {
+                        Divider()
                     }
                 }
-                currentTab.content
-                if tabAlignment == .bottom {
-                    VStack(spacing: 0) {
-                        if showDivider {
-                            Divider()
-                        }
-                        TabBar(currentTab: $currentTab, geometry: geometry, tabItems: tabItems, tabSpacing: tabSpacing,
-                               showIndicator: showIndicator)
+            }
+            currentTab.content
+            if tabAlignment == .bottom {
+                VStack(spacing: 0) {
+                    if showDivider {
+                        Divider()
                     }
+                    TabBar(currentTab: $currentTab, tabItems: tabItems, tabSpacing: tabSpacing,
+                           showIndicator: showIndicator)
                 }
             }
         }

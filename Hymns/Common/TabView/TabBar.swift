@@ -9,16 +9,15 @@ struct TabBar<TabItemType: TabItem>: View {
     private let indicatorSpacingExtra: CGFloat = 32 // indicator goes a little beyond the tab itself
 
     @Binding var currentTab: TabItemType
-    let geometry: GeometryProxy
     let tabItems: [TabItemType]
     let tabSpacing: TabSpacing
     let showIndicator: Bool
 
+    @State private var containerWidth: CGFloat = 0
     @State private var width = CGFloat.zero
 
-    init(currentTab: Binding<TabItemType>, geometry: GeometryProxy, tabItems: [TabItemType], tabSpacing: TabSpacing, showIndicator: Bool) {
+    init(currentTab: Binding<TabItemType>, tabItems: [TabItemType], tabSpacing: TabSpacing, showIndicator: Bool) {
         self._currentTab = currentTab
-        self.geometry = geometry
         self.tabItems = tabItems
         self.tabSpacing = tabSpacing
         self.showIndicator = showIndicator
@@ -32,25 +31,32 @@ struct TabBar<TabItemType: TabItem>: View {
             // that the tabs take up the entire width and are equaly spaced. However, if the total width is greater
             // than or equal to the width of the containing GeometryProxy, then we should set the frame's width to
             // nil to allow it to scroll offscreen.
-            return ZStack {
-                ForEach(tabItems) { tabItem in
-                    Button(
-                        action: {},
-                        label: {
-                            Group {
-                                if self.isSelected(tabItem) {
-                                    tabItem.selectedLabel
-                                } else {
-                                    tabItem.unselectedLabel
-                                }
-                            }.accessibility(label: tabItem.a11yLabel).padding(.vertical)
-                        })
-                }.anchorPreference(key: TabWidthPreferenceKey.self, value: .bounds) { anchor in
-                    return self.geometry[anchor].width
-                }
-            }.onPreferenceChange(TabWidthPreferenceKey.self) { width in
-                self.width = width
-            }.eraseToAnyView()
+            return Color.clear.frame(maxWidth: .infinity, maxHeight: 0)
+                .overlay(
+                    GeometryReader { geometry in
+                        ZStack {
+                            ForEach(tabItems) { tabItem in
+                                Button(
+                                    action: {},
+                                    label: {
+                                        Group {
+                                            if self.isSelected(tabItem) {
+                                                tabItem.selectedLabel
+                                            } else {
+                                                tabItem.unselectedLabel
+                                            }
+                                        }.accessibility(label: tabItem.a11yLabel).padding(.vertical)
+                                    })
+                            }.anchorPreference(key: TabWidthPreferenceKey.self, value: .bounds) { anchor in
+                                return geometry[anchor].width
+                            }
+                        }.preference(key: ContainerWidthPreferenceKey.self, value: geometry.size.width)
+                        .onPreferenceChange(TabWidthPreferenceKey.self) { width in
+                            self.width = width // Save the cumulative width of the all the tabs
+                        }.onPreferenceChange(ContainerWidthPreferenceKey.self) { containerWidth in
+                            self.containerWidth = containerWidth ?? 0 // Save the width of the container
+                        }
+                    }).eraseToAnyView()
         } else {
             return ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: calculateHStackSpacing()) {
@@ -83,7 +89,7 @@ struct TabBar<TabItemType: TabItem>: View {
                             Spacer()
                         }
                     }
-                }.frame(width: self.width > geometry.size.width ? nil : geometry.size.width)
+                }.frame(width: self.width > containerWidth ? nil : containerWidth)
             }.backgroundPreferenceValue(FirstNonNilPreferenceKey<Anchor<CGRect>>.self) { boundsAnchor in
                 if showIndicator {
                     // Create the indicator.
@@ -130,6 +136,17 @@ struct FirstNonNilPreferenceKey<T>: PreferenceKey {
 }
 
 /**
+ * Preference key for the width of the container.
+ */
+struct ContainerWidthPreferenceKey: PreferenceKey {
+    static var defaultValue: CGFloat?
+
+    static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
+        value = value ?? nextValue()
+    }
+}
+
+/**
  * Preference key to calculate the cumulative width of all the tabs.
  *
  * This is used to determine if we need to scroll off-screen or not and is used to set the frame width for the tab's HStack.
@@ -155,50 +172,35 @@ struct TabBar_Previews: PreviewProvider {
         var browse: HomeTab = .browse
         let lyricsTab: HymnTab = .lyrics(EmptyView().eraseToAnyView())
         return Group {
-            GeometryReader { geometry in
-                TabBar(
-                    currentTab: .constant(lyricsTab),
-                    geometry: geometry,
-                    tabItems: [lyricsTab, .music(EmptyView().eraseToAnyView())],
-                    tabSpacing: .maxWidth,
-                    showIndicator: true)
-            }.previewDisplayName("lyrics tab selected")
-            GeometryReader { geometry in
-                TabBar(
-                    currentTab: Binding<HomeTab>(
-                        get: {search},
-                        set: {search = $0}),
-                    geometry: geometry,
-                    tabItems: [.search, .browse, .favorites, .settings],
-                    tabSpacing: .maxWidth,
-                    showIndicator: true)
-            }.previewDisplayName("home tab selected")
-            GeometryReader { geometry in
-                TabBar(
-                    currentTab: Binding<HomeTab>(
-                        get: {browse},
-                        set: {browse = $0}),
-                    geometry: geometry,
-                    tabItems: [.search, .browse, .favorites, .settings],
-                    tabSpacing: .maxWidth,
-                    showIndicator: true)
-            }.previewDisplayName("browse tab selected")
-            GeometryReader { geometry in
-                TabBar(
-                    currentTab: .constant(lyricsTab),
-                    geometry: geometry,
-                    tabItems: [lyricsTab, .music(EmptyView().eraseToAnyView())],
-                    tabSpacing: .custom(spacing: 0),
-                    showIndicator: true)
-            }.previewDisplayName("custom spacing")
-            GeometryReader { geometry in
-                TabBar(
-                    currentTab: .constant(lyricsTab),
-                    geometry: geometry,
-                    tabItems: [lyricsTab, .music(EmptyView().eraseToAnyView())],
-                    tabSpacing: .custom(spacing: 5),
-                    showIndicator: false)
-            }.previewDisplayName("no indicator")
+            TabBar(
+                currentTab: .constant(lyricsTab),
+                tabItems: [lyricsTab, .music(EmptyView().eraseToAnyView())],
+                tabSpacing: .maxWidth,
+                showIndicator: true).previewDisplayName("lyrics tab selected")
+            TabBar(
+                currentTab: Binding<HomeTab>(
+                    get: {search},
+                    set: {search = $0}),
+                tabItems: [.search, .browse, .favorites, .settings],
+                tabSpacing: .maxWidth,
+                showIndicator: true).previewDisplayName("home tab selected")
+            TabBar(
+                currentTab: Binding<HomeTab>(
+                    get: {browse},
+                    set: {browse = $0}),
+                tabItems: [.search, .browse, .favorites, .settings],
+                tabSpacing: .maxWidth,
+                showIndicator: true).previewDisplayName("browse tab selected")
+            TabBar(
+                currentTab: .constant(lyricsTab),
+                tabItems: [lyricsTab, .music(EmptyView().eraseToAnyView())],
+                tabSpacing: .custom(spacing: 0),
+                showIndicator: true).previewDisplayName("custom spacing")
+            TabBar(
+                currentTab: .constant(lyricsTab),
+                tabItems: [lyricsTab, .music(EmptyView().eraseToAnyView())],
+                tabSpacing: .custom(spacing: 5),
+                showIndicator: false).previewDisplayName("no indicator")
         }.previewLayout(.fixed(width: 375, height: 50))
     }
 }

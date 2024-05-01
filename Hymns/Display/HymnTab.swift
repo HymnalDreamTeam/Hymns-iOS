@@ -62,27 +62,18 @@ struct HymnTab_Previews: PreviewProvider {
             set: {musicTab = $0})
 
         return Group {
-            GeometryReader { geometry in
-                TabBar(currentTab: currentTabLyrics,
-                       geometry: geometry,
-                       tabItems: [lyricsTab, musicTab],
-                       tabSpacing: .maxWidth,
-                       showIndicator: true)
-            }.previewDisplayName("lyrics selected")
-            GeometryReader { geometry in
-                TabBar(currentTab: currentTabMusic,
-                       geometry: geometry,
-                       tabItems: [lyricsTab, musicTab],
-                       tabSpacing: .maxWidth,
-                       showIndicator: true)
-            }.previewDisplayName("music selected")
-            GeometryReader { geometry in
-                TabBar(currentTab: currentTabLyrics,
-                       geometry: geometry,
-                       tabItems: [lyricsTab],
-                       tabSpacing: .maxWidth,
-                       showIndicator: true)
-            }.previewDisplayName("only lyrics")
+            TabBar(currentTab: currentTabLyrics,
+                   tabItems: [lyricsTab, musicTab],
+                   tabSpacing: .maxWidth,
+                   showIndicator: true).previewDisplayName("lyrics selected")
+            TabBar(currentTab: currentTabMusic,
+                   tabItems: [lyricsTab, musicTab],
+                   tabSpacing: .maxWidth,
+                   showIndicator: true).previewDisplayName("music selected")
+            TabBar(currentTab: currentTabLyrics,
+                   tabItems: [lyricsTab],
+                   tabSpacing: .maxWidth,
+                   showIndicator: true).previewDisplayName("only lyrics")
         }.previewLayout(.fixed(width: 450, height: 50))
     }
 }
