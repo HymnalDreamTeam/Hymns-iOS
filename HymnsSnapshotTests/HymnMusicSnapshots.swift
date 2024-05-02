@@ -27,7 +27,9 @@ class HymnMusicSnapshots: XCTestCase {
                                                         .piano(Text("Piano sheet music here").eraseToAnyView()),
                                                         .guitar(Text("Guitar sheet music here").eraseToAnyView())])
         viewModel.currentTab = .inline(Text("Inline chords here").eraseToAnyView())
-        let view = HymnMusicView(viewModel: viewModel)
+        let view = ScrollView(showsIndicators: false) {
+            HymnMusicView(viewModel: viewModel)
+        }
         assertVersionedSnapshot(matching: view, as: .image(layout: .sizeThatFits))
     }
 
@@ -35,7 +37,9 @@ class HymnMusicSnapshots: XCTestCase {
         let viewModel = HymnMusicViewModel(musicViews: [.piano(Text("Piano sheet music here").eraseToAnyView()),
                                                         .guitar(Text("Guitar sheet music here").eraseToAnyView())])
         viewModel.currentTab = .piano(Text("Piano sheet music here").eraseToAnyView())
-        let view = HymnMusicView(viewModel: viewModel)
+        let view = ScrollView(showsIndicators: false) {
+            HymnMusicView(viewModel: viewModel)
+        }
         assertVersionedSnapshot(matching: view, as: .image(layout: .sizeThatFits))
     }
 
@@ -43,7 +47,9 @@ class HymnMusicSnapshots: XCTestCase {
         let viewModel = HymnMusicViewModel(musicViews: [.piano(Text("Piano sheet music here").eraseToAnyView()),
                                                         .guitar(Text("Guitar sheet music here").eraseToAnyView())])
         viewModel.currentTab = .guitar(Text("Guitar sheet music here").eraseToAnyView())
-        let view = HymnMusicView(viewModel: viewModel)
+        let view = ScrollView(showsIndicators: false) {
+            HymnMusicView(viewModel: viewModel)
+        }
         assertVersionedSnapshot(matching: view, as: .image(layout: .sizeThatFits))
     }
 

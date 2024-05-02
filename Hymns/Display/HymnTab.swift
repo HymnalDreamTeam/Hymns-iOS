@@ -62,18 +62,24 @@ struct HymnTab_Previews: PreviewProvider {
             set: {musicTab = $0})
 
         return Group {
-            TabBar(currentTab: currentTabLyrics,
-                   tabItems: [lyricsTab, musicTab],
-                   tabSpacing: .maxWidth,
-                   showIndicator: true).previewDisplayName("lyrics selected")
-            TabBar(currentTab: currentTabMusic,
-                   tabItems: [lyricsTab, musicTab],
-                   tabSpacing: .maxWidth,
-                   showIndicator: true).previewDisplayName("music selected")
-            TabBar(currentTab: currentTabLyrics,
-                   tabItems: [lyricsTab],
-                   tabSpacing: .maxWidth,
-                   showIndicator: true).previewDisplayName("only lyrics")
+            ScrollView {
+                TabBar(currentTab: currentTabLyrics,
+                       tabItems: [lyricsTab, musicTab],
+                       tabSpacing: .maxWidth,
+                       showIndicator: true).previewDisplayName("lyrics selected")
+            }
+            ScrollView {
+                TabBar(currentTab: currentTabMusic,
+                       tabItems: [lyricsTab, musicTab],
+                       tabSpacing: .maxWidth,
+                       showIndicator: true).previewDisplayName("music selected")
+            }
+            ScrollView {
+                TabBar(currentTab: currentTabLyrics,
+                       tabItems: [lyricsTab],
+                       tabSpacing: .maxWidth,
+                       showIndicator: true).previewDisplayName("only lyrics")
+            }
         }.previewLayout(.fixed(width: 450, height: 50))
     }
 }

@@ -172,35 +172,45 @@ struct TabBar_Previews: PreviewProvider {
         var browse: HomeTab = .browse
         let lyricsTab: HymnTab = .lyrics(EmptyView().eraseToAnyView())
         return Group {
-            TabBar(
-                currentTab: .constant(lyricsTab),
-                tabItems: [lyricsTab, .music(EmptyView().eraseToAnyView())],
-                tabSpacing: .maxWidth,
-                showIndicator: true).previewDisplayName("lyrics tab selected")
-            TabBar(
-                currentTab: Binding<HomeTab>(
-                    get: {search},
-                    set: {search = $0}),
-                tabItems: [.search, .browse, .favorites, .settings],
-                tabSpacing: .maxWidth,
-                showIndicator: true).previewDisplayName("home tab selected")
-            TabBar(
-                currentTab: Binding<HomeTab>(
-                    get: {browse},
-                    set: {browse = $0}),
-                tabItems: [.search, .browse, .favorites, .settings],
-                tabSpacing: .maxWidth,
-                showIndicator: true).previewDisplayName("browse tab selected")
-            TabBar(
-                currentTab: .constant(lyricsTab),
-                tabItems: [lyricsTab, .music(EmptyView().eraseToAnyView())],
-                tabSpacing: .custom(spacing: 0),
-                showIndicator: true).previewDisplayName("custom spacing")
-            TabBar(
-                currentTab: .constant(lyricsTab),
-                tabItems: [lyricsTab, .music(EmptyView().eraseToAnyView())],
-                tabSpacing: .custom(spacing: 5),
-                showIndicator: false).previewDisplayName("no indicator")
+            ScrollView(showsIndicators: false) {
+                TabBar(
+                    currentTab: .constant(lyricsTab),
+                    tabItems: [lyricsTab, .music(EmptyView().eraseToAnyView())],
+                    tabSpacing: .maxWidth,
+                    showIndicator: true)
+            }.previewDisplayName("lyrics tab selected")
+            ScrollView(showsIndicators: false) {
+                TabBar(
+                    currentTab: Binding<HomeTab>(
+                        get: {search},
+                        set: {search = $0}),
+                    tabItems: [.search, .browse, .favorites, .settings],
+                    tabSpacing: .maxWidth,
+                    showIndicator: true)
+            }.previewDisplayName("home tab selected")
+            ScrollView(showsIndicators: false) {
+                TabBar(
+                    currentTab: Binding<HomeTab>(
+                        get: {browse},
+                        set: {browse = $0}),
+                    tabItems: [.search, .browse, .favorites, .settings],
+                    tabSpacing: .maxWidth,
+                    showIndicator: true)
+            }.previewDisplayName("browse tab selected")
+            ScrollView(showsIndicators: false) {
+                TabBar(
+                    currentTab: .constant(lyricsTab),
+                    tabItems: [lyricsTab, .music(EmptyView().eraseToAnyView())],
+                    tabSpacing: .custom(spacing: 0),
+                    showIndicator: true)
+            }.previewDisplayName("custom spacing")
+            ScrollView(showsIndicators: false) {
+                TabBar(
+                    currentTab: .constant(lyricsTab),
+                    tabItems: [lyricsTab, .music(EmptyView().eraseToAnyView())],
+                    tabSpacing: .custom(spacing: 5),
+                    showIndicator: false)
+            }.previewDisplayName("no indicator")
         }.previewLayout(.fixed(width: 375, height: 50))
     }
 }

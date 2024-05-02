@@ -20,7 +20,6 @@ class SettingsScenarios: BaseTestCase {
             .returnToHome()
             .tapHome()
             .tapResult("Hymn 2, Classic 2")
-            .waitForStaticTexts("classic hymn 2 chorus")
             .checkStaticTextCount("classic hymn 2 chorus", 2)
     }
 

@@ -48,7 +48,7 @@ class DisplayHymnViewModel: ObservableObject {
         self.analytics = analytics
         self.backgroundQueue = backgroundQueue
         self.converter = converter
-        self.currentTab = .lyrics(HymnNotExistsView().maxSize().eraseToAnyView())
+        self.currentTab = .lyrics(HymnNotExistsView().eraseToAnyView())
         self.favoriteStore = favoriteStore
         self.historyStore = historyStore
         self.identifier = identifier
@@ -81,7 +81,7 @@ class DisplayHymnViewModel: ObservableObject {
 
                     self.tabItems.removeAll()
                     if let lyrics = HymnLyricsViewModel(hymnToDisplay: self.identifier, lyrics: hymn.lyrics) {
-                        let lyricsTab: HymnTab = .lyrics(HymnLyricsView(viewModel: lyrics).maxSize().eraseToAnyView())
+                        let lyricsTab: HymnTab = .lyrics(HymnLyricsView(viewModel: lyrics).eraseToAnyView())
                         self.tabItems.append(lyricsTab)
                     }
 

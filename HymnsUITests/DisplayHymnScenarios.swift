@@ -127,4 +127,31 @@ class DisplayHymnScenarios: BaseTestCase {
             .verifyFontPickerNotExists()
             .waitForStaticTexts("verse 1 line 1")
     }
+
+    func test_scrolling() {
+        _ = DisplayHymnViewCan(app, testCase: self)
+            .waitForStaticTexts("Hymn 1151")
+            .waitForButtons("Lyrics", "Music", "Change lyrics font size")
+
+            .swipeDown() // Should have no impact on toolbar or bottom bar visibility
+            .waitForStaticTexts("Hymn 1151")
+            .waitForButtons("Lyrics", "Music", "Change lyrics font size")
+
+            .swipeUp() // Should make the toolbars and bottom bar disappear
+            .verifyStaticTextsNotDisplayed("Hymn 1151")
+            .verifyButtonsNotDisplayed("Lyrics", "Music", "Change lyrics font size")
+
+            .swipeUp() // Should make the toolbars and bottom bar disappear
+            .verifyStaticTextsNotDisplayed("Hymn 1151")
+            .verifyButtonsNotDisplayed("Lyrics", "Music", "Change lyrics font size")
+
+            .swipeDown() // Only the bottom bar should be visible now
+            .verifyStaticTextsNotDisplayed("Hymn 1151")
+            .verifyButtonsNotDisplayed("Lyrics", "Music")
+            .waitForButtons("Change lyrics font size")
+
+            .swipeDown() // Toolbars and bottom bar should be dispalyed
+            .waitForStaticTexts("Hymn 1151")
+            .waitForButtons("Lyrics", "Music", "Change lyrics font size")
+    }
 }

@@ -112,6 +112,26 @@ public class BaseViewCan {
         testCase.add(attachment)
         return self
     }
+
+    public func swipeUp() -> Self {
+        app.swipeUp()
+        return self
+    }
+
+    public func swipeDown() -> Self {
+        app.swipeDown()
+        return self
+    }
+
+    public func swipeLeft() -> Self {
+        app.swipeLeft()
+        return self
+    }
+
+    public func swipeRight() -> Self {
+        app.swipeRight()
+        return self
+    }
 }
 
 extension XCUIElement {

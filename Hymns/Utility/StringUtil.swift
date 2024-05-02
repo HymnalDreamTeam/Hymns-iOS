@@ -4,7 +4,7 @@ public class StringUtil {
 
     /// Returns the Levenshtein Distance between two strings, as long as both strings are non-empty. If either is empty, then return -1.
     static func levenshteinDistance(_ s1: String, _ s2: String) -> Int {
-        if (s1.isEmpty || s2.isEmpty) {
+        if s1.isEmpty || s2.isEmpty {
             return -1
         }
 

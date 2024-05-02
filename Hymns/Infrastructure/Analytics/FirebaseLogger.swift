@@ -64,7 +64,7 @@ class FirebaseLoggerImpl: FirebaseLogger {
             Analytics.logEvent(QueryChanged.name, parameters: [
                 QueryChanged.Params.previous_query.rawValue: previousQuery,
                 QueryChanged.Params.new_query.rawValue: newQuery,
-                QueryChanged.Params.distance.rawValue: StringUtil.levenshteinDistance(previousQuery, newQuery),
+                QueryChanged.Params.distance.rawValue: StringUtil.levenshteinDistance(previousQuery, newQuery)
             ])
         }
     }

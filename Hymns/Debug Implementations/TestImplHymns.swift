@@ -26,7 +26,31 @@ let classic1151Entity = HymnEntityBuilder(id: classic1151.songId)
              VerseEntity(verseType: .verse, lines: [LineEntity(lineContent: "verse 3 line 1"),
                                                     LineEntity(lineContent: "verse 3 line 2"),
                                                     LineEntity(lineContent: "verse 3 line 3"),
-                                                    LineEntity(lineContent: "verse 3 line 4")])])
+                                                    LineEntity(lineContent: "verse 3 line 4")]),
+             VerseEntity(verseType: .verse, lines: [LineEntity(lineContent: "verse 4 line 1"),
+                                                    LineEntity(lineContent: "verse 4 line 2"),
+                                                    LineEntity(lineContent: "verse 4 line 3"),
+                                                    LineEntity(lineContent: "verse 4 line 4")]),
+             VerseEntity(verseType: .verse, lines: [LineEntity(lineContent: "verse 5 line 1"),
+                                                    LineEntity(lineContent: "verse 5 line 2"),
+                                                    LineEntity(lineContent: "verse 5 line 3"),
+                                                    LineEntity(lineContent: "verse 5 line 4")]),
+             VerseEntity(verseType: .verse, lines: [LineEntity(lineContent: "verse 6 line 1"),
+                                                    LineEntity(lineContent: "verse 6 line 2"),
+                                                    LineEntity(lineContent: "verse 6 line 3"),
+                                                    LineEntity(lineContent: "verse 6 line 4")]),
+             VerseEntity(verseType: .verse, lines: [LineEntity(lineContent: "verse 7 line 1"),
+                                                    LineEntity(lineContent: "verse 7 line 2"),
+                                                    LineEntity(lineContent: "verse 7 line 3"),
+                                                    LineEntity(lineContent: "verse 7 line 4")]),
+             VerseEntity(verseType: .verse, lines: [LineEntity(lineContent: "verse 8 line 1"),
+                                                    LineEntity(lineContent: "verse 8 line 2"),
+                                                    LineEntity(lineContent: "verse 8 line 3"),
+                                                    LineEntity(lineContent: "verse 8 line 4")]),
+             VerseEntity(verseType: .verse, lines: [LineEntity(lineContent: "verse 9 line 1"),
+                                                    LineEntity(lineContent: "verse 9 line 2"),
+                                                    LineEntity(lineContent: "verse 9 line 3"),
+                                                    LineEntity(lineContent: "verse 9 line 4")])])
     .inlineChords("[G]Songbase version of Hymn 1151 chords")
     .category("song's category")
     .subcategory("song's subcategory")

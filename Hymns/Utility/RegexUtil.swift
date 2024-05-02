@@ -64,7 +64,7 @@ public class RegexUtil {
      * \b -> word boundary
      */
     static let oOhPattern = "(?i)\\b(oh|o)\\b"
-    
+
     /**
      * Regex format to extract words containing single quotes and apostrophes out of a string.
      * \w -> word character

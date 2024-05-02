@@ -53,16 +53,6 @@ public class DisplayHymnViewCan: BaseViewCan {
         return BrowseResultsViewCan(app, testCase: testCase)
     }
 
-    public func swipeLeft() -> DisplayHymnViewCan {
-        app.swipeLeft()
-        return self
-    }
-
-    public func swipeRight() -> DisplayHymnViewCan {
-        app.swipeRight()
-        return self
-    }
-
     public func favoriteSong() -> DisplayHymnViewCan {
         return pressButton("Mark song as a favorite")
     }
@@ -110,7 +100,17 @@ public class DisplayHymnViewCan: BaseViewCan {
     }
 
     public func closeSheetMusic() -> DisplayHymnViewCan {
-        return pressButton("Close")
+        // There is another "Close" for the song view itself, so we need special logic to specify
+        // closing the sheet music.
+        let predicate = NSPredicate { (evaluatedObject, _) -> Bool in
+            guard let element = evaluatedObject as? XCUIElementSnapshot else { return false }
+            return element.label == "Close" &&
+                // Pick the "Close" button that is left-aligned because the other "Close" button is next
+                // to the favorites button on the right side.
+                element.frame.minX == 0
+        }
+        app.buttons.element(matching: predicate).tap()
+        return self
     }
 
     public func openShareSheet() -> DisplayHymnViewCan {
@@ -246,22 +246,66 @@ public class DisplayHymnViewCan: BaseViewCan {
         return pressButton("Cancel")
     }
 
+    private func onScreenPredicate(_ identifier: String) -> NSPredicate {
+        NSPredicate { (evaluatedObject, _) -> Bool in
+            guard let element = evaluatedObject as? XCUIElementSnapshot else { return false }
+            return element.label == identifier &&
+                element.frame.minX >= 0 &&
+            element.frame.maxX <= self.app.frame.maxX
+        }
+    }
+
+    public override func waitForStaticTexts(_ identifiers: String...) -> Self {
+        for identifier in identifiers {
+            XCTAssertTrue(
+                app.staticTexts
+                    .element(matching: onScreenPredicate(identifier))
+                    .waitForExistence(timeout: 1))
+            XCTAssertTrue(
+                app.staticTexts.matching(identifier: identifier)
+                    .element(matching: onScreenPredicate(identifier))
+                    .isHittable)
+        }
+        return self
+    }
+
+    public func verifyStaticTextsNotDisplayed(_ identifiers: String...) -> Self {
+        for identifier in identifiers {
+            XCTAssertFalse(
+                app.staticTexts
+                    .element(matching: onScreenPredicate(identifier))
+                    .isHittable)
+        }
+        return self
+    }
+
+    public override func waitForButtons(_ identifiers: String..., timeout: TimeInterval = 1) -> Self {
+        for identifier in identifiers {
+            XCTAssertTrue(
+                app.buttons
+                    .element(matching: onScreenPredicate(identifier))
+                    .waitForExistence(timeout: 1))
+            XCTAssertTrue(
+                app.buttons
+                    .element(matching: onScreenPredicate(identifier))
+                    .isHittable)
+        }
+        return self
+    }
+
+    public func verifyButtonsNotDisplayed(_ identifiers: String...) -> Self {
+        for identifier in identifiers {
+            XCTAssertFalse(
+                app.staticTexts
+                    .element(matching: onScreenPredicate(identifier))
+                    .isHittable)
+        }
+        return self
+    }
+
     public override func pressButton(_ buttonText: String) -> Self {
         _ = waitForButtons(buttonText)
-
-        // Pick the middle one when it's in a view pager with 5 elements when possible.
-        if app.buttons.matching(identifier: buttonText).count == 5 && app.buttons.matching(identifier: buttonText).element(boundBy: 2).isHittable {
-            app.buttons.matching(identifier: buttonText).element(boundBy: 2).tap()
-            return self
-        }
-
-        for index in 0..<app.buttons.matching(identifier: buttonText).count {
-            if app.buttons.matching(identifier: buttonText).element(boundBy: index).isHittable {
-                app.buttons.matching(identifier: buttonText).element(boundBy: index).tap()
-                return self
-            }
-        }
-        XCTFail("Couldn't find hittable button with \(buttonText)")
+        app.buttons.element(matching: onScreenPredicate(buttonText)).tap()
         return self
     }
 }

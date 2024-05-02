@@ -11,21 +11,32 @@ struct DisplayHymnPdfView: View {
     }
 
     var body: some View {
+        VStack(spacing: 0) {
+            Spacer()
+            buildView()
+            Spacer()
+        }.preference(key: DisplayHymnView.DisplayTypeKey.self, value: .sheetMusic)
+    }
+
+    private func buildView() -> AnyView {
         if viewModel.isLoading {
-            return ActivityIndicator().maxSize().onAppear {
+            return ActivityIndicator().onAppear {
                 viewModel.loadPdf()
-            }.eraseToAnyView()
+            }.preference(key: DisplayHymnView.DisplayTypeKey.self, value: .sheetMusic).eraseToAnyView()
         }
 
         guard let pdfDocument = viewModel.pdfDocument else {
-            return ErrorView().maxSize().eraseToAnyView()
+            return ErrorView().preference(key: DisplayHymnView.DisplayTypeKey.self, value: .sheetMusic).eraseToAnyView()
         }
 
         return ZStack(alignment: .topTrailing) {
             Button(action: {
                 self.showPdfSheet = true
             }, label: {
-                Image(systemName: "arrow.up.left.and.arrow.down.right").rotationEffect(.degrees(90)).accessibility(label: Text("Maximize sheet music", comment: "A11y label for maximizing the sheet music.")).padding().padding(.top, 15)
+                Image(systemName: "arrow.up.left.and.arrow.down.right")
+                    .rotationEffect(.degrees(90))
+                    .accessibility(label: Text("Maximize sheet music", comment: "A11y label for maximizing the sheet music."))
+                    .padding().padding(.top, 15)
             }).zIndex(1)
             PDFViewer(pdfDocument)
         }.fullScreenCover(isPresented: $showPdfSheet) {

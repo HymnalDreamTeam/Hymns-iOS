@@ -1,5 +1,6 @@
 import MobileCoreServices
 import SwiftUI
+import UniformTypeIdentifiers
 
 public struct HymnLyricsView: View {
 
@@ -11,34 +12,38 @@ public struct HymnLyricsView: View {
         self.viewModel = viewModel
     }
     public var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 15) {
-                if viewModel.showTransliterationButton {
-                    HStack {
-                        Spacer()
-                        Button(action: {
-                            self.transliterate.toggle()
-                        }, label: {
-                            self.transliterate ?
-                            Image(systemName: "a.square.fill").accessibilityLabel(Text("Transliteration on. Click to toggle.", comment: "A11y label for button toggling transliteration off.")).accentColor(.accentColor) :
-                            Image(systemName: "a.square").accessibilityLabel(Text("Transliteration off. Click to toggle.", comment: "A11y label for button toggling transliteration on.")).accentColor(.primary)
-                        }).frame(width: 25, height: 25)
+        VStack(alignment: .leading, spacing: 15) {
+            if viewModel.showTransliterationButton {
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        self.transliterate.toggle()
+                    }, label: {
+                        self.transliterate ?
+                        Image(systemName: "a.square.fill").accessibilityLabel(Text("Transliteration on. Click to toggle.", comment: "A11y label for button toggling transliteration off.")).accentColor(.accentColor) :
+                        Image(systemName: "a.square").accessibilityLabel(Text("Transliteration off. Click to toggle.", comment: "A11y label for button toggling transliteration on.")).accentColor(.primary)
+                    }).frame(width: 25, height: 25)
+                }
+            }
+            ForEach(viewModel.lyrics, id: \.self) { verseViewModel in
+                VerseView(viewModel: verseViewModel, transliterate: self.$transliterate)
+                    .onTapGesture {
+                        // needed so onLongPressGesture doesn't hijack the tap and make the view unscrollabe
+                        // https://stackoverflow.com/a/60015111/1907538
+                    }.onLongPressGesture {
+                        UIPasteboard.general.setValue(
+                            verseViewModel.createFormattedString(includeTransliteration: self.transliterate),
+                            forPasteboardType: UTType.plainText.identifier)
+                        self.toast = .verseCopied
                     }
-                }
-                ForEach(viewModel.lyrics, id: \.self) { verseViewModel in
-                    VerseView(viewModel: verseViewModel, transliterate: self.$transliterate)
-                        .onTapGesture {
-                            // needed so onLongPressGesture doesn't hijack the tap and make the view unscrollabe
-                            // https://stackoverflow.com/a/60015111/1907538
-                        }.onLongPressGesture {
-                            UIPasteboard.general.setValue(
-                                verseViewModel.createFormattedString(includeTransliteration: self.transliterate),
-                                forPasteboardType: kUTTypePlainText as String)
-                            self.toast = .verseCopied
-                        }
-                }
-            }.frame(minWidth: 0, maxWidth: .infinity, alignment: .leading).padding()
-        }.maxSize().toast(item: $toast, options: ToastOptions(alignment: .bottom, disappearAfter: 2)) { toastType -> AnyView in
+            }
+        }
+        .preference(key: DisplayHymnView.DisplayTypeKey.self, value: .lyrics)
+        .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading).padding()
+        // Need additional padding on the bottom to allow room for the view to clear the bottom bar. Otherwise, the bottom bar
+        // will cover the bottom of the lyrics content with no way to show it.
+        .padding(.bottom, 150)
+        .toast(item: $toast, options: ToastOptions(alignment: .bottom, disappearAfter: 2)) { toastType -> AnyView in
             switch toastType {
             case .verseCopied:
                 return HStack {

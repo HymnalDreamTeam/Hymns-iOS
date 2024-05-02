@@ -5,6 +5,7 @@ struct DisplayHymnView: View {
 
     @ObservedObject private var viewModel: DisplayHymnViewModel
     @State private var dialogModel: DialogViewModel<AnyView>?
+    @State private var displayType: DisplayType?
 
     private let firebaseLogger: FirebaseLogger
 
@@ -18,21 +19,68 @@ struct DisplayHymnView: View {
             if !viewModel.isLoaded {
                 ActivityIndicator().maxSize()
             } else {
-                VStack(spacing: 0) {
-                    DisplayHymnToolbar(viewModel: viewModel)
-                    if viewModel.tabItems.count > 1 {
-                        IndicatorTabView(currentTab: self.$viewModel.currentTab,
-                                         tabItems: self.viewModel.tabItems,
-                                         tabSpacing: .custom(spacing: 20))
-                    } else {
-                        viewModel.currentTab.content
-                    }
-                    viewModel.bottomBar.map { viewModel in
-                        DisplayHymnBottomBar(dialogModel: self.$dialogModel, viewModel: viewModel).maxWidth()
-                    }
-                }
-                Dialog(viewModel: $dialogModel).map { dialog in
-                    dialog.zIndex(1)
+                GeometryReader { geometry in
+                    ZStack {
+                        ScrollView(showsIndicators: false) {
+                            // Create an invisible view at the top of the scroll view to help calculate scroll position.
+                            Color.clear
+                                .frame(height: 0)
+                                .overlay {
+                                    GeometryReader { geometry in
+                                        Color.clear.preference(key: DisplayHymnView.VerticalScrollTopKey.self,
+                                                               value: geometry.frame(in: .named("scrollview")).minY)
+                                    }
+                                }
+                            VStack(spacing: 0) {
+                                DisplayHymnToolbar(viewModel: viewModel)
+                                if viewModel.tabItems.count > 1 {
+                                    IndicatorTabView(currentTab: self.$viewModel.currentTab,
+                                                     tabItems: self.viewModel.tabItems,
+                                                     tabSpacing: .custom(spacing: 20))
+                                } else {
+                                    viewModel.currentTab.content
+                                }
+                            }.overlay(
+                                Color.clear
+                                    .preference(key: VerticalHeightKey.self, value: geometry.size.height)
+                            ).frame(height: displayType?.toHeight(geometry), alignment: .top)
+                            // Create an invisible view at the bottom of the scroll view to help calculate scroll position.
+                            Color.green
+                                .frame(height: 0)
+                                .overlay {
+                                    GeometryReader { geometry in
+                                        Color.clear.preference(key: DisplayHymnView.VerticalScrollBottomKey.self,
+                                                               value: geometry.frame(in: .named("scrollview")).maxY)
+                                    }
+                                }
+                        }.onPreferenceChange(VerticalScrollTopKey.self) { verticalScroll in
+                            self.verticalScrollTop = verticalScroll
+                        }.onPreferenceChange(VerticalScrollBottomKey.self) { verticalScrollBottom in
+                            self.verticalScrollBottom = verticalScrollBottom
+                        }.onPreferenceChange(VerticalHeightKey.self) { verticalHeight in
+                            self.verticalHeight = verticalHeight
+                        }.onPreferenceChange(DisplayTypeKey.self) { displayType in
+                            self.displayType = displayType
+                        }.coordinateSpace(name: "scrollview")
+                        viewModel.bottomBar.map { viewModel in
+                            DisplayHymnBottomBar(dialogModel: self.$dialogModel, viewModel: viewModel)
+                                .padding(.bottom, bottomBarOffset)
+                                .background(
+                                    GeometryReader { geometry in
+                                        Color.clear
+                                            .preference(key: BottomBarHeight.self, value: geometry.size.height)
+                                    }
+                                ).onPreferenceChange(BottomBarHeight.self) { height in
+                                    if initialBottomBarHeight == nil {
+                                        initialBottomBarHeight = height
+                                    }
+                                }.maxSize(alignment: .bottom)
+
+                        }
+                        Dialog(viewModel: $dialogModel).map { dialog in
+                            dialog.zIndex(1)
+                        }
+                    }.maxSize()
                 }
             }
         }.hideNavigationBar()
@@ -42,18 +90,111 @@ struct DisplayHymnView: View {
                 firebaseLogger.logScreenView(screenName: "DisplayHymnView")
             }.background(Color(.systemBackground))
     }
+
+    enum DisplayType {
+        case error
+        case lyrics
+        case inlineChords
+        case sheetMusic
+
+        func toHeight(_ geometry: GeometryProxy) -> CGFloat? {
+            switch self {
+            case .lyrics, .inlineChords:
+                return nil
+            case .error, .sheetMusic:
+                return geometry.size.height
+            }
+        }
+    }
+
+    struct DisplayTypeKey: PreferenceKey {
+        static let defaultValue: DisplayType? = nil
+        static func reduce(value: inout DisplayType?,
+                           nextValue: () -> DisplayType?) {
+            value = value ?? nextValue()
+        }
+    }
+
+    /** Used for coordinating the bottom bar with the user's scroll to hide/show **/
+    @State private var bottomBarOffset: CGFloat = 0
+
+    @State private var initialBottomBarHeight: CGFloat?
+
+    @State private var verticalHeight: CGFloat?
+    @State private var verticalScrollBottom: CGFloat?
+    @State private var verticalScrollTop: CGFloat? {
+        didSet {
+            guard let verticalScrollTop = verticalScrollTop,
+                  let verticalScrollBottom = verticalScrollBottom,
+                  let verticalHeight = verticalHeight,
+                  let initialBottomBarHeight = initialBottomBarHeight,
+                  let oldVerticalScrollTop = oldValue else {
+                return
+            }
+
+            // The scroll view is "bouncing" off either the top or the bottom.
+            if verticalScrollTop >= 0 || verticalScrollBottom < verticalHeight {
+                return
+            }
+
+            let scrollDifference = verticalScrollTop - oldVerticalScrollTop
+            if scrollDifference > 0 { // Scrolling down
+                // Show the bottom bar when scrolling down, but only up to its original position.
+                bottomBarOffset = min(bottomBarOffset + scrollDifference, 0)
+            } else { // Scrolling up
+                // Hide the bottom bar when scrolling up, but only up to a certain point, so it can still
+                // be reshown when the user scrolls down again.
+                bottomBarOffset = max(-initialBottomBarHeight, bottomBarOffset + scrollDifference)
+            }
+        }
+    }
+
+    struct VerticalScrollTopKey: PreferenceKey {
+        static let defaultValue: CGFloat? = nil
+        static func reduce(value: inout CGFloat?,
+                           nextValue: () -> CGFloat?) {
+            value = value ?? nextValue()
+        }
+    }
+
+    struct VerticalScrollBottomKey: PreferenceKey {
+        static let defaultValue: CGFloat? = nil
+        static func reduce(value: inout CGFloat?,
+                           nextValue: () -> CGFloat?) {
+            value = value ?? nextValue()
+        }
+    }
+
+    struct VerticalHeightKey: PreferenceKey {
+        static let defaultValue: CGFloat? = nil
+        static func reduce(value: inout CGFloat?,
+                           nextValue: () -> CGFloat?) {
+            value = value ?? nextValue()
+        }
+    }
+
+    struct BottomBarHeight: PreferenceKey {
+        static let defaultValue: CGFloat? = nil
+        static func reduce(value: inout CGFloat?,
+                           nextValue: () -> CGFloat?) {
+            value = value ?? nextValue()
+        }
+    }
+    /***********************************************************************************************************************/
 }
 
 struct HymnNotExistsView: View {
     var body: some View {
         VStack(alignment: .center) {
+            Spacer()
             Image("error illustration")
             Text("This hymn does not exist. Please try a different one.", comment: "Empty state for hymn lyrics.")
                 .lineLimit(nil)
                 .multilineTextAlignment(.center)
                 .font(.callout)
                 .padding(.horizontal)
-        }
+            Spacer()
+        }.preference(key: DisplayHymnView.DisplayTypeKey.self, value: .error)
     }
 }
 
@@ -62,7 +203,15 @@ struct DisplayHymnView_Previews: PreviewProvider {
     static var previews: some View {
         let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "sdf", lyrics: [VerseEntity]())
 
-        let loading = DisplayHymnView(viewModel: DisplayHymnViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151))
+        let loadingViewModel = DisplayHymnViewModel(hymnToDisplay: HymnIdentifier(hymnType: .blueSongbook, hymnNumber: "998"))
+        loadingViewModel.isLoaded = false
+        let loading = DisplayHymnView(viewModel: loadingViewModel)
+
+        let errorViewModel = DisplayHymnViewModel(hymnToDisplay: HymnIdentifier(hymnType: .blueSongbook, hymnNumber: "998"))
+        errorViewModel.isLoaded = true
+        errorViewModel.title = "Blue Songbook 998"
+        errorViewModel.isFavorited = false
+        let error = DisplayHymnView(viewModel: errorViewModel)
 
         let classic40ViewModel = DisplayHymnViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn40)
         classic40ViewModel.isLoaded = true
@@ -116,6 +265,7 @@ struct DisplayHymnView_Previews: PreviewProvider {
         let classic1334 = DisplayHymnView(viewModel: classic1334ViewModel)
         return Group {
             loading.previewDisplayName("loading")
+            error.previewDisplayName("error")
             classic40.previewDisplayName("classic 40")
             classic1151.previewDisplayName("classic 1151")
             classic1151Music.previewDisplayName("classic 1151 music")

@@ -34,7 +34,9 @@ class InlineChordsSnapshots: XCTestCase {
             ChordLine("Christ, our everything!")
         ]
         let viewModel = InlineChordsViewModel(chords: lyrics)
-        let view = InlineChordsView(viewModel: viewModel)
+        let view = ScrollView(showsIndicators: false) {
+            InlineChordsView(viewModel: viewModel)
+        }
         assertVersionedSnapshot(matching: view, as: .swiftUiImage())
     }
 
@@ -44,7 +46,9 @@ class InlineChordsSnapshots: XCTestCase {
         ]
         let viewModel = InlineChordsViewModel(chords: lyrics)
         viewModel.transpose(10)
-        let view = InlineChordsView(viewModel: viewModel)
+        let view = ScrollView(showsIndicators: false) {
+            InlineChordsView(viewModel: viewModel)
+        }
         assertVersionedSnapshot(matching: view, as: .swiftUiImage())
     }
 
@@ -67,7 +71,9 @@ class InlineChordsSnapshots: XCTestCase {
             ChordLine("")
         ]
         let viewModel = InlineChordsViewModel(chords: lyrics)
-        let view = InlineChordsView(viewModel: viewModel)
+        let view = ScrollView(showsIndicators: false) {
+            InlineChordsView(viewModel: viewModel)
+        }
         assertVersionedSnapshot(matching: view, as: .swiftUiImage())
     }
 }
