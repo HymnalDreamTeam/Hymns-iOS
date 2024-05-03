@@ -163,7 +163,15 @@ class SearchViewModel: ObservableObject {
 
         if let hymnType = RegexUtil.getHymnType(searchQuery: searchParameter.trim()),
            let hymnNumber = RegexUtil.getHymnNumber(searchQuery: searchParameter.trim()) {
-            fetchByHymnTypes(hymnTypes: [hymnType], hymnNumber: hymnNumber, searchParameter: searchParameter)
+            let hymnTypes: [HymnType]
+            if hymnType == .chinese || hymnType == .chineseSupplement {
+                hymnTypes = [.chinese, .chineseSupplement]
+            } else if hymnType == .chineseSimplified || hymnType == .chineseSupplementSimplified {
+                hymnTypes = [.chineseSimplified, .chineseSupplementSimplified]
+            } else {
+                hymnTypes = [hymnType]
+            }
+            fetchByHymnTypes(hymnTypes: hymnTypes, hymnNumber: hymnNumber, searchParameter: searchParameter)
             return
         }
 
@@ -232,7 +240,6 @@ class SearchViewModel: ObservableObject {
                             return SongResultViewModel(stableId: stableId, title: identifier.displayTitle, destinationView: destination)
                         }
                     }
-
             }).subscribe(on: backgroundQueue)
             .receive(on: mainQueue)
             .sink(receiveValue: { [weak self] songResults in

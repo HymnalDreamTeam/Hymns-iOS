@@ -292,7 +292,7 @@ class SearchViewModelSpec: QuickSpec {
                     }
                     context("non-classic hymn type where numbers are found") {
                         beforeEach {
-                            givenSwift(dataStore.getHymns(by: [.chinese])) ~> self.createNumbers(.chinese)
+                            givenSwift(dataStore.getHymns(by: [.chinese, .chineseSupplement])) ~> self.createNumbers(.chinese)
                             target.searchParameter = "ChINEsE 111 "
                             sleep(1) // allow time for the debouncer to trigger.
                         }
