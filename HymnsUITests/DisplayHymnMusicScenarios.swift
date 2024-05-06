@@ -54,14 +54,14 @@ class DisplayHymnMusicScenarios: BaseTestCase {
             .waitForStaticTexts("verse 1 line 1")
             .openMusic()
             .waitForStaticTexts("G", "Songbase", "version", "of", "Hymn", "1151", "chords")
-            .verifyStaticTextSize(size: CGSize(width: 67.6666, height: 17.3333), text: "Songbase")
+            .verifyStaticTextSize(size: CGSize(width: 68.6666, height: 18), text: "Songbase")
             .tapFontPicker()
             .adjustFontPickerToSmallest()
             .assertSmallestFontPickerValue()
-            .verifyStaticTextSize(size: CGSize(width: 63.3333, height: 16.3333), text: "Songbase")
+            .verifyStaticTextSize(size: CGSize(width: 64.6666, height: 17), text: "Songbase")
             .adjustFontPickerToLargest()
             .assertLargestFontPickerValue()
-            .verifyStaticTextSize(size: CGSize(width: 108.3333, height: 27.6666), text: "Songbase")
+            .verifyStaticTextSize(size: CGSize(width: 104.3333, height: 28.6666), text: "Songbase")
     }
 
     func test_guitarFallbackToSheetMusicChordsSongbaseIsMissing() {

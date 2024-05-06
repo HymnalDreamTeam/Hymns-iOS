@@ -47,15 +47,15 @@ class HymnLyricsViewModel: ObservableObject {
             switch verse.verseType {
             case .verse:
                 verseNumber += 1
-                verseViewModels.append(VerseViewModel(verseNumber: "\(verseNumber)", verseLines: verse.lines))
+                verseViewModels.append(VerseViewModel(verseType: verse.verseType, verseNumber: "\(verseNumber)", verseLines: verse.lines))
             case .chorus:
-                verseViewModels.append(VerseViewModel(verseNumber: NSLocalizedString("Chorus", comment: "Indicator that that the verse is of type 'chorus'."),
+                verseViewModels.append(VerseViewModel(verseType: verse.verseType, verseNumber: NSLocalizedString("Chorus", comment: "Indicator that that the verse is of type 'chorus'."),
                                                       verseLines: verse.lines))
             case .other:
-                verseViewModels.append(VerseViewModel(verseNumber: NSLocalizedString("Other", comment: "Indicator that that the verse is of type 'other'."),
+                verseViewModels.append(VerseViewModel(verseType: verse.verseType, verseNumber: NSLocalizedString("Other", comment: "Indicator that that the verse is of type 'other'."),
                                                       verseLines: verse.lines))
             case .note:
-                verseViewModels.append(VerseViewModel(verseNumber: nil, verseLines: verse.lines))
+                verseViewModels.append(VerseViewModel(verseType: verse.verseType, verseNumber: nil, verseLines: verse.lines))
             case .copyright, .doNotDisplay:
                 continue
             }

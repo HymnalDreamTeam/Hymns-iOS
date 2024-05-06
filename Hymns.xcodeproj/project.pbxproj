@@ -199,6 +199,7 @@
 		3BBA15E824CC99850010EEC8 /* AudioPlayerSnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBA15E724CC99850010EEC8 /* AudioPlayerSnapshots.swift */; };
 		3BBA15EA24CCBCD00010EEC8 /* BottomBarSnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBA15E924CCBCD00010EEC8 /* BottomBarSnapshots.swift */; };
 		3BBA15EE24CCF8900010EEC8 /* DisplayHymnBottomBarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBA15ED24CCF88F0010EEC8 /* DisplayHymnBottomBarButton.swift */; };
+		3BBB64472BE8A7CA0066E28B /* VerseLineViewModelSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBB64462BE8A7CA0066E28B /* VerseLineViewModelSpec.swift */; };
 		3BBCC20924DE4C6C00977961 /* DialogViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBCC20824DE4C6C00977961 /* DialogViewModel.swift */; };
 		3BBCC20D24DE75F500977961 /* SoundCloudPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBCC20C24DE75F500977961 /* SoundCloudPlayer.swift */; };
 		3BBCC20F24DF21FF00977961 /* SoundCloudPlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBCC20E24DF21FF00977961 /* SoundCloudPlayerViewModel.swift */; };
@@ -539,6 +540,7 @@
 		3BBA15E724CC99850010EEC8 /* AudioPlayerSnapshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerSnapshots.swift; sourceTree = "<group>"; };
 		3BBA15E924CCBCD00010EEC8 /* BottomBarSnapshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomBarSnapshots.swift; sourceTree = "<group>"; };
 		3BBA15ED24CCF88F0010EEC8 /* DisplayHymnBottomBarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayHymnBottomBarButton.swift; sourceTree = "<group>"; };
+		3BBB64462BE8A7CA0066E28B /* VerseLineViewModelSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerseLineViewModelSpec.swift; sourceTree = "<group>"; };
 		3BBCC20824DE4C6C00977961 /* DialogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogViewModel.swift; sourceTree = "<group>"; };
 		3BBCC20C24DE75F500977961 /* SoundCloudPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundCloudPlayer.swift; sourceTree = "<group>"; };
 		3BBCC20E24DF21FF00977961 /* SoundCloudPlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundCloudPlayerViewModel.swift; sourceTree = "<group>"; };
@@ -1124,6 +1126,7 @@
 				3BA461312477522E0068F269 /* DisplayHymnBottomBarViewModelSpec.swift */,
 				3B7555C72437C24F00DA17F6 /* HymnLyricsViewModelSpec.swift */,
 				3BEF3BD827E1381400467ABE /* InlineChordsViewModelSpec.swift */,
+				3BBB64462BE8A7CA0066E28B /* VerseLineViewModelSpec.swift */,
 			);
 			path = Display;
 			sourceTree = "<group>";
@@ -2115,6 +2118,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3BBB64472BE8A7CA0066E28B /* VerseLineViewModelSpec.swift in Sources */,
 				3B25C0EF2450BF9200C435E1 /* HistoryStoreRealmImplSpec.swift in Sources */,
 				3B20368C248B8A2D00D90DF5 /* BrowseRepositoryTest.swift in Sources */,
 				3B09F904243D4D9300252C15 /* URLProtocolMock.swift in Sources */,

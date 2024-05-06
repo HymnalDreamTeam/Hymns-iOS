@@ -33,8 +33,8 @@ class HymnLyricsViewModelSpec: QuickSpec {
                     target = HymnLyricsViewModel(hymnToDisplay: classic1151, lyrics: verses)!
                 }
                 it("should display lyrics") {
-                    expect(target.lyrics).to(equal([VerseViewModel(verseNumber: "1", verseLines: ["line 1", "line 2"]),
-                                                    VerseViewModel(verseNumber: "Chorus", verseLines: ["chorus 1", "chorus 2"])]))
+                    expect(target.lyrics).to(equal([VerseViewModel(verseType: .verse, verseNumber: "1", verseLines: ["line 1", "line 2"]),
+                                                    VerseViewModel(verseType: .chorus, verseNumber: "Chorus", verseLines: ["chorus 1", "chorus 2"])]))
                 }
                 describe("formatted string") {
                     context("do not include transliteration") {
@@ -63,9 +63,9 @@ class HymnLyricsViewModelSpec: QuickSpec {
                     target = HymnLyricsViewModel(hymnToDisplay: classic1151, lyrics: verses)!
                 }
                 it("should display lyrics") {
-                    expect(target.lyrics).to(equal([VerseViewModel(verseNumber: "1", verseLines: [LineEntity(lineContent: "line 1", transliteration: "transliteration 1"),
+                    expect(target.lyrics).to(equal([VerseViewModel(verseType: .verse, verseNumber: "1", verseLines: [LineEntity(lineContent: "line 1", transliteration: "transliteration 1"),
                                                                                                   LineEntity(lineContent: "line 2", transliteration: "transliteration 2")]),
-                                                    VerseViewModel(verseNumber: "Chorus", verseLines: [LineEntity(lineContent: "chorus 1", transliteration: "chorus transliteration 1"),
+                                                    VerseViewModel(verseType: .chorus, verseNumber: "Chorus", verseLines: [LineEntity(lineContent: "chorus 1", transliteration: "chorus transliteration 1"),
                                                                                                        LineEntity(lineContent: "chorus 2", transliteration: "chorus transliteration 2")])]))
                 }
                 describe("formatted string") {
@@ -104,9 +104,9 @@ class HymnLyricsViewModelSpec: QuickSpec {
                     }
                     it("should not repeat choruses") {
                         expect(target.lyrics).to(equal([
-                            VerseViewModel(verseNumber: "1", verseLines: ["line 1", "line 2"]),
-                            VerseViewModel(verseNumber: "Other", verseLines: ["other 1", "other 2"]),
-                            VerseViewModel(verseNumber: "2", verseLines: ["line 3", "line 4"])
+                            VerseViewModel(verseType: .verse, verseNumber: "1", verseLines: ["line 1", "line 2"]),
+                            VerseViewModel(verseType: .other, verseNumber: "Other", verseLines: ["other 1", "other 2"]),
+                            VerseViewModel(verseType: .verse, verseNumber: "2", verseLines: ["line 3", "line 4"])
                         ]))
                     }
                 }
@@ -121,13 +121,13 @@ class HymnLyricsViewModelSpec: QuickSpec {
                     }
                     it("should repeat the chorus") {
                         expect(target.lyrics).to(equal([
-                            VerseViewModel(verseNumber: "1", verseLines: ["line 1", "line 2"]),
-                            VerseViewModel(verseNumber: "Chorus", verseLines: ["chorus 1", "chorus 2"]),
-                            VerseViewModel(verseNumber: "Other", verseLines: ["other 1", "other 2"]),
-                            VerseViewModel(verseNumber: "2", verseLines: ["line 3", "line 4"]),
-                            VerseViewModel(verseNumber: "Chorus", verseLines: ["chorus 1", "chorus 2"]),
-                            VerseViewModel(verseNumber: "3", verseLines: ["line 5", "line 6"]),
-                            VerseViewModel(verseNumber: "Chorus", verseLines: ["chorus 1", "chorus 2"])
+                            VerseViewModel(verseType: .verse, verseNumber: "1", verseLines: ["line 1", "line 2"]),
+                            VerseViewModel(verseType: .chorus, verseNumber: "Chorus", verseLines: ["chorus 1", "chorus 2"]),
+                            VerseViewModel(verseType: .other, verseNumber: "Other", verseLines: ["other 1", "other 2"]),
+                            VerseViewModel(verseType: .verse, verseNumber: "2", verseLines: ["line 3", "line 4"]),
+                            VerseViewModel(verseType: .chorus, verseNumber: "Chorus", verseLines: ["chorus 1", "chorus 2"]),
+                            VerseViewModel(verseType: .verse, verseNumber: "3", verseLines: ["line 5", "line 6"]),
+                            VerseViewModel(verseType: .chorus, verseNumber: "Chorus", verseLines: ["chorus 1", "chorus 2"])
                         ]))
                     }
                 }
@@ -142,11 +142,11 @@ class HymnLyricsViewModelSpec: QuickSpec {
                     }
                     it("should not repeat choruses") {
                         expect(target.lyrics).to(equal([
-                            VerseViewModel(verseNumber: "1", verseLines: ["line 1", "line 2"]),
-                            VerseViewModel(verseNumber: "Chorus", verseLines: ["chorus 1", "chorus 2"]),
-                            VerseViewModel(verseNumber: "Chorus", verseLines: ["chorus 3", "chorus 4"]),
-                            VerseViewModel(verseNumber: "Other", verseLines: ["other 1", "other 2"]),
-                            VerseViewModel(verseNumber: "2", verseLines: ["line 3", "line 4"])
+                            VerseViewModel(verseType: .verse, verseNumber: "1", verseLines: ["line 1", "line 2"]),
+                            VerseViewModel(verseType: .chorus, verseNumber: "Chorus", verseLines: ["chorus 1", "chorus 2"]),
+                            VerseViewModel(verseType: .chorus, verseNumber: "Chorus", verseLines: ["chorus 3", "chorus 4"]),
+                            VerseViewModel(verseType: .other, verseNumber: "Other", verseLines: ["other 1", "other 2"]),
+                            VerseViewModel(verseType: .verse, verseNumber: "2", verseLines: ["line 3", "line 4"])
                         ]))
                     }
                 }

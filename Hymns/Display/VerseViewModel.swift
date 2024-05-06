@@ -5,32 +5,49 @@ import SwiftUI
 
 class VerseLineViewModel: Hashable, ObservableObject {
 
-    @Published var fontSize: Float
+    @Published public var fontSize: Float
+    @Published var isItalicized: Bool = false
 
+    let verseType: VerseType
     let verseNumber: String?
     let verseText: String
     let transliteration: String?
 
     private var disposables = Set<AnyCancellable>()
 
-    init(verseNumber: String? = nil, lineEntity: LineEntity,
+    init(verseType: VerseType, verseNumber: String? = nil, lineEntity: LineEntity,
          userDefaultsManager: UserDefaultsManager = Resolver.resolve()) {
+        self.verseType = verseType
         self.verseNumber = verseNumber
         self.verseText = lineEntity.lineContent
         self.transliteration = lineEntity.transliteration
-        self.fontSize = userDefaultsManager.fontSize
+        
+        if verseType == .note {
+            self.fontSize = userDefaultsManager.fontSize * 0.7
+            isItalicized = true
+        } else {
+            self.fontSize = userDefaultsManager.fontSize
+            isItalicized = false
+        }
         userDefaultsManager
             .fontSizeSubject
             .sink { fontSize in
-                self.fontSize = fontSize
+                if verseType == .note {
+                    self.fontSize = fontSize * 0.7
+                    self.isItalicized = true
+                } else {
+                    self.fontSize = fontSize
+                    self.isItalicized = false
+                }
         }.store(in: &disposables)
     }
 
     static func == (lhs: VerseLineViewModel, rhs: VerseLineViewModel) -> Bool {
-        lhs.verseNumber == rhs.verseNumber && lhs.verseText == rhs.verseText && lhs.transliteration == rhs.transliteration
+        lhs.verseType == rhs.verseType && lhs.verseNumber == rhs.verseNumber && lhs.verseText == rhs.verseText && lhs.transliteration == rhs.transliteration
     }
 
     func hash(into hasher: inout Hasher) {
+        hasher.combine(verseType)
         if let verseNumber = verseNumber {
             hasher.combine(verseNumber)
         }
@@ -42,14 +59,14 @@ class VerseLineViewModel: Hashable, ObservableObject {
 }
 
 extension VerseLineViewModel {
-    convenience init(verseNumber: String? = nil, verseText: String, transliteration: String? = nil) {
-        self.init(verseNumber: verseNumber, lineEntity: LineEntity(lineContent: verseText, transliteration: transliteration))
+    convenience init(verseType: VerseType, verseNumber: String? = nil, verseText: String, transliteration: String? = nil) {
+        self.init(verseType: verseType, verseNumber: verseNumber, lineEntity: LineEntity(lineContent: verseText, transliteration: transliteration))
     }
 }
 
 extension VerseLineViewModel: CustomStringConvertible {
     var description: String {
-        "verseNumber: \(String(describing: verseNumber)), verseText: \(verseText), transliteration: \(String(describing: transliteration))"
+        "verseType: \(verseType), verseNumber: \(String(describing: verseNumber)), verseText: \(verseText), transliteration: \(String(describing: transliteration))"
     }
 }
 
@@ -57,16 +74,16 @@ class VerseViewModel {
 
     let verseLines: [VerseLineViewModel]
 
-    init(verseNumber: String?, verseLines: [LineEntity], shouldTransliterate: Binding<Bool>? = nil) {
+    init(verseType: VerseType, verseNumber: String?, verseLines: [LineEntity], shouldTransliterate: Binding<Bool>? = nil) {
         self.verseLines = verseLines.enumerated().map { (index, lineEntity) -> VerseLineViewModel in
-            return VerseLineViewModel(verseNumber: index == 0 ? verseNumber : nil, lineEntity: lineEntity)
+            return VerseLineViewModel(verseType: verseType, verseNumber: index == 0 ? verseNumber : nil, lineEntity: lineEntity)
         }
     }
 }
 
 extension VerseViewModel {
-    convenience init(verseNumber: String, verseLines: [String], shouldTransliterate: Binding<Bool>? = nil) {
-        self.init(verseNumber: verseNumber, verseLines: verseLines.map({ lineContent in
+    convenience init(verseType: VerseType, verseNumber: String, verseLines: [String], shouldTransliterate: Binding<Bool>? = nil) {
+        self.init(verseType: verseType, verseNumber: verseNumber, verseLines: verseLines.map({ lineContent in
             LineEntity(lineContent: lineContent)
         }), shouldTransliterate: shouldTransliterate)
     }

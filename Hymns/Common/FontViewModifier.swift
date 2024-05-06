@@ -23,7 +23,7 @@ struct ScaledFont: ViewModifier {
     private let font: Font
 
     init(_ fontSize: CGFloat) {
-        self.font = .custom("Default", size: fontSize)
+        self.font = .system(size: fontSize)
     }
 
     func body(content: Content) -> some View {

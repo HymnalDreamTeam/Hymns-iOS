@@ -140,11 +140,7 @@ public class DisplayHymnViewCan: BaseViewCan {
     }
 
     public func assertDefaultFontPickerValue() -> DisplayHymnViewCan {
-        if #available(iOS 15.0, *) {
-            return assertFontPickerValue("15")
-        } else {
-            return assertFontPickerValue("0.182")
-        }
+        return assertFontPickerValue("15")
     }
 
     public func adjustFontPickerToSmallest() -> DisplayHymnViewCan {
@@ -153,11 +149,7 @@ public class DisplayHymnViewCan: BaseViewCan {
     }
 
     public func assertSmallestFontPickerValue() -> DisplayHymnViewCan {
-        if #available(iOS 15.0, *) {
-            return assertFontPickerValue("13")
-        } else {
-            return assertFontPickerValue("0")
-        }
+        return assertFontPickerValue("13")
     }
 
     public func adjustFontPickerToLargest() -> DisplayHymnViewCan {
@@ -166,11 +158,7 @@ public class DisplayHymnViewCan: BaseViewCan {
     }
 
     public func assertLargestFontPickerValue() -> DisplayHymnViewCan {
-        if #available(iOS 15.0, *) {
-            return assertFontPickerValue("24")
-        } else {
-            return assertFontPickerValue("1")
-        }
+        return assertFontPickerValue("24")
     }
 
     public func openLanguages() -> DisplayHymnViewCan {
@@ -182,35 +170,19 @@ public class DisplayHymnViewCan: BaseViewCan {
     }
 
     public func waitForPlayButton() -> DisplayHymnViewCan {
-        if #available(iOS 15.0, *) {
-            return waitForButtons("Play")
-        } else {
-            return waitForButtons("play.circle")
-        }
+        return waitForButtons("Play")
     }
 
     public func verifyPlayButtonNotExists() -> DisplayHymnViewCan {
-        if #available(iOS 15.0, *) {
-            return verifyButtonsNotExist("Play")
-        } else {
-            return verifyButtonsNotExist("play.circle")
-        }
+        return verifyButtonsNotExist("Play")
     }
 
     public func openSpeedPicker() -> DisplayHymnViewCan {
-        if #available(iOS 15.0, *) {
-            return pressButton("Timer")
-        } else {
-            return pressButton("timer")
-        }
+        return pressButton("Timer")
     }
 
     public func waitForSpeedPickerButtons() -> DisplayHymnViewCan {
-        if #available(iOS 15.0, *) {
-            return waitForButtons("Remove", "Add")
-        } else {
-            return waitForButtons("minus", "plus")
-        }
+        return waitForButtons("minus", "plus")
     }
 
     public func openRelevant() -> DisplayHymnViewCan {

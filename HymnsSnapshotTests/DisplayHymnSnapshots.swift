@@ -8,6 +8,10 @@ class DisplayHymnSnapshots: XCTestCase {
 
     var viewModel: DisplayHymnViewModel!
 
+    override func setUp() {
+        super.setUp()
+    }
+
     func test_loading() {
         viewModel = DisplayHymnViewModel(hymnToDisplay: hymn40_identifier)
         assertVersionedSnapshot(
