@@ -182,7 +182,7 @@ public class DisplayHymnViewCan: BaseViewCan {
     }
 
     public func waitForSpeedPickerButtons() -> DisplayHymnViewCan {
-        return waitForButtons("minus", "plus")
+        return waitForButtons("Remove", "Add")
     }
 
     public func openRelevant() -> DisplayHymnViewCan {

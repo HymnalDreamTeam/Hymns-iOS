@@ -11,11 +11,7 @@ struct DisplayHymnPdfView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            Spacer()
-            buildView()
-            Spacer()
-        }.preference(key: DisplayHymnView.DisplayTypeKey.self, value: .sheetMusic)
+        buildView().preference(key: DisplayHymnView.DisplayTypeKey.self, value: .sheetMusic)
     }
 
     private func buildView() -> AnyView {
