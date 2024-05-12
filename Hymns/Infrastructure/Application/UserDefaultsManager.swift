@@ -6,6 +6,8 @@ import SwiftUI
  * Wrapper class for managing `UserDefaults`
  */
 class UserDefaultsManager {
+    
+    static let defaultFontSize: Float = 17.0
 
     let fontSizeSubject: CurrentValueSubject<Float, Never>
 
@@ -28,7 +30,7 @@ class UserDefaultsManager {
         let initialFontSize: Float
         switch UserDefaults.standard.string(forKey: "fontSize") {
         case "Normal":
-            initialFontSize = 17.0
+            initialFontSize = Self.defaultFontSize
         case "Large":
             initialFontSize = 20.0
         case "Extra Large":

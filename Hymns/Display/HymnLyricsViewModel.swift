@@ -1,11 +1,13 @@
 import Combine
 import Foundation
 import Resolver
+import SwiftUI
 
 class HymnLyricsViewModel: ObservableObject {
 
-    @Published var lyrics: [VerseViewModel] = [VerseViewModel]()
     @Published var showTransliterationButton = false
+    @Published var transliterate = false
+    @Published var lyricsString: NSAttributedString = NSMutableAttributedString(string: "")
 
     private let identifier: HymnIdentifier
     private let userDefaultsManager: UserDefaultsManager
@@ -14,53 +16,84 @@ class HymnLyricsViewModel: ObservableObject {
 
     init?(hymnToDisplay identifier: HymnIdentifier, lyrics: [VerseEntity]?,
           userDefaultsManager: UserDefaultsManager = Resolver.resolve()) {
-        self.identifier = identifier
-        self.userDefaultsManager = userDefaultsManager
-
         guard let lyrics = lyrics else {
             return nil
         }
-        let viewModels = convertToViewModels(lyrics)
-        self.lyrics = viewModels
-        self.showTransliterationButton = viewModels.first.flatMap { fisrtVerse in
-            fisrtVerse.verseLines.first
+
+        self.identifier = identifier
+        self.userDefaultsManager = userDefaultsManager
+
+        self.showTransliterationButton = lyrics.first.flatMap { firstVerse in
+            firstVerse.lines.first
         }.flatMap { fisrtLine in
             fisrtLine.transliteration
         } != nil
 
-        if viewModels.isEmpty {
+        guard let lyricsString = createAttributedString(verses: lyrics, fontSize: userDefaultsManager.fontSize) else {
             return nil
         }
+        self.lyricsString = lyricsString
+
+        userDefaultsManager
+            .fontSizeSubject
+            .sink { fontSize in
+                if let lyricsString = self.createAttributedString(verses: lyrics, fontSize: fontSize) {
+                    self.lyricsString = lyricsString
+                }
+            }.store(in: &disposables)
     }
 
-    private func convertToViewModels(_ verses: [VerseEntity]) -> [VerseViewModel] {
+    private func createAttributedString(verses: [VerseEntity], fontSize: Float) -> NSAttributedString? {
         let lyrics: [VerseEntity]
         if userDefaultsManager.shouldRepeatChorus {
             lyrics = duplicateChorus(verses)
         } else {
             lyrics = verses
         }
-
-        var verseViewModels = [VerseViewModel]()
+        let lyricsString = NSMutableAttributedString(string: "")
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.paragraphSpacing = UIFont.systemFont(ofSize: CGFloat(fontSize)).lineHeight * 0.5
         var verseNumber = 0
         for verse in lyrics {
+            let label: String?
             switch verse.verseType {
             case .verse:
                 verseNumber += 1
-                verseViewModels.append(VerseViewModel(verseType: verse.verseType, verseNumber: "\(verseNumber)", verseLines: verse.lines))
+                label = "\(verseNumber)"
             case .chorus:
-                verseViewModels.append(VerseViewModel(verseType: verse.verseType, verseNumber: NSLocalizedString("Chorus", comment: "Indicator that that the verse is of type 'chorus'."),
-                                                      verseLines: verse.lines))
-            case .other:
-                verseViewModels.append(VerseViewModel(verseType: verse.verseType, verseNumber: NSLocalizedString("Other", comment: "Indicator that that the verse is of type 'other'."),
-                                                      verseLines: verse.lines))
+                label = NSLocalizedString("Chorus", comment: "Indicator that that the verse is of type 'chorus'.")
             case .note:
-                verseViewModels.append(VerseViewModel(verseType: verse.verseType, verseNumber: nil, verseLines: verse.lines))
-            case .copyright, .doNotDisplay:
+                label = nil
+            case .copyright, .doNotDisplay, .other:
                 continue
             }
+            label.map { label in
+                lyricsString.append(
+                    NSAttributedString(string: "\(label)\n",
+                                       attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: CGFloat(fontSize) * 0.8, weight: .bold),
+                                                    NSAttributedString.Key.foregroundColor: UIColor(Color.gray),
+                                                    NSAttributedString.Key.paragraphStyle: paragraphStyle]))
+            }
+            let font = verse.verseType == .note ? UIFont.italicSystemFont(ofSize: CGFloat(fontSize * 0.7)) :
+                                                  UIFont.systemFont(ofSize: CGFloat(fontSize), weight: .regular)
+            for line in verse.lines {
+                if let transliteration = line.transliteration, transliterate {
+                    lyricsString.append(NSAttributedString(string: "\(transliteration)\n",
+                                                               attributes: [NSAttributedString.Key.font: font,
+                                                                            NSAttributedString.Key.foregroundColor: UIColor(Color.primary),
+                                                                            NSAttributedString.Key.paragraphStyle: paragraphStyle]))
+                }
+                lyricsString.append(NSAttributedString(string: "\(line.lineContent)\n",
+                                                           attributes: [NSAttributedString.Key.font: font,
+                                                                        NSAttributedString.Key.foregroundColor: UIColor(Color.primary),
+                                                                        NSAttributedString.Key.paragraphStyle: paragraphStyle]))
+            }
+            lyricsString.append(NSAttributedString(string: "\n", attributes: [NSAttributedString.Key.font: font]))
         }
-        return verseViewModels
+        if lyricsString.string.isEmpty {
+            return nil
+        }
+        return lyricsString
     }
 
     private func duplicateChorus(_ verses: [VerseEntity]) -> [VerseEntity] {

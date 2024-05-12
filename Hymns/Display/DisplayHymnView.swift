@@ -61,7 +61,7 @@ struct DisplayHymnView: View {
                             self.verticalHeight = verticalHeight
                         }.onPreferenceChange(DisplayTypeKey.self) { displayType in
                             self.displayType = displayType
-                        }.coordinateSpace(name: "scrollview")
+                        }.coordinateSpace(name: "scrollview").environment(\.selectableTextContainerSize, geometry.size)
                         viewModel.bottomBar.map { viewModel in
                             DisplayHymnBottomBar(dialogModel: self.$dialogModel, viewModel: viewModel)
                                 .padding(.bottom, bottomBarOffset)

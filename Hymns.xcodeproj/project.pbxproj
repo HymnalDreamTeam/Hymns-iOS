@@ -270,6 +270,7 @@
 		3BF3BDC42467B9F40046228C /* HymnsRepositoryImpl_dbUninitializedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF3BDC32467B9F40046228C /* HymnsRepositoryImpl_dbUninitializedTests.swift */; };
 		3BF3BDC62467C39A0046228C /* HymnsRepositoryImpl_dbInitialized_dbMissTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF3BDC52467C39A0046228C /* HymnsRepositoryImpl_dbInitialized_dbMissTests.swift */; };
 		3BF699AF24417921005AFF6A /* VerseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF699AE24417921005AFF6A /* VerseView.swift */; };
+		3BF816602BE980D400F7A848 /* SelectableText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF8165F2BE980D400F7A848 /* SelectableText.swift */; };
 		3BF93B6127DC1ECF00EE95CA /* Chords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF93B6027DC1ECF00EE95CA /* Chords.swift */; };
 		3BF93B6327DC1F1800EE95CA /* ChordViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF93B6227DC1F1800EE95CA /* ChordViews.swift */; };
 		3BFA66342495A453009CB0BB /* TagPillModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BFA66332495A453009CB0BB /* TagPillModifier.swift */; };
@@ -615,6 +616,7 @@
 		3BF3BDC32467B9F40046228C /* HymnsRepositoryImpl_dbUninitializedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HymnsRepositoryImpl_dbUninitializedTests.swift; sourceTree = "<group>"; };
 		3BF3BDC52467C39A0046228C /* HymnsRepositoryImpl_dbInitialized_dbMissTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HymnsRepositoryImpl_dbInitialized_dbMissTests.swift; sourceTree = "<group>"; };
 		3BF699AE24417921005AFF6A /* VerseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerseView.swift; sourceTree = "<group>"; };
+		3BF8165F2BE980D400F7A848 /* SelectableText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableText.swift; sourceTree = "<group>"; };
 		3BF93B6027DC1ECF00EE95CA /* Chords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chords.swift; sourceTree = "<group>"; };
 		3BF93B6227DC1F1800EE95CA /* ChordViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordViews.swift; sourceTree = "<group>"; };
 		3BFA66332495A453009CB0BB /* TagPillModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagPillModifier.swift; sourceTree = "<group>"; };
@@ -945,6 +947,7 @@
 				3B7451C6249535E1008B80BC /* WrappedHStack.swift */,
 				3B978BE327CAB15100AD084A /* Transformers.swift */,
 				3B363BF52BAE9EA500CA9B89 /* BadgeView.swift */,
+				3BF8165F2BE980D400F7A848 /* SelectableText.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -2065,6 +2068,7 @@
 				3B020E85251DCD32007B7EBB /* DisplayHymnContainerViewModel.swift in Sources */,
 				3B5935BB2435B7A400E6993C /* AppDelegate+Injection.swift in Sources */,
 				3B5322BC2A04B7AD00D53A61 /* HymnIdEntity.swift in Sources */,
+				3BF816602BE980D400F7A848 /* SelectableText.swift in Sources */,
 				3B0B39AF243931B3003C5161 /* ErrorType.swift in Sources */,
 				3BB931A724E37F3B00E0C873 /* LottieView.swift in Sources */,
 				3B7B55A724AE863B00566808 /* BrowseViewModel.swift in Sources */,
