@@ -38,6 +38,8 @@ target 'Hymns' do
   pod 'SwiftUIPager'
   pod 'SwiftEventBus'
 
+  pod 'SwiftProtobuf'
+
   target 'HymnsTests' do
     inherit! :search_paths
     

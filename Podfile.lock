@@ -153,6 +153,7 @@ PODS:
   - SnapshotTesting (1.9.0)
   - SwiftEventBus (5.0.0)
   - SwiftLint (0.57.0)
+  - SwiftProtobuf (1.28.2)
   - SwiftUIPager (2.5.0)
 
 DEPENDENCIES:
@@ -170,6 +171,7 @@ DEPENDENCIES:
   - SnapshotTesting
   - SwiftEventBus
   - SwiftLint
+  - SwiftProtobuf
   - SwiftUIPager
 
 SPEC REPOS:
@@ -208,6 +210,7 @@ SPEC REPOS:
     - SnapshotTesting
     - SwiftEventBus
     - SwiftLint
+    - SwiftProtobuf
     - SwiftUIPager
 
 SPEC CHECKSUMS:
@@ -245,8 +248,9 @@ SPEC CHECKSUMS:
   SnapshotTesting: 6141c48b6aa76ead61431ca665c14ab9a066c53b
   SwiftEventBus: b30f617a6aca5a9336464b4d3f5931034762f2d5
   SwiftLint: eb47480d47c982481592c195c221d11013a679cc
+  SwiftProtobuf: 4dbaffec76a39a8dc5da23b40af1a5dc01a4c02d
   SwiftUIPager: b314d8923bef0bde743c904bb74fcc7a05fd3422
 
-PODFILE CHECKSUM: 4a251016dc72c499610423e88fcd688e6ed9b4c6
+PODFILE CHECKSUM: e77c8415ee60709d4f9d819937193ad9909ef18d
 
 COCOAPODS: 1.15.2
