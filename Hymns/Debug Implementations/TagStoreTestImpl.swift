@@ -37,8 +37,8 @@ class TagStoreTestImpl: TagStore {
             guard storedTag.tag == tag.title && storedTag.color == tag.color else {
                 return nil
             }
-            let hymnType = storedTag.hymnIdentifierEntity.hymnType
-            let hymnNumber = storedTag.hymnIdentifierEntity.hymnNumber
+            let hymnType = storedTag.hymnIdentifier.hymnType
+            let hymnNumber = storedTag.hymnIdentifier.hymnNumber
             return SongResultEntity(hymnType: hymnType, hymnNumber: hymnNumber, title: storedTag.songTitle)
         }
         return Just(matchingTags).mapError({ _ -> ErrorType in

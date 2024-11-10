@@ -20,6 +20,9 @@ class VerseLineViewModelSpec: QuickSpec {
                 it ("should set italicized to false") {
                     expect(target.isItalicized).to(beFalse())
                 }
+                it ("should not have transliteration") {
+                    expect(target.transliteration).to(beNil())
+                }
             }
             context("with verse type as chorus") {
                 beforeEach {

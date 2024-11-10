@@ -3,20 +3,22 @@ import SwiftUI
 
 class InlineChordsViewModel: ObservableObject {
 
-    @Published var chords: [ChordLine] = [ChordLine]()
+    @Published var chordLines: [ChordLineViewModel] = [ChordLineViewModel]()
     @Published var transpositionLabelText: String?
     @Published var transpositionLabelColor: Color = .primary
 
     var transposition = 0
 
-    init(chords: [ChordLine]) {
-        self.chords = chords
+    init(chordLines: [ChordLineEntity]) {
+        self.chordLines = chordLines.map({ chordLine in
+            ChordLineViewModel(chordLine: chordLine)
+        })
         self.syncTranspositionLabel()
     }
 
     func transpose(_ steps: Int) {
         transposition += steps
-        chords.forEach { chordLine in
+        chordLines.forEach { chordLine in
             chordLine.transpose(steps)
         }
         syncTranspositionLabel()
@@ -31,7 +33,7 @@ class InlineChordsViewModel: ObservableObject {
     }
 
     private func syncTranspositionLabel() {
-        if !chords.contains(where: { $0.hasChords }) {
+        if !chordLines.contains(where: { $0.hasChords }) {
             transpositionLabelText = nil
             return
         }

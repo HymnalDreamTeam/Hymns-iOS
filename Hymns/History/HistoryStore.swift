@@ -87,11 +87,37 @@ extension Resolver {
                 fileURL: url!,
                 // Set the new schema version. This must be greater than the previously used
                 // version (if you've never set a schema version before, the version is 0).
-                schemaVersion: 2,
+                schemaVersion: 3,
 
                 // Set the block which will be called automatically when opening a Realm with
                 // a schema version lower than the one set above
                 migrationBlock: { migration, oldSchemaVersion in
+                    // Certain songs are in the format 'Hymn 12: O God, Thou art the source of life'.
+                    // However, since we are adding labels to recent songs, we should remove the initial
+                    // 'Hymn 12: ' so it's not redundant.
+                    if oldSchemaVersion < 1 {
+                        migration.enumerateObjects(ofType: RecentSongEntity.className()) { old, new in
+                            let newTitle = old.flatMap { oldEntity in
+                                oldEntity["recentSong"] as? MigrationObject
+                            }.flatMap { recentSong in
+                                recentSong["songTitle"] as? String
+                            }.flatMap { songTitle in
+                                songTitle.replacingOccurrences(of: #"\Hymn.*: "#, with: "", options: .regularExpression, range: nil)
+                            }
+
+                            guard let newTitle = newTitle else {
+                                return
+                            }
+
+                            _ = new.flatMap { newEntity in
+                                newEntity["recentSong"] as? MigrationObject
+                            }.flatMap { recentSong in
+                                recentSong["songTitle"] = newTitle
+                                return recentSong
+                            }
+                        }
+                    }
+                    
                     // In version 2:
                     //   - hymnTypeRaw has been migrated from the enum value to the HymnType's abbreviated value
                     //   - Removed query parameters, so all songs with query params must be changed to its approprate 'simplified' hymn type
@@ -146,30 +172,12 @@ extension Resolver {
                         }
                     }
 
-                    // Certain songs are in the format 'Hymn 12: O God, Thou art the source of life'.
-                    // However, since we are adding labels to recent songs, we should remove the initial
-                    // 'Hymn 12: ' so it's not redundant.
-                    if oldSchemaVersion < 1 {
-                        migration.enumerateObjects(ofType: RecentSongEntity.className()) { old, new in
-                            let newTitle = old.flatMap { oldEntity in
-                                oldEntity["recentSong"] as? MigrationObject
-                            }.flatMap { recentSong in
-                                recentSong["songTitle"] as? String
-                            }.flatMap { songTitle in
-                                songTitle.replacingOccurrences(of: #"\Hymn.*: "#, with: "", options: .regularExpression, range: nil)
-                            }
-
-                            guard let newTitle = newTitle else {
-                                return
-                            }
-
-                            _ = new.flatMap { newEntity in
-                                newEntity["recentSong"] as? MigrationObject
-                            }.flatMap { recentSong in
-                                recentSong["songTitle"] = newTitle
-                                return recentSong
-                            }
-                        }
+                    // In version 3:
+                    //   - HymnIdentifierEntity was migrated to use HymnIdentifierWrapper, since
+                    //     HymnIdentifierEntity became a proto field, and thus not @objc-compatible. However,
+                    //     nothing changed with the the underlying stored representation, so no action explicit
+                    //     migration steps are needed.
+                    if oldSchemaVersion < 3 {
                     }
                 })
             // If the Realm db is unable to be created, that's an unrecoverable error, so crashing the app is appropriate.

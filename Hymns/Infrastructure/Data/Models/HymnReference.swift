@@ -8,7 +8,7 @@ struct HymnReference {
 
 extension HymnReference: Equatable {}
 
-extension HymnReference: Codable, FetchableRecord {
+extension HymnReference: FetchableRecord {
     init(row: GRDB.Row) {
         self.hymnIdEntity = HymnIdEntity.init(row: row)
         self.hymnEntity = HymnEntity.init(row: row)

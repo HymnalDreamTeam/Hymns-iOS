@@ -108,7 +108,7 @@ class DisplayHymnViewModel: ObservableObject {
         var hymnMusic = [HymnMusicTab]()
 
         if let inlineChords = hymn.inlineChords, !inlineChords.isEmpty {
-            hymnMusic.append(.inline(InlineChordsView(viewModel: InlineChordsViewModel(chords: inlineChords)).eraseToAnyView()))
+            hymnMusic.append(.inline(InlineChordsView(viewModel: InlineChordsViewModel(chordLines: inlineChords)).eraseToAnyView()))
         }
 
         if self.systemUtil.isNetworkAvailable() {

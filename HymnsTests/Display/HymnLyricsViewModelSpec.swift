@@ -28,6 +28,8 @@ class HymnLyricsViewModelSpec: QuickSpec {
             context("without transliterable lyrics") {
                 let verses = [VerseEntity(verseType: .verse, lineStrings: ["line 1", "line 2"]),
                               VerseEntity(verseType: .doNotDisplay, lineStrings: ["Should be dropped"]),
+                              VerseEntity(verseType: .copyright, lineStrings: ["Should also be dropped"]),
+                              VerseEntity(verseType: .UNRECOGNIZED(1), lineStrings: ["Should definitely be dropped"]),
                               VerseEntity(verseType: .chorus, lineStrings: ["chorus 1", "chorus 2"])]
                 beforeEach {
                     target = HymnLyricsViewModel(hymnToDisplay: classic1151, lyrics: verses)!

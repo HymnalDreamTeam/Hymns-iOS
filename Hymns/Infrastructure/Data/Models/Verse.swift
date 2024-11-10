@@ -13,14 +13,37 @@ struct Verse: Codable, Equatable {
     }
 }
 
-/// Structure of a Verse object represented in the app, as well as in the bundled database
-struct VerseEntity: Codable, Equatable {
-    let verseType: VerseType
-    let lines: [LineEntity]
+extension VerseType: Codable {
+    
+    enum VerseTypeCodingError: Error {
+        case decoding(String)
+    }
+
+    // Decoding an enum: https://stackoverflow.com/a/48204890/1907538
+    init(from decoder: Decoder) throws {
+        let value = try decoder.singleValueContainer().decode(String.self)
+        self = switch(value) {
+        case "verse": .verse
+        case "chorus": .chorus
+        case "other": .other
+        case "copyright": .copyright
+        case "note": .note
+        case "doNotDisplay": .doNotDisplay
+        default: throw VerseTypeCodingError.decoding("Unrecognized verse type: \(value)")
+        }
+    }
+}
+
+extension VerseEntity {
+    init(verseType: VerseType, lines: [LineEntity]) {
+        self.verseType = verseType
+        self.lines = lines
+    }
 }
 
 extension VerseEntity {
     init(verseType: VerseType, lineStrings: [String]) {
-        self.init(verseType: verseType, lines: lineStrings.map({ LineEntity(lineContent: $0)}))
+        self.verseType = verseType
+        self.lines = lineStrings.map({ LineEntity(lineContent: $0)})
     }
 }

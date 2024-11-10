@@ -3,18 +3,22 @@ import RealmSwift
 
 class FavoriteEntity: Object, Identifiable {
     @objc dynamic var primaryKey: String!
-    @objc dynamic var hymnIdentifierEntity: HymnIdentifierEntity!
+    @objc dynamic var hymnIdentifier: HymnIdentifierWrapper!
     @objc dynamic var songTitle: String?
 
     override required init() {
         super.init()
     }
 
-    init(hymnIdentifier: HymnIdentifier, songTitle: String?) {
+    init(hymnIdentifier: HymnIdentifierWrapper, songTitle: String?) {
         super.init()
         self.primaryKey = Self.createPrimaryKey(hymnIdentifier: hymnIdentifier)
-        self.hymnIdentifierEntity = HymnIdentifierEntity(hymnIdentifier)
+        self.hymnIdentifier = hymnIdentifier
         self.songTitle = songTitle
+    }
+
+    convenience init(hymnIdentifier: HymnIdentifier, songTitle: String?) {
+        self.init(hymnIdentifier: HymnIdentifierWrapper(hymnIdentifier), songTitle: songTitle)
     }
 
     override static func primaryKey() -> String? {
@@ -22,6 +26,10 @@ class FavoriteEntity: Object, Identifiable {
     }
 
     static func createPrimaryKey(hymnIdentifier: HymnIdentifier) -> String {
+        return createPrimaryKey(hymnIdentifier: HymnIdentifierWrapper(hymnIdentifier))
+    }
+
+    static func createPrimaryKey(hymnIdentifier: HymnIdentifierWrapper) -> String {
         return "\(hymnIdentifier.hymnType):\(hymnIdentifier.hymnNumber)"
     }
 
@@ -34,6 +42,6 @@ class FavoriteEntity: Object, Identifiable {
     }
 
     func copy() -> FavoriteEntity {
-        return FavoriteEntity(hymnIdentifier: hymnIdentifierEntity.hymnIdentifier, songTitle: songTitle)
+        return FavoriteEntity(hymnIdentifier: hymnIdentifier, songTitle: songTitle)
     }
 }

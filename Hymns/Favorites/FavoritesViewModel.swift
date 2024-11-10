@@ -21,7 +21,7 @@ class FavoritesViewModel: ObservableObject {
         favoriteStore.favorites()
             .map({ entities -> [SongResultViewModel] in
                 entities.map { entity -> SongResultViewModel in
-                    let identifier = HymnIdentifier(entity.hymnIdentifierEntity)
+                    let identifier = HymnIdentifier(wrapper: entity.hymnIdentifier)
                     let title = entity.songTitle ?? identifier.displayTitle
                     let label = entity.songTitle != nil ? identifier.displayTitle : nil
                     let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: identifier)).eraseToAnyView()

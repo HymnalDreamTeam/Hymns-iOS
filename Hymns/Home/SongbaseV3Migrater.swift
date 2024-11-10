@@ -64,10 +64,10 @@ class SongbaseV3MigraterImpl: SongbaseV3Migrater {
                     self.firebaseLogger.logLaunchTask(description: "Migrating \(existings.count) existing favorites: \(existings)")
                     return existings.compactMap { existing -> FavoriteEntity? in
                         // Only try to migrate songbase songs
-                        if existing.hymnIdentifierEntity.hymnIdentifier.hymnType != .blueSongbook {
+                        if existing.hymnIdentifier.hymnType != .blueSongbook {
                             return existing.copy()
                         }
-                        let songbaseNumber = existing.hymnIdentifierEntity.hymnIdentifier.hymnNumber
+                        let songbaseNumber = existing.hymnIdentifier.hymnNumber
                         if dropped.contains(songbaseNumber) {
                             return nil
                         }
@@ -115,10 +115,10 @@ class SongbaseV3MigraterImpl: SongbaseV3Migrater {
                         self.firebaseLogger.logLaunchTask(description: "Migrating \(existings.count) existing recent songs: \(existings)")
                         return existings.compactMap { existing -> RecentSong? in
                             // Only try to migrate songbase songs
-                            if existing.hymnIdentifierEntity.hymnIdentifier.hymnType != .blueSongbook {
+                            if existing.hymnIdentifier.hymnType != .blueSongbook {
                                 return existing.copy()
                             }
-                            let songbaseNumber = existing.hymnIdentifierEntity.hymnIdentifier.hymnNumber
+                            let songbaseNumber = existing.hymnIdentifier.hymnNumber
                             if dropped.contains(songbaseNumber) {
                                 return nil
                             }
@@ -147,7 +147,7 @@ class SongbaseV3MigraterImpl: SongbaseV3Migrater {
                             do {
                                 try self.historyStore.clearHistory()
                                 news.forEach { new in
-                                    self.historyStore.storeRecentSong(hymnToStore: new.hymnIdentifierEntity.hymnIdentifier,
+                                    self.historyStore.storeRecentSong(hymnToStore: new.hymnIdentifier.hymnIdentifier,
                                                                       songTitle: new.songTitle)
                                 }
                             } catch {
@@ -170,10 +170,10 @@ class SongbaseV3MigraterImpl: SongbaseV3Migrater {
                     self.firebaseLogger.logLaunchTask(description: "Migrating \(existings.count) existing tags: \(existings)")
                     return existings.compactMap { existing -> TagEntity? in
                         // Only try to migrate songbase songs
-                        if existing.tagObject.hymnIdentifierEntity.hymnType != .blueSongbook {
+                        if existing.tagObject.hymnIdentifier.hymnType != .blueSongbook {
                             return existing.copy()
                         }
-                        let songbaseNumber = existing.tagObject.hymnIdentifierEntity.hymnNumber
+                        let songbaseNumber = existing.tagObject.hymnIdentifier.hymnNumber
                         if dropped.contains(songbaseNumber) {
                             return nil
                         }

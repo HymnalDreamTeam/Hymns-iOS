@@ -104,7 +104,7 @@ class SearchViewModel: ObservableObject {
         switch language {
         case .english:
             return [.classic]
-        case .chinese:
+        case .chineseTraditional:
             // Special case to return both Chinese and Chinese supplement hymns if the language is Chinese.
             return [.chinese, .chineseSupplement]
         case .chineseSimplified:
@@ -134,6 +134,16 @@ class SearchViewModel: ObservableObject {
             return [.farsi]
         case .russian:
             return [.russian]
+        case .hebrew:
+            return [.hebrew]
+        case .slovak:
+            return [.slovak]
+        case .estonian:
+            return [.estonian]
+        case .arabic:
+            return [.arabic]
+        case .UNRECOGNIZED(_):
+            return [HymnType]()
         }
     }
 
@@ -184,7 +194,7 @@ class SearchViewModel: ObservableObject {
         historyStore.recentSongs()
             .map({ recentSongs -> [SongResultViewModel] in
                 recentSongs.map { recentSong -> SongResultViewModel in
-                    let identifier = HymnIdentifier(recentSong.hymnIdentifierEntity)
+                    let identifier = HymnIdentifier(wrapper: recentSong.hymnIdentifier)
                     let title = recentSong.songTitle ?? identifier.displayTitle
                     let label = recentSong.songTitle != nil ? identifier.displayTitle : nil
                     let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: identifier, storeInHistoryStore: true)).eraseToAnyView()

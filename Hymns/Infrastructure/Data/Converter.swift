@@ -18,42 +18,67 @@ class ConverterImpl: Converter {
     }
 
     func toHymnEntity(hymn: Hymn) throws -> HymnEntity {
-        HymnEntityBuilder()
-            .title(hymn.title)
-            .lyrics(extractVerseEntities(hymn.lyrics))
-            .category(getMetadata(hymn: hymn, metaDatumName: .category))
-            .subcategory(getMetadata(hymn: hymn, metaDatumName: .subcategory))
-            .author(getMetadata(hymn: hymn, metaDatumName: .author))
-            .composer(getMetadata(hymn: hymn, metaDatumName: .composer))
-            .key(getMetadata(hymn: hymn, metaDatumName: .key))
-            .time(getMetadata(hymn: hymn, metaDatumName: .time))
-            .meter(getMetadata(hymn: hymn, metaDatumName: .meter))
-            .hymnCode(getMetadata(hymn: hymn, metaDatumName: .hymnCode))
-            .scriptures(getMetadata(hymn: hymn, metaDatumName: .scriptures))
-            .music(extractValues(hymn.getMetaDatum(name: .music)))
-            .svgSheet(extractValues(hymn.getMetaDatum(name: .svgSheet)))
-            .pdfSheet(extractValues(hymn.getMetaDatum(name: .pdfSheet)))
-            .languages(extractHymnIdentifiers(hymn.getMetaDatum(name: .languages)))
-            .relevant(extractHymnIdentifiers(hymn.getMetaDatum(name: .relevant)))
-            .build()
+        return HymnEntity.with { [self] builder in
+            builder.id = -1
+            builder.title = hymn.title
+            if let verses = extractVerseEntities(hymn.lyrics) {
+                builder.lyrics = LyricsEntity(verses)
+            }
+            if let category = getMetadata(hymn: hymn, metaDatumName: .category) {
+                builder.category = category
+            }
+            if let subcategory = getMetadata(hymn: hymn, metaDatumName: .subcategory) {
+                builder.subcategory = subcategory
+            }
+            if let author = getMetadata(hymn: hymn, metaDatumName: .author) {
+                builder.author = author
+            }
+            if let composer = getMetadata(hymn: hymn, metaDatumName: .composer) {
+                builder.composer = composer
+            }
+            if let key = getMetadata(hymn: hymn, metaDatumName: .key) {
+                builder.key = key
+            }
+            if let time = getMetadata(hymn: hymn, metaDatumName: .time) {
+                builder.time = time
+            }
+            if let meter = getMetadata(hymn: hymn, metaDatumName: .meter) {
+                builder.meter = meter
+            }
+            if let hymnCode = getMetadata(hymn: hymn, metaDatumName: .hymnCode) {
+                builder.hymnCode = hymnCode
+            }
+            if let scriptures = getMetadata(hymn: hymn, metaDatumName: .scriptures) {
+                builder.scriptures = scriptures
+            }
+            if let music = extractValues(hymn.getMetaDatum(name: .music)), let entity = MusicEntity(music) {
+                builder.music = entity
+            }
+            if let svgSheet = extractValues(hymn.getMetaDatum(name: .svgSheet)), let entity = SvgSheetEntity(svgSheet) {
+                builder.svgSheet = entity
+            }
+            if let pdfSheet = extractValues(hymn.getMetaDatum(name: .pdfSheet)), let entity = PdfSheetEntity(pdfSheet) {
+                builder.pdfSheet = entity
+            }
+            if let languages = extractHymnIdentifiers(hymn.getMetaDatum(name: .languages)), let entity = LanguagesEntity(languages) {
+                builder.languages = entity
+            }
+            if let relevant = extractHymnIdentifiers(hymn.getMetaDatum(name: .relevant)), let entity = RelevantsEntity(relevant) {
+                builder.relevants = entity
+            }
+        }
     }
 
-    private func getMetadata(hymn: Hymn, metaDatumName: MetaDatumName) -> String? {
+    private func getMetadata(hymn: Hymn, metaDatumName: MetaDatumName) -> [String]? {
         guard let metaDatum = hymn.getMetaDatum(name: metaDatumName) else {
             return nil
         }
-
-        var databaseValue = ""
-        for (index, datum) in metaDatum.data.enumerated() {
+        return metaDatum.data.compactMap { datum in
             if datum.value.isEmpty {
-                continue
+                return nil
             }
-            databaseValue += datum.value
-            if index < metaDatum.data.count - 1 {
-                databaseValue += ""
-            }
+            return datum.value
         }
-        return databaseValue.trim()
     }
 
     private func extractVerseEntities(_ verses: [Verse]) -> [VerseEntity]? {
@@ -123,43 +148,34 @@ class ConverterImpl: Converter {
         }
 
         let title = hymnEntity.title
-        let lyrics = hymnEntity.lyrics
-        let inlineChords = toChordLines(hymnEntity.inlineChords)
-        let category = hymnEntity.category
-        let subcategory = hymnEntity.subcategory
-        let author = hymnEntity.author
-        let composer = hymnEntity.composer
-        let key = hymnEntity.key
-        let time = hymnEntity.time
-        let meter = hymnEntity.meter
-        let scriptures = hymnEntity.scriptures
-        let hymnCode = hymnEntity.hymnCode
-        let pdfSheet = hymnEntity.pdfSheet
-        let music = hymnEntity.music
-        let languages = hymnEntity.languages
-        let relevant = hymnEntity.relevant
+        let lyrics = hymnEntity.lyrics.verses.isEmpty ? nil : hymnEntity.lyrics.verses
+        
+        let inlineChords: [ChordLineEntity]? = if hymnEntity.inlineChords.chordLines.map({ $0.hasChords }).reduce(false, {$0 || $1}) {
+            hymnEntity.inlineChords.chordLines
+        } else {
+            nil
+        }
+        let category = hymnEntity.category.isEmpty ? nil : hymnEntity.category.joined(separator: ",")
+        let subcategory = hymnEntity.subcategory.isEmpty ? nil : hymnEntity.subcategory.joined(separator: ",")
+        let author = hymnEntity.author.isEmpty ? nil : hymnEntity.author.joined(separator: ",")
+        let composer = hymnEntity.composer.isEmpty ? nil : hymnEntity.composer.joined(separator: ",")
+        let key = hymnEntity.key.isEmpty ? nil : hymnEntity.key.joined(separator: ",")
+        let time = hymnEntity.time.isEmpty ? nil : hymnEntity.time.joined(separator: ",")
+        let meter = hymnEntity.meter.isEmpty ? nil : hymnEntity.meter.joined(separator: ",")
+        let scriptures = hymnEntity.scriptures.isEmpty ? nil : hymnEntity.scriptures.joined(separator: ",")
+        let hymnCode = hymnEntity.hymnCode.isEmpty ? nil : hymnEntity.hymnCode.joined(separator: ",")
+        let pdfSheet = hymnEntity.pdfSheet.pdfSheet.isEmpty ? nil : hymnEntity.pdfSheet.pdfSheet
+        let music = hymnEntity.music.music.isEmpty ? nil : hymnEntity.music.music
+        let languages = hymnEntity.languages.languages.isEmpty ? nil : hymnEntity.languages.languages.map { entity -> HymnIdentifier in
+            return entity.toHymnIdentifier
+        }
+        let relevant = hymnEntity.relevants.relevants.isEmpty ? nil : hymnEntity.relevants.relevants.map { entity -> HymnIdentifier in
+            return entity.toHymnIdentifier
+        }
         return UiHymn(hymnIdentifier: hymnIdentifier, title: title, lyrics: lyrics, inlineChords: inlineChords,
                       pdfSheet: pdfSheet, category: category, subcategory: subcategory, author: author, composer: composer,
                       key: key, time: time, meter: meter, scriptures: scriptures, hymnCode: hymnCode,
                       languages: languages, music: music, relevant: relevant)
-    }
-
-    private func toChordLines(_ inlineChords: String?) -> [ChordLine]? {
-        guard let inlineChords = inlineChords else {
-            return nil
-        }
-
-        let chordLines = inlineChords.split(omittingEmptySubsequences: false, whereSeparator: \.isNewline).map {  ChordLine(String($0)) }
-
-        let chordsFound = chordLines.contains { chordLine in
-            chordLine.hasChords
-        }
-
-        if !chordsFound {
-            return nil
-        }
-
-        return chordLines
     }
 
     func toSongResultEntities(songResultsPage: SongResultsPage) -> ([SongResultEntity], Bool) {

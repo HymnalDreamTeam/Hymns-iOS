@@ -1,0 +1,146 @@
+syntax = "proto3";
+
+// protoc --swift_out=Hymns/Infrastructure/Data/Models Hymns/Infrastructure/Data/Models/HymnEntity.proto
+
+message HymnEntity {
+  int64 id = 1;
+  repeated HymnIdentifierEntity references = 2;
+  string title = 3;
+  LyricsEntity lyrics = 4;
+  repeated string category = 5;
+  repeated string subcategory = 6;
+  repeated string author = 7;
+  repeated string composer = 8;
+  repeated string key = 9;
+  repeated string time = 10;
+  repeated string meter = 11;
+  repeated string scriptures = 12;
+  repeated string hymn_code = 13;
+  MusicEntity music = 14;
+  SvgSheetEntity svg_sheet = 15;
+  PdfSheetEntity pdf_sheet = 16;
+  LanguagesEntity languages = 21;
+  RelevantsEntity relevants = 22;
+  InlineChordsEntity inline_chords = 19;
+  repeated string provenance = 20;
+  string flattened_lyrics = 23; // column with just the text, used for de-duping and recommendations.
+  Language language = 24;
+  reserved 17, 18;
+}
+
+message HymnIdentifierEntity {
+  HymnType hymn_type = 1;
+  string hymn_number = 2;
+}
+
+enum HymnType {
+  CLASSIC = 0;
+  NEW_TUNE = 1;
+  NEW_SONG = 2;
+  CHILDREN = 3;
+  HOWARD_HIGASHI = 4;
+  DUTCH = 5;
+  GERMAN = 6;
+  CHINESE = 7;
+  CHINESE_SIMPLIFIED = 8;
+  CHINESE_SUPPLEMENT = 9;
+  CHINESE_SUPPLEMENT_SIMPLIFIED = 10;
+  CEBUANO = 11;
+  TAGALOG = 12;
+  FRENCH = 13;
+  SPANISH = 14;
+  KOREAN = 15;
+  JAPANESE = 16;
+  INDONESIAN = 17;
+  FARSI = 18;
+  RUSSIAN = 19;
+  PORTUGUESE = 20;
+  BE_FILLED = 21;
+  LIEDERBUCH = 22;
+  HINOS = 23;
+  HEBREW = 24;
+  SLOVAK = 25;
+  ESTONIAN = 26;
+  ARABIC = 27;
+  BLUE_SONGBOOK = 28;
+  LIEDBOEK = 29;
+  SONGBASE_OTHER = 30;
+}
+
+message LyricsEntity {
+  repeated VerseEntity verses = 1;
+}
+
+message VerseEntity {
+  VerseType verse_type = 1;
+  repeated LineEntity lines = 2;
+}
+
+enum VerseType {
+  VERSE = 0;
+  CHORUS = 1;
+  OTHER = 2;
+  COPYRIGHT = 3;
+  NOTE = 4;
+  DO_NOT_DISPLAY = 5;
+}
+
+message LineEntity {
+  string line_content = 1;
+  optional string transliteration = 2;
+}
+
+message InlineChordsEntity {
+  repeated ChordLineEntity chordLines = 1;
+}
+
+message ChordLineEntity {
+  repeated ChordWordEntity chord_words = 1;
+}
+
+message ChordWordEntity {
+  string word = 1;
+  optional string chords = 2;
+}
+
+message MusicEntity {
+  map<string, string> music = 1;
+}
+
+message SvgSheetEntity {
+  map<string, string> svg_sheet = 1;
+}
+
+message PdfSheetEntity {
+  map<string, string> pdf_sheet = 1;
+}
+
+message LanguagesEntity {
+  repeated HymnIdentifierEntity languages = 1;
+}
+
+message RelevantsEntity {
+  repeated HymnIdentifierEntity relevants = 1;
+}
+
+enum Language {
+  LANGUAGE_ENGLISH = 0;
+  LANGUAGE_DUTCH = 1;
+  LANGUAGE_GERMAN = 2;
+  LANGUAGE_CHINESE_TRADITIONAL = 3;
+  LANGUAGE_CHINESE_SIMPLIFIED = 4;
+  LANGUAGE_CEBUANO = 5;
+  LANGUAGE_TAGALOG = 6;
+  LANGUAGE_FRENCH = 7;
+  LANGUAGE_SPANISH = 8;
+  LANGUAGE_KOREAN = 9;
+  LANGUAGE_JAPANESE = 10;
+  LANGUAGE_FARSI = 11;
+  LANGUAGE_RUSSIAN = 12;
+  LANGUAGE_PORTUGUESE = 13;
+  LANGUAGE_HEBREW = 14;
+  LANGUAGE_SLOVAK = 15;
+  LANGUAGE_ESTONIAN = 16;
+  LANGUAGE_ARABIC = 17;
+  LANGUAGE_INDONESIAN = 18;
+}

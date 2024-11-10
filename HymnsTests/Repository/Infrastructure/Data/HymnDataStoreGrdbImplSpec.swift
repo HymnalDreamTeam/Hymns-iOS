@@ -35,23 +35,41 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
             describe("save a few songs") {
                 beforeEach {
                     var songId = target.saveHymn(classic_1151_hymn_reference.hymnEntity)
-                    target.saveHymn(HymnIdEntityBuilder(classic_1151_hymn_reference.hymnIdEntity)!.songId(songId!).build())
+                    target.saveHymn(HymnIdEntityBuilder(classic_1151_hymn_reference.hymnIdEntity).songId(songId!).build())
 
-                    songId = target.saveHymn(HymnEntityBuilder(id: 5).title("new song 145").hymnCode("171214436716555").build())
+                    songId = target.saveHymn(HymnEntity.with { builder in
+                        builder.id = 5
+                        builder.title = "new song 145"
+                        builder.hymnCode = ["171214436716555"]
+                    })
                     target.saveHymn(HymnIdEntity(hymnIdentifier: newSong145, songId: songId!))
 
-                    songId = target.saveHymn(HymnEntityBuilder(id: 4).title("cebuano 123").build())
+                    songId = target.saveHymn(HymnEntity.with { builder in
+                        builder.id = 4
+                        builder.title = "cebuano 123"
+                    })
                     target.saveHymn(HymnIdEntity(hymnIdentifier: cebuano123, songId: songId!))
 
                     // saving another cebuano123 should replace the old one.
-                    songId = target.saveHymn(HymnEntityBuilder(id: 3).title("new cebuano title").build())
+                    songId = target.saveHymn(HymnEntity.with { builder in
+                        builder.id = 3
+                        builder.title = "new cebuano title"
+                    })
                     target.saveHymn(HymnIdEntity(hymnIdentifier: cebuano123, songId: songId!))
 
                     // this one should be a whole new song in the db
-                    songId = target.saveHymn(HymnEntityBuilder(id: 1).title("chinese simplified 123").hymnCode("171214436716555").build())
+                    songId = target.saveHymn(HymnEntity.with { builder in
+                        builder.id = 1
+                        builder.title = "chinese simplified 123"
+                        builder.hymnCode = ["171214436716555"]
+                    })
                     target.saveHymn(HymnIdEntity(hymnIdentifier: chineseSimplified123, songId: songId!))
 
-                    songId = target.saveHymn(HymnEntityBuilder(id: 6).title("songbase 1").inlineChords("chords").build())
+                    songId = target.saveHymn(HymnEntity.with { builder in
+                        builder.id = 6
+                        builder.title = "songbase 1"
+                        builder.inlineChords = InlineChordsEntity([ChordLineEntity([ChordWordEntity("chords")])])!
+                    })
                     target.saveHymn(HymnIdEntity(hymnIdentifier: songbase1, songId: songId!))
                 }
                 context("getting a stored song") {
@@ -67,7 +85,10 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                             }, receiveValue: { entity in
                                 value.fulfill()
                                 expect(entity).to(equal(HymnReference(hymnIdEntity: HymnIdEntity(hymnIdentifier: cebuano123, songId: 3),
-                                                                      hymnEntity: HymnEntityBuilder(id: 3).title("new cebuano title").build())))
+                                                                      hymnEntity: HymnEntity.with { builder in
+                                    builder.id = 3
+                                    builder.title = "new cebuano title"
+                                })))
                             })
                         testQueue.sync {}
                         testQueue.sync {}
@@ -92,7 +113,11 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                                 expect(entity).to(equal(
                                     HymnReference(
                                         hymnIdEntity: HymnIdEntity(hymnIdentifier: chineseSimplified123, songId: 1),
-                                        hymnEntity: HymnEntityBuilder(id: 1).title("chinese simplified 123").hymnCode("171214436716555").build())))
+                                        hymnEntity: HymnEntity.with { builder in
+                                            builder.id = 1
+                                            builder.title = "chinese simplified 123"
+                                            builder.hymnCode = ["171214436716555"]
+                                        })))
                             })
                         testQueue.sync {}
                         testQueue.sync {}
@@ -117,7 +142,11 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                                 expect(entity).to(equal(
                                     HymnReference(
                                         hymnIdEntity: HymnIdEntity(hymnIdentifier: songbase1, songId: 6),
-                                        hymnEntity: HymnEntityBuilder(id: 6).title("songbase 1").inlineChords("chords").build())))
+                                        hymnEntity: HymnEntity.with { builder in
+                                            builder.id = 6
+                                            builder.title = "songbase 1"
+                                            builder.inlineChords = InlineChordsEntity([ChordLineEntity([ChordWordEntity("chords")])])!
+                                        })))
                             })
                         await self.fulfillment(of: [completion, value], timeout: testTimeout)
                         publisher.cancel()
@@ -177,23 +206,38 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                 describe("getting by hymn number") {
                     beforeEach {
                         var hymnIdentifier = HymnIdentifier(hymnType: .classic, hymnNumber: "3")
-                        var songId = target.saveHymn(HymnEntityBuilder(id: 7).title("classic 3").build())
+                        var songId = target.saveHymn(HymnEntity.with { builder in
+                            builder.id = 7
+                            builder.title = "classic 3"
+                        })
                         target.saveHymn(HymnIdEntity(hymnIdentifier: hymnIdentifier, songId: songId!))
 
                         hymnIdentifier = HymnIdentifier(hymnType: .classic, hymnNumber: "4")
-                        songId = target.saveHymn(HymnEntityBuilder(id: 8).title("classic 4").build())
+                        songId = target.saveHymn(HymnEntity.with { builder in
+                            builder.id = 8
+                            builder.title = "classic 4"
+                        })
                         target.saveHymn(HymnIdEntity(hymnIdentifier: hymnIdentifier, songId: songId!))
 
                         hymnIdentifier = HymnIdentifier(hymnType: .classic, hymnNumber: "5")
-                        songId = target.saveHymn(HymnEntityBuilder(id: 9).title("classic 5").build())
+                        songId = target.saveHymn(HymnEntity.with { builder in
+                            builder.id = 9
+                            builder.title = "classic 5"
+                        })
                         target.saveHymn(HymnIdEntity(hymnIdentifier: hymnIdentifier, songId: songId!))
 
                         hymnIdentifier = HymnIdentifier(hymnType: .chineseSupplementSimplified, hymnNumber: "3")
-                        songId = target.saveHymn(HymnEntityBuilder(id: 10).title("chineseSupplementSimplified 3").build())
+                        songId = target.saveHymn(HymnEntity.with { builder in
+                            builder.id =  10
+                            builder.title = "chineseSupplementSimplified 3"
+                        })
                         target.saveHymn(HymnIdEntity(hymnIdentifier: hymnIdentifier, songId: songId!))
 
                         hymnIdentifier = HymnIdentifier(hymnType: .tagalog, hymnNumber: "2")
-                        songId = target.saveHymn(HymnEntityBuilder(id: 11).title("tagalog 2").build())
+                        songId = target.saveHymn(HymnEntity.with { builder in
+                            builder.id = 11
+                            builder.title = "tagalog 2"
+                        })
                         target.saveHymn(HymnIdEntity(hymnIdentifier: hymnIdentifier, songId: songId!))
                     }
                     context("hymn type exists") {
@@ -299,24 +343,43 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
             }
             context("search parameter is found") {
                 let jennysSongId = HymnIdentifier(hymnType: .chineseSupplement, hymnNumber: "321")
-                let jennysSong = HymnEntityBuilder().title("Jenny's Song").lyrics([VerseEntity(verseType: .verse, lineStrings: ["winter is coming"])]).build()
+                let jennysSong = HymnEntity.with { builder in
+                    builder.title = "Jenny's Song"
+                    builder.lyrics = LyricsEntity([VerseEntity(verseType: .verse, lineStrings: ["winter is coming"])])
+                }
 
                 let rainsOfCastamereId = HymnIdentifier(hymnType: .chinese, hymnNumber: "123")
-                let rainsOfCastamere = HymnEntityBuilder().title("The Rains of Castamere").lyrics([VerseEntity(verseType: .verse, lineStrings: ["summer is coming"])]).build()
+                let rainsOfCastamere = HymnEntity.with { builder in
+                    builder.title = "The Rains of Castamere"
+                    builder.lyrics = LyricsEntity([VerseEntity(verseType: .verse, lineStrings: ["summer is coming"])])
+                }
 
                 let matchInTitleId = HymnIdentifier(hymnType: .howardHigashi, hymnNumber: "matchInTitle")
-                let matchInTitle = HymnEntityBuilder().title("summer is coming").build()
+                let matchInTitle = HymnEntity.with { builder in
+                    builder.title = "summer is coming"
+                }
 
                 let matchInTitleReplacementId = HymnIdentifier(hymnType: .howardHigashi, hymnNumber: "matchInTitle")
-                let matchInTitleReplacement = HymnEntityBuilder().title("summer is coming!!").build()
+                let matchInTitleReplacement = HymnEntity.with { builder in
+                    builder.title = "summer is coming!!"
+                }
 
                 let noMatchId = HymnIdentifier(hymnType: .chineseSupplement, hymnNumber: "noMatch")
-                let noMatch = HymnEntityBuilder().title("no match").lyrics([VerseEntity(verseType: .verse, lineStrings: ["at all"])]).build()
-
+                let noMatch = HymnEntity.with { builder in
+                    builder.title = "no match"
+                    builder.lyrics = LyricsEntity([VerseEntity(verseType: .verse, lineStrings: ["at all"])])
+                }
+                
                 let matchInBothId = HymnIdentifier(hymnType: .korean, hymnNumber: "matchInBoth")
-                let matchInBoth = HymnEntityBuilder().title("summer coming").lyrics([VerseEntity(verseType: .verse, lineStrings: ["no, really. summer is!"])]).build()
+                let matchInBoth = HymnEntity.with { builder in
+                    builder.title = "summer coming"
+                    builder.lyrics = LyricsEntity([VerseEntity(verseType: .verse, lineStrings: ["no, really. summer is!"])])
+                }
 
-                let missingId = HymnEntityBuilder().title("missing id").lyrics([VerseEntity(verseType: .verse, lineStrings: ["summer is coming"])]).build()
+                let missingId = HymnEntity.with { builder in
+                    builder.title = "missing id"
+                    builder.lyrics = LyricsEntity([VerseEntity(verseType: .verse, lineStrings: ["summer is coming"])])
+                }
 
                 var searchResults = [SearchResultEntity]()
                 beforeEach {
@@ -428,10 +491,16 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
             }
             describe("search by author") {
                 let becomingId = HymnIdentifier(hymnType: .classic, hymnNumber: "1")
-                let becoming = HymnEntityBuilder().title("Becoming").author("Michelle Obama").build()
+                let becoming = HymnEntity.with { builder in
+                    builder.title = "Becoming"
+                    builder.author = ["Michelle Obama"]
+                }
 
                 let shortestWayHomeId = HymnIdentifier(hymnType: .classic, hymnNumber: "2")
-                let shortestWayHome = HymnEntityBuilder().title("Shortest Way Home").author("Pete Buttigieg").build()
+                let shortestWayHome = HymnEntity.with { builder in
+                    builder.title = "Shortest Way Home"
+                    builder.author = ["Pete Buttigieg"]
+                }
                 beforeEach {
                     var songId = target.saveHymn(becoming)
                     target.saveHymn(HymnIdEntity(hymnIdentifier: becomingId, songId: songId!))
@@ -486,10 +555,16 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
             }
             describe("search by composer") {
                 let becomingId = HymnIdentifier(hymnType: .classic, hymnNumber: "1")
-                let becoming = HymnEntityBuilder().title("Becoming").composer("Michelle Obama").build()
+                let becoming = HymnEntity.with { builder in
+                    builder.title = "Becoming"
+                    builder.composer = ["Michelle Obama"]
+                }
 
                 let shortestWayHomeId = HymnIdentifier(hymnType: .classic, hymnNumber: "2")
-                let shortestWayHome = HymnEntityBuilder().title("Shortest Way Home").composer("Pete Buttigieg").build()
+                let shortestWayHome = HymnEntity.with { builder in
+                    builder.title = "Shortest Way Home"
+                    builder.composer = ["Pete Buttigieg"]
+                }
                 beforeEach {
                     var songId = target.saveHymn(becoming)
                     target.saveHymn(HymnIdEntity(hymnIdentifier: becomingId, songId: songId!))
@@ -544,10 +619,16 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
             }
             describe("search by key") {
                 let becomingId = HymnIdentifier(hymnType: .classic, hymnNumber: "1")
-                let becoming = HymnEntityBuilder().title("Becoming").key("A").build()
+                let becoming = HymnEntity.with { builder in
+                    builder.title = "Becoming"
+                    builder.key = ["A"]
+                }
 
                 let shortestWayHomeId = HymnIdentifier(hymnType: .classic, hymnNumber: "2")
-                let shortestWayHome = HymnEntityBuilder().title("Shortest Way Home").key("A#").build()
+                let shortestWayHome = HymnEntity.with { builder in
+                    builder.title = "Shortest Way Home"
+                    builder.key = ["A#"]
+                }
                 beforeEach {
                     var songId = target.saveHymn(becoming)
                     target.saveHymn(HymnIdEntity(hymnIdentifier: becomingId, songId: songId!))
@@ -602,10 +683,16 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
             }
             describe("search by time") {
                 let becomingId = HymnIdentifier(hymnType: .classic, hymnNumber: "1")
-                let becoming = HymnEntityBuilder().title("Becoming").time("4/4").build()
+                let becoming = HymnEntity.with { builder in
+                    builder.title = "Becoming"
+                    builder.time = ["4/4"]
+                }
 
                 let shortestWayHomeId = HymnIdentifier(hymnType: .classic, hymnNumber: "2")
-                let shortestWayHome = HymnEntityBuilder().title("Shortest Way Home").time("3/4").build()
+                let shortestWayHome = HymnEntity.with { builder in
+                    builder.title = "Shortest Way Home"
+                    builder.time = ["3/4"]
+                }
                 beforeEach {
                     var songId = target.saveHymn(becoming)
                     target.saveHymn(HymnIdEntity(hymnIdentifier: becomingId, songId: songId!))
@@ -660,10 +747,16 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
             }
             describe("search by meter") {
                 let becomingId = HymnIdentifier(hymnType: .classic, hymnNumber: "1")
-                let becoming = HymnEntityBuilder().title("Becoming").meter("8.8.8.8").build()
+                let becoming = HymnEntity.with { builder in
+                    builder.title = "Becoming"
+                    builder.meter = ["8.8.8.8"]
+                }
 
                 let shortestWayHomeId = HymnIdentifier(hymnType: .classic, hymnNumber: "2")
-                let shortestWayHome = HymnEntityBuilder().title("Shortest Way Home").meter("Peculiar Meter").build()
+                let shortestWayHome = HymnEntity.with { builder in
+                    builder.title = "Shortest Way Home"
+                    builder.meter = ["Peculiar Meter"]
+                }
                 beforeEach {
                     var songId = target.saveHymn(becoming)
                     target.saveHymn(HymnIdEntity(hymnIdentifier: becomingId, songId: songId!))
@@ -718,10 +811,16 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
             }
             describe("search by scriptures") {
                 let becomingId = HymnIdentifier(hymnType: .classic, hymnNumber: "1")
-                let becoming = HymnEntityBuilder().title("Becoming").scriptures("Gen. 12").build()
+                let becoming = HymnEntity.with { builder in
+                    builder.title = "Becoming"
+                    builder.scriptures = ["Gen. 12"]
+                }
 
                 let shortestWayHomeId = HymnIdentifier(hymnType: .classic, hymnNumber: "2")
-                let shortestWayHome = HymnEntityBuilder().title("Shortest Way Home").scriptures("Gen. 2").build()
+                let shortestWayHome = HymnEntity.with { builder in
+                    builder.title = "Shortest Way Home"
+                    builder.scriptures = ["Gen. 2"]
+                }
                 beforeEach {
                     var songId = target.saveHymn(becoming)
                     target.saveHymn(HymnIdEntity(hymnIdentifier: becomingId, songId: songId!))
@@ -776,10 +875,16 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
             }
             describe("search by hymn code") {
                 let becomingId = HymnIdentifier(hymnType: .classic, hymnNumber: "1")
-                let becoming = HymnEntityBuilder().title("Becoming").hymnCode("33829223232").build()
+                let becoming = HymnEntity.with { builder in
+                    builder.title = "Becoming"
+                    builder.hymnCode = ["33829223232"]
+                }
 
                 let shortestWayHomeId = HymnIdentifier(hymnType: .classic, hymnNumber: "2")
-                let shortestWayHome = HymnEntityBuilder().title("Shortest Way Home").hymnCode("436716").build()
+                let shortestWayHome = HymnEntity.with { builder in
+                    builder.title = "Shortest Way Home"
+                    builder.hymnCode = ["436716"]
+                }
                 beforeEach {
                     var songId = target.saveHymn(becoming)
                     target.saveHymn(HymnIdEntity(hymnIdentifier: becomingId, songId: songId!))

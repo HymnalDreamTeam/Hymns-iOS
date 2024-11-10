@@ -25,11 +25,11 @@ class ConverterSpec: QuickSpec {
                 }
                 describe("inline chords") {
                     context("single line, chords not found") {
-                        let hymnEntity = HymnEntityBuilder(id: 2)
-                            .title("Hymn: title")
-                            .inlineChords("no chords found")
-                            .build()
-
+                        let hymnEntity = HymnEntity.with { builder in
+                            builder.id = 2
+                            builder.title = "Hymn: title"
+                            builder.inlineChords = InlineChordsEntity([ChordLineEntity([ChordWordEntity("no chords found")])])!
+                        }
                         let expected
                             = UiHymn(hymnIdentifier: classic1151, title: "Hymn: title")
                         it("should not set the chords field") {
@@ -37,29 +37,41 @@ class ConverterSpec: QuickSpec {
                         }
                     }
                     context("single line, chords found") {
-                        let hymnEntity = HymnEntityBuilder(id: 2)
-                            .title("Hymn: title")
-                            .inlineChords("yes [G]chords found")
-                            .build()
+                        let hymnEntity = HymnEntity.with { builder in
+                            builder.id = 2
+                            builder.title = "Hymn: title"
+                            builder.inlineChords = InlineChordsEntity([ChordLineEntity([
+                                ChordWordEntity("yes"),
+                                ChordWordEntity("chords", chords: "G"),
+                                ChordWordEntity("found")
+                            ])])!
+                        }
                         it("should set the chords field") {
                             let actual = try! target.toUiHymn(hymnIdentifier: classic1151, hymnEntity: hymnEntity)!.inlineChords!
                             expect(actual).to(haveCount(1))
                             expect(actual[0].hasChords).to(beTrue())
-                            expect(actual[0].words).to(haveCount(3))
-                            expect(actual[0].words[0].chords).to(equal(""))
-                            expect(actual[0].words[0].word).to(equal("yes"))
-                            expect(actual[0].words[1].chords).to(equal("G"))
-                            expect(actual[0].words[1].word).to(equal("chords"))
-                            expect(actual[0].words[2].chords).to(equal(""))
-                            expect(actual[0].words[2].word).to(equal("found"))
+                            expect(actual[0].chordWords).to(haveCount(3))
+                            expect(actual[0].chordWords[0].chords).to(equal(""))
+                            expect(actual[0].chordWords[0].word).to(equal("yes"))
+                            expect(actual[0].chordWords[1].chords).to(equal("G"))
+                            expect(actual[0].chordWords[1].word).to(equal("chords"))
+                            expect(actual[0].chordWords[2].chords).to(equal(""))
+                            expect(actual[0].chordWords[2].word).to(equal("found"))
                         }
                     }
                     context("multiple lines, chords not found") {
-                        let hymnEntity = HymnEntityBuilder(id: 2)
-                            .title("Hymn: title")
-                            .inlineChords("no chords found\ndefinitely not")
-                            .build()
-
+                        let hymnEntity = HymnEntity.with { builder in
+                            builder.id = 2
+                            builder.title = "Hymn: title"
+                            builder.inlineChords = InlineChordsEntity([ChordLineEntity([
+                                ChordWordEntity("no"),
+                                ChordWordEntity("chords"),
+                                ChordWordEntity("found"),
+                                ChordWordEntity("\n"),
+                                ChordWordEntity("definitely"),
+                                ChordWordEntity("not")
+                            ])])!
+                        }
                         let expected
                             = UiHymn(hymnIdentifier: classic1151, title: "Hymn: title")
                         it("should not set the chords field") {
@@ -67,53 +79,64 @@ class ConverterSpec: QuickSpec {
                         }
                     }
                     context("multiple lines, chords found") {
-                        let hymnEntity = HymnEntityBuilder(id: 2)
-                            .title("Hymn: title")
-                            .inlineChords("[G]chords found\n\nline2")
-                            .build()
+                        let hymnEntity = HymnEntity.with { builder in
+                            builder.id = 2
+                            builder.title = "Hymn: title"
+                            builder.inlineChords = InlineChordsEntity(
+                                [ChordLineEntity([
+                                    ChordWordEntity("chords", chords: "G"),
+                                    ChordWordEntity("found"),
+                                    ChordWordEntity("line2")]),
+                                 ChordLineEntity([
+                                     ChordWordEntity("")
+                                 ]),
+                                 ChordLineEntity([
+                                     ChordWordEntity("line2")
+                                 ])])!
+                        }
                         it("should set the chords field") {
                             let actual = try! target.toUiHymn(hymnIdentifier: classic1151, hymnEntity: hymnEntity)!.inlineChords!
                             expect(actual).to(haveCount(3))
                             expect(actual[0].hasChords).to(beTrue())
-                            expect(actual[0].words).to(haveCount(2))
-                            expect(actual[0].words[0].chords).to(equal("G"))
-                            expect(actual[0].words[0].word).to(equal("chords"))
-                            expect(actual[0].words[1].chords).to(equal(""))
-                            expect(actual[0].words[1].word).to(equal("found"))
+                            expect(actual[0].chordWords).to(haveCount(3))
+                            expect(actual[0].chordWords[0].chords).to(equal("G"))
+                            expect(actual[0].chordWords[0].word).to(equal("chords"))
+                            expect(actual[0].chordWords[1].chords).to(equal(""))
+                            expect(actual[0].chordWords[1].word).to(equal("found"))
 
-                            expect(actual[1].words).to(haveCount(1))
-                            expect(actual[1].words[0].chords).to(beNil())
-                            expect(actual[1].words[0].word).to(equal(""))
+                            expect(actual[1].chordWords).to(haveCount(1))
+                            expect(actual[1].chordWords[0].word).to(equal(""))
+                            expect(actual[1].chordWords[0].hasChords).to(beFalse())
 
-                            expect(actual[2].words).to(haveCount(1))
-                            expect(actual[2].words[0].chords).to(beNil())
-                            expect(actual[2].words[0].word).to(equal("line2"))
+                            expect(actual[2].chordWords).to(haveCount(1))
+                            expect(actual[2].chordWords[0].word).to(equal("line2"))
+                            expect(actual[2].chordWords[0].hasChords).to(beFalse())
                         }
                     }
                 }
                 context("filled hymn") {
-                    let filledHymn = HymnEntityBuilder(id: 2)
-                        .title("title")
-                        .lyrics([VerseEntity(verseType: .verse, lineStrings: ["line 1", "line 2"])])
-                        .category("This is my category")
-                        .subcategory("This is my subcategory")
-                        .author("This is the author")
-                        .composer("This is the composer")
-                        .key("This is the key")
-                        .time("This is the time")
-                        .meter("This is the meter")
-                        .scriptures("This is the scriptures")
-                        .hymnCode("This is the hymnCode")
-                        .pdfSheet(["Piano": "/en/hymn/h/1151/f=ppdf", "Guitar": "/en/hymn/h/1151/f=pdf",
-                                   "Text": "/en/hymn/h/1151/f=gtpdf"])
-                        .languages([HymnIdentifier(hymnType: .cebuano, hymnNumber: "1151"),
-                                    HymnIdentifier(hymnType: .chineseSupplementSimplified, hymnNumber: "216"),
-                                    HymnIdentifier(hymnType: .tagalog, hymnNumber: "1151")])
-                        .relevant([HymnIdentifier(hymnType: .classic, hymnNumber: "152"),
-                                   HymnIdentifier(hymnType: .newTune, hymnNumber: "152"),
-                                   HymnIdentifier(hymnType: .classic, hymnNumber: "152b")])
-                        .build()
-
+                    let filledHymn = HymnEntity.with { builder in
+                        builder.id = 2
+                        builder.title = "title"
+                        builder.lyrics = LyricsEntity([VerseEntity(verseType: .verse, lineStrings: ["line 1", "line 2"])])
+                        builder.category = ["This is my category"]
+                        builder.subcategory = ["This is my subcategory"]
+                        builder.author = ["This is the author"]
+                        builder.composer = ["This is the composer"]
+                        builder.key = ["This is the key"]
+                        builder.time = ["This is the time"]
+                        builder.meter = ["This is the meter"]
+                        builder.scriptures = ["This is the scriptures"]
+                        builder.hymnCode = ["This is the hymnCode"]
+                        builder.pdfSheet = PdfSheetEntity(["Piano": "/en/hymn/h/1151/f=ppdf", "Guitar": "/en/hymn/h/1151/f=pdf",
+                                                           "Text": "/en/hymn/h/1151/f=gtpdf"])!
+                        builder.languages = LanguagesEntity([HymnIdentifier(hymnType: .cebuano, hymnNumber: "1151"),
+                                                             HymnIdentifier(hymnType: .chineseSupplementSimplified, hymnNumber: "216"),
+                                                             HymnIdentifier(hymnType: .tagalog, hymnNumber: "1151")])!
+                        builder.relevants = RelevantsEntity([HymnIdentifier(hymnType: .classic, hymnNumber: "152"),
+                                                             HymnIdentifier(hymnType: .newTune, hymnNumber: "152"),
+                                                             HymnIdentifier(hymnType: .classic, hymnNumber: "152b")])!
+                    }
                     let expected
                         = UiHymn(hymnIdentifier: classic1151,
                                  title: "title",

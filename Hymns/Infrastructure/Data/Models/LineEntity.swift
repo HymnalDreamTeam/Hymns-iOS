@@ -1,11 +1,14 @@
 import Foundation
 
-struct LineEntity: Codable, Equatable {
-    let lineContent: String
-    let transliteration: String?
-
-    init(lineContent: String, transliteration: String? = nil) {
+extension LineEntity {
+    init(lineContent: String) {
         self.lineContent = lineContent
-        self.transliteration = transliteration
+    }
+    
+    init(lineContent: String, transliteration: String?) {
+        self.lineContent = lineContent
+        if let transliteration = transliteration {
+            self.transliteration = transliteration
+        }
     }
 }

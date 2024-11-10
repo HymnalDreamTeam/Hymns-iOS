@@ -6,7 +6,7 @@ import GRDBCombine
 import Resolver
 
 // swiftlint:disable:next identifier_name
-let HYMN_DATA_STORE_VERISON = 27
+let HYMN_DATA_STORE_VERISON = 28
 
 /**
  * Service to contact the local Hymn database.
@@ -83,7 +83,9 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
                     //   SONG_META_DATA_SVG_SHEET_MUSIC TEXT,
                     //   SONG_META_DATA_PDF_SHEET_MUSIC TEXT,
                     //   SONG_META_DATA_LANGUAGES TEXT,
-                    //   SONG_META_DATA_RELEVANT TEXT)
+                    //   SONG_META_DATA_RELEVANTS TEXT,
+                    //   FLATTENED_LYRICS TEXT,
+                    //   SONG_LANGUAGE INTEGER)
                     try database.create(table: HymnEntity.databaseTableName, ifNotExists: true) { table in
                         table.autoIncrementedPrimaryKey(HymnEntity.CodingKeys.id.rawValue)
                         table.column(HymnEntity.CodingKeys.title.rawValue, .text).notNull()
@@ -102,7 +104,9 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
                         table.column(HymnEntity.CodingKeys.svgSheet.rawValue, .text)
                         table.column(HymnEntity.CodingKeys.pdfSheet.rawValue, .text)
                         table.column(HymnEntity.CodingKeys.languages.rawValue, .text)
-                        table.column(HymnEntity.CodingKeys.relevant.rawValue, .text)
+                        table.column(HymnEntity.CodingKeys.relevants.rawValue, .text)
+                        table.column(HymnEntity.CodingKeys.flattenedLyrics.rawValue, .text)
+                        table.column(HymnEntity.CodingKeys.language.rawValue, .integer)
                     }
 
                     // CREATE INDEX IF NOT EXISTS index_SONG_DATA_ID ON SONG_DATA (ID)
@@ -182,12 +186,12 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
             }
         } catch {
             firebaseLogger.logError(error, message: "Save entity failed",
-                                    extraParameters: ["hymnType": entity.hymnType, "hymnNumber": entity.hymnNumber])
+                                    extraParameters: ["hymnType": String(describing: entity.hymnType), "hymnNumber": entity.hymnNumber])
         }
     }
 
     func getHymn(_ hymnIdentifier: HymnIdentifier) -> AnyPublisher<HymnReference?, ErrorType> {
-        let hymnType = hymnIdentifier.hymnType.abbreviatedValue
+        let hymnType = hymnIdentifier.hymnType.rawValue
         let hymnNumber = hymnIdentifier.hymnNumber
 
         return databaseQueue.readPublisher { database in
@@ -220,7 +224,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
                     "FROM SONG_DATA " +
                     "JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID " +
                     "WHERE HYMN_TYPE = ?",
-                arguments: [hymnType.abbreviatedValue])
+                arguments: [hymnType.rawValue])
         }.mapError({error -> ErrorType in
             .data(description: error.localizedDescription)
         }).eraseToAnyPublisher()
@@ -236,7 +240,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
                 "JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID " +
                 // Create a comma-seperated list of "?"s
                 "WHERE HYMN_TYPE IN (\(hymnTypes.map { _ in "?" }.joined(separator: ",")))",
-                arguments: StatementArguments(hymnTypes.map {$0.abbreviatedValue}))
+                arguments: StatementArguments(hymnTypes.map {$0.rawValue}))
         }.mapError({error -> ErrorType in
                 .data(description: error.localizedDescription)
         }).eraseToAnyPublisher()
@@ -272,7 +276,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
                     "FROM SONG_DATA " +
                     "JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID " +
                     "WHERE SONG_META_DATA_CATEGORY IS NOT NULL AND SONG_META_DATA_SUBCATEGORY IS NOT NULL AND HYMN_TYPE = ? GROUP BY 1, 2",
-                arguments: [hymnType.abbreviatedValue])
+                arguments: [hymnType.rawValue])
         }.mapError({error -> ErrorType in
             .data(description: error.localizedDescription)
         }).eraseToAnyPublisher()
@@ -302,7 +306,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
                     "FROM SONG_DATA " +
                     "JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID " +
                     "WHERE HYMN_TYPE = ? AND SONG_META_DATA_CATEGORY = ?",
-                arguments: [hymnType.abbreviatedValue, category])
+                arguments: [hymnType.rawValue, category])
         }.mapError({error -> ErrorType in
                 .data(description: error.localizedDescription)
         }).eraseToAnyPublisher()
@@ -332,7 +336,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
                     "FROM SONG_DATA " +
                     "JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID " +
                     "WHERE HYMN_TYPE = ? AND SONG_META_DATA_CATEGORY = ? AND SONG_META_DATA_SUBCATEGORY = ?",
-                arguments: [hymnType.abbreviatedValue, category, subcategory])
+                arguments: [hymnType.rawValue, category, subcategory])
         }.mapError({error -> ErrorType in
                 .data(description: error.localizedDescription)
         }).eraseToAnyPublisher()
@@ -362,7 +366,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
                     "FROM SONG_DATA " +
                     "JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID " +
                     "WHERE HYMN_TYPE = ? AND SONG_META_DATA_SUBCATEGORY = ?",
-                arguments: [hymnType.abbreviatedValue, subcategory])
+                arguments: [hymnType.rawValue, subcategory])
         }.mapError({error -> ErrorType in
                 .data(description: error.localizedDescription)
         }).eraseToAnyPublisher()
@@ -516,7 +520,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
                     "FROM SONG_DATA " +
                     "JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID " +
                     "WHERE HYMN_TYPE = ?",
-                arguments: [hymnType.abbreviatedValue])
+                arguments: [hymnType.rawValue])
         }.mapError({error -> ErrorType in
             .data(description: error.localizedDescription)
         }).eraseToAnyPublisher()

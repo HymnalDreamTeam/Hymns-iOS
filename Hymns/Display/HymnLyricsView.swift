@@ -65,19 +65,19 @@ enum HymnLyricsToast: Identifiable {
 struct HymnLyricsView_Previews: PreviewProvider {
     static var previews: some View {
         let classic40ViewModel = HymnLyricsViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn40,
-                                                     lyrics: classic40_preview.lyrics)!
+                                                     lyrics: classic40_preview.lyrics.verses)!
         let classic40 = HymnLyricsView(viewModel: classic40ViewModel)
 
         let classic1151ViewModel = HymnLyricsViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151,
-                                                       lyrics: classic1151_preview.lyrics)!
+                                                       lyrics: classic1151_preview.lyrics.verses)!
         let classic1151 = HymnLyricsView(viewModel: classic1151ViewModel)
 
         let classic1334ViewModel = HymnLyricsViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1334,
-                                                       lyrics: classic1334_preview.lyrics)!
+                                                       lyrics: classic1334_preview.lyrics.verses)!
         let classic1334 = HymnLyricsView(viewModel: classic1334ViewModel)
 
         let chineseSupplement216ViewModel = HymnLyricsViewModel(hymnToDisplay: PreviewHymnIdentifiers.chineseSupplement216,
-                                                                lyrics: chineseSupplement216_preview.lyrics)!
+                                                                lyrics: chineseSupplement216_preview.lyrics.verses)!
         chineseSupplement216ViewModel.showTransliterationButton = true
         let chineseSupplement216 = HymnLyricsView(viewModel: chineseSupplement216ViewModel)
 

@@ -17,7 +17,7 @@ struct PreferredSearchLanguageView: View {
             }
             Spacer()
             Picker("Preferred search language", selection: $preferredSearchLanguage) {
-                ForEach(Language.allValues) { language in
+                ForEach(Language.allCases) { language in
                     Text(language.displayTitle).tag(language)
                 }
             }

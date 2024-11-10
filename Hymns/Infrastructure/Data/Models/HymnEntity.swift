@@ -1,31 +1,7 @@
 import Foundation
 import GRDB
 
-/**
- * Structure of a Hymn object returned from the databse.
- */
-struct HymnEntity: Equatable {
-
-    // Prefer Int64 for auto-incremented database ids
-    let id: Int64?
-    let title: String?
-    let lyrics: [VerseEntity]?
-    let inlineChords: String?
-    let category: String?
-    let subcategory: String?
-    let author: String?
-    let composer: String?
-    let key: String?
-    let time: String?
-    let meter: String?
-    let scriptures: String?
-    let hymnCode: String?
-    let music: [String: String]?
-    let svgSheet: [String: String]?
-    let pdfSheet: [String: String]?
-    let languages: [HymnIdentifier]?
-    let relevant: [HymnIdentifier]?
-
+extension HymnEntity {
     // https://developer.apple.com/documentation/foundation/archives_and_serialization/encoding_and_decoding_custom_types
     enum CodingKeys: String, CodingKey {
         case id = "ID"
@@ -45,11 +21,13 @@ struct HymnEntity: Equatable {
         case svgSheet = "SONG_META_DATA_SVG_SHEET_MUSIC"
         case pdfSheet = "SONG_META_DATA_PDF_SHEET_MUSIC"
         case languages = "SONG_META_DATA_LANGUAGES"
-        case relevant = "SONG_META_DATA_RELEVANT"
+        case relevants = "SONG_META_DATA_RELEVANTS"
+        case flattenedLyrics = "FLATTENED_LYRICS"
+        case language = "SONG_LANGUAGE"
     }
 }
 
-extension HymnEntity: Codable {
+extension HymnEntity {
     // https://github.com/groue/GRDB.swift/blob/master/README.md#conflict-resolution
     static let persistenceConflictPolicy = PersistenceConflictPolicy(insert: .replace, update: .replace)
 
@@ -72,7 +50,9 @@ extension HymnEntity: Codable {
         static let svgSheet = Column(CodingKeys.svgSheet)
         static let pdfSheet = Column(CodingKeys.pdfSheet)
         static let languages = Column(CodingKeys.languages)
-        static let relevant = Column(CodingKeys.relevant)
+        static let relevants = Column(CodingKeys.relevants)
+        static let flattenedLyrics = Column(CodingKeys.flattenedLyrics)
+        static let language = Column(CodingKeys.language)
     }
 }
 
@@ -80,198 +60,178 @@ extension HymnEntity: Codable {
 // swiftlint:disable force_try
 extension HymnEntity: FetchableRecord, MutablePersistableRecord {
     public init(row: Row) {
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-
         self.id = row[CodingKeys.id.rawValue]
         self.title = row[CodingKeys.title.rawValue]
-        self.lyrics = try! decoder.decodeJson([VerseEntity].self, from: row[CodingKeys.lyrics.rawValue])
-        self.inlineChords = row[CodingKeys.inlineChords.rawValue]
-        self.category = row[CodingKeys.category.rawValue]
-        self.subcategory = row[CodingKeys.subcategory.rawValue]
-        self.author = row[CodingKeys.author.rawValue]
-        self.composer = row[CodingKeys.composer.rawValue]
-        self.key = row[CodingKeys.key.rawValue]
-        self.time = row[CodingKeys.time.rawValue]
-        self.meter = row[CodingKeys.meter.rawValue]
-        self.scriptures = row[CodingKeys.scriptures.rawValue]
-        self.hymnCode = row[CodingKeys.hymnCode.rawValue]
-        self.music = try! decoder.decodeJson([String: String].self, from: row[CodingKeys.music.rawValue])
-        self.svgSheet = try! decoder.decodeJson([String: String].self, from: row[CodingKeys.svgSheet.rawValue])
-        self.pdfSheet = try! decoder.decodeJson([String: String].self, from: row[CodingKeys.pdfSheet.rawValue])
-        self.languages = try! decoder.decodeJson([HymnIdentifier].self, from: row[CodingKeys.languages.rawValue])
-        self.relevant = try! decoder.decodeJson([HymnIdentifier].self, from: row[CodingKeys.relevant.rawValue])
+        if row[CodingKeys.lyrics.rawValue] != nil, let lyrics = try? LyricsEntity(serializedBytes: row[CodingKeys.lyrics.rawValue] as Data) {
+            self.lyrics = lyrics
+        }
+        if row[CodingKeys.inlineChords.rawValue] != nil, let inlineChords = try? InlineChordsEntity(serializedBytes: row[CodingKeys.inlineChords.rawValue] as Data) {
+            self.inlineChords = inlineChords
+        }
+        self.category = row[CodingKeys.category.rawValue]?.toStringArray ?? [String]()
+        self.subcategory = row[CodingKeys.subcategory.rawValue]?.toStringArray ?? [String]()
+        self.author = row[CodingKeys.author.rawValue]?.toStringArray ?? [String]()
+        self.composer = row[CodingKeys.composer.rawValue]?.toStringArray ?? [String]()
+        self.key = row[CodingKeys.key.rawValue]?.toStringArray ?? [String]()
+        self.time = row[CodingKeys.time.rawValue]?.toStringArray ?? [String]()
+        self.meter = row[CodingKeys.meter.rawValue]?.toStringArray ?? [String]()
+        self.scriptures = row[CodingKeys.scriptures.rawValue]?.toStringArray ?? [String]()
+        self.hymnCode = row[CodingKeys.hymnCode.rawValue]?.toStringArray ?? [String]()
+        if row[CodingKeys.music.rawValue] != nil, let music = try? MusicEntity(serializedBytes: row[CodingKeys.music.rawValue] as Data) {
+            self.music = music
+        }
+        if row[CodingKeys.svgSheet.rawValue] != nil, let svgSheet = try? SvgSheetEntity(serializedBytes: row[CodingKeys.svgSheet.rawValue] as Data) {
+            self.svgSheet = svgSheet
+        }
+        if row[CodingKeys.pdfSheet.rawValue] != nil, let pdfSheet = try? PdfSheetEntity(serializedBytes: row[CodingKeys.pdfSheet.rawValue] as Data) {
+            self.pdfSheet = pdfSheet
+        }
+        if row[CodingKeys.languages.rawValue] != nil, let languages = try? LanguagesEntity(serializedBytes: row[CodingKeys.languages.rawValue] as Data) {
+            self.languages = languages
+        }
+        if row[CodingKeys.relevants.rawValue] != nil, let relevant = try? RelevantsEntity(serializedBytes: row[CodingKeys.relevants.rawValue] as Data) {
+            self.relevants = relevant
+        }
+        if row[CodingKeys.flattenedLyrics.rawValue] != nil {
+            self.flattenedLyrics = row[CodingKeys.flattenedLyrics.rawValue]!
+        }
+        if row[CodingKeys.language.rawValue] != nil, let language = Language(rawValue: row[CodingKeys.language.rawValue]) {
+            self.language = language
+        }
+    }
+
+    func encode(to container: inout GRDB.PersistenceContainer) {
+        if id != 0 {
+            container[CodingKeys.id.rawValue] = id
+        }
+        if !title.isEmpty {
+            container[CodingKeys.title.rawValue] = title
+        }
+        if !lyrics.verses.isEmpty {
+            container[CodingKeys.lyrics.rawValue] = try? lyrics.serializedData()
+        }
+        if !inlineChords.chordLines.isEmpty {
+            container[CodingKeys.inlineChords.rawValue] = try? inlineChords.serializedData()
+        }
+        if !category.isEmpty {
+            container[CodingKeys.category.rawValue] = category.joined(separator: ",")
+        }
+        if !subcategory.isEmpty {
+            container[CodingKeys.subcategory.rawValue] = subcategory.joined(separator: ",")
+        }
+        if !author.isEmpty {
+            container[CodingKeys.author.rawValue] = author.joined(separator: ",")
+        }
+        if !composer.isEmpty {
+            container[CodingKeys.composer.rawValue] = composer.joined(separator: ",")
+        }
+        if !key.isEmpty {
+            container[CodingKeys.key.rawValue] = key.joined(separator: ",")
+        }
+        if !time.isEmpty {
+            container[CodingKeys.time.rawValue] = time.joined(separator: ",")
+        }
+        if !meter.isEmpty {
+            container[CodingKeys.meter.rawValue] = meter.joined(separator: ",")
+        }
+        if !scriptures.isEmpty {
+            container[CodingKeys.scriptures.rawValue] = scriptures.joined(separator: ",")
+        }
+        if !hymnCode.isEmpty {
+            container[CodingKeys.hymnCode.rawValue] = hymnCode.joined(separator: ",")
+        }
+        if !music.music.isEmpty {
+            container[CodingKeys.music.rawValue] = try? music.serializedData()
+        }
+        if !svgSheet.svgSheet.isEmpty {
+            container[CodingKeys.svgSheet.rawValue] = try? svgSheet.serializedData()
+        }
+        if !pdfSheet.pdfSheet.isEmpty {
+            container[CodingKeys.pdfSheet.rawValue] = try? pdfSheet.serializedData()
+        }
+        if !languages.languages.isEmpty {
+            container[CodingKeys.languages.rawValue] = try? languages.serializedData()
+        }
+        if !relevants.relevants.isEmpty {
+            container[CodingKeys.relevants.rawValue] = try? relevants.serializedData()
+        }
+        if !flattenedLyrics.isEmpty {
+            container[CodingKeys.flattenedLyrics.rawValue] = flattenedLyrics
+        }
+        if language != Language.UNRECOGNIZED(-1) {
+            container[CodingKeys.language.rawValue] = language.rawValue
+        }
     }
 }
 
-extension JSONDecoder {
-    func decodeJson<T>(_ type: T.Type, from value: DatabaseValueConvertible?) throws -> T? where T: Decodable {
-        guard let value = value, let valueString = String(describing: value).data(using: .utf8) else {
-            return nil
-        }
-        return try! decode(type, from: valueString)
+extension DatabaseValueConvertible {
+    var toStringArray: [String]? {
+        (self as? String)?.components(separatedBy: ",")
     }
 }
+
 // swiftlint:enable force_try
 
 extension HymnEntity: PersistableRecord {
     static let databaseTableName = "SONG_DATA"
 }
 
-class HymnEntityBuilder {
-
-    private (set) var id: Int64?
-    private (set) var title: String?
-    private (set) var lyrics: [VerseEntity]?
-    private (set) var inlineChords: String?
-    private (set) var category: String?
-    private (set) var subcategory: String?
-    private (set) var author: String?
-    private (set) var composer: String?
-    private (set) var key: String?
-    private (set) var time: String?
-    private (set) var meter: String?
-    private (set) var scriptures: String?
-    private (set) var hymnCode: String?
-    private (set) var music: [String: String]?
-    private (set) var svgSheet: [String: String]?
-    private (set) var pdfSheet: [String: String]?
-    private (set) var languages: [HymnIdentifier]?
-    private (set) var relevant: [HymnIdentifier]?
-
-    init(id: Int64? = nil) {
-        self.id = id
+extension LyricsEntity {
+    init(_ verses: [VerseEntity]) {
+        self.verses = verses
     }
+}
 
-    init(_ hymnEntity: HymnEntity) {
-        self.id = hymnEntity.id
-        self.title = hymnEntity.title
-        self.lyrics = hymnEntity.lyrics
-        self.inlineChords = hymnEntity.inlineChords
-        self.category = hymnEntity.category
-        self.subcategory = hymnEntity.subcategory
-        self.author = hymnEntity.author
-        self.composer = hymnEntity.composer
-        self.key = hymnEntity.key
-        self.time = hymnEntity.time
-        self.meter = hymnEntity.meter
-        self.scriptures = hymnEntity.scriptures
-        self.hymnCode = hymnEntity.hymnCode
-        self.music = hymnEntity.music
-        self.svgSheet = hymnEntity.svgSheet
-        self.pdfSheet = hymnEntity.pdfSheet
-        self.languages = hymnEntity.languages
-        self.relevant = hymnEntity.relevant
+extension InlineChordsEntity {
+    init?(_ chordLines: [ChordLineEntity]) {
+        guard !chordLines.isEmpty else {
+            return nil
+        }
+        self.chordLines = chordLines
     }
+}
 
-    public func id(_ id: Int64?) -> HymnEntityBuilder {
-        self.id = id
-        return self
-    }
-
-    public func title(_ title: String?) -> HymnEntityBuilder {
-        self.title = title
-        return self
-    }
-
-    public func lyrics(_ lyrics: [VerseEntity]?) -> HymnEntityBuilder {
-        self.lyrics = lyrics
-        return self
-    }
-
-    public func inlineChords(_ inlineChords: String?) -> HymnEntityBuilder {
-        self.inlineChords = inlineChords
-        return self
-    }
-
-    public func category(_ category: String?) -> HymnEntityBuilder {
-        self.category = category
-        return self
-    }
-
-    public func subcategory(_ subcategory: String?) -> HymnEntityBuilder {
-        self.subcategory = subcategory
-        return self
-    }
-
-    public func author(_ author: String?) -> HymnEntityBuilder {
-        self.author = author
-        return self
-    }
-
-    public func composer(_ composer: String?) -> HymnEntityBuilder {
-        self.composer = composer
-        return self
-    }
-
-    public func key(_ key: String?) -> HymnEntityBuilder {
-        self.key = key
-        return self
-    }
-
-    public func time(_ time: String?) -> HymnEntityBuilder {
-        self.time = time
-        return self
-    }
-
-    public func meter(_ meter: String?) -> HymnEntityBuilder {
-        self.meter = meter
-        return self
-    }
-
-    public func scriptures(_ scriptures: String?) -> HymnEntityBuilder {
-        self.scriptures = scriptures
-        return self
-    }
-
-    public func hymnCode(_ hymnCode: String?) -> HymnEntityBuilder {
-        self.hymnCode = hymnCode
-        return self
-    }
-
-    public func music(_ music: [String: String]?) -> HymnEntityBuilder {
+extension MusicEntity {
+    init?(_ music: [String: String]?) {
+        guard let music = music, !music.isEmpty else {
+            return nil
+        }
         self.music = music
-        return self
     }
+}
 
-    public func svgSheet(_ svgSheet: [String: String]?) -> HymnEntityBuilder {
+extension SvgSheetEntity {
+    init?(_ svgSheet: [String: String]?) {
+        guard let svgSheet = svgSheet, !svgSheet.isEmpty else {
+            return nil
+        }
         self.svgSheet = svgSheet
-        return self
     }
+}
 
-    public func pdfSheet(_ pdfSheet: [String: String]?) -> HymnEntityBuilder {
+extension PdfSheetEntity {
+    init?(_ pdfSheet: [String: String]?) {
+        guard let pdfSheet = pdfSheet, !pdfSheet.isEmpty else {
+            return nil
+        }
         self.pdfSheet = pdfSheet
-        return self
     }
+}
 
-    public func languages(_ languages: [HymnIdentifier]?) -> HymnEntityBuilder {
-        self.languages = languages
-        return self
+extension LanguagesEntity {
+    init?(_ languages: [HymnIdentifier]?) {
+        guard let languages = languages, !languages.isEmpty else {
+            return nil
+        }
+        self.languages = languages.map { $0.toEntity }
     }
+}
 
-    public func relevant(_ relevant: [HymnIdentifier]?) -> HymnEntityBuilder {
-        self.relevant = relevant
-        return self
-    }
-
-    public func build() -> HymnEntity {
-        HymnEntity(id: id,
-                   title: title,
-                   lyrics: lyrics,
-                   inlineChords: inlineChords,
-                   category: category,
-                   subcategory: subcategory,
-                   author: author,
-                   composer: composer,
-                   key: key,
-                   time: time,
-                   meter: meter,
-                   scriptures: scriptures,
-                   hymnCode: hymnCode,
-                   music: music,
-                   svgSheet: svgSheet,
-                   pdfSheet: pdfSheet,
-                   languages: languages,
-                   relevant: relevant)
+extension RelevantsEntity {
+    init?(_ relevants: [HymnIdentifier]?) {
+        guard let relevants = relevants, !relevants.isEmpty else {
+            return nil
+        }
+        self.relevants = relevants.map { $0.toEntity }
     }
 }

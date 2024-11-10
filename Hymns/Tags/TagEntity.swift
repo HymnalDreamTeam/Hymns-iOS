@@ -2,7 +2,7 @@ import RealmSwift
 
 class Tag: Object, Identifiable {
     @objc dynamic var primaryKey: String!
-    @objc dynamic var hymnIdentifierEntity: HymnIdentifierEntity!
+    @objc dynamic var hymnIdentifier: HymnIdentifierWrapper!
     @objc dynamic var songTitle: String!
     @objc dynamic var tag: String!
 
@@ -17,13 +17,17 @@ class Tag: Object, Identifiable {
         super.init()
     }
 
-    init(hymnIdentifier: HymnIdentifier, songTitle: String, tag: String, color: TagColor) {
+    init(hymnIdentifier: HymnIdentifierWrapper, songTitle: String, tag: String, color: TagColor) {
         super.init()
         self.primaryKey = Self.createPrimaryKey(hymnIdentifier: hymnIdentifier, tag: tag, color: color)
-        self.hymnIdentifierEntity = HymnIdentifierEntity(hymnIdentifier)
+        self.hymnIdentifier = hymnIdentifier
         self.songTitle = songTitle
         self.tag = tag
         self.color = color
+    }
+
+    convenience init(hymnIdentifier: HymnIdentifier, songTitle: String, tag: String, color: TagColor) {
+        self.init(hymnIdentifier: HymnIdentifierWrapper(hymnIdentifier), songTitle: songTitle, tag: tag, color: color)
     }
 
     override static func primaryKey() -> String? {
@@ -31,6 +35,10 @@ class Tag: Object, Identifiable {
     }
 
     static func createPrimaryKey(hymnIdentifier: HymnIdentifier, tag: String, color: TagColor) -> String {
+        return createPrimaryKey(hymnIdentifier: hymnIdentifier.toWrapper, tag: tag, color: color)
+    }
+
+    static func createPrimaryKey(hymnIdentifier: HymnIdentifierWrapper, tag: String, color: TagColor) -> String {
         return "\(hymnIdentifier.hymnType):\(hymnIdentifier.hymnNumber):\(tag):\(color.rawValue)"
     }
 
@@ -43,8 +51,7 @@ class Tag: Object, Identifiable {
     }
 
     func copy() -> Tag {
-        return Tag(hymnIdentifier: hymnIdentifierEntity.hymnIdentifier,
-                   songTitle: songTitle, tag: tag, color: color)
+        return Tag(hymnIdentifier: hymnIdentifier, songTitle: songTitle, tag: tag, color: color)
     }
 }
 

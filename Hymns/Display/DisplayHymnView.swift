@@ -217,7 +217,7 @@ struct DisplayHymnView_Previews: PreviewProvider {
         classic40ViewModel.isLoaded = true
         classic40ViewModel.title = "Hymn 40"
         classic40ViewModel.isFavorited = true
-        let classic40LyricsViewModel = HymnLyricsViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn40, lyrics: classic40_preview.lyrics)!
+        let classic40LyricsViewModel = HymnLyricsViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn40, lyrics: classic40_preview.lyrics.verses)!
         classic40ViewModel.currentTab = .lyrics(HymnLyricsView(viewModel: classic40LyricsViewModel).eraseToAnyView())
         classic40ViewModel.tabItems = [classic40ViewModel.currentTab, .music(Text("%_PREVIEW_% Music here").eraseToAnyView())]
         classic40ViewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn40, hymn: hymn)
@@ -227,7 +227,7 @@ struct DisplayHymnView_Previews: PreviewProvider {
         classic1151ViewModel.isLoaded = true
         classic1151ViewModel.title = "Hymn 1151"
         classic1151ViewModel.isFavorited = false
-        let classic1151LyricsViewModel = HymnLyricsViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151, lyrics: classic1151_preview.lyrics)!
+        let classic1151LyricsViewModel = HymnLyricsViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151, lyrics: classic1151_preview.lyrics.verses)!
         classic1151ViewModel.currentTab = .lyrics(HymnLyricsView(viewModel: classic1151LyricsViewModel).maxSize().eraseToAnyView())
         classic1151ViewModel.tabItems = [classic1151ViewModel.currentTab, .music(Text("%_PREVIEW_% Music here").eraseToAnyView())]
         classic1151ViewModel.bottomBar = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151, hymn: hymn)
@@ -247,7 +247,7 @@ struct DisplayHymnView_Previews: PreviewProvider {
         classic1334ViewModel.isLoaded = true
         classic1334ViewModel.title = "Hymn 1334"
         classic1334ViewModel.isFavorited = nil
-        let classic1334LyricsViewModel = HymnLyricsViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1334, lyrics: classic1334_preview.lyrics)!
+        let classic1334LyricsViewModel = HymnLyricsViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1334, lyrics: classic1334_preview.lyrics.verses)!
         classic1334ViewModel.currentTab = .lyrics(HymnLyricsView(viewModel: classic1334LyricsViewModel).maxSize().eraseToAnyView())
         classic1334ViewModel.tabItems = [HymnTab]()
         let classic1334BottomBarViewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151, hymn: hymn)

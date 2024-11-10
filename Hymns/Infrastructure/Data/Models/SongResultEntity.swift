@@ -12,6 +12,10 @@ struct SongResultEntity: Decodable, Equatable {
         self.title = title
     }
 
+    init(hymnIdentifier: HymnIdentifier, title: String? = nil) {
+        self.init(hymnType: hymnIdentifier.hymnType, hymnNumber: hymnIdentifier.hymnNumber, title: title)
+    }
+
     enum CodingKeys: String, CodingKey {
         case hymnType = "HYMN_TYPE"
         case hymnNumber = "HYMN_NUMBER"

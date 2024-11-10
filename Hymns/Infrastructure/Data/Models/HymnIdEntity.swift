@@ -6,25 +6,21 @@ import GRDB
  */
 struct HymnIdEntity: Equatable {
 
-    let hymnType: String
+    let hymnType: HymnType
     let hymnNumber: String
     let songId: Int64
     var hymnIdentifier: HymnIdentifier? {
-        HymnIdentifier(hymnType: HymnType.fromAbbreviatedValue(hymnType), hymnNumber: hymnNumber)
+        HymnIdentifier(hymnType: hymnType, hymnNumber: hymnNumber)
     }
 
-    init(hymnType: String, hymnNumber: String, songId: Int64) {
+    init(hymnType: HymnType, hymnNumber: String, songId: Int64) {
         self.hymnType = hymnType
         self.hymnNumber = hymnNumber
         self.songId = songId
     }
 
-    init(hymnType: HymnType, hymnNumber: String, songId: Int64) {
-        self.init(hymnType: hymnType.abbreviatedValue, hymnNumber: hymnNumber, songId: songId)
-    }
-
     init(hymnIdentifier: HymnIdentifier, songId: Int64) {
-        self.init(hymnType: hymnIdentifier.hymnType.abbreviatedValue, hymnNumber: hymnIdentifier.hymnNumber, songId: songId)
+        self.init(hymnType: hymnIdentifier.hymnType, hymnNumber: hymnIdentifier.hymnNumber, songId: songId)
     }
 
     // https://developer.apple.com/documentation/foundation/archives_and_serialization/encoding_and_decoding_custom_types
@@ -64,33 +60,26 @@ extension HymnIdEntity: PersistableRecord {
 
 class HymnIdEntityBuilder {
 
-    private (set) var hymnType: String
+    private (set) var hymnType: HymnType
     private (set) var hymnNumber: String
     private (set) var songId: Int64
 
-    init(hymnType: String, hymnNumber: String, songId: Int64) {
+    init(hymnType: HymnType, hymnNumber: String, songId: Int64) {
         self.hymnType = hymnType
         self.hymnNumber = hymnNumber
         self.songId = songId
-    }
-
-    convenience init(hymnType: HymnType, hymnNumber: String, songId: Int64) {
-        self.init(hymnType: hymnType.abbreviatedValue, hymnNumber: hymnNumber, songId: songId)
     }
 
     convenience init(hymnIdentifier: HymnIdentifier, songId: Int64) {
         self.init(hymnType: hymnIdentifier.hymnType, hymnNumber: hymnIdentifier.hymnNumber, songId: songId)
     }
 
-    convenience init?(_ hymnIdEntity: HymnIdEntity) {
-        guard let hymnType = HymnType.fromAbbreviatedValue(hymnIdEntity.hymnType) else {
-            return nil
-        }
-        self.init(hymnType: hymnType, hymnNumber: hymnIdEntity.hymnNumber, songId: hymnIdEntity.songId)
+    convenience init(_ hymnIdEntity: HymnIdEntity) {
+        self.init(hymnType: hymnIdEntity.hymnType, hymnNumber: hymnIdEntity.hymnNumber, songId: hymnIdEntity.songId)
     }
 
     public func hymnIdentifier(_ hymnIdentifier: HymnIdentifier) -> HymnIdEntityBuilder {
-        self.hymnType = hymnIdentifier.hymnType.abbreviatedValue
+        self.hymnType = hymnIdentifier.hymnType
         self.hymnNumber = hymnIdentifier.hymnNumber
         return self
     }

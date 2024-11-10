@@ -48,7 +48,7 @@ class TagStoreRealmImpl: TagStore {
     }
 
     func deleteTag(_ tag: Tag) {
-        let hymnIdentifier = HymnIdentifier(tag.hymnIdentifierEntity)
+        let hymnIdentifier = HymnIdentifier(wrapper: tag.hymnIdentifier)
         let primaryKey = Tag.createPrimaryKey(hymnIdentifier: hymnIdentifier, tag: tag.tag, color: tag.color)
         let entitiesToDelete = realm.objects(TagEntity.self).filter(NSPredicate(format: "primaryKey == %@", primaryKey))
         do {
@@ -73,8 +73,8 @@ class TagStoreRealmImpl: TagStore {
             .collectionPublisher
             .map { entities -> [SongResultEntity] in
                 entities.map { entity -> SongResultEntity in
-                    let hymnType = entity.tagObject.hymnIdentifierEntity.hymnType
-                    let hymnNumber = entity.tagObject.hymnIdentifierEntity.hymnNumber
+                    let hymnType = entity.tagObject.hymnIdentifier.hymnType
+                    let hymnNumber = entity.tagObject.hymnIdentifier.hymnNumber
                     return SongResultEntity(hymnType: hymnType, hymnNumber: hymnNumber, title: entity.tagObject.songTitle)
                 }
         }.mapError({ error -> ErrorType in
@@ -128,7 +128,7 @@ extension Resolver {
             url?.appendPathComponent("tags.realm")
             let config = Realm.Configuration(
                 fileURL: url!,
-                schemaVersion: 1,
+                schemaVersion: 2,
 
                 // Set the block which will be called automatically when opening a Realm with
                 // a schema version lower than the one set above
@@ -197,6 +197,14 @@ extension Resolver {
                                 return hymnIdentifierEntity
                             }
                         }
+                    }
+
+                    // In version 2:
+                    //   - HymnIdentifierEntity was migrated to use HymnIdentifierWrapper, since
+                    //     HymnIdentifierEntity became a proto field, and thus not @objc-compatible. However,
+                    //     nothing changed with the the underlying stored representation, so no action explicit
+                    //     migration steps are needed.
+                    if oldSchemaVersion < 2 {
                     }
             })
             // If the Realm db is unable to be created, that's an unrecoverable error, so crashing the app is appropriate.

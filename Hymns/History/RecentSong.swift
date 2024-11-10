@@ -3,18 +3,22 @@ import RealmSwift
 
 class RecentSong: Object {
     @objc dynamic var primaryKey: String!
-    @objc dynamic var hymnIdentifierEntity: HymnIdentifierEntity!
+    @objc dynamic var hymnIdentifier: HymnIdentifierWrapper!
     @objc dynamic var songTitle: String?
 
     override required init() {
         super.init()
     }
 
-    init(hymnIdentifier: HymnIdentifier, songTitle: String?) {
+    init(hymnIdentifier: HymnIdentifierWrapper, songTitle: String?) {
         super.init()
         self.primaryKey = "\(hymnIdentifier.hymnType):\(hymnIdentifier.hymnNumber)"
-        self.hymnIdentifierEntity = HymnIdentifierEntity(hymnIdentifier)
+        self.hymnIdentifier = hymnIdentifier
         self.songTitle = songTitle
+    }
+
+    convenience init(hymnIdentifier: HymnIdentifier, songTitle: String?) {
+        self.init(hymnIdentifier: HymnIdentifierWrapper(hymnIdentifier), songTitle: songTitle)
     }
 
     override static func primaryKey() -> String? {
@@ -22,15 +26,15 @@ class RecentSong: Object {
     }
 
     override func isEqual(_ object: Any?) -> Bool {
-        return primaryKey == (object as? RecentSong)?.primaryKey && hymnIdentifierEntity == (object as? RecentSong)?.hymnIdentifierEntity && songTitle == (object as? RecentSong)?.songTitle
+        return primaryKey == (object as? RecentSong)?.primaryKey && hymnIdentifier == (object as? RecentSong)?.hymnIdentifier && songTitle == (object as? RecentSong)?.songTitle
     }
 
     override var hash: Int {
-        primaryKey.hash + hymnIdentifierEntity.hash + (songTitle?.hash ?? 0)
+        primaryKey.hash + hymnIdentifier.hash + (songTitle?.hash ?? 0)
     }
 
     func copy() -> RecentSong {
-        return RecentSong(hymnIdentifier: hymnIdentifierEntity.hymnIdentifier, songTitle: songTitle)
+        return RecentSong(hymnIdentifier: hymnIdentifier.hymnIdentifier, songTitle: songTitle)
     }
 }
 

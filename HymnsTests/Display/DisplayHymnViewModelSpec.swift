@@ -339,7 +339,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                                                       historyStore: historyStore, mainQueue: testQueue,
                                                       pdfPreloader: pdfLoader, systemUtil: systemUtil, storeInHistoryStore: true)
                         let songbaseSong = UiHymn(hymnIdentifier: songbase1, title: "Songbase song",
-                                                  inlineChords: [ChordLine("Chords not found")])
+                                                  inlineChords: [ChordLineEntity(createChordLine("Chords not found"))])
                         given(hymnsRepository.getHymn(songbase1)) ~> { _ in
                             Just(songbaseSong).assertNoFailure().eraseToAnyPublisher()
                         }
@@ -401,7 +401,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                                                       pdfPreloader: pdfLoader, systemUtil: systemUtil, storeInHistoryStore: true)
                         let songbaseSong = UiHymn(hymnIdentifier: songbase1, title: "Songbase song",
                                                   lyrics: [VerseEntity(verseType: .verse, lineStrings: ["Songbase lyrics"])],
-                                                  inlineChords: [ChordLine("[G]Songbase chords")])
+                                                  inlineChords: [ChordLineEntity(createChordLine("[G]Songbase chords"))])
                         given(hymnsRepository.getHymn(songbase1)) ~> { _ in
                             Just(songbaseSong).assertNoFailure().eraseToAnyPublisher()
                         }
@@ -466,7 +466,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                                                       pdfPreloader: pdfLoader, systemUtil: systemUtil, storeInHistoryStore: true)
                         let songbaseSong = UiHymn(hymnIdentifier: songbase1, title: "Songbase song",
                                                   lyrics: [VerseEntity(verseType: .verse, lineStrings: ["Songbase lyrics"])],
-                                                  inlineChords: [ChordLine]())
+                                                  inlineChords: [ChordLineEntity]())
                         given(hymnsRepository.getHymn(songbase1)) ~> { _ in
                             Just(songbaseSong).assertNoFailure().eraseToAnyPublisher()
                         }
@@ -529,7 +529,7 @@ class DisplayHymnViewModelSpec: QuickSpec {
                                                       pdfPreloader: pdfLoader, systemUtil: systemUtil, storeInHistoryStore: true)
                         let hymn = UiHymn(hymnIdentifier: classic1151, title: "title",
                                           lyrics: [VerseEntity(verseType: .verse, lineStrings: ["verse line"])],
-                                          inlineChords: [ChordLine("[G]Songbase chords")],
+                                          inlineChords: [ChordLineEntity(createChordLine("[G]Songbase chords"))],
                                           pdfSheet: ["Piano": "https://www.hymnal.net/Hymns/Hymnal/pdfs/e1151_p.pdf",
                                                      "Guitar": "https://www.hymnal.net/Hymns/Hymnal/pdfs/e1151_g.pdf"])
                         given(hymnsRepository.getHymn(classic1151)) ~> { _ in

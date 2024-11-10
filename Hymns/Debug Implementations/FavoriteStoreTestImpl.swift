@@ -40,7 +40,7 @@ class FavoriteStoreTestImpl: FavoriteStore {
 
     func isFavorite(hymnIdentifier: HymnIdentifier) -> AnyPublisher<Bool, ErrorType> {
         let isFavorite = !entities.filter { entity -> Bool in
-            HymnIdentifier(entity.hymnIdentifierEntity) == hymnIdentifier
+            HymnIdentifier(wrapper: entity.hymnIdentifier) == hymnIdentifier
         }.isEmpty
         return Just(isFavorite).mapError({ _ -> ErrorType in
             // This will never be triggered.

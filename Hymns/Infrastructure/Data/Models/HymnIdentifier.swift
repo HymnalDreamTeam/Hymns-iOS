@@ -10,23 +10,12 @@ struct HymnIdentifier: Equatable, Hashable {
 }
 
 extension HymnIdentifier {
-
     init?(hymnType: HymnType?, hymnNumber: String) {
         guard let hymnType = hymnType else {
             return nil
         }
         self.hymnType = hymnType
         self.hymnNumber = hymnNumber
-    }
-}
-
-extension HymnIdentifier {
-
-    // Allows us to use a customer initializer along with the default memberwise one
-    // https://www.hackingwithswift.com/articles/106/10-quick-swift-tips
-    init(_ entity: HymnIdentifierEntity) {
-        self.hymnType = entity.hymnType
-        self.hymnNumber = entity.hymnNumber
     }
 }
 
@@ -56,7 +45,34 @@ extension HymnIdentifier: Codable {
     }
 }
 
-class HymnIdentifierEntity: Object {
+extension HymnIdentifier {
+
+    // Allows us to use a customer initializer along with the default memberwise one
+    // https://www.hackingwithswift.com/articles/106/10-quick-swift-tips
+    init(entity: HymnIdentifierEntity) {
+        self.hymnType = entity.hymnType
+        self.hymnNumber = entity.hymnNumber
+    }
+
+    var toEntity: HymnIdentifierEntity {
+        HymnIdentifierEntity(hymnIdentifier: self)
+    }
+}
+
+extension HymnIdentifier {
+
+    init(wrapper: HymnIdentifierWrapper) {
+        self.hymnType = wrapper.hymnType
+        self.hymnNumber = wrapper.hymnNumber
+    }
+
+    var toWrapper: HymnIdentifierWrapper {
+        HymnIdentifierWrapper(self)
+    }
+}
+
+// Wrapper for writing into Realm
+class HymnIdentifierWrapper: Object {
     // https://stackoverflow.com/questions/29123245/using-enum-as-property-of-realm-model
     @objc dynamic private var hymnTypeRaw = HymnType.classic.abbreviatedValue
     var hymnType: HymnType {
@@ -90,10 +106,21 @@ class HymnIdentifierEntity: Object {
     }
 
     override func isEqual(_ object: Any?) -> Bool {
-        return hymnType == (object as? HymnIdentifierEntity)?.hymnType && hymnNumber == (object as? HymnIdentifierEntity)?.hymnNumber
+        return hymnType == (object as? HymnIdentifierWrapper)?.hymnType && hymnNumber == (object as? HymnIdentifierWrapper)?.hymnNumber
     }
 
     override var hash: Int {
         return hymnType.abbreviatedValue.hash + hymnNumber.hash
+    }
+}
+
+extension HymnIdentifierEntity {
+    init(hymnIdentifier: HymnIdentifier) {
+        self.hymnType = hymnIdentifier.hymnType
+        self.hymnNumber = hymnIdentifier.hymnNumber
+    }
+    
+    var toHymnIdentifier: HymnIdentifier {
+        HymnIdentifier(entity: self)
     }
 }

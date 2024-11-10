@@ -66,7 +66,7 @@ class HymnDataStoreTestImpl: HymnDataStore {
 
     func saveHymn(_ entity: HymnEntity) -> Int64? {
         HymnDataStoreTestImpl.songId += 1
-        fakeDatabase[entity.id!] = entity
+        fakeDatabase[entity.id] = entity
         return HymnDataStoreTestImpl.songId
     }
 
@@ -76,10 +76,7 @@ class HymnDataStoreTestImpl: HymnDataStore {
 
     func getHymn(_ hymnIdentifier: HymnIdentifier) -> AnyPublisher<HymnReference?, ErrorType> {
         let hymnIdEntity = fakeHymnIds.first(where: { hymnIdEntity in
-            guard let identifier = hymnIdEntity.hymnIdentifier else {
-                return false
-            }
-            return hymnIdentifier == identifier
+            return hymnIdentifier == hymnIdEntity.hymnIdentifier
         })
         guard let hymnIdEntity = hymnIdEntity, let hymnEntity = fakeDatabase[hymnIdEntity.songId] else {
             return Just(nil).mapError({ _ -> ErrorType in
@@ -105,13 +102,11 @@ class HymnDataStoreTestImpl: HymnDataStore {
 
     func getHymns(by hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType> {
         Just(fakeHymnIds.filter({ hymnIdEntity in
-            hymnIdEntity.hymnType == hymnType.abbreviatedValue
+            hymnIdEntity.hymnType == hymnType
         }).compactMap({ hymnIdEntity in
             hymnIdEntity.hymnIdentifier
         }).map({ hymnIdentifier in
-            SongResultEntity(hymnType: hymnIdentifier.hymnType,
-                             hymnNumber: hymnIdentifier.hymnNumber,
-                             title: hymnIdentifier.displayTitle)
+            SongResultEntity(hymnIdentifier: hymnIdentifier, title: hymnIdentifier.displayTitle)
         })).mapError { _ -> ErrorType in
             // This will never be triggered.
         }.eraseToAnyPublisher()
@@ -119,13 +114,11 @@ class HymnDataStoreTestImpl: HymnDataStore {
 
     func getHymns(by hymnTypes: [HymnType]) -> AnyPublisher<[SongResultEntity], ErrorType> {
         Just(fakeHymnIds.filter({ hymnIdEntity in
-            hymnTypes.map {$0.abbreviatedValue}.contains(hymnIdEntity.hymnType)
+            hymnTypes.contains(hymnIdEntity.hymnType)
         }).compactMap({ hymnIdEntity in
             hymnIdEntity.hymnIdentifier
         }).map({ hymnIdentifier in
-            SongResultEntity(hymnType: hymnIdentifier.hymnType,
-                             hymnNumber: hymnIdentifier.hymnNumber,
-                             title: hymnIdentifier.displayTitle)
+            SongResultEntity(hymnIdentifier: hymnIdentifier, title: hymnIdentifier.displayTitle)
         })).mapError { _ -> ErrorType in
             // This will never be triggered.
         }.eraseToAnyPublisher()

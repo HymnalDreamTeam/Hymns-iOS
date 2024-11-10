@@ -5,9 +5,10 @@ import XCTest
 
 class HymnsRepositoryImpl_dbInitialized_dbMissTests: XCTestCase {
 
-    let databaseResult = HymnEntityBuilder().title("song title")
-        .lyrics([VerseEntity(verseType: .verse, lineStrings: ["line 1", "line 2"])])
-        .build()
+    let databaseResult = HymnEntity.with { builder in
+        builder.title = "song title"
+        builder.lyrics = LyricsEntity([VerseEntity(verseType: .verse, lineStrings: ["line 1", "line 2"])])
+    }
     let networkResult = Hymn(title: "song title", metaData: [MetaDatum](), lyrics: [Verse(verseType: .verse, verseContent: ["line 1", "line 2"])])
     let expected = UiHymn(hymnIdentifier: cebuano123, title: "song title", lyrics: [VerseEntity(verseType: .verse, lineStrings: ["line 1", "line 2"])])
 

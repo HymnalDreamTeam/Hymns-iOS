@@ -207,7 +207,7 @@ class SearchViewModelSpec: QuickSpec {
                         var originalPreferredSearchLanguage: Language?
                         beforeEach {
                             originalPreferredSearchLanguage = Language(rawValue: UserDefaults.standard.integer(forKey: "preferred_search_language"))
-                            UserDefaults.standard.setValue(Language.chinese.rawValue, forKey: "preferred_search_language")
+                            UserDefaults.standard.setValue(Language.chineseTraditional.rawValue, forKey: "preferred_search_language")
                             given(dataStore.getHymns(by: [.chinese, .chineseSupplement])) ~> { _  in
                                 Just([SongResultEntity(hymnType: .chinese, hymnNumber: "3"),
                                       SongResultEntity(hymnType: .chinese, hymnNumber: "23"),

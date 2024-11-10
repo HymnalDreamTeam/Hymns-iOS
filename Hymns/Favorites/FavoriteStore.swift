@@ -98,7 +98,7 @@ extension Resolver {
                 fileURL: url!,
                 // Set the new schema version. This must be greater than the previously used
                 // version (if you've never set a schema version before, the version is 0).
-                schemaVersion: 1,
+                schemaVersion: 2,
 
                 // Set the block which will be called automatically when opening a Realm with
                 // a schema version lower than the one set above
@@ -150,6 +150,14 @@ extension Resolver {
                                 return hymnIdentifierEntity
                             }
                         }
+                    }
+
+                    // In version 2:
+                    //   - HymnIdentifierEntity was migrated to use HymnIdentifierWrapper, since
+                    //     HymnIdentifierEntity became a proto field, and thus not @objc-compatible. However,
+                    //     nothing changed with the the underlying stored representation, so no action explicit
+                    //     migration steps are needed.
+                    if oldSchemaVersion < 2 {
                     }
             })
             // If the Realm db is unable to be created, that's an unrecoverable error, so crashing the app is appropriate.

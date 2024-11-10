@@ -13,31 +13,31 @@ class InlineChordsSnapshots: XCTestCase {
     func test_songWithChords() {
         let lyrics = [
             // Verse 1
-            ChordLine("1"),
-            ChordLine("[G]Drink! A river pure and clear[C]"),
-            ChordLine("That’s [G7]flowing from the throne;"),
-            ChordLine("[C]Eat! The tree of life with fruits"),
-            ChordLine("[G]Here there [D7]is no [G-C-G]night!"),
-            ChordLine(""),
+            ChordLineEntity(createChordLine("1")),
+            ChordLineEntity(createChordLine("[G]Drink! A river pure and clear[C]")),
+            ChordLineEntity(createChordLine("That’s [G7]flowing from the throne;")),
+            ChordLineEntity(createChordLine("[C]Eat! The tree of life with fruits")),
+            ChordLineEntity(createChordLine("[G]Here there [D7]is no [G-C-G]night!")),
+            ChordLineEntity(createChordLine("")),
             // Chorus
-            ChordLine(""),
-            ChordLine("  Do come, oh, do come,"),
-            ChordLine("  Says [G7]Spirit and the Bride:"),
-            ChordLine("  []Do come, oh, do come,"),
-            ChordLine("  Let [B7]him who thirsts and [Em]will"),
-            ChordLine("  Take [G]freely the [D]water of [G]l[C]i[G]fe!"),
-            ChordLine(""),
+            ChordLineEntity(createChordLine("")),
+            ChordLineEntity(createChordLine("  Do come, oh, do come,")),
+            ChordLineEntity(createChordLine("  Says [G7]Spirit and the Bride:")),
+            ChordLineEntity(createChordLine("  []Do come, oh, do come,")),
+            ChordLineEntity(createChordLine("  Let [B7]him who thirsts and [Em]will")),
+            ChordLineEntity(createChordLine("  Take [G]freely the [D]water of [G]l[C]i[G]fe!")),
+            ChordLineEntity(createChordLine("")),
             // Verse 3
-            ChordLine("2"),
-            ChordLine("Christ, our river, Christ, our water,"),
-            ChordLine("Springing from within;"),
-            ChordLine("Christ, our tree, and Christ, the fruits,"),
-            ChordLine("To be enjoyed therein,"),
-            ChordLine("Christ, our day, and Christ, our light,"),
-            ChordLine("and Christ, our morningstar:"),
-            ChordLine("Christ, our everything!")
+            ChordLineEntity(createChordLine("2")),
+            ChordLineEntity(createChordLine("Christ, our river, Christ, our water,")),
+            ChordLineEntity(createChordLine("Springing from within;")),
+            ChordLineEntity(createChordLine("Christ, our tree, and Christ, the fruits,")),
+            ChordLineEntity(createChordLine("To be enjoyed therein,")),
+            ChordLineEntity(createChordLine("Christ, our day, and Christ, our light,")),
+            ChordLineEntity(createChordLine("and Christ, our morningstar:")),
+            ChordLineEntity(createChordLine("Christ, our everything!"))
         ]
-        let viewModel = InlineChordsViewModel(chords: lyrics)
+        let viewModel = InlineChordsViewModel(chordLines: lyrics)
         let view = ScrollView(showsIndicators: false) {
             InlineChordsView(viewModel: viewModel)
         }
@@ -46,9 +46,9 @@ class InlineChordsSnapshots: XCTestCase {
 
     func test_songTransposed_longLine() {
         let lyrics = [
-            ChordLine("[G]Drink! A river pure and clear[C] That’s [G7]flowing from the throne; [C]Eat! The tree of life with fruits [G]Here there [D7]is no [G-C-G]night!")
+            ChordLineEntity(createChordLine("[G]Drink! A river pure and clear[C] That’s [G7]flowing from the throne; [C]Eat! The tree of life with fruits [G]Here there [D7]is no [G-C-G]night!"))
         ]
-        let viewModel = InlineChordsViewModel(chords: lyrics)
+                      let viewModel = InlineChordsViewModel(chordLines: lyrics)
         viewModel.transpose(10)
         let view = ScrollView(showsIndicators: false) {
             InlineChordsView(viewModel: viewModel)
@@ -59,22 +59,22 @@ class InlineChordsSnapshots: XCTestCase {
     func test_songWithOutChords() {
         let lyrics = [
             // Verse 1
-            ChordLine("1"),
-            ChordLine("Drink! A river pure and clear"),
-            ChordLine("That’s flowing from the throne;"),
-            ChordLine("Eat! The tree of life with fruits"),
-            ChordLine("Here there is no night!"),
-            ChordLine(""),
+            ChordLineEntity(createChordLine("1")),
+            ChordLineEntity(createChordLine("Drink! A river pure and clear")),
+            ChordLineEntity(createChordLine("That’s flowing from the throne;")),
+            ChordLineEntity(createChordLine("Eat! The tree of life with fruits")),
+            ChordLineEntity(createChordLine("Here there is no night!")),
+            ChordLineEntity(createChordLine("")),
             // Chorus
-            ChordLine(""),
-            ChordLine("  Do come, oh, do come,"),
-            ChordLine("  Says Spirit and the Bride:"),
-            ChordLine("  []Do come, oh, do come,"),
-            ChordLine("  Let him who thirsts and will"),
-            ChordLine("  Take []freely the []water of []l[]i[]fe!"),
-            ChordLine("")
+            ChordLineEntity(createChordLine("")),
+            ChordLineEntity(createChordLine("  Do come, oh, do come,")),
+            ChordLineEntity(createChordLine("  Says Spirit and the Bride:")),
+            ChordLineEntity(createChordLine("  []Do come, oh, do come,")),
+            ChordLineEntity(createChordLine("  Let him who thirsts and will")),
+            ChordLineEntity(createChordLine("  Take []freely the []water of []l[]i[]fe!")),
+            ChordLineEntity(createChordLine(""))
         ]
-        let viewModel = InlineChordsViewModel(chords: lyrics)
+        let viewModel = InlineChordsViewModel(chordLines: lyrics)
         let view = ScrollView(showsIndicators: false) {
             InlineChordsView(viewModel: viewModel)
         }
