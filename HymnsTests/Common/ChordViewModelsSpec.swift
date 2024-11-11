@@ -44,26 +44,37 @@ class ChordViewModelSpec: QuickSpec {
                         target = ChordLineViewModel(chordLine: chordLine)
                     }
                     describe("transpose up") {
-                        let expected = [ChordWordViewModel(ChordWordEntity("word 1", chords: "D#")),
-                                        ChordWordViewModel(ChordWordEntity("word 2", chords: "C#")),
-                                        ChordWordViewModel(ChordWordEntity("word 3"))]
                         beforeEach {
                             target.transpose(1)
                         }
                         it("should transpose correctly") {
-                            expect(target.chordWords).to(equal(expected))
+                            expect(target.chordWords).to(haveCount(3))
 
+                            expect(target.chordWords[0].word).to(equal("word 1"))
+                            expect(target.chordWords[0].chords).to(equal("D#"))
+
+                            expect(target.chordWords[1].word).to(equal("word 2"))
+                            expect(target.chordWords[1].chords).to(equal("C#"))
+
+                            expect(target.chordWords[2].word).to(equal("word 3"))
+                            expect(target.chordWords[2].chords).to(beNil())
                         }
                     }
                     describe("transpose down") {
-                        let expected = [ChordWordViewModel(ChordWordEntity("word 1", chords: "Db")),
-                                        ChordWordViewModel(ChordWordEntity("word 2", chords: "B")),
-                                        ChordWordViewModel(ChordWordEntity("word 3"))]
                         beforeEach {
                             target.transpose(-1)
                         }
                         it("should transpose correctly") {
-                            expect(target.chordWords).to(equal(expected))
+                            expect(target.chordWords).to(haveCount(3))
+
+                            expect(target.chordWords[0].word).to(equal("word 1"))
+                            expect(target.chordWords[0].chords).to(equal("Db"))
+
+                            expect(target.chordWords[1].word).to(equal("word 2"))
+                            expect(target.chordWords[1].chords).to(equal("B"))
+
+                            expect(target.chordWords[2].word).to(equal("word 3"))
+                            expect(target.chordWords[2].chords).to(beNil())
                         }
                     }
                 }

@@ -101,13 +101,11 @@ class ChordWordViewModel: ObservableObject, Identifiable {
 
 extension ChordWordViewModel: Hashable, Equatable {
     static func == (lhs: ChordWordViewModel, rhs: ChordWordViewModel) -> Bool {
-        lhs.word == rhs.word && lhs.chords == rhs.chords && lhs.fontSize == rhs.fontSize
+        lhs.id == rhs.id
     }
 
     func hash(into hasher: inout Hasher) {
-        hasher.combine(word)
-        hasher.combine(chords)
-        hasher.combine(fontSize)
+        hasher.combine(id)
     }
 }
 
