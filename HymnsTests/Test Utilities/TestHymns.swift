@@ -22,8 +22,8 @@ let decoder: JSONDecoder = Resolver.resolve()
 let children_24_json = getJsonString(for: "children_24")
 let children_24_hymn = getHymnFromJson(for: "children_24")
 let children_24_hymn_entity = HymnEntity.with { builder in
-    builder.id = -1
-    builder.title = "Hymn: He Didn’t Stay Home"
+    builder.id = 0
+    builder.title = "He Didn’t Stay Home"
     builder.lyrics = LyricsEntity(
         [VerseEntity(verseType: .verse,
                      lineStrings: ["He didn’t stay home;", "He went and visited people.", "He didn’t stay home;", "Jesus taught disciples.",

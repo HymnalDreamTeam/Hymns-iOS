@@ -19,8 +19,8 @@ class ConverterImpl: Converter {
 
     func toHymnEntity(hymn: Hymn) throws -> HymnEntity {
         return HymnEntity.with { [self] builder in
-            builder.id = -1
-            builder.title = hymn.title
+            builder.id = 0
+            builder.title = hymn.title.replacingOccurrences(of: "Hymn: ", with: "")
             if let verses = extractVerseEntities(hymn.lyrics) {
                 builder.lyrics = LyricsEntity(verses)
             }

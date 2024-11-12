@@ -173,11 +173,46 @@ extension Resolver {
                     }
 
                     // In version 3:
-                    //   - HymnIdentifierEntity was migrated to use HymnIdentifierWrapper, since
-                    //     HymnIdentifierEntity became a proto field, and thus not @objc-compatible. However,
-                    //     nothing changed with the the underlying stored representation, so no action explicit
-                    //     migration steps are needed.
+                    //   - HymnIdentifierEntity was migrated to use HymnIdentifierWrapper, since HymnIdentifierEntity became a
+                    //     proto field, and thus not @objc-compatible.
                     if oldSchemaVersion < 3 {
+                        migration.enumerateObjects(ofType: RecentSongEntity.className()) { old, new in
+                            guard let old = old, let new = new else {
+                                Crashlytics.crashlytics()
+                                    .record(error: HistoryMigrationError(errorDescription: "Unable to migrate history because either old or new is nil"),
+                                            userInfo: [
+                                                "oldSchemaVersion": oldSchemaVersion,
+                                                "old": old ?? "nil",
+                                                "new": new ?? "nil"])
+                                return
+                            }
+                            let hymnIdentifierWrapper = (old["recentSong"] as? MigrationObject).flatMap { recentSong in
+                                recentSong["hymnIdentifierEntity"] as? MigrationObject
+                            }.flatMap { hymnIdentifierEntity -> HymnIdentifier? in
+                                let hymnType = hymnIdentifierEntity["hymnTypeRaw"] as? String
+                                let hymnNumber = hymnIdentifierEntity["hymnNumber"] as? String
+                                
+                                guard let hymnType = hymnType,
+                                      let hymnType = HymnType.fromAbbreviatedValue(hymnType),
+                                      let hymnNumber = hymnNumber else {
+                                    return nil
+                                }
+                                return HymnIdentifier(hymnType: hymnType, hymnNumber: hymnNumber)
+                            }.map { hymnIdentifier -> HymnIdentifierWrapper in
+                                HymnIdentifierWrapper(hymnIdentifier)
+                            }
+                            guard let hymnIdentifierWrapper = hymnIdentifierWrapper else {
+                                Crashlytics.crashlytics()
+                                    .record(error: HistoryMigrationError(errorDescription: "Unable to migrate history"),
+                                            userInfo: [
+                                                "oldSchemaVersion": oldSchemaVersion,
+                                                "old": old, "new": new])
+                                return
+                            }
+                            if let recentSong = new["recentSong"] as? MigrationObject {
+                                recentSong["hymnIdentifier"] = hymnIdentifierWrapper
+                            }
+                        }
                     }
                 })
             // If the Realm db is unable to be created, that's an unrecoverable error, so crashing the app is appropriate.
