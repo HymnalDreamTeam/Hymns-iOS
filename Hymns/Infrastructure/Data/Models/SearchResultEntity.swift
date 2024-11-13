@@ -6,7 +6,7 @@ struct SearchResultEntity: Decodable {
     let hymnNumber: String
     let title: String?
     let matchInfo: Data
-    let songId: Int
+    let songId: Int64
 
     enum CodingKeys: String, CodingKey {
         case hymnType = "HYMN_TYPE"
@@ -24,7 +24,7 @@ extension SearchResultEntity: FetchableRecord {
         hymnNumber = try container.decode(String.self, forKey: .hymnNumber)
         title = try container.decodeIfPresent(String.self, forKey: .title)
         matchInfo = try container.decode(Data.self, forKey: .matchInfo)
-        songId = try container.decode(Int.self, forKey: .songId)
+        songId = try container.decode(Int64.self, forKey: .songId)
     }
 }
 
