@@ -4,7 +4,6 @@ import SwiftUI
 struct SearchView: View {
 
     @ObservedObject private var viewModel: SearchViewModel
-    @State private var resultToShow: SongResultViewModel?
 
     private let firebaseLogger: FirebaseLogger
 
@@ -64,16 +63,20 @@ struct SearchView: View {
                 } else {
                     List(viewModel.songResults, id: \.stableId) { songResult in
                         NavigationLink(value: Route.songResult(songResult)) {
-                            SongResultView(viewModel: songResult).padding(.trailing)
+                            switch songResult {
+                            case .single(let viewModel):
+                                SingleSongResultView(viewModel: viewModel).padding(.trailing)
+                            case .multi(let viewModel):
+                                MultiSongResultView(viewModel: viewModel).padding(.trailing)
+                            }
                         }.onAppear {
                             self.viewModel.loadMore(at: songResult)
-                        }.listRowSeparator(.hidden).maxWidth()
+                        }.maxWidth()
                     }.listStyle(.plain).resignKeyboardOnDragGesture()
                 }
             }
         }.onAppear {
             firebaseLogger.logScreenView(screenName: "HomeView")
-            resultToShow = nil
             self.viewModel.setUp()
         }
     }
@@ -87,8 +90,10 @@ struct SearchView_Previews: PreviewProvider {
         let recentSongsViewModel = SearchViewModel()
         recentSongsViewModel.state = .results
         recentSongsViewModel.label = "Recent hymns"
-        recentSongsViewModel.songResults = [PreviewSongResults.cupOfChrist, PreviewSongResults.hymn1151, PreviewSongResults.hymn1334]
-
+        recentSongsViewModel.songResults = [.single(PreviewSongResults.cupOfChrist),
+                                            .single(PreviewSongResults.hymn1151),
+                                            .single(PreviewSongResults.hymn1334)]
+        
         let recentSongsEmptyViewModel = SearchViewModel()
         recentSongsEmptyViewModel.state = .results
 
@@ -105,8 +110,10 @@ struct SearchView_Previews: PreviewProvider {
         searchResults.state = .results
         searchResults.searchActive = true
         searchResults.searchParameter = "Do you love me?"
-        searchResults.songResults = [PreviewSongResults.hymn480, PreviewSongResults.hymn1334, PreviewSongResults.hymn1151]
-
+        searchResults.songResults = [.multi(PreviewSongResults.drinkARiver),
+                                     .multi(PreviewSongResults.sinfulPastMulti),
+                                     .multi(PreviewSongResults.hymn1334Multi)]
+        
         let noResultsViewModel = SearchViewModel()
         noResultsViewModel.state = .empty
         noResultsViewModel.searchActive = true

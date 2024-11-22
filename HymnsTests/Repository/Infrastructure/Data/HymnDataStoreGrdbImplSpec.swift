@@ -542,7 +542,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                                 expect(state).to(equal(.finished))
                             }, receiveValue: { entities in
                                 value.fulfill()
-                                expect(entities).to(equal([SongResultEntity(hymnType: .classic, hymnNumber: "1", title: "Becoming")]))
+                                expect(entities).to(equal([SongResultEntity(hymnType: .classic, hymnNumber: "1", title: "Becoming", songId: 1)]))
                             })
                         testQueue.sync {}
                         testQueue.sync {}
@@ -606,7 +606,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                                 expect(state).to(equal(.finished))
                             }, receiveValue: { entities in
                                 value.fulfill()
-                                expect(entities).to(equal([SongResultEntity(hymnType: .classic, hymnNumber: "1", title: "Becoming")]))
+                                expect(entities).to(equal([SongResultEntity(hymnType: .classic, hymnNumber: "1", title: "Becoming", songId: 1)]))
                             })
                         testQueue.sync {}
                         testQueue.sync {}
@@ -670,7 +670,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                                 expect(state).to(equal(.finished))
                             }, receiveValue: { entities in
                                 value.fulfill()
-                                expect(entities).to(equal([SongResultEntity(hymnType: .classic, hymnNumber: "1", title: "Becoming")]))
+                                expect(entities).to(equal([SongResultEntity(hymnType: .classic, hymnNumber: "1", title: "Becoming", songId: 1)]))
                             })
                         testQueue.sync {}
                         testQueue.sync {}
@@ -734,7 +734,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                                 expect(state).to(equal(.finished))
                             }, receiveValue: { entities in
                                 value.fulfill()
-                                expect(entities).to(equal([SongResultEntity(hymnType: .classic, hymnNumber: "1", title: "Becoming")]))
+                                expect(entities).to(equal([SongResultEntity(hymnType: .classic, hymnNumber: "1", title: "Becoming", songId: 1)]))
                             })
                         testQueue.sync {}
                         testQueue.sync {}
@@ -798,7 +798,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                                 expect(state).to(equal(.finished))
                             }, receiveValue: { entities in
                                 value.fulfill()
-                                expect(entities).to(equal([SongResultEntity(hymnType: .classic, hymnNumber: "1", title: "Becoming")]))
+                                expect(entities).to(equal([SongResultEntity(hymnType: .classic, hymnNumber: "1", title: "Becoming", songId: 1)]))
                             })
                         testQueue.sync {}
                         testQueue.sync {}
@@ -862,7 +862,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                                 expect(state).to(equal(.finished))
                             }, receiveValue: { entities in
                                 value.fulfill()
-                                expect(entities).to(equal([SongResultEntity(hymnType: .classic, hymnNumber: "1", title: "Becoming")]))
+                                expect(entities).to(equal([SongResultEntity(hymnType: .classic, hymnNumber: "1", title: "Becoming", songId: 1)]))
                             })
                         testQueue.sync {}
                         testQueue.sync {}
@@ -926,7 +926,7 @@ class HymnDataStoreGrdbImplSpec: QuickSpec {
                                 expect(state).to(equal(.finished))
                             }, receiveValue: { entities in
                                 value.fulfill()
-                                expect(entities).to(equal([SongResultEntity(hymnType: .classic, hymnNumber: "2", title: "Shortest Way Home")]))
+                                expect(entities).to(equal([SongResultEntity(hymnType: .classic, hymnNumber: "2", title: "Shortest Way Home", songId: 2)]))
                             })
                         testQueue.sync {}
                         testQueue.sync {}

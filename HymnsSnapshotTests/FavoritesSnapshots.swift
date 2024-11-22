@@ -18,7 +18,7 @@ class FavoritesSnapshots: XCTestCase {
     }
 
     func test_noFavorites() {
-        viewModel.favorites = [SongResultViewModel]()
+        viewModel.favorites = [SingleSongResultViewModel]()
         assertSnapshot(viewModel: viewModel)
     }
 

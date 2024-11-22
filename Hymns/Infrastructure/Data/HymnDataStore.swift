@@ -287,7 +287,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
             try SongResultEntity.fetchAll(
                 database,
                 sql:
-                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER " +
+                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, ID " +
                     "FROM SONG_DATA " +
                     "JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID " +
                     "WHERE SONG_META_DATA_CATEGORY = ?",
@@ -302,7 +302,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
             try SongResultEntity.fetchAll(
                 database,
                 sql:
-                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER " +
+                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, ID " +
                     "FROM SONG_DATA " +
                     "JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID " +
                     "WHERE HYMN_TYPE = ? AND SONG_META_DATA_CATEGORY = ?",
@@ -317,7 +317,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
             try SongResultEntity.fetchAll(
                 database,
                 sql:
-                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER " +
+                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, ID " +
                     "FROM SONG_DATA " +
                     "JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID " +
                     "WHERE SONG_META_DATA_CATEGORY = ? AND SONG_META_DATA_SUBCATEGORY = ?",
@@ -332,7 +332,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
             try SongResultEntity.fetchAll(
                 database,
                 sql:
-                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER " +
+                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, ID " +
                     "FROM SONG_DATA " +
                     "JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID " +
                     "WHERE HYMN_TYPE = ? AND SONG_META_DATA_CATEGORY = ? AND SONG_META_DATA_SUBCATEGORY = ?",
@@ -347,7 +347,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
             try SongResultEntity.fetchAll(
                 database,
                 sql:
-                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER " +
+                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, ID " +
                     "FROM SONG_DATA " +
                     "JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID " +
                     "WHERE SONG_META_DATA_SUBCATEGORY = ?",
@@ -362,7 +362,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
             try SongResultEntity.fetchAll(
                 database,
                 sql:
-                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER " +
+                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, ID " +
                     "FROM SONG_DATA " +
                     "JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID " +
                     "WHERE HYMN_TYPE = ? AND SONG_META_DATA_SUBCATEGORY = ?",
@@ -378,7 +378,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
             try! SongResultEntity.fetchAll(
                 database,
                 sql:
-                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER " +
+                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, ID " +
                 "FROM SONG_DATA " +
                 "JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID")
         }
@@ -397,7 +397,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
             try SongResultEntity.fetchAll(
                 database,
                 sql:
-                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER " +
+                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, ID " +
                     "FROM SONG_DATA " +
                     "JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID " +
                     "WHERE SONG_META_DATA_AUTHOR LIKE '%' || ? || '%'",
@@ -412,7 +412,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
             try SongResultEntity.fetchAll(
                 database,
                 sql:
-                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER " +
+                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, ID " +
                     "FROM SONG_DATA " +
                     "JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID " +
                     "WHERE SONG_META_DATA_COMPOSER LIKE '%' || ? || '%'",
@@ -427,7 +427,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
             try SongResultEntity.fetchAll(
                 database,
                 sql:
-                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER " +
+                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, ID " +
                     "FROM SONG_DATA " +
                     "JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID " +
                     "WHERE SONG_META_DATA_KEY = ?",
@@ -442,7 +442,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
             try SongResultEntity.fetchAll(
                 database,
                 sql:
-                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER " +
+                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, ID " +
                     "FROM SONG_DATA " +
                     "JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID " +
                     "WHERE SONG_META_DATA_TIME LIKE '%' || ? || '%'",
@@ -457,7 +457,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
             try SongResultEntity.fetchAll(
                 database,
                 sql:
-                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER " +
+                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, ID " +
                     "FROM SONG_DATA " +
                     "JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID " +
                     "WHERE SONG_META_DATA_METER LIKE '%' || ? || '%'",
@@ -472,7 +472,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
             try SongResultEntity.fetchAll(
                 database,
                 sql:
-                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER " +
+                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, ID " +
                     "FROM SONG_DATA " +
                     "JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID " +
                     "WHERE SONG_META_DATA_SCRIPTURES = ?",
@@ -487,7 +487,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
             try SongResultEntity.fetchAll(
                 database,
                 sql:
-                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER " +
+                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, ID " +
                     "FROM SONG_DATA " +
                     "JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID " +
                     "WHERE SONG_META_DATA_HYMN_CODE = ?",
@@ -516,7 +516,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
             try SongResultEntity.fetchAll(
                 database,
                 sql:
-                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER " +
+                    "SELECT SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, ID " +
                     "FROM SONG_DATA " +
                     "JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID " +
                     "WHERE HYMN_TYPE = ?",

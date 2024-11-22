@@ -117,7 +117,7 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
     }
 
     func convertType(databaseResult: ([SongResultEntity], Bool)) throws -> UiSongResultsPage {
-        converter.toUiSongResultsPage(songResultsEntities: databaseResult.0, hasMorePages: databaseResult.1)
+        converter.toUiSongResultsPage(songResultEntities: databaseResult.0, hasMorePages: databaseResult.1)
     }
 
     func loadFromDatabase() -> AnyPublisher<([SongResultEntity], Bool), ErrorType> {
@@ -139,7 +139,8 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
                     return rank1 > rank2
                 }.map { searchResultEntity -> SongResultEntity in
                     let title = searchResultEntity.title
-                    return SongResultEntity(hymnType: searchResultEntity.hymnType, hymnNumber: searchResultEntity.hymnNumber, title: title)
+                    let songId = searchResultEntity.songId
+                    return SongResultEntity(hymnType: searchResultEntity.hymnType, hymnNumber: searchResultEntity.hymnNumber, title: title, songId: songId)
                 }
                 return (Array(sortedSongResults.prefix(50)), false)
         }.eraseToAnyPublisher()

@@ -11,37 +11,38 @@ class SongResultsRepositorySpec: QuickSpec {
     static let noMatchesSearchResult = SearchResultEntity(hymnType: .classic, hymnNumber: "1", title: "no matches in match info",
                                                           matchInfo: Data([0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]),
                                                           songId: 0)
-    static let noMatches = SongResultEntity(hymnType: .classic, hymnNumber: "1", title: "no matches in match info")
+    static let noMatches = SongResultEntity(hymnType: .classic, hymnNumber: "1", title: "no matches in match info", songId: 0)
     static let singleMatchInLyricsSearchResult = SearchResultEntity(hymnType: .classic, hymnNumber: "2", title: "Hymn: single match in lyrics",
                                                                     matchInfo: Data([0x0, 0x0, 0x0, 0x0, 0x1, 0x0, 0x0, 0x0]),
                                                                     songId: 0)
-    static let singleMatchInLyrics = SongResultEntity(hymnType: .classic, hymnNumber: "2", title: "Hymn: single match in lyrics")
+    static let singleMatchInLyrics = SongResultEntity(hymnType: .classic, hymnNumber: "2", title: "Hymn: single match in lyrics", songId: 0)
     static let singleMatchInTitleSearchResult = SearchResultEntity(hymnType: .classic, hymnNumber: "3", title: "single match in title",
                                                                    matchInfo: Data([0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]),
                                                                    songId: 0)
-    static let singleMatchInTitle = SongResultEntity(hymnType: .classic, hymnNumber: "3", title: "single match in title")
+    static let singleMatchInTitle = SongResultEntity(hymnType: .classic, hymnNumber: "3", title: "single match in title", songId: 0)
     static let twoMatchesInLyricsSearchResult = SearchResultEntity(hymnType: .classic, hymnNumber: "4", title: "Hymn: two matches in lyrics",
                                                                    matchInfo: Data([0x0, 0x0, 0x0, 0x0, 0x2, 0x0, 0x0, 0x0]),
                                                                    songId: 0)
-    static let twoMatchesInLyrics = SongResultEntity(hymnType: .classic, hymnNumber: "4", title: "Hymn: two matches in lyrics")
+    static let twoMatchesInLyrics = SongResultEntity(hymnType: .classic, hymnNumber: "4", title: "Hymn: two matches in lyrics", songId: 0)
     static let maxMatchesInLyricsSearchResult = SearchResultEntity(hymnType: .classic, hymnNumber: "5", title: "max matches in lyrics",
                                                                    matchInfo: Data([0x0, 0x0, 0x0, 0x0, 0xff, 0xff, 0xff, 0xff]),
                                                                    songId: 0)
-    static let maxMatchesInLyrics = SongResultEntity(hymnType: .classic, hymnNumber: "5", title: "max matches in lyrics")
+    static let maxMatchesInLyrics = SongResultEntity(hymnType: .classic, hymnNumber: "5", title: "max matches in lyrics", songId: 0)
     static let maxMatchesInTitleSearchResult = SearchResultEntity(hymnType: .classic, hymnNumber: "6", title: "Hymn: max matches in title",
                                                                   matchInfo: Data([0xff, 0xff, 0xff, 0xff, 0x0, 0x0, 0x0, 0x0]),
                                                                   songId: 0)
-    static let maxMatchesInTitle = SongResultEntity(hymnType: .classic, hymnNumber: "6", title: "Hymn: max matches in title")
+    static let maxMatchesInTitle = SongResultEntity(hymnType: .classic, hymnNumber: "6", title: "Hymn: max matches in title", songId: 0)
     static let maxMatchesInBothSearchResult = SearchResultEntity(hymnType: .classic, hymnNumber: "7", title: "max matches in both",
                                                                  matchInfo: Data([0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]),
                                                                  songId: 0)
-    static let maxMatchesInBoth = SongResultEntity(hymnType: .classic, hymnNumber: "7", title: "max matches in both")
+    static let maxMatchesInBoth = SongResultEntity(hymnType: .classic, hymnNumber: "7", title: "max matches in both", songId: 0)
     static let maxMatchesInBothButWrongTypeSearchResult = SearchResultEntity(hymnType: .portuguese, hymnNumber: "7",
                                                                              title: "max matches in both but wrong type",
                                                                  matchInfo: Data([0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]),
                                                                  songId: 0)
     static let maxMatchesInBothButWrongType = SongResultEntity(hymnType: .portuguese, hymnNumber: "7",
-                                                               title: "max matches in both but wrong type")
+                                                               title: "max matches in both but wrong type",
+                                                               songId: 0)
     let databaseResults = [noMatchesSearchResult, singleMatchInLyricsSearchResult, singleMatchInTitleSearchResult,
                            maxMatchesInBothButWrongTypeSearchResult, twoMatchesInLyricsSearchResult,
                            maxMatchesInLyricsSearchResult, maxMatchesInTitleSearchResult, maxMatchesInBothSearchResult]
@@ -49,10 +50,10 @@ class SongResultsRepositorySpec: QuickSpec {
 
     static let noMatchesSongbaseResult = SongbaseSearchResultEntity(bookId: 1, bookIndex: 1, title: "First Songbase song",
                                                                     matchInfo: Data([0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]))
-    static let noMatchesSongbase = SongResultEntity(hymnType: .songbaseOther, hymnNumber: "1", title: "First Songbase song")
+    static let noMatchesSongbase = SongResultEntity(hymnType: .songbaseOther, hymnNumber: "1", title: "First Songbase song", songId: 0)
     static let singleMatchInLyricsSongbaseResult = SongbaseSearchResultEntity(bookId: 1, bookIndex: 2, title: "Second Songbase song",
                                                                               matchInfo: Data([0x0, 0x0, 0x0, 0x0, 0x1, 0x0, 0x0, 0x0]))
-    static let singleMatchInLyricsSongbase = SongResultEntity(hymnType: .songbaseOther, hymnNumber: "2", title: "Second Songbase song")
+    static let singleMatchInLyricsSongbase = SongResultEntity(hymnType: .songbaseOther, hymnNumber: "2", title: "Second Songbase song", songId: 0)
 
     let songbaseResults = [noMatchesSongbaseResult, singleMatchInLyricsSongbaseResult]
     let sortedSongbaseResults = [singleMatchInLyricsSongbase, noMatchesSongbase]
@@ -125,8 +126,8 @@ class SongResultsRepositorySpec: QuickSpec {
                     }
                     it("should return only data store results") {
                         // Since we're mocking out the converter, we can conveniently just return one result in the page for succinctness.
-                        let convertedResultPage = UiSongResultsPage(results: [UiSongResult(name: "classic 1151", identifier: classic1151)], hasMorePages: false)
-                        given(converter.toUiSongResultsPage(songResultsEntities: self.sortedDatabaseResults, hasMorePages: false)) ~> convertedResultPage
+                        let convertedResultPage = UiSongResultsPage(results: [UiSongResult(name: "classic 1151", identifiers: [classic1151])], hasMorePages: false)
+                        given(converter.toUiSongResultsPage(songResultEntities: self.sortedDatabaseResults, hasMorePages: false)) ~> convertedResultPage
 
                         let cancellable = target.search(searchParameter: "Chenaniah", pageNumber: 1)
                             .print(self.description)
@@ -173,8 +174,8 @@ class SongResultsRepositorySpec: QuickSpec {
                         }
                         it("should return only data store results") {
                             // Since we're mocking out the converter, we can conveniently just return one result in the page for succinctness.
-                            let convertedResultPage = UiSongResultsPage(results: [UiSongResult(name: "classic 1151", identifier: classic1151)], hasMorePages: false)
-                            given(converter.toUiSongResultsPage(songResultsEntities: self.sortedDatabaseResults, hasMorePages: false)) ~> convertedResultPage
+                            let convertedResultPage = UiSongResultsPage(results: [UiSongResult(name: "classic 1151", identifiers: [classic1151])], hasMorePages: false)
+                            given(converter.toUiSongResultsPage(songResultEntities: self.sortedDatabaseResults, hasMorePages: false)) ~> convertedResultPage
 
                             let cancellable = target.search(searchParameter: "Chenaniah", pageNumber: 1)
                                 .print(self.description)
@@ -202,18 +203,18 @@ class SongResultsRepositorySpec: QuickSpec {
                         }
                         it("should append network results to data store results") {
                             // Since we're mocking out the converter, we can conveniently just return one result in the page for succinctness.
-                            let convertedResultPage = UiSongResultsPage(results: [UiSongResult(name: "classic 1151", identifier: classic1151)], hasMorePages: false)
-                            given(converter.toUiSongResultsPage(songResultsEntities: self.sortedDatabaseResults, hasMorePages: false)) ~> convertedResultPage
+                            let convertedResultPage = UiSongResultsPage(results: [UiSongResult(name: "classic 1151", identifiers: [classic1151])], hasMorePages: false)
+                            given(converter.toUiSongResultsPage(songResultEntities: self.sortedDatabaseResults, hasMorePages: false)) ~> convertedResultPage
 
                             let networkSongResultEntities = [
-                                SongResultEntity(hymnType: .classic, hymnNumber: "1151", title: "classic 1151 again"),
-                                SongResultEntity(hymnType: .cebuano, hymnNumber: "123", title: "cebuano 123")]
+                                SongResultEntity(hymnType: .classic, hymnNumber: "1151", title: "classic 1151 again", songId: 0),
+                                SongResultEntity(hymnType: .cebuano, hymnNumber: "123", title: "cebuano 123", songId: 0)]
                             given(converter.toSongResultEntities(songResultsPage: self.networkResult)) ~> (networkSongResultEntities, self.networkResult.hasMorePages!)
                             let convertedNetworkResultPage = UiSongResultsPage(
-                                results: [UiSongResult(name: "classic 1151 again", identifier: classic1151),
-                                          UiSongResult(name: "cebuano 123", identifier: cebuano123)],
+                                results: [UiSongResult(name: "classic 1151 again", identifiers: [classic1151]),
+                                          UiSongResult(name: "cebuano 123", identifiers: [cebuano123])],
                                 hasMorePages: false)
-                            given(converter.toUiSongResultsPage(songResultsEntities: networkSongResultEntities, hasMorePages: false)) ~> convertedNetworkResultPage
+                            given(converter.toUiSongResultsPage(songResultEntities: networkSongResultEntities, hasMorePages: false)) ~> convertedNetworkResultPage
 
                             value.expectedFulfillmentCount = 2
                             var valueCount = 0
@@ -259,7 +260,7 @@ class SongResultsRepositorySpec: QuickSpec {
                         }
                         it("should return network error") {
                             let emptyResultPage = UiSongResultsPage(results: [UiSongResult](), hasMorePages: false)
-                            given(converter.toUiSongResultsPage(songResultsEntities: [SongResultEntity](), hasMorePages: false)) ~> emptyResultPage
+                            given(converter.toUiSongResultsPage(songResultEntities: [SongResultEntity](), hasMorePages: false)) ~> emptyResultPage
 
                             value.isInverted = true
                             let cancellable = target.search(searchParameter: "Chenaniah", pageNumber: 1)
@@ -286,16 +287,16 @@ class SongResultsRepositorySpec: QuickSpec {
                             }
                         }
                         it("should return network results") {
-                            given(converter.toUiSongResultsPage(songResultsEntities: [SongResultEntity](), hasMorePages: false)) ~> UiSongResultsPage(results: [UiSongResult](), hasMorePages: false)
+                            given(converter.toUiSongResultsPage(songResultEntities: [SongResultEntity](), hasMorePages: false)) ~> UiSongResultsPage(results: [UiSongResult](), hasMorePages: false)
                             let networkSongResultEntities = [
-                                SongResultEntity(hymnType: .classic, hymnNumber: "1151", title: "classic 1151 again"),
-                                SongResultEntity(hymnType: .cebuano, hymnNumber: "123", title: "cebuano 123")]
+                                SongResultEntity(hymnType: .classic, hymnNumber: "1151", title: "classic 1151 again", songId: 0),
+                                SongResultEntity(hymnType: .cebuano, hymnNumber: "123", title: "cebuano 123", songId: 0)]
                             given(converter.toSongResultEntities(songResultsPage: self.networkResult)) ~> (networkSongResultEntities, self.networkResult.hasMorePages!)
                             let convertedNetworkResultPage = UiSongResultsPage(
-                                results: [UiSongResult(name: "classic 1151 again", identifier: classic1151),
-                                          UiSongResult(name: "cebuano 123", identifier: cebuano123)],
+                                results: [UiSongResult(name: "classic 1151 again", identifiers: [classic1151]),
+                                          UiSongResult(name: "cebuano 123", identifiers: [cebuano123])],
                                 hasMorePages: false)
-                            given(converter.toUiSongResultsPage(songResultsEntities: networkSongResultEntities, hasMorePages: false)) ~> convertedNetworkResultPage
+                            given(converter.toUiSongResultsPage(songResultEntities: networkSongResultEntities, hasMorePages: false)) ~> convertedNetworkResultPage
 
                             let cancellable = target.search(searchParameter: "Chenaniah", pageNumber: 1)
                                 .print(self.description)
@@ -337,7 +338,7 @@ class SongResultsRepositorySpec: QuickSpec {
                         }
                         it("should return network error") {
                             let emptyResultPage = UiSongResultsPage(results: [UiSongResult](), hasMorePages: false)
-                            given(converter.toUiSongResultsPage(songResultsEntities: [SongResultEntity](), hasMorePages: false)) ~> emptyResultPage
+                            given(converter.toUiSongResultsPage(songResultEntities: [SongResultEntity](), hasMorePages: false)) ~> emptyResultPage
 
                             let cancellable = target.search(searchParameter: "Chenaniah", pageNumber: 1)
                                 .print(self.description)
@@ -364,16 +365,16 @@ class SongResultsRepositorySpec: QuickSpec {
                             }
                         }
                         it("should return network results") {
-                            given(converter.toUiSongResultsPage(songResultsEntities: [SongResultEntity](), hasMorePages: false)) ~> UiSongResultsPage(results: [UiSongResult](), hasMorePages: false)
+                            given(converter.toUiSongResultsPage(songResultEntities: [SongResultEntity](), hasMorePages: false)) ~> UiSongResultsPage(results: [UiSongResult](), hasMorePages: false)
                             let networkSongResultEntities = [
-                                SongResultEntity(hymnType: .classic, hymnNumber: "1151", title: "classic 1151 again"),
-                                SongResultEntity(hymnType: .cebuano, hymnNumber: "123", title: "cebuano 123")]
+                                SongResultEntity(hymnType: .classic, hymnNumber: "1151", title: "classic 1151 again", songId: 0),
+                                SongResultEntity(hymnType: .cebuano, hymnNumber: "123", title: "cebuano 123", songId: 0)]
                             given(converter.toSongResultEntities(songResultsPage: self.networkResult)) ~> (networkSongResultEntities, self.networkResult.hasMorePages!)
                             let convertedNetworkResultPage = UiSongResultsPage(
-                                results: [UiSongResult(name: "classic 1151 again", identifier: classic1151),
-                                          UiSongResult(name: "cebuano 123", identifier: cebuano123)],
+                                results: [UiSongResult(name: "classic 1151 again", identifiers: [classic1151]),
+                                          UiSongResult(name: "cebuano 123", identifiers: [cebuano123])],
                                 hasMorePages: false)
-                            given(converter.toUiSongResultsPage(songResultsEntities: networkSongResultEntities, hasMorePages: false)) ~> convertedNetworkResultPage
+                            given(converter.toUiSongResultsPage(songResultEntities: networkSongResultEntities, hasMorePages: false)) ~> convertedNetworkResultPage
 
                             value.expectedFulfillmentCount = 2
                             var valueCount = 0

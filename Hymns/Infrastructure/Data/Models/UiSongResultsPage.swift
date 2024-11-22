@@ -7,5 +7,5 @@ struct UiSongResultsPage: Equatable {
 
 struct UiSongResult: Equatable {
     let name: String
-    let identifier: HymnIdentifier
+    let identifiers: [HymnIdentifier]
 }

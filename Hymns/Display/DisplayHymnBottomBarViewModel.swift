@@ -90,9 +90,9 @@ class DisplayHymnBottomBarViewModel: ObservableObject {
         }
     }
 
-    private func convertLanguagesToSongResults(_ languages: [HymnIdentifier]?) -> [SongResultViewModel] {
+    private func convertLanguagesToSongResults(_ languages: [HymnIdentifier]?) -> [SingleSongResultViewModel] {
         guard var languages = languages else {
-            return [SongResultViewModel]()
+            return [SingleSongResultViewModel]()
         }
 
         // If both German and Liederbuch exist, then remove German and show only
@@ -109,20 +109,20 @@ class DisplayHymnBottomBarViewModel: ObservableObject {
         }
         return languages.map { language in
             let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: language)).eraseToAnyView()
-            return SongResultViewModel(stableId: String(describing: language),
+            return SingleSongResultViewModel(stableId: String(describing: language),
                                        title: String(format: language.hymnType.displayLabel, language.hymnNumber),
                                        destinationView: destination)
         }
     }
 
-    private func convertRelevantsToSongResults(_ relevants: [HymnIdentifier]?) -> [SongResultViewModel] {
+    private func convertRelevantsToSongResults(_ relevants: [HymnIdentifier]?) -> [SingleSongResultViewModel] {
         guard let relevants = relevants else {
-            return [SongResultViewModel]()
+            return [SingleSongResultViewModel]()
         }
 
         return relevants.map { relevant in
             let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: relevant)).eraseToAnyView()
-            return SongResultViewModel(stableId: String(describing: relevant), title: relevant.displayTitle, destinationView: destination)
+            return SingleSongResultViewModel(stableId: String(describing: relevant), title: relevant.displayTitle, destinationView: destination)
         }
     }
 

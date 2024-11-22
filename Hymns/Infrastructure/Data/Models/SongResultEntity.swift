@@ -5,11 +5,17 @@ struct SongResultEntity: Decodable, Equatable {
     let hymnType: HymnType
     let hymnNumber: String
     let title: String?
+    let songId: Int64?
 
-    init(hymnType: HymnType, hymnNumber: String, title: String? = nil) {
+    var hymnIdentifier: HymnIdentifier {
+        HymnIdentifier(hymnType: hymnType, hymnNumber: hymnNumber)
+    }
+
+    init(hymnType: HymnType, hymnNumber: String, title: String? = nil, songId: Int64? = nil) {
         self.hymnType = hymnType
         self.hymnNumber = hymnNumber
         self.title = title
+        self.songId = songId
     }
 
     init(hymnIdentifier: HymnIdentifier, title: String? = nil) {
@@ -20,6 +26,7 @@ struct SongResultEntity: Decodable, Equatable {
         case hymnType = "HYMN_TYPE"
         case hymnNumber = "HYMN_NUMBER"
         case title = "SONG_TITLE"
+        case id = "ID"
     }
 }
 
@@ -29,5 +36,6 @@ extension SongResultEntity: FetchableRecord {
         hymnType = try container.decode(HymnType.self, forKey: .hymnType)
         hymnNumber = try container.decode(String.self, forKey: .hymnNumber)
         title = try container.decodeIfPresent(String.self, forKey: .title)
+        songId = try container.decodeIfPresent(Int64.self, forKey: .id)
     }
 }

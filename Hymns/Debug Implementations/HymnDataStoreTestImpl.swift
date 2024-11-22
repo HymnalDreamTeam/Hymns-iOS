@@ -30,28 +30,28 @@ class HymnDataStoreTestImpl: HymnDataStore {
     private let searchStore =
         ["search param":
             [SearchResultEntity(hymnType: .classic, hymnNumber: "1151", title: "Click me!", matchInfo: Data(repeating: 0, count: 8), songId: 1),
-             SearchResultEntity(hymnType: .chinese, hymnNumber: "4", title: "Don't click!", matchInfo: Data(repeating: 1, count: 8), songId: 1)]]
+             SearchResultEntity(hymnType: .chinese, hymnNumber: "4", title: "Don't click!", matchInfo: Data(repeating: 1, count: 8), songId: 2)]]
     private let categories =
         [CategoryEntity(category: "category 1", subcategory: "subcategory 1", count: 5),
          CategoryEntity(category: "category 1", subcategory: "subcategory 2", count: 1),
          CategoryEntity(category: "category 2", subcategory: "subcategory 1", count: 9)]
     private let songResultsByCategory =
         [("category 1 h subcategory 2"):
-            [SongResultEntity(hymnType: .classic, hymnNumber: "1151", title: "Click me!"),
-             SongResultEntity(hymnType: .newTune, hymnNumber: "37", title: "Don't click!"),
-             SongResultEntity(hymnType: .classic, hymnNumber: "883", title: "Don't click either!")],
+            [SongResultEntity(hymnType: .classic, hymnNumber: "1151", title: "Click me!", songId: 1),
+             SongResultEntity(hymnType: .newTune, hymnNumber: "37", title: "Don't click!", songId: 2),
+             SongResultEntity(hymnType: .classic, hymnNumber: "883", title: "Don't click either!", songId: 3)],
          ("song's category"):
-             [SongResultEntity(hymnType: .classic, hymnNumber: "1151", title: "Click me!"),
-              SongResultEntity(hymnType: .newTune, hymnNumber: "37", title: "Don't click!"),
-              SongResultEntity(hymnType: .classic, hymnNumber: "883", title: "Don't click either!")]]
+             [SongResultEntity(hymnType: .classic, hymnNumber: "1151", title: "Click me!", songId: 1),
+              SongResultEntity(hymnType: .newTune, hymnNumber: "37", title: "Don't click!", songId: 2),
+              SongResultEntity(hymnType: .classic, hymnNumber: "883", title: "Don't click either!", songId: 3)]]
     private let songResultsByAuthor =
         [("Barack Obama"):
-            [SongResultEntity(hymnType: .classic, hymnNumber: "113", title: "Hymn 113"),
-             SongResultEntity(hymnType: .classic, hymnNumber: "990", title: "Hymn 990")]]
+            [SongResultEntity(hymnType: .classic, hymnNumber: "113", title: "Hymn 113", songId: 1),
+             SongResultEntity(hymnType: .classic, hymnNumber: "990", title: "Hymn 990", songId: 2)]]
     private let songResultsByHymnCode =
         [("171214436716555"):
-            [SongResultEntity(hymnType: .classic, hymnNumber: "1151", title: "Click me!"),
-             SongResultEntity(hymnType: .classic, hymnNumber: "883", title: "Don't click either!")]]
+            [SongResultEntity(hymnType: .classic, hymnNumber: "1151", title: "Click me!", songId: 1),
+             SongResultEntity(hymnType: .classic, hymnNumber: "883", title: "Don't click either!", songId: 2)]]
     private let scriptureSongs =
         [ScriptureEntity(title: "chinese1151", hymnType: .chinese, hymnNumber: "155", scriptures: "Hosea 14:8"),
          ScriptureEntity(title: "Click me!", hymnType: .classic, hymnNumber: "1151", scriptures: "Revelation 22"),

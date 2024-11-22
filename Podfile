@@ -40,6 +40,9 @@ target 'Hymns' do
 
   pod 'SwiftProtobuf'
 
+  # for ordered dictionaries
+  pod 'swift-collections'
+
   target 'HymnsTests' do
     inherit! :search_paths
     

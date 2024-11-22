@@ -160,10 +160,10 @@ class SearchViewModelSpec: QuickSpec {
                 }
                 it("should display recent songs") {
                     expect(target.songResults).to(haveCount(2))
-                    expect(target.songResults[0].title).to(equal(recentSongs[0].songTitle))
-                    expect(target.songResults[0].label).to(equal("Hymn 1151"))
-                    expect(target.songResults[1].title).to(equal(recentSongs[1].songTitle))
-                    expect(target.songResults[1].label).to(equal("Cebuano 123"))
+                    expect(target.songResults[0].singleSongResultViewModel!.title).to(equal(recentSongs[0].songTitle))
+                    expect(target.songResults[0].singleSongResultViewModel!.label).to(equal("Hymn 1151"))
+                    expect(target.songResults[1].singleSongResultViewModel!.title).to(equal(recentSongs[1].songTitle))
+                    expect(target.songResults[1].singleSongResultViewModel!.label).to(equal("Cebuano 123"))
                 }
             }
             context("search active") {
@@ -189,10 +189,10 @@ class SearchViewModelSpec: QuickSpec {
                     }
                     it("should display recent songs") {
                         await expect {target.songResults}.toEventually(haveCount(2))
-                        expect(target.songResults[0].title).to(equal(recentSongs[0].songTitle))
-                        expect(target.songResults[0].label).to(equal("Hymn 1151"))
-                        expect(target.songResults[1].title).to(equal(recentSongs[1].songTitle))
-                        expect(target.songResults[0].label).to(equal("Hymn 1151"))
+                        expect(target.songResults[0].singleSongResultViewModel!.title).to(equal(recentSongs[0].songTitle))
+                        expect(target.songResults[0].singleSongResultViewModel!.label).to(equal("Hymn 1151"))
+                        expect(target.songResults[1].singleSongResultViewModel!.title).to(equal(recentSongs[1].songTitle))
+                        expect(target.songResults[1].singleSongResultViewModel!.label).to(equal("Cebuano 123"))
                     }
                     it("should not call songResultsRepository.search") {
                         verify(songResultsRepository.search(searchParameter: any(), pageNumber: any())).wasNeverCalled()
@@ -235,12 +235,14 @@ class SearchViewModelSpec: QuickSpec {
                             }
                             it("song results should contain sorted matching numbers") {
                                 expect(target.songResults).to(haveCount(6))
-                                expect(target.songResults.map {$0.title}).to(equal(["Chinese 3 (Trad.)",
-                                                                                   "Chinese Supplement 3 (Trad.)",
-                                                                                   "Chinese Supplement 13 (Trad.)",
-                                                                                   "Chinese 23 (Trad.)",
-                                                                                   "Chinese 33 (Trad.)",
-                                                                                   "Chinese 135 (Trad.)"]))
+                                expect(target.songResults
+                                    .map({ $0.singleSongResultViewModel! })
+                                    .map({ $0.title })).to(equal(["Chinese 3 (Trad.)",
+                                                                  "Chinese Supplement 3 (Trad.)",
+                                                                  "Chinese Supplement 13 (Trad.)",
+                                                                  "Chinese 23 (Trad.)",
+                                                                  "Chinese 33 (Trad.)",
+                                                                  "Chinese 135 (Trad.)"]))
                             }
                         }
                     }
@@ -257,10 +259,10 @@ class SearchViewModelSpec: QuickSpec {
                         }
                         it("song results should contain sorted matching numbers") {
                             expect(target.songResults).to(haveCount(2))
-                            expect(target.songResults[0].title).to(equal("Hymn 198"))
-                            expect(target.songResults[0].label).to(beNil())
-                            expect(target.songResults[1].title).to(equal("Hymn 1198"))
-                            expect(target.songResults[1].label).to(beNil())
+                            expect(target.songResults[0].singleSongResultViewModel!.title).to(equal("Hymn 198"))
+                            expect(target.songResults[0].singleSongResultViewModel!.label).to(beNil())
+                            expect(target.songResults[1].singleSongResultViewModel!.title).to(equal("Hymn 1198"))
+                            expect(target.songResults[1].singleSongResultViewModel!.label).to(beNil())
                         }
                         it("should not fetch the recent songs from the history store") {
                             verify(historyStore.recentSongs()).wasNeverCalled()
@@ -304,12 +306,12 @@ class SearchViewModelSpec: QuickSpec {
                         }
                         it("song results should contain matching numbers") {
                             expect(target.songResults).to(haveCount(3))
-                            expect(target.songResults[0].title).to(equal("Chinese 111 (Trad.)"))
-                            expect(target.songResults[0].label).to(beNil())
-                            expect(target.songResults[1].title).to(equal("Chinese 1110 (Trad.)"))
-                            expect(target.songResults[1].label).to(beNil())
-                            expect(target.songResults[2].title).to(equal("Chinese 1111 (Trad.)"))
-                            expect(target.songResults[2].label).to(beNil())
+                            expect(target.songResults[0].singleSongResultViewModel!.title).to(equal("Chinese 111 (Trad.)"))
+                            expect(target.songResults[0].singleSongResultViewModel!.label).to(beNil())
+                            expect(target.songResults[1].singleSongResultViewModel!.title).to(equal("Chinese 1110 (Trad.)"))
+                            expect(target.songResults[1].singleSongResultViewModel!.label).to(beNil())
+                            expect(target.songResults[2].singleSongResultViewModel!.title).to(equal("Chinese 1111 (Trad.)"))
+                            expect(target.songResults[2].singleSongResultViewModel!.label).to(beNil())
                         }
                         it("should not fetch the recent songs from the history store") {
                             verify(historyStore.recentSongs()).wasNeverCalled()

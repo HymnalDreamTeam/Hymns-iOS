@@ -23,7 +23,7 @@ class SearchSnapshots: XCTestCase {
         viewModel.showSearchByTypeToolTip = false
         viewModel.state = .results
         viewModel.label = "Recent hymns"
-        viewModel.songResults = [cupOfChrist_songResult, hymn1151_songResult, hymn1334_songResult]
+        viewModel.songResults = [cupOfChrist_songResult, hymn1151_songResult, hymn1334_songResult].map({ .single($0) })
         assertSnapshot(viewModel: viewModel)
     }
 
@@ -31,7 +31,7 @@ class SearchSnapshots: XCTestCase {
         viewModel.showSearchByTypeToolTip = true
         viewModel.state = .results
         viewModel.label = "Recent hymns"
-        viewModel.songResults = [cupOfChrist_songResult, hymn1151_songResult, hymn1334_songResult]
+        viewModel.songResults = [cupOfChrist_songResult, hymn1151_songResult, hymn1334_songResult].map({ .single($0) })
         assertSnapshot(viewModel: viewModel)
     }
 
@@ -68,7 +68,7 @@ class SearchSnapshots: XCTestCase {
         viewModel.state = .results
         viewModel.searchActive = true
         viewModel.searchParameter = "Do you love me?"
-        viewModel.songResults = [hymn480_songResult, hymn1334_songResult, hymn1151_songResult]
+        viewModel.songResults = [sinfulPast_multiSongResult, hymn1334_multiSongResult, drinARiver_songResult].map({ .multi($0) })
         assertSnapshot(viewModel: viewModel)
     }
 
@@ -77,7 +77,7 @@ class SearchSnapshots: XCTestCase {
         viewModel.state = .results
         viewModel.searchActive = true
         viewModel.searchParameter = "Do you love me?"
-        viewModel.songResults = [hymn480_songResult, hymn1334_songResult, hymn1151_songResult]
+        viewModel.songResults = [sinfulPast_multiSongResult, hymn1334_multiSongResult, drinARiver_songResult].map({ .multi($0) })
         let view = NavigationStack {
             SearchView(viewModel: viewModel).ignoresSafeArea()
         }
@@ -90,7 +90,7 @@ class SearchSnapshots: XCTestCase {
         viewModel.state = .results
         viewModel.searchActive = true
         viewModel.searchParameter = "Do you love me?"
-        viewModel.songResults = [hymn480_songResult, hymn1334_songResult, hymn1151_songResult]
+        viewModel.songResults = [hymn480_songResult, hymn1334_songResult, hymn1151_songResult].map({ .single($0) })
         assertSnapshot(viewModel: viewModel)
     }
 

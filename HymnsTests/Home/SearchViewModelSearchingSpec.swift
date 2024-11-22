@@ -139,8 +139,11 @@ class SearchViewModelSearchingSpec: QuickSpec {
                     }
                 }
                 context("with a single page of results") {
-                    let classic594 = UiSongResult(name: "classic594", identifier: HymnIdentifier(hymnType: .classic, hymnNumber: "594"))
-                    let newTune7 = UiSongResult(name: "newTune7", identifier: HymnIdentifier(hymnType: .newTune, hymnNumber: "7"))
+                    let classic594 = UiSongResult(name: "classic594",
+                                                  identifiers: [HymnIdentifier(hymnType: .classic, hymnNumber: "594")])
+                    let newTune7 = UiSongResult(name: "newTune7",
+                                                identifiers: [HymnIdentifier(hymnType: .newTune, hymnNumber: "7"),
+                                                              HymnIdentifier(hymnType: .newSong, hymnNumber: "3")])
                     beforeEach {
                         given(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 1)) ~> { _, _ in
                             expect(target.state).to(equal(HomeResultState.loading))
@@ -160,8 +163,12 @@ class SearchViewModelSearchingSpec: QuickSpec {
                     }
                     it("should have two results") {
                         expect(target.songResults).to(haveCount(2))
-                        expect(target.songResults[0].title).to(equal("classic594"))
-                        expect(target.songResults[1].title).to(equal("newTune7"))
+                    }
+                    it("should group results by song id") {
+                        expect(target.songResults[0].multiSongResultViewModel!.title).to(equal("classic594"))
+                        expect(target.songResults[0].multiSongResultViewModel!.labels).to(equal(["Hymn 594"]))
+                        expect(target.songResults[1].multiSongResultViewModel!.title).to(equal("newTune7"))
+                        expect(target.songResults[1].multiSongResultViewModel!.labels).to(equal(["New tune 7", "New song 3"]))
                     }
                     it("should not fetch the recent songs from the history store") {
                         verify(historyStore.recentSongs()).wasNeverCalled()
@@ -179,8 +186,10 @@ class SearchViewModelSearchingSpec: QuickSpec {
                             expect(target.label).to(beNil())
                             expect(target.state).to(equal(HomeResultState.results))
                             expect(target.songResults).to(haveCount(2))
-                            expect(target.songResults[0].title).to(equal("classic594"))
-                            expect(target.songResults[1].title).to(equal("newTune7"))
+                            expect(target.songResults[0].multiSongResultViewModel!.title).to(equal("classic594"))
+                            expect(target.songResults[0].multiSongResultViewModel!.labels).to(equal(["Hymn 594"]))
+                            expect(target.songResults[1].multiSongResultViewModel!.title).to(equal("newTune7"))
+                            expect(target.songResults[1].multiSongResultViewModel!.labels).to(equal(["New tune 7", "New song 3"]))
                             verify(historyStore.recentSongs()).wasNeverCalled()
                             verify(songResultsRepository.search(searchParameter: any(), pageNumber: any())).wasNeverCalled()
                         }
@@ -221,8 +230,10 @@ class SearchViewModelSearchingSpec: QuickSpec {
                             testQueue.sync {}
 
                             expect(target.songResults).to(haveCount(2))
-                            expect(target.songResults[0].title).to(equal(recentSongs[0].songTitle))
-                            expect(target.songResults[1].title).to(equal(recentSongs[1].songTitle))
+                            expect(target.songResults[0].singleSongResultViewModel!.title).to(equal(recentSongs[0].songTitle))
+                            expect(target.songResults[0].singleSongResultViewModel!.label).to(equal("Hymn 1151"))
+                            expect(target.songResults[1].singleSongResultViewModel!.title).to(equal(recentSongs[1].songTitle))
+                            expect(target.songResults[1].singleSongResultViewModel!.label).to(equal("Cebuano 123"))
 
                             testQueue.sync {}
                         }
@@ -244,21 +255,23 @@ class SearchViewModelSearchingSpec: QuickSpec {
                         }
                         it("should display recent songs") {
                             expect(target.songResults).to(haveCount(2))
-                            expect(target.songResults[0].title).to(equal(recentSongs[0].songTitle))
-                            expect(target.songResults[1].title).to(equal(recentSongs[1].songTitle))
+                            expect(target.songResults[0].singleSongResultViewModel!.title).to(equal(recentSongs[0].songTitle))
+                            expect(target.songResults[0].singleSongResultViewModel!.label).to(equal("Hymn 1151"))
+                            expect(target.songResults[1].singleSongResultViewModel!.title).to(equal(recentSongs[1].songTitle))
+                            expect(target.songResults[1].singleSongResultViewModel!.label).to(equal("Cebuano 123"))
                         }
                     }
                 }
                 context("with two pages of results") {
                     let page1 = Array(1...10).map { int -> UiSongResult in
-                        return UiSongResult(name: "classic\(int)", identifier: HymnIdentifier(hymnType: .classic, hymnNumber: "\(int)"))
+                        return UiSongResult(name: "classic\(int)", identifiers: [HymnIdentifier(hymnType: .classic, hymnNumber: "\(int)")])
                     }
                     let page2 = Array(20...23).map { int -> UiSongResult in
-                        return UiSongResult(name: "classic\(int)", identifier: HymnIdentifier(hymnType: .classic, hymnNumber: "\(int)"))
+                        return UiSongResult(name: "classic\(int)", identifiers: [HymnIdentifier(hymnType: .classic, hymnNumber: "\(int)")])
                     }
                     // add a few results from page1 to ensure that they are deduped.
-                    + [UiSongResult(name: "classic1", identifier: HymnIdentifier(hymnType: .classic, hymnNumber: "1")),
-                       UiSongResult(name: "classic2", identifier: HymnIdentifier(hymnType: .classic, hymnNumber: "2"))]
+                    + [UiSongResult(name: "classic1", identifiers: [HymnIdentifier(hymnType: .classic, hymnNumber: "1")]),
+                       UiSongResult(name: "classic2", identifiers: [HymnIdentifier(hymnType: .classic, hymnNumber: "2")])]
                     context("first page complete successfully") {
                         beforeEach {
                             given(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 1)) ~> { _, _ in
@@ -281,7 +294,7 @@ class SearchViewModelSearchingSpec: QuickSpec {
                         it("should have the first page of results") {
                             expect(target.songResults).to(haveCount(10))
                             for (index, num) in Array(1...10).enumerated() {
-                                expect(target.songResults[index].title).to(equal("classic\(num)"))
+                                expect(target.songResults[index].multiSongResultViewModel!.title).to(equal("classic\(num)"))
                             }
                         }
                         it("should not fetch the recent songs from the history store") {
@@ -292,7 +305,9 @@ class SearchViewModelSearchingSpec: QuickSpec {
                         }
                         describe("load on nonexistent result") {
                             beforeEach {
-                                target.loadMore(at: SongResultViewModel(stableId: "empty does not exist view", title: "does not exist", destinationView: EmptyView().eraseToAnyView()))
+                                target.loadMore(at:
+                                        .multi(MultiSongResultViewModel(stableId: "empty does not exist view", title: "does not exist",
+                                                                        destinationView: EmptyView().eraseToAnyView())))
                             }
                             it("should not fetch the next page") {
                                 verify(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 2)).wasNeverCalled()
@@ -301,8 +316,8 @@ class SearchViewModelSearchingSpec: QuickSpec {
                         describe("load more does not reach threshold") {
                             beforeEach {
                                 target.loadMore(at:
-                                                    SongResultViewModel(stableId: "hymnType: h, hymnNumber: 6", title: "classic6", label: "Hymn 6",
-                                                                        destinationView: EmptyView().eraseToAnyView()))
+                                        .single(SingleSongResultViewModel(stableId: "hymnType: h, hymnNumber: 6", title: "classic6", label: "Hymn 6",
+                                                                          destinationView: EmptyView().eraseToAnyView())))
                             }
                             it("should not fetch the next page") {
                                 verify(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 2)).wasNeverCalled()
@@ -310,16 +325,18 @@ class SearchViewModelSearchingSpec: QuickSpec {
                         }
                         describe("load more meets threshold") {
                             beforeEach {
-                                target.loadMore(at: SongResultViewModel(stableId: "hymnType: h, hymnNumber: 7", title: "classic7", label: "Hymn 7",
-                                                                        destinationView: EmptyView().eraseToAnyView()))
+                                target.loadMore(at:
+                                        .multi(MultiSongResultViewModel(stableId: "[hymnType: h, hymnNumber: 7]", title: "classic7", labels: ["Hymn 7"],
+                                                                        destinationView: EmptyView().eraseToAnyView())))
                                 testQueue.sync {}
                                 testQueue.sync {}
                                 testQueue.sync {}
                             }
                             it("should append the second page onto the first page") {
+                                let sr = target.songResults
                                 expect(target.songResults).to(haveCount(14))
                                 for (index, num) in (Array(1...10) + Array(20...23)).enumerated() {
-                                    expect(target.songResults[index].title).to(equal("classic\(num)"))
+                                    expect(target.songResults[index].multiSongResultViewModel!.title).to(equal("classic\(num)"))
                                 }
                             }
                             it("should not fetch the recent songs from the history store") {
@@ -331,8 +348,8 @@ class SearchViewModelSearchingSpec: QuickSpec {
                             describe("no more pages to load") {
                                 beforeEach {
                                     target.loadMore(at:
-                                                        SongResultViewModel(stableId: "hymnType: h, hymnNumber: 23", title: "classic23", label: "Hymn 23",
-                                                                            destinationView: EmptyView().eraseToAnyView()))
+                                            .single(SingleSongResultViewModel(stableId: "hymnType: h, hymnNumber: 23", title: "classic23", label: "Hymn 23",
+                                                                              destinationView: EmptyView().eraseToAnyView())))
                                 }
                                 it("should not fetch the next page") {
                                     verify(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 3)).wasNeverCalled()
@@ -360,7 +377,7 @@ class SearchViewModelSearchingSpec: QuickSpec {
                         it("should have the first page of results") {
                             expect(target.songResults).to(haveCount(10))
                             for (index, num) in Array(1...10).enumerated() {
-                                expect(target.songResults[index].title).to(equal("classic\(num)"))
+                                expect(target.songResults[index].multiSongResultViewModel!.title).to(equal("classic\(num)"))
                             }
                         }
                         it("should not fetch the recent songs from the history store") {
@@ -371,8 +388,9 @@ class SearchViewModelSearchingSpec: QuickSpec {
                         }
                         describe("try to load more") {
                             beforeEach {
-                                target.loadMore(at: SongResultViewModel(stableId: "hymnType: h, hymnNumber: 7", title: "classic7", label: "Hymn 7",
-                                                                        destinationView: EmptyView().eraseToAnyView()))
+                                target.loadMore(at:
+                                        .single(SingleSongResultViewModel(stableId: "hymnType: h, hymnNumber: 7", title: "classic7", label: "Hymn 7",
+                                                                          destinationView: EmptyView().eraseToAnyView())))
                                 testQueue.sync {}
                             }
                             it("not fetch the next page since previous call is still loading") {
@@ -388,13 +406,14 @@ class SearchViewModelSearchingSpec: QuickSpec {
                                 expect(target.state).to(equal(HomeResultState.results))
                                 expect(target.songResults).to(haveCount(10))
                                 for (index, num) in Array(1...10).enumerated() {
-                                    expect(target.songResults[index].title).to(equal("classic\(num)"))
+                                    expect(target.songResults[index].multiSongResultViewModel!.title).to(equal("classic\(num)"))
                                 }
                             }
                             describe("loading more") {
                                 beforeEach {
-                                    target.loadMore(at: SongResultViewModel(stableId: "hymnType: h, hymnNumber: 7", title: "classic7", label: "Hymn 7",
-                                                                            destinationView: EmptyView().eraseToAnyView()))
+                                    target.loadMore(at:
+                                            .single(SingleSongResultViewModel(stableId: "hymnType: h, hymnNumber: 7", title: "classic7", label: "Hymn 7",
+                                                                              destinationView: EmptyView().eraseToAnyView())))
                                     testQueue.sync {}
                                     testQueue.sync {}
                                     testQueue.sync {}
@@ -438,8 +457,9 @@ class SearchViewModelSearchingSpec: QuickSpec {
                 context("with results") {
                     beforeEach {
                         given(songResultsRepository.search(hymnCode: "171214436716555")) ~> { _ in
-                            Just([SongResultEntity(hymnType: .german, hymnNumber: "93", title: "title"),
-                                  SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "933", title: "title 2")])
+                            Just([SongResultEntity(hymnType: .german, hymnNumber: "93", title: "title", songId: 1),
+                                  SongResultEntity(hymnType: .chineseSupplement, hymnNumber: "933", title: "title 2", songId: 2),
+                                  SongResultEntity(hymnType: .classic, hymnNumber: "8993", title: "title 2", songId: 2)])
                                 .mapError({ _ -> ErrorType in
                                     // This will never be triggered.
                                 }).eraseToAnyPublisher()
@@ -453,10 +473,14 @@ class SearchViewModelSearchingSpec: QuickSpec {
                     it("should show results") {
                         expect(target.state).to(equal(HomeResultState.results))
                     }
-                    it("song results should show the correct results") {
+                    it("should show two results") {
                         expect(target.songResults).to(haveCount(2))
-                        expect(target.songResults[0].title).to(equal("title"))
-                        expect(target.songResults[1].title).to(equal("title 2"))
+                    }
+                    it("song results should be grouped by song id") {
+                        expect(target.songResults[0].multiSongResultViewModel!.title).to(equal("title"))
+                        expect(target.songResults[0].multiSongResultViewModel!.labels).to(equal(["German 93"]))
+                        expect(target.songResults[1].multiSongResultViewModel!.title).to(equal("title 2"))
+                        expect(target.songResults[1].multiSongResultViewModel!.labels).to(equal(["Chinese Supplement 933 (Trad.)", "Hymn 8993"]))
                     }
                     it("should not fetch the recent songs from the history store") {
                         verify(historyStore.recentSongs()).wasNeverCalled()

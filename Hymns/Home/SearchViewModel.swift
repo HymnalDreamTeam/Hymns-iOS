@@ -31,6 +31,7 @@ class SearchViewModel: ObservableObject {
     private var isLoading = false
     private var currentQuery = ""
 
+    private var converter: Converter
     private var disposables = Set<AnyCancellable>()
     private let analytics: FirebaseLogger
     private let backgroundQueue: DispatchQueue
@@ -42,6 +43,7 @@ class SearchViewModel: ObservableObject {
 
     init(analytics: FirebaseLogger = Resolver.resolve(),
          backgroundQueue: DispatchQueue = Resolver.resolve(name: "background"),
+         converter: Converter = Resolver.resolve(),
          dataStore: HymnDataStore = Resolver.resolve(),
          firebaseLogger: FirebaseLogger = Resolver.resolve(),
          historyStore: HistoryStore = Resolver.resolve(),
@@ -49,6 +51,7 @@ class SearchViewModel: ObservableObject {
          repository: SongResultsRepository = Resolver.resolve()) {
         self.analytics = analytics
         self.backgroundQueue = backgroundQueue
+        self.converter = converter
         self.dataStore = dataStore
         self.firebaseLogger = firebaseLogger
         self.historyStore = historyStore
@@ -192,15 +195,18 @@ class SearchViewModel: ObservableObject {
         label = nil
         state = .loading
         historyStore.recentSongs()
-            .map({ recentSongs -> [SongResultViewModel] in
-                recentSongs.map { recentSong -> SongResultViewModel in
+            .map({ recentSongs -> [SingleSongResultViewModel] in
+                recentSongs.map { recentSong -> SingleSongResultViewModel in
                     let identifier = HymnIdentifier(wrapper: recentSong.hymnIdentifier)
                     let title = recentSong.songTitle ?? identifier.displayTitle
                     let label = recentSong.songTitle != nil ? identifier.displayTitle : nil
                     let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: identifier, storeInHistoryStore: true)).eraseToAnyView()
-                    return SongResultViewModel(stableId: String(describing: identifier), title: title,
+                    return SingleSongResultViewModel(stableId: String(describing: identifier), title: title,
                                                label: label, destinationView: destination)
                 }
+            })
+            .map({ singleSongResultViewModels -> [SongResultViewModel] in
+                singleSongResultViewModels.map({ .single($0) })
             })
             .replaceError(with: [SongResultViewModel]())
             .receive(on: mainQueue)
@@ -225,9 +231,9 @@ class SearchViewModel: ObservableObject {
         // let hymnIdentifier = HymnIdentifier(hymnType: hymnType, hymnNumber: hymnNumber)
         dataStore.getHymns(by: hymnTypes)
             .replaceError(with: [SongResultEntity]())
-            .map({ songResults -> [SongResultViewModel] in
+            .map({ songResults -> [SingleSongResultViewModel] in
                 guard !hymnNumber.isEmpty else {
-                    return [SongResultViewModel]()
+                    return [SingleSongResultViewModel]()
                 }
                 return songResults
                     .filter({ songResultEntity in
@@ -240,16 +246,18 @@ class SearchViewModel: ObservableObject {
                             return true
                         }
                         return number1 < number2
-                    }).map { songResultEntity -> SongResultViewModel in
+                    }).map { songResultEntity -> SingleSongResultViewModel in
                         let identifier = HymnIdentifier(hymnType: songResultEntity.hymnType, hymnNumber: songResultEntity.hymnNumber)
                         let stableId = String(describing: identifier)
                         let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: identifier, storeInHistoryStore: true)).eraseToAnyView()
                         if let title = songResultEntity.title {
-                            return SongResultViewModel(stableId: stableId, title: title, label: identifier.displayTitle, destinationView: destination)
+                            return SingleSongResultViewModel(stableId: stableId, title: title, label: identifier.displayTitle, destinationView: destination)
                         } else {
-                            return SongResultViewModel(stableId: stableId, title: identifier.displayTitle, destinationView: destination)
+                            return SingleSongResultViewModel(stableId: stableId, title: identifier.displayTitle, destinationView: destination)
                         }
                     }
+            }).map({ singleSongResultViewModels -> [SongResultViewModel] in
+                singleSongResultViewModels.map({ .single($0) })
             }).subscribe(on: backgroundQueue)
             .receive(on: mainQueue)
             .sink(receiveValue: { [weak self] songResults in
@@ -270,10 +278,10 @@ class SearchViewModel: ObservableObject {
         repository.search(hymnCode: hymnCode)
             .replaceError(with: [SongResultEntity]())
             .subscribe(on: backgroundQueue)
-            .map({ songResults -> [SongResultViewModel] in
-                songResults.map { songResult -> SongResultViewModel in
-                    return Transformers.toSongResultsViewModel(entity: songResult, storeInHistoryStore: true)
-                }
+            .map({ songResults -> [MultiSongResultViewModel] in
+                self.converter.toMultiSongResultViewModels(songResultEntities: songResults, storeInHistoryStore: true)
+            }).map({ multiSongResultViewModels -> [SongResultViewModel] in
+                multiSongResultViewModels.map({ .multi($0) })
             }).receive(on: mainQueue)
             .sink { songResults in
                 if searchParameter.trim() != self.searchParameter.trim() {
@@ -311,21 +319,11 @@ class SearchViewModel: ObservableObject {
         isLoading = true
         repository
             .search(searchParameter: searchParameter.trim(), pageNumber: page)
-            .map({ songResultsPage -> ([SongResultViewModel], Bool) in
-                let hasMorePages = songResultsPage.hasMorePages ?? false
-                let songResults = songResultsPage.results.map { songResult -> SongResultViewModel in
-                    let identifier = songResult.identifier
-                    let title = songResult.name
-                    let label = identifier.displayTitle
-                    let destination = DisplayHymnContainerView(viewModel:
-                                                                DisplayHymnContainerViewModel(hymnToDisplay: identifier,
-                                                                                              storeInHistoryStore: true)).eraseToAnyView()
-                    return SongResultViewModel(stableId: String(describing: identifier),
-                                               title: title,
-                                               label: label,
-                                               destinationView: destination)
-                }
-                return (songResults, hasMorePages)
+            .map({ songResultsPage -> ([MultiSongResultViewModel], Bool) in
+                self.converter.toMultiSongResultViewModels(songResultsPage: songResultsPage)
+            })
+            .map({ (multiSongResultViewModels, hasMorePages) in
+                (multiSongResultViewModels.map { .multi($0) }, hasMorePages)
             })
             .subscribe(on: backgroundQueue)
             .receive(on: mainQueue)

@@ -5,9 +5,10 @@ import Resolver
 class BrowseResultsListViewModel: ObservableObject {
 
     @Published var title: String
-    @Published var songResults: [SongResultViewModel]?
+    @Published var songResults: [SingleSongResultViewModel]?
 
     private let backgroundQueue: DispatchQueue
+    private let converter: Converter
     private let dataStore: HymnDataStore
     private let mainQueue: DispatchQueue
     private let resultType: HymnAttribute
@@ -65,12 +66,14 @@ class BrowseResultsListViewModel: ObservableObject {
 
     private init(resultType: HymnAttribute,
                  backgroundQueue: DispatchQueue = Resolver.resolve(name: "background"),
+                 converter: Converter = Resolver.resolve(),
                  dataStore: HymnDataStore = Resolver.resolve(),
                  mainQueue: DispatchQueue = Resolver.resolve(name: "main"),
                  tagStore: TagStore = Resolver.resolve()) {
         self.title = resultType.title
         self.resultType = resultType
         self.backgroundQueue = backgroundQueue
+        self.converter = converter
         self.dataStore = dataStore
         self.mainQueue = mainQueue
         self.tagStore = tagStore
@@ -123,13 +126,11 @@ class BrowseResultsListViewModel: ObservableObject {
     private func subscribeToPublisher(_ publisher: AnyPublisher<[SongResultEntity], ErrorType>) {
         publisher
             .receive(on: backgroundQueue)
-            .map({ songResults -> [SongResultViewModel] in
-                songResults.map { songResult -> SongResultViewModel in
-                    return Transformers.toSongResultsViewModel(entity: songResult)
-                }
+            .map({ songResults -> [SingleSongResultViewModel] in
+                return self.converter.toSingleSongResultViewModels(songResultEntities: songResults)
             })
             .receive(on: mainQueue)
-            .replaceError(with: [SongResultViewModel]())
+            .replaceError(with: [SingleSongResultViewModel]())
             .sink(receiveValue: { [weak self] viewModels in
                 guard let self = self else { return }
                 self.songResults = viewModels
@@ -139,7 +140,7 @@ class BrowseResultsListViewModel: ObservableObject {
     private func fetchByHymnType(_ hymnType: HymnType) {
         dataStore.getAllSongs(hymnType: hymnType)
             .subscribe(on: backgroundQueue)
-            .map({ songResults -> [SongResultViewModel] in
+            .map({ songResults -> [SingleSongResultViewModel] in
                 songResults
                     .sorted(by: { result1, result2 in
                         let leadingNumbers1 = result1.hymnNumber.components(separatedBy: CharacterSet.decimalDigits.inverted)[0]
@@ -157,7 +158,7 @@ class BrowseResultsListViewModel: ObservableObject {
                         } else {
                             return result1.hymnNumber < result2.hymnNumber
                         }
-                    }).compactMap({ songResult -> SongResultViewModel? in
+                    }).compactMap({ songResult -> SingleSongResultViewModel? in
                         let hymnIdentifier = HymnIdentifier(hymnType: songResult.hymnType, hymnNumber: songResult.hymnNumber)
                         var title = ""
                         if let songTitle = songResult.title {
@@ -166,12 +167,12 @@ class BrowseResultsListViewModel: ObservableObject {
                             title = String(format: hymnType.displayLabel, songResult.hymnNumber)
                         }
                         let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: hymnIdentifier)).eraseToAnyView()
-                        return SongResultViewModel(stableId: String(describing: hymnIdentifier),
+                        return SingleSongResultViewModel(stableId: String(describing: hymnIdentifier),
                                                    title: title,
                                                    destinationView: destination)
                     })
             })
-            .replaceError(with: [SongResultViewModel]())
+            .replaceError(with: [SingleSongResultViewModel]())
             .receive(on: mainQueue)
             .sink(receiveValue: { [weak self] viewModels in
                 guard let self = self else { return }

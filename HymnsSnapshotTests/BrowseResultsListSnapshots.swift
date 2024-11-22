@@ -17,16 +17,16 @@ class BrowseResultsListSnapshots: XCTestCase {
 
     func test_empty() {
         viewModel = BrowseResultsListViewModel(tag: UiTag(title: "Best songs", color: .none))
-        viewModel.songResults = [SongResultViewModel]()
+        viewModel.songResults = [SingleSongResultViewModel]()
         assertVersionedSnapshot(
             matching: BrowseResultsListView(viewModel: viewModel).ignoresSafeArea(),
             as: .swiftUiImage())
     }
 
     func test_results() {
-        let results = [SongResultViewModel(stableId: "Hymn 114", title: "Hymn 114", destinationView: EmptyView().eraseToAnyView()),
-                       SongResultViewModel(stableId: "Cup of Christ", title: "Cup of Christ", destinationView: EmptyView().eraseToAnyView()),
-                       SongResultViewModel(stableId: "Avengers - Endgame", title: "Avengers - Endgame", destinationView: EmptyView().eraseToAnyView())]
+        let results = [SingleSongResultViewModel(stableId: "Hymn 114", title: "Hymn 114", destinationView: EmptyView().eraseToAnyView()),
+                       SingleSongResultViewModel(stableId: "Cup of Christ", title: "Cup of Christ", destinationView: EmptyView().eraseToAnyView()),
+                       SingleSongResultViewModel(stableId: "Avengers - Endgame", title: "Avengers - Endgame", destinationView: EmptyView().eraseToAnyView())]
         viewModel = BrowseResultsListViewModel(category: "Experience of Christ")
         viewModel.songResults = results
         assertVersionedSnapshot(

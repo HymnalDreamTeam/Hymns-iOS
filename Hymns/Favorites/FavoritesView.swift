@@ -26,8 +26,8 @@ struct FavoritesView: View {
                     }.maxSize().offset(y: -25).eraseToAnyView()
                 }
                 return List(favorites, id: \.stableId) { favorite in
-                    NavigationLink(value: Route.songResult(favorite)) {
-                        SongResultView(viewModel: favorite)
+                    NavigationLink(value: Route.songResult(.single(favorite))) {
+                        SingleSongResultView(viewModel: favorite)
                     }.padding(.trailing).listRowSeparator(.hidden).maxWidth()
                 }.listStyle(.plain).id(viewModel.favorites).resignKeyboardOnDragGesture().eraseToAnyView()
             }
@@ -45,7 +45,7 @@ struct FavoritesView_Previews: PreviewProvider {
         let loading = FavoritesView(viewModel: loadingViewModel)
 
         let emptyViewModel = FavoritesViewModel()
-        emptyViewModel.favorites = [SongResultViewModel]()
+        emptyViewModel.favorites = [SingleSongResultViewModel]()
         let empty = FavoritesView(viewModel: emptyViewModel)
 
         let favoritesViewModel = FavoritesViewModel()

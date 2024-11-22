@@ -4,9 +4,9 @@ import SwiftUI
 enum BottomBarButton {
     case share(String)
     case fontSize(FontPickerViewModel)
-    case languages([SongResultViewModel])
+    case languages([SingleSongResultViewModel])
     case musicPlayback(AudioPlayerViewModel)
-    case relevant([SongResultViewModel])
+    case relevant([SingleSongResultViewModel])
     case tags
     case songInfo(SongInfoDialogViewModel)
     case soundCloud(SoundCloudViewModel)

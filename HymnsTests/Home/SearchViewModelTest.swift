@@ -1,4 +1,5 @@
 import Combine
+import SwiftUI
 import Mockingbird
 import Nimble
 import XCTest
@@ -41,8 +42,8 @@ class SearchViewModelTest: XCTestCase {
         expect(self.target.state).to(equal(HomeResultState.results))
         verify(historyStore.recentSongs()).wasCalled(exactly(1))
         expect(self.target.songResults).to(haveCount(2))
-        expect(self.target.songResults[0].title).to(equal(recentSongs[0].songTitle))
-        expect(self.target.songResults[1].title).to(equal(recentSongs[1].songTitle))
+        expect(self.target.songResults[0].singleSongResultViewModel!.title).to(equal(recentSongs[0].songTitle))
+        expect(self.target.songResults[1].singleSongResultViewModel!.title).to(equal(recentSongs[1].songTitle))
     }
 
     func test_defaultState_withoutRecentSongs() {
@@ -74,8 +75,8 @@ class SearchViewModelTest: XCTestCase {
         expect(self.target.state).to(equal(HomeResultState.results))
         verify(historyStore.recentSongs()).wasCalled(exactly(1))
         expect(self.target.songResults).toEventually(haveCount(2))
-        expect(self.target.songResults[0].title).to(equal(recentSongs[0].songTitle))
-        expect(self.target.songResults[1].title).to(equal(recentSongs[1].songTitle))
+        expect(self.target.songResults[0].singleSongResultViewModel!.title).to(equal(recentSongs[0].songTitle))
+        expect(self.target.songResults[1].singleSongResultViewModel!.title).to(equal(recentSongs[1].songTitle))
         verify(songResultsRepository.search(searchParameter: any(), pageNumber: any())).wasNeverCalled()
     }
 
@@ -90,8 +91,8 @@ class SearchViewModelTest: XCTestCase {
         expect(self.target.label).to(beNil())
         expect(self.target.state).to(equal(HomeResultState.results))
         expect(self.target.songResults).to(haveCount(2))
-        expect(self.target.songResults[0].title).to(equal("Hymn 198"))
-        expect(self.target.songResults[1].title).to(equal("Hymn 1198"))
+        expect(self.target.songResults[0].singleSongResultViewModel!.title).to(equal("Hymn 198"))
+        expect(self.target.songResults[1].singleSongResultViewModel!.title).to(equal("Hymn 1198"))
         verify(historyStore.recentSongs()).wasNeverCalled()
         verify(songResultsRepository.search(searchParameter: any(), pageNumber: any())).wasNeverCalled()
     }

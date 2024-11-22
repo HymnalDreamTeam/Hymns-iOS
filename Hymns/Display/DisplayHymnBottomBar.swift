@@ -74,7 +74,7 @@ struct DisplayHymnBottomBar: View {
                     message: Text("Change to another language", comment: "Message for the languages action sheet."),
                     buttons: viewModels.map({ viewModel -> Alert.Button in
                             .default(Text(viewModel.title), action: {
-                                coordinator.showSongResult(viewModel)
+                                coordinator.showSongResult(.single(viewModel))
                             })
                     }) + [.cancel()])
             case .relevant(let viewModels):
@@ -84,7 +84,7 @@ struct DisplayHymnBottomBar: View {
                     message: Text("Change to a relevant hymn", comment: "Message for the relevant songs action sheet."),
                     buttons: viewModels.map({ viewModel -> Alert.Button in
                             .default(Text(viewModel.title), action: {
-                                coordinator.showSongResult(viewModel)
+                                coordinator.showSongResult(.single(viewModel))
                             })
                     }) + [.cancel()])
             case .overflow(let buttons):
@@ -148,8 +148,8 @@ struct DisplayHymnBottomBar: View {
 }
 
 private enum ActionSheetItem {
-    case languages([SongResultViewModel])
-    case relevant([SongResultViewModel])
+    case languages([SingleSongResultViewModel])
+    case relevant([SingleSongResultViewModel])
     case overflow([BottomBarButton])
 }
 
@@ -210,9 +210,9 @@ struct DisplayHymnBottomBar_Previews: PreviewProvider {
         maximumViewModel.buttons = [
             .soundCloud(SoundCloudViewModel(url: URL(string: "https://soundcloud.com/search?q=query")!)),
             .youTube(URL(string: "https://www.youtube.com/results?search_query=search")!),
-            .languages([SongResultViewModel(stableId: "empty language view", title: "language", destinationView: EmptyView().eraseToAnyView())]),
+            .languages([SingleSongResultViewModel(stableId: "empty language view", title: "language", destinationView: EmptyView().eraseToAnyView())]),
             .musicPlayback(AudioPlayerViewModel(url: URL(string: "https://www.hymnal.net/Hymns/NewSongs/mp3/ns0767.mp3")!)),
-            .relevant([SongResultViewModel(stableId: "empty relevant view", title: "relevant", destinationView: EmptyView().eraseToAnyView())]),
+            .relevant([SingleSongResultViewModel(stableId: "empty relevant view", title: "relevant", destinationView: EmptyView().eraseToAnyView())]),
             .songInfo(SongInfoDialogViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151,
                                               hymn: UiHymn(hymnIdentifier: PreviewHymnIdentifiers.hymn1151, title: "", lyrics: nil, author: "MC"))!)
         ]
@@ -224,9 +224,9 @@ struct DisplayHymnBottomBar_Previews: PreviewProvider {
         overflowViewModel.buttons = [
             .share("lyrics"),
             .fontSize(FontPickerViewModel()),
-            .languages([SongResultViewModel(stableId: "empty language view", title: "language", destinationView: EmptyView().eraseToAnyView())]),
+            .languages([SingleSongResultViewModel(stableId: "empty language view", title: "language", destinationView: EmptyView().eraseToAnyView())]),
             .musicPlayback(AudioPlayerViewModel(url: URL(string: "https://www.hymnal.net/Hymns/NewSongs/mp3/ns0767.mp3")!)),
-            .relevant([SongResultViewModel(stableId: "empty relevant view", title: "relevant", destinationView: EmptyView().eraseToAnyView())]),
+            .relevant([SingleSongResultViewModel(stableId: "empty relevant view", title: "relevant", destinationView: EmptyView().eraseToAnyView())]),
             .tags
         ]
         overflowViewModel.overflowButtons = [

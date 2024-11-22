@@ -1,3 +1,4 @@
+import Collections
 import Foundation
 import Resolver
 
@@ -5,7 +6,11 @@ protocol Converter {
     func toHymnEntity(hymn: Hymn) throws -> HymnEntity
     func toUiHymn(hymnIdentifier: HymnIdentifier, hymnEntity: HymnEntity?) throws -> UiHymn?
     func toSongResultEntities(songResultsPage: SongResultsPage) -> ([SongResultEntity], Bool)
-    func toUiSongResultsPage(songResultsEntities: [SongResultEntity], hasMorePages: Bool) -> UiSongResultsPage
+    func toUiSongResultsPage(songResultEntities: [SongResultEntity], hasMorePages: Bool) -> UiSongResultsPage
+    func toSingleSongResultViewModels(songResultEntities: [SongResultEntity]) -> [SingleSongResultViewModel]
+    func toSingleSongResultViewModels(songResultEntities: [SongResultEntity], storeInHistoryStore: Bool) -> [SingleSongResultViewModel]
+    func toMultiSongResultViewModels(songResultsPage: UiSongResultsPage) -> ([MultiSongResultViewModel], Bool)
+    func toMultiSongResultViewModels(songResultEntities: [SongResultEntity], storeInHistoryStore: Bool) -> [MultiSongResultViewModel]
     func toTitle(hymnIdentifier: HymnIdentifier, title: String?) -> String
 }
 
@@ -190,16 +195,101 @@ class ConverterImpl: Converter {
         }
         return (songResultEntities, songResultsPage.hasMorePages ?? false)
     }
+    
+    private func groupSongResultEntities(_ songResultEntities: [SongResultEntity]) -> [[SongResultEntity]] {
+        var groupedEntities = [[SongResultEntity]()]
+        var songIdToIndexMap = OrderedDictionary<Int64, Int>()
 
-    func toUiSongResultsPage(songResultsEntities: [SongResultEntity], hasMorePages: Bool) -> UiSongResultsPage {
-        let songResults = songResultsEntities.map { songResultsEntity -> UiSongResult in
-            let hymnType = songResultsEntity.hymnType
-            let hymnNumber = songResultsEntity.hymnNumber
-            let hymnIdentifier = HymnIdentifier(hymnType: hymnType, hymnNumber: hymnNumber)
-            let title = songResultsEntity.title ?? hymnIdentifier.displayTitle
-            return UiSongResult(name: title, identifier: hymnIdentifier)
+        for songResultEntity in songResultEntities {
+            // If song id doesn't exist, then treat it as a unique song and don't group it with anything.
+            guard let songId = songResultEntity.songId else {
+                groupedEntities.append([songResultEntity])
+                continue
+            }
+            if let index = songIdToIndexMap[songId] {
+                // Find the correct grouping and append to that grouping
+                groupedEntities[index].append(songResultEntity)
+            } else {
+                // Create new grouping
+                songIdToIndexMap[songId] = groupedEntities.count
+                groupedEntities.append([songResultEntity])
+            }
         }
-        return UiSongResultsPage(results: songResults, hasMorePages: hasMorePages)
+        return groupedEntities
+    }
+
+    func toUiSongResultsPage(songResultEntities: [SongResultEntity], hasMorePages: Bool) -> UiSongResultsPage {
+        let groupedResults = groupSongResultEntities(songResultEntities)
+            .compactMap({ songResultEntities -> UiSongResult? in
+                if songResultEntities.isEmpty {
+                    return nil
+                }
+                let hymnIdentifiers = songResultEntities.map { songResultEntity in
+                    songResultEntity.hymnIdentifier
+                }
+                let title = songResultEntities[0].title ?? hymnIdentifiers[0].displayTitle
+                return UiSongResult(name: title, identifiers: hymnIdentifiers)
+            })
+        return UiSongResultsPage(results: groupedResults, hasMorePages: hasMorePages)
+    }
+
+    func toSingleSongResultViewModels(songResultEntities: [SongResultEntity]) -> [SingleSongResultViewModel] {
+        toSingleSongResultViewModels(songResultEntities: songResultEntities, storeInHistoryStore: false)
+    }
+
+    func toSingleSongResultViewModels(songResultEntities: [SongResultEntity], storeInHistoryStore: Bool) -> [SingleSongResultViewModel] {
+        songResultEntities.map { entity in
+            let stableId = String(describing: entity.hymnIdentifier)
+            let destination =
+            DisplayHymnContainerView(
+                viewModel: DisplayHymnContainerViewModel(hymnToDisplay: entity.hymnIdentifier, storeInHistoryStore: storeInHistoryStore)).eraseToAnyView()
+            if let title = entity.title {
+                return SingleSongResultViewModel(stableId: stableId, title: title,
+                                           label: entity.hymnIdentifier.displayTitle,
+                                           destinationView: destination)
+            } else {
+                return SingleSongResultViewModel(stableId: stableId, title: entity.hymnIdentifier.displayTitle,
+                                           destinationView: destination)
+            }
+        }
+    }
+
+    func toMultiSongResultViewModels(songResultsPage: UiSongResultsPage) -> ([MultiSongResultViewModel], Bool) {
+        let hasMorePages = songResultsPage.hasMorePages ?? false
+        let songResults = songResultsPage.results.map { songResult -> MultiSongResultViewModel in
+            let title = songResult.name
+            let labels = songResult.identifiers.prefix(3).map({ identifier in
+                identifier.displayTitle
+            })
+            let destination = DisplayHymnContainerView(viewModel:
+                                                        DisplayHymnContainerViewModel(hymnToDisplay: songResult.identifiers[0],
+                                                                                      storeInHistoryStore: true)).eraseToAnyView()
+            return MultiSongResultViewModel(stableId: String(describing: songResult.identifiers),
+                                            title: title,
+                                            labels: labels,
+                                            destinationView: destination)
+        }
+        return (songResults, hasMorePages)
+    }
+
+    func toMultiSongResultViewModels(songResultEntities: [SongResultEntity], storeInHistoryStore: Bool) -> [MultiSongResultViewModel] {
+        groupSongResultEntities(songResultEntities).compactMap { groupedSongResultEntities -> MultiSongResultViewModel? in
+            guard
+                let firstEntity = groupedSongResultEntities.first,
+                let firstTitle = groupedSongResultEntities.compactMap({$0.title}).first else {
+                    return nil
+                }
+            let identifiers = groupedSongResultEntities.map { songResultEntity in
+                songResultEntity.hymnIdentifier
+            }
+            let labels = identifiers.prefix(3).map({ identifier in
+                identifier.displayTitle
+            })
+            let destination = DisplayHymnContainerView(viewModel:
+                                                        DisplayHymnContainerViewModel(hymnToDisplay: firstEntity.hymnIdentifier,
+                                                                                      storeInHistoryStore: true)).eraseToAnyView()
+            return MultiSongResultViewModel(stableId: String(describing: identifiers), title: firstTitle, labels: labels, destinationView: destination)
+        }
     }
 }
 

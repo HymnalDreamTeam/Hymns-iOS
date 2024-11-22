@@ -131,6 +131,7 @@ PODS:
   - GRDB.swift/standard (4.14.0)
   - GRDBCombine (0.8.1):
     - GRDB.swift (~> 4.1)
+  - InternalCollectionsUtilities (1.1.1)
   - lottie-ios (4.5.0)
   - MockingbirdFramework (0.20.0)
   - nanopb (3.30910.0):
@@ -151,6 +152,22 @@ PODS:
     - Realm (= 20.0.0)
   - Resolver (1.5.1)
   - SnapshotTesting (1.9.0)
+  - swift-collections (1.1.1):
+    - swift-collections/BitCollections (= 1.1.1)
+    - swift-collections/DequeModule (= 1.1.1)
+    - swift-collections/HashTreeCollections (= 1.1.1)
+    - swift-collections/HeapModule (= 1.1.1)
+    - swift-collections/OrderedCollections (= 1.1.1)
+  - swift-collections/BitCollections (1.1.1):
+    - InternalCollectionsUtilities (= 1.1.1)
+  - swift-collections/DequeModule (1.1.1):
+    - InternalCollectionsUtilities (= 1.1.1)
+  - swift-collections/HashTreeCollections (1.1.1):
+    - InternalCollectionsUtilities (= 1.1.1)
+  - swift-collections/HeapModule (1.1.1):
+    - InternalCollectionsUtilities (= 1.1.1)
+  - swift-collections/OrderedCollections (1.1.1):
+    - InternalCollectionsUtilities (= 1.1.1)
   - SwiftEventBus (5.0.0)
   - SwiftLint (0.57.0)
   - SwiftProtobuf (1.28.2)
@@ -169,6 +186,7 @@ DEPENDENCIES:
   - RealmSwift
   - Resolver
   - SnapshotTesting
+  - swift-collections
   - SwiftEventBus
   - SwiftLint
   - SwiftProtobuf
@@ -197,6 +215,7 @@ SPEC REPOS:
     - GoogleUtilities
     - GRDB.swift
     - GRDBCombine
+    - InternalCollectionsUtilities
     - lottie-ios
     - MockingbirdFramework
     - nanopb
@@ -208,6 +227,7 @@ SPEC REPOS:
     - RealmSwift
     - Resolver
     - SnapshotTesting
+    - swift-collections
     - SwiftEventBus
     - SwiftLint
     - SwiftProtobuf
@@ -235,6 +255,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: 26a3abef001b6533cf678d3eb38fd3f614b7872d
   GRDB.swift: 8cc3ab7c8b8b4ac1761deb8dca4b51c1c9d429f8
   GRDBCombine: 1f01bb894c0e00afc5c12fd8a173c50de59ed02b
+  InternalCollectionsUtilities: af3f471602c4a67cbcb0bee0a80f6f55a33ae453
   lottie-ios: a881093fab623c467d3bce374367755c272bdd59
   MockingbirdFramework: 54e35fbbb47b806c1a1fae2cf3ef99f6eceb55e5
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
@@ -246,11 +267,12 @@ SPEC CHECKSUMS:
   RealmSwift: f8c4354ebd5053343e6ab9f4eda244145308a51e
   Resolver: 0e2ce51257e9366c54afe1b9e9be25059e9b9300
   SnapshotTesting: 6141c48b6aa76ead61431ca665c14ab9a066c53b
+  swift-collections: ba248ecaf44ef500b27d5cf94d304218c89892ff
   SwiftEventBus: b30f617a6aca5a9336464b4d3f5931034762f2d5
   SwiftLint: eb47480d47c982481592c195c221d11013a679cc
   SwiftProtobuf: 4dbaffec76a39a8dc5da23b40af1a5dc01a4c02d
   SwiftUIPager: b314d8923bef0bde743c904bb74fcc7a05fd3422
 
-PODFILE CHECKSUM: e77c8415ee60709d4f9d819937193ad9909ef18d
+PODFILE CHECKSUM: 6e4d402c553faa6a6c5ad5e3071c863fb34edf12
 
 COCOAPODS: 1.15.2

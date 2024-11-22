@@ -5,7 +5,7 @@ import Resolver
 
 class FavoritesViewModel: ObservableObject {
 
-    @Published var favorites: [SongResultViewModel]?
+    @Published var favorites: [SingleSongResultViewModel]?
 
     private let favoriteStore: FavoriteStore
     private let mainQueue: DispatchQueue
@@ -19,17 +19,17 @@ class FavoritesViewModel: ObservableObject {
 
     func fetchFavorites() {
         favoriteStore.favorites()
-            .map({ entities -> [SongResultViewModel] in
-                entities.map { entity -> SongResultViewModel in
+            .map({ entities -> [SingleSongResultViewModel] in
+                entities.map { entity -> SingleSongResultViewModel in
                     let identifier = HymnIdentifier(wrapper: entity.hymnIdentifier)
                     let title = entity.songTitle ?? identifier.displayTitle
                     let label = entity.songTitle != nil ? identifier.displayTitle : nil
                     let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: identifier)).eraseToAnyView()
-                    return SongResultViewModel(stableId: String(describing: identifier), title: title,
+                    return SingleSongResultViewModel(stableId: String(describing: identifier), title: title,
                                                label: label, destinationView: destination)
                 }
             })
-            .replaceError(with: [SongResultViewModel]())
+            .replaceError(with: [SingleSongResultViewModel]())
             .receive(on: mainQueue)
             .sink(receiveValue: { results in
                 if self.favorites != results {
