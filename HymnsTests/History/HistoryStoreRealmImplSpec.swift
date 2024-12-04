@@ -7,7 +7,6 @@ import RealmSwift
 
 class HistoryStoreRealmImplSpec: QuickSpec {
 
-    @MainActor
     override func spec() {
         describe("using an in-memory realm") {
             var inMemoryRealm: Realm!

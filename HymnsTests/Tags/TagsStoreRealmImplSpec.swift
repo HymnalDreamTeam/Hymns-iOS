@@ -8,7 +8,6 @@ import RealmSwift
 // swiftlint:disable type_body_length function_body_length cyclomatic_complexity
 class TagStoreRealmImplSpec: QuickSpec {
 
-    @MainActor
     override func spec() {
         describe("using an in-memory realm") {
             var inMemoryRealm: Realm!

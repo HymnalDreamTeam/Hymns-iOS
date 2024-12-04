@@ -10,7 +10,7 @@ extension HymnReference: Equatable {}
 
 extension HymnReference: FetchableRecord {
     init(row: GRDB.Row) {
-        self.hymnIdEntity = HymnIdEntity.init(row: row)
+        self.hymnIdEntity = try! HymnIdEntity.init(row: row)
         self.hymnEntity = HymnEntity.init(row: row)
     }
 }

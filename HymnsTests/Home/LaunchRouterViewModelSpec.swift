@@ -7,7 +7,6 @@ import RealmSwift
 
 class LaunchRouterViewModelSpec: QuickSpec {
 
-    @MainActor
     override func spec() {
         describe("LaunchRouterViewModel") {
             // https://www.vadimbulavin.com/unit-testing-async-code-in-swift/
