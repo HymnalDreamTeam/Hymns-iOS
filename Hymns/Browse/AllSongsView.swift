@@ -1,5 +1,5 @@
-import SwiftUI
 import Resolver
+import SwiftUI
 
 struct AllSongsView: View {
 
