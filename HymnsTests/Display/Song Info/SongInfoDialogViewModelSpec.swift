@@ -6,7 +6,7 @@ import Nimble
 
 class SongInfoDialogViewModelSpec: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
         describe("SongInfoDialogViewModel") {
             var target: SongInfoDialogViewModel!
             context("no info to show") {

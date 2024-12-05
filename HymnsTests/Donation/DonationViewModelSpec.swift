@@ -4,9 +4,9 @@ import Quick
 import StoreKit
 @testable import Hymns
 
-class DonationViewModelSpec: QuickSpec {
+class DonationViewModelSpec: AsyncSpec {
 
-    override func spec() {
+    override class func spec() {
         describe("DonationViewModel") {
             var coffeeDonation1: CoffeeDonationMock!
             var coffeeDonation2: CoffeeDonationMock!

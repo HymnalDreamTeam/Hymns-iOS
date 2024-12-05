@@ -7,7 +7,7 @@ import StoreKit
 
 class SettingsViewModelSpec: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
         describe("SettingsViewModel") {
             var systemUtil: SystemUtilMock!
             var target: SettingsViewModel!

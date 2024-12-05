@@ -6,7 +6,7 @@ import Quick
 
 class BrowseScripturesViewModelSpec: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
         describe("fetching scripture songs") {
             let testQueue = DispatchQueue(label: "test_queue")
             var repository: BrowseRepositoryMock!

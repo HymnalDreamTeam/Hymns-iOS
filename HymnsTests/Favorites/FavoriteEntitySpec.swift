@@ -6,7 +6,7 @@ import Quick
 
 class FavoriteEntitySpec: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
 
         var target: FavoriteEntity!
 

@@ -50,7 +50,7 @@ class HymnalApiService_SearchTest: XCTestCase {
 
         // Stub mock to return a valid network response but an invalid json.
         URLProtocolMock.testURLs = [Self.searchDrink: Data("".utf8)]
-        URLProtocolMock.response = createValidResponse(for: Self.searchDrink)
+        URLProtocolMock.response = Self.createValidResponse(for: Self.searchDrink)
 
         let failure = XCTestExpectation(description: "failure received")
         let value = XCTestExpectation(description: "value received")
@@ -72,7 +72,7 @@ class HymnalApiService_SearchTest: XCTestCase {
 
         // Stub mock to return a valid network response but an invalid json.
         URLProtocolMock.testURLs = [Self.searchDrink: Data(search_drink_json.utf8)]
-        URLProtocolMock.response = createValidResponse(for: Self.searchDrink)
+        URLProtocolMock.response = Self.createValidResponse(for: Self.searchDrink)
 
         let finished = XCTestExpectation(description: "finished received")
         let value = XCTestExpectation(description: "value received")
@@ -95,7 +95,7 @@ class HymnalApiService_SearchTest: XCTestCase {
 
         // Stub mock to return a valid network response but an invalid json.
         URLProtocolMock.testURLs = [Self.searchDrinkPage3: Data(search_drink_page_3_json.utf8)]
-        URLProtocolMock.response = createValidResponse(for: Self.searchDrinkPage3)
+        URLProtocolMock.response = Self.createValidResponse(for: Self.searchDrinkPage3)
 
         let finished = XCTestExpectation(description: "finished received")
         let value = XCTestExpectation(description: "value received")
@@ -118,7 +118,7 @@ class HymnalApiService_SearchTest: XCTestCase {
 
         // Stub mock to return a valid network response but an invalid json.
         URLProtocolMock.testURLs = [Self.searchDrinkPage10: Data(search_drink_page_10_json.utf8)]
-        URLProtocolMock.response = createValidResponse(for: Self.searchDrinkPage10)
+        URLProtocolMock.response = Self.createValidResponse(for: Self.searchDrinkPage10)
 
         let finished = XCTestExpectation(description: "finished received")
         let value = XCTestExpectation(description: "value received")

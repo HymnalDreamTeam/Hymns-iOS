@@ -5,9 +5,9 @@ import Quick
 import SwiftUI
 @testable import Hymns
 
-class SongResultViewModelSpec: QuickSpec {
+class SongResultViewModelSpec: AsyncSpec {
 
-    override func spec() {
+    override class func spec() {
         describe("SongResultViewModel") {
             context("SingleSongResultViewModel") {
                 let viewModel = SingleSongResultViewModel(stableId: "empty title 1 view", title: "title 1", destinationView: EmptyView().eraseToAnyView())

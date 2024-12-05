@@ -5,9 +5,9 @@ import Quick
 @testable import Hymns
 
 // swiftlint:disable type_body_length function_body_length
-class SearchViewModelSpec: QuickSpec {
+class SearchViewModelSpec: AsyncSpec {
 
-    override func spec() {
+    override class func spec() {
         describe("SearchViewModel") {
             // https://www.vadimbulavin.com/unit-testing-async-code-in-swift/
             let testQueue = DispatchQueue(label: "test_queue")
@@ -345,7 +345,7 @@ class SearchViewModelSpec: QuickSpec {
         }
     }
 
-    private func createNumbers(_ hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType> {
+    private static func createNumbers(_ hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType> {
         switch hymnType {
         case .classic:
             return Just([1...1360].flatMap { range in

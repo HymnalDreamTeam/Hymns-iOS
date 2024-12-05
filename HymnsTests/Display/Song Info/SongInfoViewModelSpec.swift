@@ -6,7 +6,7 @@ import Nimble
 
 class SongInfoViewModelSpec: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
         describe("SongInfoViewModel") {
             var target: SongInfoViewModel!
             context("type category") {

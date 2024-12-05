@@ -20,6 +20,7 @@
 		3B09F909243D806500252C15 /* TestHymns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B09F908243D806500252C15 /* TestHymns.swift */; };
 		3B09F90B243D807E00252C15 /* children_24.json in Resources */ = {isa = PBXBuildFile; fileRef = 3B09F90A243D807E00252C15 /* children_24.json */; };
 		3B0B39AF243931B3003C5161 /* ErrorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B0B39AE243931B3003C5161 /* ErrorType.swift */; };
+		3B0C23962D0120EA00FDD9E8 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3B0C23952D0120EA00FDD9E8 /* RealmSwift */; };
 		3B0EE2C62D005D8B00828516 /* Quick in Frameworks */ = {isa = PBXBuildFile; productRef = 3B0EE2C52D005D8B00828516 /* Quick */; };
 		3B10B97B2BB3AC9700BAD410 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 3B10B97A2BB3AC9700BAD410 /* PrivacyInfo.xcprivacy */; };
 		3B11E29C2461F93100F27E73 /* HymnDataStoreGrdbImplSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B11E29B2461F93100F27E73 /* HymnDataStoreGrdbImplSpec.swift */; };
@@ -80,8 +81,7 @@
 		3B45B908243BF74700D38BEF /* PreviewHymnIdentifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B45B907243BF74700D38BEF /* PreviewHymnIdentifiers.swift */; };
 		3B45F01424A08BC400479FE6 /* BrowseCategoriesSnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B45F01324A08BC400479FE6 /* BrowseCategoriesSnapshots.swift */; };
 		3B45F01624A14EBE00479FE6 /* BrowseTagsSnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B45F01524A14EBE00479FE6 /* BrowseTagsSnapshots.swift */; };
-		3B4D625C2D00F0140006F452 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3B4D625B2D00F0140006F452 /* RealmSwift */; };
-		3B4D625E2D00F0430006F452 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3B4D625D2D00F0430006F452 /* RealmSwift */; };
+		3B4D626D2D00F9240006F452 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3B4D626C2D00F9240006F452 /* RealmSwift */; };
 		3B4D95F12480F14500285960 /* BrowseCategoriesViewModelSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4D95F02480F14500285960 /* BrowseCategoriesViewModelSpec.swift */; };
 		3B4EFCB12BB2988D004FEF79 /* PreferredSearchLanguageSnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4EFCB02BB2988D004FEF79 /* PreferredSearchLanguageSnapshots.swift */; };
 		3B4EFCB32BB29BA2004FEF79 /* HomeSnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4EFCB22BB29BA2004FEF79 /* HomeSnapshots.swift */; };
@@ -680,7 +680,7 @@
 			files = (
 				3B80077E2CFFCF7A00E956D6 /* FacebookCore in Frameworks */,
 				3B80074B2CFC592B00E956D6 /* Resolver in Frameworks */,
-				3B4D625C2D00F0140006F452 /* RealmSwift in Frameworks */,
+				3B4D626D2D00F9240006F452 /* RealmSwift in Frameworks */,
 				3B6B62D32CFFE4A400429FFA /* FirebaseAnalytics in Frameworks */,
 				3B6B62D72CFFE4A400429FFA /* FirebaseCrashlytics in Frameworks */,
 				3B80074E2CFC59EB00E956D6 /* SwiftProtobuf in Frameworks */,
@@ -699,7 +699,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3B4D625E2D00F0430006F452 /* RealmSwift in Frameworks */,
+				3B0C23962D0120EA00FDD9E8 /* RealmSwift in Frameworks */,
 				3B0EE2C62D005D8B00828516 /* Quick in Frameworks */,
 				3BA3D16F2D0058ED000AFB40 /* Nimble in Frameworks */,
 				3BA3D1652D00500E000AFB40 /* Mockingbird in Frameworks */,
@@ -1479,7 +1479,7 @@
 				3B6B62D22CFFE4A400429FFA /* FirebaseAnalytics */,
 				3B6B62D42CFFE4A400429FFA /* FirebaseCore */,
 				3B6B62D62CFFE4A400429FFA /* FirebaseCrashlytics */,
-				3B4D625B2D00F0140006F452 /* RealmSwift */,
+				3B4D626C2D00F9240006F452 /* RealmSwift */,
 			);
 			productName = Hymns;
 			productReference = 3B1B900F2429CF55009FDCC5 /* Hymns.app */;
@@ -1505,7 +1505,7 @@
 				3BA3D1642D00500E000AFB40 /* Mockingbird */,
 				3BA3D16E2D0058ED000AFB40 /* Nimble */,
 				3B0EE2C52D005D8B00828516 /* Quick */,
-				3B4D625D2D00F0430006F452 /* RealmSwift */,
+				3B0C23952D0120EA00FDD9E8 /* RealmSwift */,
 			);
 			productName = HymnsTests;
 			productReference = 3B1B90282429CF57009FDCC5 /* HymnsTests.xctest */;
@@ -1606,7 +1606,7 @@
 				3BA3D16D2D0058ED000AFB40 /* XCRemoteSwiftPackageReference "Nimble" */,
 				3BA3D1702D005937000AFB40 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
 				3B0EE2C42D005D8B00828516 /* XCRemoteSwiftPackageReference "Quick" */,
-				3B4D625A2D00F0140006F452 /* XCRemoteSwiftPackageReference "realm-swift" */,
+				3B4D626B2D00F9240006F452 /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			productRefGroup = 3B1B90102429CF55009FDCC5 /* Products */;
 			projectDirPath = "";
@@ -2647,16 +2647,16 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Quick/Quick";
 			requirement = {
-				kind = exactVersion;
-				version = 6.0.0;
+				kind = upToNextMinorVersion;
+				minimumVersion = 7.6.2;
 			};
 		};
-		3B4D625A2D00F0140006F452 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+		3B4D626B2D00F9240006F452 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/realm/realm-swift";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 20.0.0;
+				minimumVersion = 10.54.1;
 			};
 		};
 		3B6B62D12CFFE4A400429FFA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
@@ -2766,19 +2766,19 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		3B0C23952D0120EA00FDD9E8 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3B4D626B2D00F9240006F452 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
 		3B0EE2C52D005D8B00828516 /* Quick */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3B0EE2C42D005D8B00828516 /* XCRemoteSwiftPackageReference "Quick" */;
 			productName = Quick;
 		};
-		3B4D625B2D00F0140006F452 /* RealmSwift */ = {
+		3B4D626C2D00F9240006F452 /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 3B4D625A2D00F0140006F452 /* XCRemoteSwiftPackageReference "realm-swift" */;
-			productName = RealmSwift;
-		};
-		3B4D625D2D00F0430006F452 /* RealmSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3B4D625A2D00F0140006F452 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			package = 3B4D626B2D00F9240006F452 /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = RealmSwift;
 		};
 		3B6B62D22CFFE4A400429FFA /* FirebaseAnalytics */ = {

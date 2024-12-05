@@ -5,9 +5,9 @@ import Nimble
 import Resolver
 @testable import Hymns
 
-class HymnalApiService_GetHymnSpec: QuickSpec {
+class HymnalApiService_GetHymnSpec: AsyncSpec {
 
-    override func spec() {
+    override class func spec() {
         describe("HymnalApi_GetHymnSpec") {
             var target: HymnalApiServiceImpl!
             beforeEach {
@@ -41,14 +41,14 @@ class HymnalApiService_GetHymnSpec: QuickSpec {
                                 value.fulfill()
                                 return
                             })
-                    await self.fulfillment(of: [failure, value], timeout: testTimeout)
+                    await current.fulfillment(of: [failure, value], timeout: testTimeout)
                     cancellable.cancel()
                 }
             }
             context("with decode error") {
                 beforeEach {
                     // Stub mock to return a valid network response but an invalid json.
-                    URLProtocolMock.response = self.createValidResponse(for: Self.children24URL)
+                    URLProtocolMock.response = Self.createValidResponse(for: Self.children24URL)
                     URLProtocolMock.testURLs = [Self.children24URL: Data("".utf8)]
                 }
                 it("only the failure completion callback should be triggered") {
@@ -65,14 +65,14 @@ class HymnalApiService_GetHymnSpec: QuickSpec {
                                 value.fulfill()
                                 return
                             })
-                    await self.fulfillment(of: [failure, value], timeout: testTimeout)
+                    await current.fulfillment(of: [failure, value], timeout: testTimeout)
                     cancellable.cancel()
                 }
             }
             context("with a valid response") {
                 beforeEach {
                     // Stub mock to return a valid network response but an invalid json.
-                    URLProtocolMock.response = self.createValidResponse(for: Self.children24URL)
+                    URLProtocolMock.response = Self.createValidResponse(for: Self.children24URL)
                     URLProtocolMock.testURLs = [Self.children24URL: Data(children_24_json.utf8)]
                 }
                 it("the finished completion and receive value callbacks should be triggered") {
@@ -89,14 +89,14 @@ class HymnalApiService_GetHymnSpec: QuickSpec {
                                 value.fulfill()
                                 expect(hymn).to(equal(children_24_hymn))
                             })
-                    await self.fulfillment(of: [finished, value], timeout: testTimeout)
+                    await current.fulfillment(of: [finished, value], timeout: testTimeout)
                     cancellable.cancel()
                 }
             }
             context("chinese simplified with a valid response") {
                 beforeEach {
                     // Stub mock to return a valid network response but an invalid json.
-                    URLProtocolMock.response = self.createValidResponse(for: Self.children24URL)
+                    URLProtocolMock.response = Self.createValidResponse(for: Self.children24URL)
                     URLProtocolMock.testURLs = [Self.chineseSimplified24URL: Data(children_24_json.utf8)]
                 }
                 it("the finished completion and receive value callbacks should be triggered") {
@@ -114,14 +114,14 @@ class HymnalApiService_GetHymnSpec: QuickSpec {
                                 value.fulfill()
                                 expect(hymn).to(equal(children_24_hymn))
                             })
-                    await self.fulfillment(of: [finished, value], timeout: testTimeout)
+                    await current.fulfillment(of: [finished, value], timeout: testTimeout)
                     cancellable.cancel()
                 }
             }
             context("chinese supplement simplified with a valid response") {
                 beforeEach {
                     // Stub mock to return a valid network response but an invalid json.
-                    URLProtocolMock.response = self.createValidResponse(for: Self.children24URL)
+                    URLProtocolMock.response = Self.createValidResponse(for: Self.children24URL)
                     URLProtocolMock.testURLs = [Self.chineseSupplementSimplified22URL: Data(children_24_json.utf8)]
                 }
                 it("the finished completion and receive value callbacks should be triggered") {
@@ -139,7 +139,7 @@ class HymnalApiService_GetHymnSpec: QuickSpec {
                                 value.fulfill()
                                 expect(hymn).to(equal(children_24_hymn))
                             })
-                    await self.fulfillment(of: [finished, value], timeout: testTimeout)
+                    await current.fulfillment(of: [finished, value], timeout: testTimeout)
                     cancellable.cancel()
                 }
             }

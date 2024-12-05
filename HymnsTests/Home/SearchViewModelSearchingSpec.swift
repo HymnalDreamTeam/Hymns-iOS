@@ -11,7 +11,7 @@ import SwiftUI
  */
 class SearchViewModelSearchingSpec: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
         describe("searching") {
             // https://www.vadimbulavin.com/unit-testing-async-code-in-swift/
             let testQueue = DispatchQueue(label: "test_queue")

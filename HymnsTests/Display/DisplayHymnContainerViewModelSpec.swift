@@ -7,7 +7,7 @@ import Quick
 // swiftlint:disable type_name
 class DisplayHymnContainerViewModelSpec: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
         describe("DisplayHymnContainerViewModelSpec") {
             // https://www.vadimbulavin.com/unit-testing-async-code-in-swift/
             let testQueue = DispatchQueue(label: "test_queue")

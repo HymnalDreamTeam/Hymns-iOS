@@ -8,7 +8,7 @@ import Quick
 class AudioPlayerViewModelSpec: QuickSpec {
 
     // swiftlint:disable:next function_body_length
-    override func spec() {
+    override class func spec() {
         describe("AudioPlayerViewModel") {
             // https://www.vadimbulavin.com/unit-testing-async-code-in-swift/
             let testQueue = DispatchQueue(label: "test_queue")

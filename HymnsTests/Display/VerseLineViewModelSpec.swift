@@ -6,7 +6,7 @@ import Nimble
 
 class VerseLineViewModelSpec: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
         describe("VerseLineViewModel") {
             var target: VerseLineViewModel!
             context("with verse type as verse") {

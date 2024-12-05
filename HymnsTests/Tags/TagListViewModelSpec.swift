@@ -6,7 +6,7 @@ import RealmSwift
 @testable import Hymns
 
 class TagListViewModelSpec: QuickSpec {
-    override func spec() {
+    override class func spec() {
         // https://www.vadimbulavin.com/unit-testing-async-code-in-swift/
         let testQueue = DispatchQueue(label: "test_queue")
         var tagStore: TagStoreMock!

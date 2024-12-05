@@ -6,8 +6,8 @@ import SwiftUI
 @testable import Hymns
 
 class ChordViewModelSpec: QuickSpec {
-    
-    override func spec() {
+
+    override class func spec() {
         describe("ChordLineViewModel") {
             var target: ChordLineViewModel!
             describe("init") {

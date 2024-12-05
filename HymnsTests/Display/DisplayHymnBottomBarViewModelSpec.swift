@@ -8,7 +8,7 @@ import SwiftUI
 // swiftlint:disable:next type_name
 class DisplayHymnBottomBarViewModelSpec: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
         describe("DisplayHymnBottomBarViewModel") {
 
             let hymnIdentifier = HymnIdentifier(hymnType: .classic, hymnNumber: "23")

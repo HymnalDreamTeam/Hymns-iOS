@@ -7,7 +7,7 @@ class ConverterSpec: QuickSpec {
 
     // Don't worry about force_try in tests.
     // swiftlint:disable force_try
-    override func spec() {
+    override class func spec() {
         describe("Converter") {
             var target: Converter!
             beforeEach {
