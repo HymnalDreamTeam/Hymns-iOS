@@ -18,24 +18,34 @@ public struct InlineChordsView: View {
                     Button {
                         self.viewModel.transpose(-1)
                     } label: {
-                        Image(systemName: "minus").accessibilityLabel(Text("Transpose down a half step", comment: "A11y label for button transposing down."))
-                            .font(.system(size: smallButtonSize)).foregroundColor(.primary).padding(.leading)
+                        Image(systemName: "minus")
+                            .accessibilityLabel(Text("Transpose down a half step",
+                                                     comment: "A11y label for button transposing down."))
+                            .font(.system(size: smallButtonSize))
+                            .foregroundColor(.primary)
+                            .padding(.leading)
                     }
                     Button {
                         self.viewModel.resetTransposition()
                     } label: {
-                        Text(transpositionLabel).font(.subheadline).foregroundColor(self.viewModel.transpositionLabelColor)
+                        Text(transpositionLabel)
+                            .font(.subheadline)
+                            .foregroundColor(self.viewModel.transpositionLabelColor)
                     }
                     Button {
                         self.viewModel.transpose(1)
                     } label: {
-                        Image(systemName: "plus").accessibilityLabel(Text("Transpose up a half step", comment: "A11y label for button transposing up."))
-                            .font(.system(size: smallButtonSize)).foregroundColor(.primary)
+                        Image(systemName: "plus")
+                            .accessibilityLabel(Text("Transpose up a half step",
+                                                     comment: "A11y label for button transposing up."))
+                            .font(.system(size: smallButtonSize))
+                            .foregroundColor(.primary)
                     }
                 }
             }
             ForEach(self.viewModel.chordLines) { chordLine in
-                WrappedHStack(items: .constant(chordLine.chordWords), horizontalSpacing: 2, verticalSpacing: 0) { chordWord in
+                WrappedHStack(items: .constant(chordLine.chordWords),
+                              horizontalSpacing: 2, verticalSpacing: 0) { chordWord in
                     ChordWordView(chordWord)
                 }
             }

@@ -16,7 +16,10 @@ class ChordLineViewModel: ObservableObject, Identifiable {
 
     init(chordLine: ChordLineEntity) {
         self.chordWords = chordLine.chordWords.map({ chordWord in
-            ChordWordViewModel(chordWord)
+            if chordLine.hasChords && !chordWord.hasChords {
+                return ChordWordViewModel(word: chordWord.word, chords: "")
+            }
+            return ChordWordViewModel(chordWord)
         })
     }
 
@@ -44,7 +47,7 @@ extension ChordLineViewModel: CustomStringConvertible {
 }
 
 class ChordWordViewModel: ObservableObject, Identifiable {
-    
+
     private static let chordsTransposingPattern = "([^A-G]*)([A-G][#b]?)([^A-G]*)"
 
     @Published var fontSize: Float
@@ -54,15 +57,21 @@ class ChordWordViewModel: ObservableObject, Identifiable {
     var id = UUID()
     private var disposables = Set<AnyCancellable>()
 
-    init(_ chordWord: ChordWordEntity, userDefaultsManager: UserDefaultsManager = Resolver.resolve()) {
-        self.chords = chordWord.hasChords ? chordWord.chords : nil
-        self.word = chordWord.word
+    init(word: String, chords: String?, userDefaultsManager: UserDefaultsManager = Resolver.resolve()) {
+        self.chords = chords
+        self.word = word
         self.fontSize = userDefaultsManager.fontSize
         userDefaultsManager
             .fontSizeSubject
             .sink { fontSize in
                 self.fontSize = fontSize
         }.store(in: &disposables)
+    }
+
+    convenience init(_ chordWord: ChordWordEntity, userDefaultsManager: UserDefaultsManager = Resolver.resolve()) {
+        self.init(word: chordWord.word,
+                  chords: chordWord.hasChords ? chordWord.chords: nil,
+                  userDefaultsManager: userDefaultsManager)
     }
 
     func transpose(_ steps: Int) {
