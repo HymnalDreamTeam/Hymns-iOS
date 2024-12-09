@@ -333,7 +333,6 @@ class SearchViewModelSearchingSpec: QuickSpec {
                                 testQueue.sync {}
                             }
                             it("should append the second page onto the first page") {
-                                let sr = target.songResults
                                 expect(target.songResults).to(haveCount(14))
                                 for (index, num) in (Array(1...10) + Array(20...23)).enumerated() {
                                     expect(target.songResults[index].multiSongResultViewModel!.title).to(equal("classic\(num)"))

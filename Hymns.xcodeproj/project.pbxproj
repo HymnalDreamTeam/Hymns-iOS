@@ -23,7 +23,6 @@
 		3B0C23962D0120EA00FDD9E8 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3B0C23952D0120EA00FDD9E8 /* RealmSwift */; };
 		3B10B97B2BB3AC9700BAD410 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 3B10B97A2BB3AC9700BAD410 /* PrivacyInfo.xcprivacy */; };
 		3B113F732D05936B0031E9D1 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 3B113F722D05936B0031E9D1 /* SnapshotTesting */; };
-		3B113F862D0683FB0031E9D1 /* Quick in Frameworks */ = {isa = PBXBuildFile; productRef = 3B113F852D0683FB0031E9D1 /* Quick */; };
 		3B11E29C2461F93100F27E73 /* HymnDataStoreGrdbImplSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B11E29B2461F93100F27E73 /* HymnDataStoreGrdbImplSpec.swift */; };
 		3B11E29E24623D7900F27E73 /* ConverterSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B11E29D24623D7900F27E73 /* ConverterSpec.swift */; };
 		3B11E2A42464AA3400F27E73 /* HymnalNetService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B11E2A32464AA3400F27E73 /* HymnalNetService.swift */; };
@@ -54,6 +53,7 @@
 		3B25C0E824503B6900C435E1 /* RecentSong.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B25C0E724503B6900C435E1 /* RecentSong.swift */; };
 		3B25C0EA24503B7E00C435E1 /* HistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B25C0E924503B7E00C435E1 /* HistoryStore.swift */; };
 		3B25C0EF2450BF9200C435E1 /* HistoryStoreRealmImplSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B25C0EE2450BF9200C435E1 /* HistoryStoreRealmImplSpec.swift */; };
+		3B2AF3872D06DBBA00C73E1F /* Quick in Frameworks */ = {isa = PBXBuildFile; productRef = 3B2AF3862D06DBBA00C73E1F /* Quick */; };
 		3B2DA3212494C38000F5F5B1 /* TagColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2DA3202494C38000F5F5B1 /* TagColor.swift */; };
 		3B2E84B3246FA87D00EA4329 /* SearchResultEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2E84B2246FA87D00EA4329 /* SearchResultEntity.swift */; };
 		3B2E84B5246FA88800EA4329 /* SongResultEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B2E84B4246FA88800EA4329 /* SongResultEntity.swift */; };
@@ -702,7 +702,7 @@
 			files = (
 				3B0C23962D0120EA00FDD9E8 /* RealmSwift in Frameworks */,
 				3BA3D16F2D0058ED000AFB40 /* Nimble in Frameworks */,
-				3B113F862D0683FB0031E9D1 /* Quick in Frameworks */,
+				3B2AF3872D06DBBA00C73E1F /* Quick in Frameworks */,
 				3BA3D1652D00500E000AFB40 /* Mockingbird in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1506,7 +1506,7 @@
 				3BA3D1642D00500E000AFB40 /* Mockingbird */,
 				3BA3D16E2D0058ED000AFB40 /* Nimble */,
 				3B0C23952D0120EA00FDD9E8 /* RealmSwift */,
-				3B113F852D0683FB0031E9D1 /* Quick */,
+				3B2AF3862D06DBBA00C73E1F /* Quick */,
 			);
 			productName = HymnsTests;
 			productReference = 3B1B90282429CF57009FDCC5 /* HymnsTests.xctest */;
@@ -1606,7 +1606,7 @@
 				3BA3D16D2D0058ED000AFB40 /* XCRemoteSwiftPackageReference "Nimble" */,
 				3B4D626B2D00F9240006F452 /* XCRemoteSwiftPackageReference "realm-swift" */,
 				3B113F712D05936B0031E9D1 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
-				3B113F842D0683FB0031E9D1 /* XCRemoteSwiftPackageReference "Quick" */,
+				3B2AF3852D06DBBA00C73E1F /* XCRemoteSwiftPackageReference "Quick" */,
 			);
 			productRefGroup = 3B1B90102429CF55009FDCC5 /* Products */;
 			projectDirPath = "";
@@ -2637,7 +2637,7 @@
 				minimumVersion = 1.17.6;
 			};
 		};
-		3B113F842D0683FB0031E9D1 /* XCRemoteSwiftPackageReference "Quick" */ = {
+		3B2AF3852D06DBBA00C73E1F /* XCRemoteSwiftPackageReference "Quick" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Quick/Quick";
 			requirement = {
@@ -2762,9 +2762,9 @@
 			package = 3B113F712D05936B0031E9D1 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
 			productName = SnapshotTesting;
 		};
-		3B113F852D0683FB0031E9D1 /* Quick */ = {
+		3B2AF3862D06DBBA00C73E1F /* Quick */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 3B113F842D0683FB0031E9D1 /* XCRemoteSwiftPackageReference "Quick" */;
+			package = 3B2AF3852D06DBBA00C73E1F /* XCRemoteSwiftPackageReference "Quick" */;
 			productName = Quick;
 		};
 		3B38ACF32D068671004B7836 /* SwiftLintBuildToolPlugin */ = {
