@@ -77,6 +77,7 @@ class HistoryStoreRealmImpl: HistoryStore {
 }
 
 extension Resolver {
+    // swiftlint:disable:next cyclomatic_complexity
     public static func registerHistoryStore() {
         register(HistoryStore.self) {
             // https://stackoverflow.com/questions/28465706/how-to-find-my-realm-file
@@ -117,7 +118,7 @@ extension Resolver {
                             }
                         }
                     }
-                    
+
                     // In version 2:
                     //   - hymnTypeRaw has been migrated from the enum value to the HymnType's abbreviated value
                     //   - Removed query parameters, so all songs with query params must be changed to its approprate 'simplified' hymn type
@@ -191,7 +192,7 @@ extension Resolver {
                             }.flatMap { hymnIdentifierEntity -> HymnIdentifier? in
                                 let hymnType = hymnIdentifierEntity["hymnTypeRaw"] as? String
                                 let hymnNumber = hymnIdentifierEntity["hymnNumber"] as? String
-                                
+
                                 guard let hymnType = hymnType,
                                       let hymnType = HymnType.fromAbbreviatedValue(hymnType),
                                       let hymnNumber = hymnNumber else {

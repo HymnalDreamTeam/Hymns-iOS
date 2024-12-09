@@ -21,7 +21,7 @@ class VerseLineViewModel: Hashable, ObservableObject {
         self.verseNumber = verseNumber
         self.verseText = lineEntity.lineContent
         self.transliteration = lineEntity.hasTransliteration ? lineEntity.transliteration: nil
-        
+
         if verseType == .note {
             self.fontSize = userDefaultsManager.fontSize * 0.7
             isItalicized = true

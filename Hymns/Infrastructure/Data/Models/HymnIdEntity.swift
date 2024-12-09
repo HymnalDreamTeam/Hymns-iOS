@@ -60,9 +60,11 @@ extension HymnIdEntity: PersistableRecord {
 
 class HymnIdEntityBuilder {
 
+    // swiftlint:disable attribute_name_spacing
     private (set) var hymnType: HymnType
     private (set) var hymnNumber: String
     private (set) var songId: Int64
+    // swiftlint:enable attribute_name_spacing
 
     init(hymnType: HymnType, hymnNumber: String, songId: Int64) {
         self.hymnType = hymnType

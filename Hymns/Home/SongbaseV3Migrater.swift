@@ -217,6 +217,7 @@ class SongbaseV3MigraterImpl: SongbaseV3Migrater {
             }
         }
     }
+    // swiftlint:enable cyclomatic_complexity
 
     private func readChangedMigrationFile() async -> [String: (reference: HymnIdentifier, title: String)] {
         guard let migrationFile = Bundle.main.path(forResource: "songbase_v3_migration_changed", ofType: "txt") else {

@@ -75,7 +75,7 @@ class SingleSongResultViewModel: Identifiable {
     let label: String?
     let destinationView: AnyView
 
-    init(stableId: String, title: String, label: String? = nil, destinationView: AnyView, 
+    init(stableId: String, title: String, label: String? = nil, destinationView: AnyView,
          systemUtil: SystemUtil = Resolver.resolve()) {
         self.stableId = stableId
         self.title = title
@@ -136,4 +136,3 @@ extension MultiSongResultViewModel: CustomStringConvertible {
         "\(stableId)|\(String(describing: labels))|\(title)"
     }
 }
-

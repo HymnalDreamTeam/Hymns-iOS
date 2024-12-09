@@ -68,6 +68,7 @@ struct UiHymn: Equatable {
 
 class UiHymnBuilder {
 
+    // swiftlint:disable attribute_name_spacing
     private (set) var hymnIdentifier: HymnIdentifier
     private (set) var title: String?
     private (set) var lyrics: [VerseEntity]?
@@ -85,6 +86,7 @@ class UiHymnBuilder {
     private (set) var languages: [HymnIdentifier]?
     private (set) var music: [String: String]?
     private (set) var relevant: [HymnIdentifier]?
+    // swiftlint:enable attribute_name_spacing
 
     init(hymnIdentifier: HymnIdentifier, title: String?) {
         self.hymnIdentifier = hymnIdentifier

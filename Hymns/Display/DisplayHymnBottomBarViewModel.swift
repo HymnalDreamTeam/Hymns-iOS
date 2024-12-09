@@ -110,8 +110,8 @@ class DisplayHymnBottomBarViewModel: ObservableObject {
         return languages.map { language in
             let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: language)).eraseToAnyView()
             return SingleSongResultViewModel(stableId: String(describing: language),
-                                       title: String(format: language.hymnType.displayLabel, language.hymnNumber),
-                                       destinationView: destination)
+                                             title: String(format: language.hymnType.displayLabel, language.hymnNumber),
+                                             destinationView: destination)
         }
     }
 

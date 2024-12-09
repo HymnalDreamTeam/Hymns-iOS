@@ -14,7 +14,7 @@ struct Verse: Codable, Equatable {
 }
 
 extension VerseType: Codable {
-    
+
     enum VerseTypeCodingError: Error {
         case decoding(String)
     }
@@ -22,7 +22,7 @@ extension VerseType: Codable {
     // Decoding an enum: https://stackoverflow.com/a/48204890/1907538
     init(from decoder: Decoder) throws {
         let value = try decoder.singleValueContainer().decode(String.self)
-        self = switch(value) {
+        self = switch value {
         case "verse": .verse
         case "chorus": .chorus
         case "other": .other

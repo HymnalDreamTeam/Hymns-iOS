@@ -96,7 +96,7 @@ extension HymnType {
             "sbx"
         case .hinos:
             "hs"
-        case .UNRECOGNIZED(_):
+        case .UNRECOGNIZED:
             ""
         }
     }
@@ -179,7 +179,7 @@ extension HymnType {
             NSLocalizedString("Songbase Songs", comment: "Display name of 'Songbase Songs'. Usually appears just by itself (i.e. as a title).")
         case .hinos:
             NSLocalizedString("Hinos Songs", comment: "Display name of 'Hinos Songs'. Usually appears just by itself (i.e. as a title).")
-        case .UNRECOGNIZED(_):
+        case .UNRECOGNIZED:
             ""
         }
     }
@@ -202,16 +202,16 @@ extension HymnType {
             NSLocalizedString("German %@", comment: "Will appear in conjunction with something else (e.g. German 7).")
         case .chinese:
             NSLocalizedString("Chinese %@ (Trad.)",
-                                     comment: "Will appear in conjunction with something else (e.g. Chinese 7 (Trad.)).")
+                              comment: "Will appear in conjunction with something else (e.g. Chinese 7 (Trad.)).")
         case .chineseSimplified:
             NSLocalizedString("Chinese %@ (Simp.)",
-                                     comment: "Will appear in conjunction with something else (e.g. Chinese 7 (Simp.)).")
+                              comment: "Will appear in conjunction with something else (e.g. Chinese 7 (Simp.)).")
         case .chineseSupplement:
             NSLocalizedString("Chinese Supplement %@ (Trad.)",
-                                     comment: "Will appear in conjunction with something else (e.g. Chinese Supplement 7 (Trad.)).")
+                              comment: "Will appear in conjunction with something else (e.g. Chinese Supplement 7 (Trad.)).")
         case .chineseSupplementSimplified:
             NSLocalizedString("Chinese Supplement %@ (Simp.)",
-                                     comment: "Will appear in conjunction with something else (e.g. Chinese Supplement 7 (Simp.)).")
+                              comment: "Will appear in conjunction with something else (e.g. Chinese Supplement 7 (Simp.)).")
         case .cebuano:
             NSLocalizedString("Cebuano %@", comment: "Will appear in conjunction with something else (e.g. Cebuano 7).")
         case .tagalog:
@@ -252,7 +252,7 @@ extension HymnType {
             NSLocalizedString("Songbase %@", comment: "Will appear in conjunction with something else (e.g. Songbase 7).")
         case .hinos:
             NSLocalizedString("Hinos %@", comment: "Will appear in conjunction with something else (e.g. Hinos 7).")
-        case .UNRECOGNIZED(_):
+        case .UNRECOGNIZED:
             ""
         }
     }
@@ -279,7 +279,7 @@ extension HymnType {
         case .estonian: .estonian
         case .arabic: .arabic
         case .hinos: .portuguese
-        case .UNRECOGNIZED(let i): .UNRECOGNIZED(i)
+        case .UNRECOGNIZED(let idx): .UNRECOGNIZED(idx)
         }
     }
 }
@@ -293,7 +293,6 @@ extension HymnType: Codable {
     enum HymnTypeCodingError: Error {
         case decoding(String)
     }
-
 }
 
 extension HymnType {
@@ -350,7 +349,7 @@ extension Language {
             NSLocalizedString("Arabic", comment: "Display name of the 'Arabic' language.")
         case .indonesian:
             NSLocalizedString("Indonesian", comment: "Display name of the 'Indonesian' language.")
-        case .UNRECOGNIZED(_):
+        case .UNRECOGNIZED:
             ""
         }
     }

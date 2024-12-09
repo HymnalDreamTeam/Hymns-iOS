@@ -2,8 +2,13 @@
 # swiftlint rules
 # https://realm.github.io/SwiftLint/ to look up what they do
 
+analyzer_rules: # rules used only by 'swiftlint analyze'
+  - unused_declaration
+  - unused_import
+
 disabled_rules: # rule identifiers to exclude from running
   - line_length
+  - nesting
 
 opt_in_rules: # some rules are only opt-in
   - empty_collection_literal # Prefer checking isEmpty over comparing to an empty collection.
@@ -12,8 +17,6 @@ opt_in_rules: # some rules are only opt-in
   - expiring_todo # TODOs and FIXMEs should be resolved prior to their expiry date.
   - overridden_super_call # Some overridden methods should always call super
   - toggle_bool # Prefer someBool.toggle() over someBool = !someBool.
-  - unused_declaration # Declarations should be referenced at least once within all files linted.
-  - unused_import # All imported modules should be required to make the file compile.
   - vertical_parameter_alignment # Function parameters should be aligned vertically if they’re in multiple lines in a declaration.
   - vertical_parameter_alignment_on_call # Function parameters should be aligned vertically if they’re in multiple lines in a method call.
   - vertical_whitespace_closing_braces # Don’t include (empty line) before closing braces.
@@ -24,8 +27,6 @@ included: # paths to include during linting. `--path` is ignored if present.
   - HymnsTests
   - HymnsSnapshotTests
   - HymnsUITests
-excluded: # paths to ignore during linting. Takes precedence over `included`.
-  - Pods
 
 function_body_length: # 
  - 200 # warning if function has < 200 lines
@@ -57,6 +58,7 @@ identifier_name:
     error: 2 # only error
   excluded: # excluded via string array
     - id
+    - up
 
 large_tuple:
    - 3 # warn user when using 3 values in tuple

@@ -119,7 +119,7 @@ extension HymnIdentifierEntity {
         self.hymnType = hymnIdentifier.hymnType
         self.hymnNumber = hymnIdentifier.hymnNumber
     }
-    
+
     var toHymnIdentifier: HymnIdentifier {
         HymnIdentifier(entity: self)
     }

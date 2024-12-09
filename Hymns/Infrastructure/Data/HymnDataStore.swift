@@ -7,10 +7,7 @@ import Resolver
 // swiftlint:disable:next identifier_name
 let HYMN_DATA_STORE_VERISON = 28
 
-/**
- * Service to contact the local Hymn database.
- */
-// swiftlint:disable file_length
+/// Service to contact the local Hymn database.
 protocol HymnDataStore {
 
     /**
@@ -46,8 +43,7 @@ protocol HymnDataStore {
 /**
  * Implementation of `HymnDataStore` that uses `GRDB`.
  */
-// swiftlint:disable:next type_body_length
-class HymnDataStoreGrdbImpl: HymnDataStore {
+class HymnDataStoreGrdbImpl: HymnDataStore { // swiftlint:disable:this type_body_length
 
     private(set) var databaseInitializedProperly = true
 
@@ -371,9 +367,9 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
         }).eraseToAnyPublisher()
     }
 
-    // swiftlint:disable force_try
     func getAllResults() -> [SongResultEntity] {
         databaseQueue.inDatabase { database in
+            // swiftlint:disable:next force_try
             try! SongResultEntity.fetchAll(
                 database,
                 sql:
@@ -385,6 +381,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
 
     func getAllHymns() -> [HymnReference] {
         databaseQueue.inDatabase { database in
+            // swiftlint:disable:next force_try
             try! HymnReference.fetchAll(
                 database,
                 sql: "SELECT * FROM SONG_DATA JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID")
@@ -545,10 +542,11 @@ extension Resolver {
                     .appendingPathComponent("hymnaldb-v\(HYMN_DATA_STORE_VERISON).sqlite")
                     .path else {
                         Crashlytics.crashlytics().setCustomValue("in-memory db", forKey: "database_state")
-                        Crashlytics.crashlytics().record(
-                            error: DatabasePathError(errorDescription: "hymnaldb-v\(HYMN_DATA_STORE_VERISON).sqlite"),
-                            userInfo: ["error_message": "The desired path 'hymnaldb-v\(HYMN_DATA_STORE_VERISON).sqlite' in Application Support is nil, so we are unable to create a database file. Fall back to useing an in-memory db and initialize it with empty tables"])
-                        return HymnDataStoreGrdbImpl(databaseQueue: try! DatabaseQueue(), initializeTables: true) as HymnDataStore
+                Crashlytics.crashlytics().record(
+                    error: DatabasePathError(errorDescription: "hymnaldb-v\(HYMN_DATA_STORE_VERISON).sqlite"),
+                    userInfo: ["error_message": "The desired path 'hymnaldb-v\(HYMN_DATA_STORE_VERISON).sqlite' in Application Support is nil, so we are unable to create a database file. Fall back to useing an in-memory db and initialize it with empty tables"])
+                // swiftlint:disable:next force_try
+                return HymnDataStoreGrdbImpl(databaseQueue: try! DatabaseQueue(), initializeTables: true) as HymnDataStore
             }
 
             /// Whether or not we need to create the tables for the database.
@@ -583,10 +581,11 @@ extension Resolver {
                 Crashlytics.crashlytics().log("Unable to create database queue at the desired path, so create an in-memory one and initialize it with empty tables as a fallback")
                 Crashlytics.crashlytics().setCustomValue("in-memory db", forKey: "database_state")
                 Crashlytics.crashlytics().record(error: error)
+                // swiftlint:disable:next force_try
                 databaseQueue = try! DatabaseQueue()
                 needToCreateTables = true
             }
             return HymnDataStoreGrdbImpl(databaseQueue: databaseQueue, initializeTables: needToCreateTables) as HymnDataStore
         }.scope(.application)
     }
-}
+} // swiftlint:disable:this file_length

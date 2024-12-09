@@ -104,13 +104,18 @@ struct VerseView_Previews: PreviewProvider {
         return VStack(alignment: .leading) {
             VerseView(viewModel: VerseViewModel(verseType: .verse,
                                                 verseNumber: "1",
-                                                verseLines: ["Drink! A river pure and clear that's flowing from the throne", "Eat! The tree of life with fruits abundant, richly grown", 
-                                                             "Look! No need of lamp nor sun nor moon to keep it bright, for", "  Here this is no night!"]),
+                                                verseLines: ["Drink! A river pure and clear that's flowing from the throne",
+                                                             "Eat! The tree of life with fruits abundant, richly grown",
+                                                             "Look! No need of lamp nor sun nor moon to keep it bright, for",
+                                                             "  Here this is no night!"]),
                       transliterate: noTransliterationBinding)
             VerseView(viewModel: VerseViewModel(verseType: .verse,
                                                 verseNumber: "Chorus",
-                                                verseLines: ["Do come, oh, do come,", "Says Spirit and the Bride:", "Do come, oh, do come,", "Let him that heareth, cry.", 
-                                                             "Do come, oh, do come,", "Let him who thirsts and will", "  Take freely the water of life!"]),
+                                                verseLines: ["Do come, oh, do come,",
+                                                             "Says Spirit and the Bride:",
+                                                             "Do come, oh, do come,", "Let him that heareth, cry.",
+                                                             "Do come, oh, do come,", "Let him who thirsts and will",
+                                                             "  Take freely the water of life!"]),
                       transliterate: noTransliterationBinding)
         }
     }

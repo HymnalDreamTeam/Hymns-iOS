@@ -1,9 +1,9 @@
 import Foundation
 import Resolver
 
-// swiftlint:disable all
-
 #if DEBUG
+
+// swiftlint:disable all
 let decoder: JSONDecoder = Resolver.resolve()
 let classic40_preview = getHymnEntityFromJson(fileName: "classic40")
 let classic1151_preview = getHymnEntityFromJson(fileName: "classic1151")
@@ -20,4 +20,6 @@ private func getHymnFromJson(fileName: String) -> Hymn {
     let jsonData = jsonString.data(using: .utf8)!
     return try! decoder.decode(Hymn.self, from: jsonData)
 }
+
+// swiftlint:enable all
 #endif

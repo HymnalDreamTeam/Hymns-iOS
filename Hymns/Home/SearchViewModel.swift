@@ -103,7 +103,7 @@ class SearchViewModel: ObservableObject {
     }
 
     /// Hymn types to search for, give a certain language.
-    private func searchTypes(language: Language) -> [HymnType] {
+    private func searchTypes(language: Language) -> [HymnType] { // swiftlint:disable:this cyclomatic_complexity
         switch language {
         case .english:
             return [.classic]
@@ -145,7 +145,7 @@ class SearchViewModel: ObservableObject {
             return [.estonian]
         case .arabic:
             return [.arabic]
-        case .UNRECOGNIZED(_):
+        case .UNRECOGNIZED:
             return [HymnType]()
         }
     }
@@ -202,7 +202,7 @@ class SearchViewModel: ObservableObject {
                     let label = recentSong.songTitle != nil ? identifier.displayTitle : nil
                     let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: identifier, storeInHistoryStore: true)).eraseToAnyView()
                     return SingleSongResultViewModel(stableId: String(describing: identifier), title: title,
-                                               label: label, destinationView: destination)
+                                                     label: label, destinationView: destination)
                 }
             })
             .map({ singleSongResultViewModels -> [SongResultViewModel] in

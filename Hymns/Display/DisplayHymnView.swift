@@ -75,7 +75,6 @@ struct DisplayHymnView: View {
                                         initialBottomBarHeight = height
                                     }
                                 }.maxSize(alignment: .bottom)
-
                         }
                         Dialog(viewModel: $dialogModel).map { dialog in
                             dialog.zIndex(1)

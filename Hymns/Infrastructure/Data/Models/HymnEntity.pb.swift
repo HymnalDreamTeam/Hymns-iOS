@@ -1375,3 +1375,5 @@ extension RelevantsEntity: SwiftProtobuf.Message, SwiftProtobuf._MessageImplemen
     return true
   }
 }
+
+// swiftlint:enable all

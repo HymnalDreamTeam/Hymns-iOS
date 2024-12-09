@@ -21,8 +21,9 @@
 		3B09F90B243D807E00252C15 /* children_24.json in Resources */ = {isa = PBXBuildFile; fileRef = 3B09F90A243D807E00252C15 /* children_24.json */; };
 		3B0B39AF243931B3003C5161 /* ErrorType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B0B39AE243931B3003C5161 /* ErrorType.swift */; };
 		3B0C23962D0120EA00FDD9E8 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3B0C23952D0120EA00FDD9E8 /* RealmSwift */; };
-		3B0EE2C62D005D8B00828516 /* Quick in Frameworks */ = {isa = PBXBuildFile; productRef = 3B0EE2C52D005D8B00828516 /* Quick */; };
 		3B10B97B2BB3AC9700BAD410 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 3B10B97A2BB3AC9700BAD410 /* PrivacyInfo.xcprivacy */; };
+		3B113F732D05936B0031E9D1 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 3B113F722D05936B0031E9D1 /* SnapshotTesting */; };
+		3B113F862D0683FB0031E9D1 /* Quick in Frameworks */ = {isa = PBXBuildFile; productRef = 3B113F852D0683FB0031E9D1 /* Quick */; };
 		3B11E29C2461F93100F27E73 /* HymnDataStoreGrdbImplSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B11E29B2461F93100F27E73 /* HymnDataStoreGrdbImplSpec.swift */; };
 		3B11E29E24623D7900F27E73 /* ConverterSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B11E29D24623D7900F27E73 /* ConverterSpec.swift */; };
 		3B11E2A42464AA3400F27E73 /* HymnalNetService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B11E2A32464AA3400F27E73 /* HymnalNetService.swift */; };
@@ -175,8 +176,6 @@
 		3BA30A5A278D010200A88807 /* FontPickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA30A59278D010200A88807 /* FontPickerViewModel.swift */; };
 		3BA3D1652D00500E000AFB40 /* Mockingbird in Frameworks */ = {isa = PBXBuildFile; productRef = 3BA3D1642D00500E000AFB40 /* Mockingbird */; };
 		3BA3D16F2D0058ED000AFB40 /* Nimble in Frameworks */ = {isa = PBXBuildFile; productRef = 3BA3D16E2D0058ED000AFB40 /* Nimble */; };
-		3BA3D1722D005937000AFB40 /* InlineSnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 3BA3D1712D005937000AFB40 /* InlineSnapshotTesting */; };
-		3BA3D1742D005937000AFB40 /* SnapshotTesting in Frameworks */ = {isa = PBXBuildFile; productRef = 3BA3D1732D005937000AFB40 /* SnapshotTesting */; };
 		3BA4612524771C460068F269 /* SongInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA4612424771C460068F269 /* SongInfoViewModel.swift */; };
 		3BA4612724771EAD0068F269 /* SongInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA4612624771EAD0068F269 /* SongInfoView.swift */; };
 		3BA4612B24772B250068F269 /* SongInfoDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BA4612A24772B250068F269 /* SongInfoDialogView.swift */; };
@@ -700,8 +699,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				3B0C23962D0120EA00FDD9E8 /* RealmSwift in Frameworks */,
-				3B0EE2C62D005D8B00828516 /* Quick in Frameworks */,
 				3BA3D16F2D0058ED000AFB40 /* Nimble in Frameworks */,
+				3B113F862D0683FB0031E9D1 /* Quick in Frameworks */,
 				3BA3D1652D00500E000AFB40 /* Mockingbird in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -717,8 +716,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3BA3D1722D005937000AFB40 /* InlineSnapshotTesting in Frameworks */,
-				3BA3D1742D005937000AFB40 /* SnapshotTesting in Frameworks */,
+				3B113F732D05936B0031E9D1 /* SnapshotTesting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1457,12 +1455,12 @@
 				3B057FE724553E9000ACC848 /* Setup Firebase Environment GoogleService-Info.plist */,
 				3BC5B159247F590000F5D63A /* Copy Preview Resources */,
 				3B1B900D2429CF55009FDCC5 /* Resources */,
-				5CAF7436242BA08A00A847E2 /* Run Swiftlint */,
 				3BA3D1612D003E16000AFB40 /* Upload dSYM files to Crashlytics */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				3B38ACF42D068671004B7836 /* PBXTargetDependency */,
 			);
 			name = Hymns;
 			packageProductDependencies = (
@@ -1504,8 +1502,8 @@
 			packageProductDependencies = (
 				3BA3D1642D00500E000AFB40 /* Mockingbird */,
 				3BA3D16E2D0058ED000AFB40 /* Nimble */,
-				3B0EE2C52D005D8B00828516 /* Quick */,
 				3B0C23952D0120EA00FDD9E8 /* RealmSwift */,
+				3B113F852D0683FB0031E9D1 /* Quick */,
 			);
 			productName = HymnsTests;
 			productReference = 3B1B90282429CF57009FDCC5 /* HymnsTests.xctest */;
@@ -1544,8 +1542,7 @@
 			);
 			name = HymnsSnapshotTests;
 			packageProductDependencies = (
-				3BA3D1712D005937000AFB40 /* InlineSnapshotTesting */,
-				3BA3D1732D005937000AFB40 /* SnapshotTesting */,
+				3B113F722D05936B0031E9D1 /* SnapshotTesting */,
 			);
 			productName = HymnsSnapshotTests;
 			productReference = 3BE7C919249CAB2700B04A1F /* HymnsSnapshotTests.xctest */;
@@ -1604,9 +1601,9 @@
 				3B6B62D12CFFE4A400429FFA /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				3BA3D1632D00500E000AFB40 /* XCRemoteSwiftPackageReference "mockingbird" */,
 				3BA3D16D2D0058ED000AFB40 /* XCRemoteSwiftPackageReference "Nimble" */,
-				3BA3D1702D005937000AFB40 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
-				3B0EE2C42D005D8B00828516 /* XCRemoteSwiftPackageReference "Quick" */,
 				3B4D626B2D00F9240006F452 /* XCRemoteSwiftPackageReference "realm-swift" */,
+				3B113F712D05936B0031E9D1 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */,
+				3B113F842D0683FB0031E9D1 /* XCRemoteSwiftPackageReference "Quick" */,
 			);
 			productRefGroup = 3B1B90102429CF55009FDCC5 /* Products */;
 			projectDirPath = "";
@@ -1752,25 +1749,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if [ \"${CONFIGURATION}\" == \"Debug\" ]; then\n    cp -r \"${PROJECT_DIR}/${PRODUCT_NAME}/Preview Content\" \"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app\"\nfi\n";
-		};
-		5CAF7436242BA08A00A847E2 /* Run Swiftlint */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Run Swiftlint";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nelse echo \"warning: SwiftLint not installed, brew install SwiftLint\"\nfi\n";
 		};
 		5E43F543CF316F97414F0E04 /* Generate Mockingbird Mocks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2109,6 +2087,10 @@
 			isa = PBXTargetDependency;
 			target = 3B1B900E2429CF55009FDCC5 /* Hymns */;
 			targetProxy = 3B1B90342429CF57009FDCC5 /* PBXContainerItemProxy */;
+		};
+		3B38ACF42D068671004B7836 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 3B38ACF32D068671004B7836 /* SwiftLintBuildToolPlugin */;
 		};
 		3BE7C91F249CAB2700B04A1F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2643,7 +2625,15 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		3B0EE2C42D005D8B00828516 /* XCRemoteSwiftPackageReference "Quick" */ = {
+		3B113F712D05936B0031E9D1 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 1.17.6;
+			};
+		};
+		3B113F842D0683FB0031E9D1 /* XCRemoteSwiftPackageReference "Quick" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Quick/Quick";
 			requirement = {
@@ -2735,8 +2725,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/facebook/facebook-ios-sdk";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 14.1.0;
+				kind = upToNextMinorVersion;
+				minimumVersion = 17.4.0;
 			};
 		};
 		3BA3D1632D00500E000AFB40 /* XCRemoteSwiftPackageReference "mockingbird" */ = {
@@ -2755,14 +2745,6 @@
 				minimumVersion = 13.6.2;
 			};
 		};
-		3BA3D1702D005937000AFB40 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/pointfreeco/swift-snapshot-testing";
-			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 1.17.6;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -2771,10 +2753,20 @@
 			package = 3B4D626B2D00F9240006F452 /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = RealmSwift;
 		};
-		3B0EE2C52D005D8B00828516 /* Quick */ = {
+		3B113F722D05936B0031E9D1 /* SnapshotTesting */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 3B0EE2C42D005D8B00828516 /* XCRemoteSwiftPackageReference "Quick" */;
+			package = 3B113F712D05936B0031E9D1 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
+			productName = SnapshotTesting;
+		};
+		3B113F852D0683FB0031E9D1 /* Quick */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3B113F842D0683FB0031E9D1 /* XCRemoteSwiftPackageReference "Quick" */;
 			productName = Quick;
+		};
+		3B38ACF32D068671004B7836 /* SwiftLintBuildToolPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3B8007602CFC5B7500E956D6 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
+			productName = "plugin:SwiftLintBuildToolPlugin";
 		};
 		3B4D626C2D00F9240006F452 /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -2855,16 +2847,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3BA3D16D2D0058ED000AFB40 /* XCRemoteSwiftPackageReference "Nimble" */;
 			productName = Nimble;
-		};
-		3BA3D1712D005937000AFB40 /* InlineSnapshotTesting */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3BA3D1702D005937000AFB40 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
-			productName = InlineSnapshotTesting;
-		};
-		3BA3D1732D005937000AFB40 /* SnapshotTesting */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3BA3D1702D005937000AFB40 /* XCRemoteSwiftPackageReference "swift-snapshot-testing" */;
-			productName = SnapshotTesting;
 		};
 /* End XCSwiftPackageProductDependency section */
 
