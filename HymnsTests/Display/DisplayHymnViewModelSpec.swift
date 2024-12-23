@@ -7,7 +7,7 @@ import Quick
 // swiftlint:disable type_body_length function_body_length file_length
 class DisplayHymnViewModelSpec: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
         describe("DisplayHymnViewModel") {
             let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [VerseEntity]())
             let testQueue = DispatchQueue(label: "test_queue")

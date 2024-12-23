@@ -6,7 +6,7 @@ import XCTest
 // swiftlint:disable identifier_name type_body_length function_body_length
 class RegexUtilSpec: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
         describe("getting from search query") {
             let mapping: [String: (hymnType: HymnType?, hymnNumber: String?)]
                 = ["ch1": (.chinese, "1"), "ch 1": (.chinese, "1"), "S1": (.spanish, "1"), "S 1": (.spanish, "1"),

@@ -6,7 +6,7 @@ import XCTest
 // swiftlint:disable identifier_name type_body_length function_body_length
 class StringUtilSpec: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
         describe("find the Levenshtein Distance") {
             context("includes empty strings") {
                 context("one empty string") {

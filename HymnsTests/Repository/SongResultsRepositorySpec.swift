@@ -6,7 +6,7 @@ import Quick
 @testable import Hymns
 
 // swiftlint:disable:next type_body_length
-class SongResultsRepositorySpec: QuickSpec {
+class SongResultsRepositorySpec: AsyncSpec {
 
     static let noMatchesSearchResult = SearchResultEntity(hymnType: .classic, hymnNumber: "1", title: "no matches in match info",
                                                           matchInfo: Data([0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]),
@@ -43,10 +43,10 @@ class SongResultsRepositorySpec: QuickSpec {
     static let maxMatchesInBothButWrongType = SongResultEntity(hymnType: .portuguese, hymnNumber: "7",
                                                                title: "max matches in both but wrong type",
                                                                songId: 0)
-    let databaseResults = [noMatchesSearchResult, singleMatchInLyricsSearchResult, singleMatchInTitleSearchResult,
-                           maxMatchesInBothButWrongTypeSearchResult, twoMatchesInLyricsSearchResult,
-                           maxMatchesInLyricsSearchResult, maxMatchesInTitleSearchResult, maxMatchesInBothSearchResult]
-    let sortedDatabaseResults = [maxMatchesInBoth, maxMatchesInBothButWrongType, maxMatchesInTitle, maxMatchesInLyrics, singleMatchInTitle, twoMatchesInLyrics, singleMatchInLyrics, noMatches]
+    static let databaseResults = [noMatchesSearchResult, singleMatchInLyricsSearchResult, singleMatchInTitleSearchResult,
+                                  maxMatchesInBothButWrongTypeSearchResult, twoMatchesInLyricsSearchResult,
+                                  maxMatchesInLyricsSearchResult, maxMatchesInTitleSearchResult, maxMatchesInBothSearchResult]
+    static let sortedDatabaseResults = [maxMatchesInBoth, maxMatchesInBothButWrongType, maxMatchesInTitle, maxMatchesInLyrics, singleMatchInTitle, twoMatchesInLyrics, singleMatchInLyrics, noMatches]
 
     static let noMatchesSongbaseResult = SongbaseSearchResultEntity(bookId: 1, bookIndex: 1, title: "First Songbase song",
                                                                     matchInfo: Data([0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]))
@@ -55,19 +55,19 @@ class SongResultsRepositorySpec: QuickSpec {
                                                                               matchInfo: Data([0x0, 0x0, 0x0, 0x0, 0x1, 0x0, 0x0, 0x0]))
     static let singleMatchInLyricsSongbase = SongResultEntity(hymnType: .songbaseOther, hymnNumber: "2", title: "Second Songbase song", songId: 0)
 
-    let songbaseResults = [noMatchesSongbaseResult, singleMatchInLyricsSongbaseResult]
-    let sortedSongbaseResults = [singleMatchInLyricsSongbase, noMatchesSongbase]
+    static let songbaseResults = [noMatchesSongbaseResult, singleMatchInLyricsSongbaseResult]
+    static let sortedSongbaseResults = [singleMatchInLyricsSongbase, noMatchesSongbase]
 
     /// Combine database + songbase results and sort them based on matchInfo
-    let combinedSortedResults = [maxMatchesInBoth, maxMatchesInTitle, maxMatchesInLyrics, singleMatchInTitle, twoMatchesInLyrics, singleMatchInLyrics,
-                                 singleMatchInLyricsSongbase, noMatches, noMatchesSongbase]
+    static let combinedSortedResults = [maxMatchesInBoth, maxMatchesInTitle, maxMatchesInLyrics, singleMatchInTitle, twoMatchesInLyrics, singleMatchInLyrics,
+                                        singleMatchInLyricsSongbase, noMatches, noMatchesSongbase]
 
-    let networkResult = SongResultsPage(results: [SongResult(name: "classic 1151", path: "/en/hymn/h/1151"),
-                                                  SongResult(name: "Hymn 1", path: "/en/hymn/h/1")],
-                                        hasMorePages: false)
+    static let networkResult = SongResultsPage(results: [SongResult(name: "classic 1151", path: "/en/hymn/h/1151"),
+                                                         SongResult(name: "Hymn 1", path: "/en/hymn/h/1")],
+                                               hasMorePages: false)
 
     // swiftlint:disable:next function_body_length
-    override func spec() {
+    override class func spec() {
         describe("SongResultsRepository") {
             let backgroundQueue = DispatchQueue.init(label: "background test queue")
             var converter: ConverterMock!
@@ -100,7 +100,7 @@ class SongResultsRepositorySpec: QuickSpec {
                     it("should return a failure completion") {
                         value.isInverted = true
                         let cancellable = target.search(searchParameter: "param", pageNumber: 1)
-                            .print(self.description)
+                            .print(current.description)
                             .sink(receiveCompletion: { state in
                                 completion.fulfill()
                                 expect(state).to(equal(.failure(.data(description: "database was not intialized properly"))))
@@ -111,7 +111,7 @@ class SongResultsRepositorySpec: QuickSpec {
                         verify(dataStore.getDatabaseInitializedProperly()).wasCalled(exactly(1))
                         verify(dataStore.searchHymn(any())).wasNeverCalled()
                         verify(service.search(for: any(), onPage: any())).wasNeverCalled()
-                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
+                        await current.fulfillment(of: [completion, value], timeout: testTimeout)
                         cancellable.cancel()
                     }
                 }
@@ -119,7 +119,7 @@ class SongResultsRepositorySpec: QuickSpec {
                     beforeEach {
                         given(dataStore.getDatabaseInitializedProperly()) ~> true
                         given(dataStore.searchHymn("Chenaniah")) ~> { _ in
-                            Just(self.databaseResults).mapError({ _ -> ErrorType in
+                            Just(Self.databaseResults).mapError({ _ -> ErrorType in
                                 // This will never be triggered.
                             }).eraseToAnyPublisher()
                         }
@@ -130,7 +130,7 @@ class SongResultsRepositorySpec: QuickSpec {
                         given(converter.toUiSongResultsPage(songResultEntities: self.sortedDatabaseResults, hasMorePages: false)) ~> convertedResultPage
 
                         let cancellable = target.search(searchParameter: "Chenaniah", pageNumber: 1)
-                            .print(self.description)
+                            .print(current.description)
                             .sink(receiveCompletion: { state in
                                 completion.fulfill()
                                 expect(state).to(equal(.finished))
@@ -140,7 +140,7 @@ class SongResultsRepositorySpec: QuickSpec {
                             })
                         verify(dataStore.getDatabaseInitializedProperly()).wasCalled()
                         verify(dataStore.searchHymn("Chenaniah")).wasCalled(exactly(1))
-                        await self.fulfillment(of: [completion, value], timeout: testTimeout)
+                        await current.fulfillment(of: [completion, value], timeout: testTimeout)
                         cancellable.cancel()
                     }
                 }
@@ -155,7 +155,7 @@ class SongResultsRepositorySpec: QuickSpec {
                     beforeEach {
                         given(dataStore.getDatabaseInitializedProperly()) ~> true
                         given(dataStore.searchHymn("Chenaniah")) ~> { _ in
-                            Just(self.databaseResults).mapError({ _ -> ErrorType in
+                            Just(Self.databaseResults).mapError({ _ -> ErrorType in
                                 // This will never be triggered.
                             }).eraseToAnyPublisher()
                         }
@@ -163,7 +163,7 @@ class SongResultsRepositorySpec: QuickSpec {
                     context("network error") {
                         beforeEach {
                             given(service.search(for: "Chenaniah", onPage: 1)) ~> { _, _ in
-                                Just(self.networkResult)
+                                Just(Self.networkResult)
                                     .tryMap({ _ -> SongResultsPage in
                                         throw URLError(.badServerResponse)
                                     })
@@ -178,7 +178,7 @@ class SongResultsRepositorySpec: QuickSpec {
                             given(converter.toUiSongResultsPage(songResultEntities: self.sortedDatabaseResults, hasMorePages: false)) ~> convertedResultPage
 
                             let cancellable = target.search(searchParameter: "Chenaniah", pageNumber: 1)
-                                .print(self.description)
+                                .print(current.description)
                                 .sink(receiveCompletion: { state in
                                     completion.fulfill()
                                     expect(state).to(equal(.failure(Hymns.ErrorType.data(description: "forced network error"))))
@@ -189,7 +189,7 @@ class SongResultsRepositorySpec: QuickSpec {
                             verify(dataStore.getDatabaseInitializedProperly()).wasCalled()
                             verify(dataStore.searchHymn("Chenaniah")).wasCalled(exactly(1))
                             verify(service.search(for: "Chenaniah", onPage: 1)).wasCalled(exactly(1))
-                            await self.fulfillment(of: [completion, value], timeout: testTimeout)
+                            await current.fulfillment(of: [completion, value], timeout: testTimeout)
                             cancellable.cancel()
                         }
                     }
@@ -219,7 +219,7 @@ class SongResultsRepositorySpec: QuickSpec {
                             value.expectedFulfillmentCount = 2
                             var valueCount = 0
                             let cancellable = target.search(searchParameter: "Chenaniah", pageNumber: 1)
-                                .print(self.description)
+                                .print(current.description)
                                 .sink(receiveCompletion: { state in
                                     completion.fulfill()
                                     expect(state).to(equal(.finished))
@@ -237,7 +237,7 @@ class SongResultsRepositorySpec: QuickSpec {
                             verify(dataStore.getDatabaseInitializedProperly()).wasCalled()
                             verify(dataStore.searchHymn("Chenaniah")).wasCalled(exactly(1))
                             verify(service.search(for: "Chenaniah", onPage: 1)).wasCalled(exactly(1))
-                            await self.fulfillment(of: [completion, value], timeout: testTimeout)
+                            await current.fulfillment(of: [completion, value], timeout: testTimeout)
                             cancellable.cancel()
                         }
                     }
@@ -264,7 +264,7 @@ class SongResultsRepositorySpec: QuickSpec {
 
                             value.isInverted = true
                             let cancellable = target.search(searchParameter: "Chenaniah", pageNumber: 1)
-                                .print(self.description)
+                                .print(current.description)
                                 .sink(receiveCompletion: { state in
                                     completion.fulfill()
                                     expect(state).to(equal(.failure(Hymns.ErrorType.data(description: "forced network error"))))
@@ -274,7 +274,7 @@ class SongResultsRepositorySpec: QuickSpec {
                             verify(dataStore.getDatabaseInitializedProperly()).wasCalled(exactly(1))
                             verify(dataStore.searchHymn("Chenaniah")).wasNeverCalled()
                             verify(service.search(for: "Chenaniah", onPage: 1)).wasCalled(exactly(1))
-                            await self.fulfillment(of: [completion, value], timeout: testTimeout)
+                            await current.fulfillment(of: [completion, value], timeout: testTimeout)
                             cancellable.cancel()
                         }
                     }
@@ -299,7 +299,7 @@ class SongResultsRepositorySpec: QuickSpec {
                             given(converter.toUiSongResultsPage(songResultEntities: networkSongResultEntities, hasMorePages: false)) ~> convertedNetworkResultPage
 
                             let cancellable = target.search(searchParameter: "Chenaniah", pageNumber: 1)
-                                .print(self.description)
+                                .print(current.description)
                                 .sink(receiveCompletion: { state in
                                     completion.fulfill()
                                     expect(state).to(equal(.finished))
@@ -310,7 +310,7 @@ class SongResultsRepositorySpec: QuickSpec {
                             verify(dataStore.getDatabaseInitializedProperly()).wasCalled(exactly(1))
                             verify(dataStore.searchHymn("Chenaniah")).wasNeverCalled()
                             verify(service.search(for: "Chenaniah", onPage: 1)).wasCalled(exactly(1))
-                            await self.fulfillment(of: [completion, value], timeout: testTimeout)
+                            await current.fulfillment(of: [completion, value], timeout: testTimeout)
                             cancellable.cancel()
                         }
                     }
@@ -341,7 +341,7 @@ class SongResultsRepositorySpec: QuickSpec {
                             given(converter.toUiSongResultsPage(songResultEntities: [SongResultEntity](), hasMorePages: false)) ~> emptyResultPage
 
                             let cancellable = target.search(searchParameter: "Chenaniah", pageNumber: 1)
-                                .print(self.description)
+                                .print(current.description)
                                 .sink(receiveCompletion: { state in
                                     completion.fulfill()
                                     expect(state).to(equal(.failure(Hymns.ErrorType.data(description: "forced network error"))))
@@ -352,7 +352,7 @@ class SongResultsRepositorySpec: QuickSpec {
                             verify(dataStore.getDatabaseInitializedProperly()).wasCalled()
                             verify(dataStore.searchHymn("Chenaniah")).wasCalled(exactly(1))
                             verify(service.search(for: "Chenaniah", onPage: 1)).wasCalled(exactly(1))
-                            await self.fulfillment(of: [completion, value], timeout: testTimeout)
+                            await current.fulfillment(of: [completion, value], timeout: testTimeout)
                             cancellable.cancel()
                         }
                     }
@@ -379,7 +379,7 @@ class SongResultsRepositorySpec: QuickSpec {
                             value.expectedFulfillmentCount = 2
                             var valueCount = 0
                             let cancellable = target.search(searchParameter: "Chenaniah", pageNumber: 1)
-                                .print(self.description)
+                                .print(current.description)
                                 .sink(receiveCompletion: { state in
                                     completion.fulfill()
                                     expect(state).to(equal(.finished))
@@ -398,7 +398,7 @@ class SongResultsRepositorySpec: QuickSpec {
                             verify(dataStore.getDatabaseInitializedProperly()).wasCalled()
                             verify(dataStore.searchHymn("Chenaniah")).wasCalled(exactly(1))
                             verify(service.search(for: "Chenaniah", onPage: 1)).wasCalled(exactly(1))
-                            await self.fulfillment(of: [completion, value], timeout: testTimeout)
+                            await current.fulfillment(of: [completion, value], timeout: testTimeout)
                             cancellable.cancel()
                         }
                     }

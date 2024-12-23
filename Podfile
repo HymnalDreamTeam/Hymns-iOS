@@ -52,7 +52,7 @@ target 'Hymns' do
 
     # Quick & Nimble
     # https://github.com/Quick/Quick
-    pod 'Quick', '~> 6.1.0'
+    pod 'Quick'
     # https://github.com/Quick/Nimble
     pod 'Nimble'
   end

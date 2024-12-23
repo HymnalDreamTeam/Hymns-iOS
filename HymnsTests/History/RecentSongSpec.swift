@@ -5,7 +5,7 @@ import Quick
 @testable import Hymns
 
 class RecengSongSpec: QuickSpec {
-    override func spec() {
+    override class func spec() {
         describe("copy") {
             var target: RecentSong!
             beforeEach {

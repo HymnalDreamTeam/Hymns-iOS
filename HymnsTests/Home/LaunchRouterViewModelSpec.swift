@@ -5,10 +5,9 @@ import Nimble
 import RealmSwift
 @testable import Hymns
 
-class LaunchRouterViewModelSpec: QuickSpec {
+class LaunchRouterViewModelSpec: AsyncSpec {
 
-    @MainActor
-    override func spec() {
+    override class func spec() {
         describe("LaunchRouterViewModel") {
             // https://www.vadimbulavin.com/unit-testing-async-code-in-swift/
             let testQueue = DispatchQueue(label: "test_queue")

@@ -6,7 +6,7 @@ import Quick
 
 class BrowseCategoriesViewModelSpec: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
 
         // https://www.vadimbulavin.com/unit-testing-async-code-in-swift/
         let testQueue = DispatchQueue(label: "test_queue")

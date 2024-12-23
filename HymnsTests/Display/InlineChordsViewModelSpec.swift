@@ -7,7 +7,7 @@ import Quick
 
 class InlineChordsViewModelSpec: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
         describe("InlineChordsViewModel") {
             var target: InlineChordsViewModel!
             context("chords exist") {

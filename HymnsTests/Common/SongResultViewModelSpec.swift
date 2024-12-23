@@ -7,7 +7,7 @@ import SwiftUI
 
 class SongResultViewModelSpec: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
         describe("SongResultViewModel") {
             context("SingleSongResultViewModel") {
                 let viewModel = SingleSongResultViewModel(stableId: "empty title 1 view", title: "title 1", destinationView: EmptyView().eraseToAnyView())

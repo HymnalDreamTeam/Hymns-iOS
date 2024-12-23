@@ -7,11 +7,11 @@ import Quick
 
 class DisplayHymnPdfViewModelSpec: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
         describe("DisplayHymnPdfViewModel") {
             let testQueue = DispatchQueue(label: "test_queue")
             let url = URL(string: "https://www.hymnal.net/Hymns/Hymnal/pdfs/e1151_g.pdf")!
-            let dummyPdf = createDummyPdf()
+            let dummyPdf = Self.createDummyPdf()
             var preloader: PDFLoaderMock!
             var target: DisplayHymnPdfViewModel!
             beforeEach {
@@ -65,7 +65,7 @@ class DisplayHymnPdfViewModelSpec: QuickSpec {
         }
     }
 
-    private func createDummyPdf() -> PDFDocument {
+    private class func createDummyPdf() -> PDFDocument {
         let format = UIGraphicsPDFRendererFormat()
         let pageWidth = 8.5 * 72.0
         let pageHeight = 11 * 72.0

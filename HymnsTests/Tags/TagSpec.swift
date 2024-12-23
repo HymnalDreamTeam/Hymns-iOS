@@ -5,7 +5,7 @@ import Quick
 @testable import Hymns
 
 class TagSpec: QuickSpec {
-    override func spec() {
+    override class func spec() {
         describe("copy") {
             describe("Tag") {
                 var target: Tag!

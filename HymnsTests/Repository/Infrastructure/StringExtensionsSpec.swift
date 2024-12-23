@@ -5,7 +5,7 @@ import XCTest
 
 class StringExtensionsSpec: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
         describe("isPositiveInteger") {
             context("positive number") {
                 it("should be true") {

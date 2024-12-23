@@ -10,7 +10,7 @@ import SwiftUI
 // swiftlint:disable:next type_body_length
 class BrowseResultsListViewModelSpec: QuickSpec {
     // swiftlint:disable:next function_body_length
-    override func spec() {
+    override class func spec() {
         describe("BrowseResultsListViewModel") {
             let testQueue = DispatchQueue(label: "test_queue")
             var dataStore: HymnDataStoreMock!

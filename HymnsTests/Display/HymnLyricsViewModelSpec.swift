@@ -6,7 +6,7 @@ import Nimble
 
 class HymnLyricsViewModelSpec: QuickSpec {
 
-    override func spec() {
+    override class func spec() {
         describe("HymnLyricsViewModel initialized") {
             var target: HymnLyricsViewModel!
             context("with nil lyrics") {

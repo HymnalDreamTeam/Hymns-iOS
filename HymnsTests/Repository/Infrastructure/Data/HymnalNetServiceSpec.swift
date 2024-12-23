@@ -5,9 +5,9 @@ import Nimble
 import Resolver
 @testable import Hymns
 
-class HymnalNetServiceSpec: QuickSpec {
+class HymnalNetServiceSpec: AsyncSpec {
 
-    override func spec() {
+    override class func spec() {
         describe("get data") {
             let url = URL(string: "https://www.hymnal.net/en/hymn/h/767/f=mp3")!
             var target: HymnalNetServiceImpl!
@@ -42,7 +42,7 @@ class HymnalNetServiceSpec: QuickSpec {
                                 value.fulfill()
                                 return
                             })
-                    await self.fulfillment(of: [failure, value], timeout: testTimeout)
+                    await current.fulfillment(of: [failure, value], timeout: testTimeout)
                     cancellable.cancel()
                 }
             }
@@ -52,7 +52,7 @@ class HymnalNetServiceSpec: QuickSpec {
                 let expected = try! Data(contentsOf: URL(fileURLWithPath: path))
                 beforeEach {
                     // Stub mock to return a valid network response but an invalid json.
-                    URLProtocolMock.response = self.createValidResponse(for: url)
+                    URLProtocolMock.response = current.createValidResponse(for: url)
                     URLProtocolMock.testURLs = [url: expected]
                 }
                 it("the finished completion and receive value callbacks should be triggered") {
@@ -69,7 +69,7 @@ class HymnalNetServiceSpec: QuickSpec {
                                 value.fulfill()
                                 expect(actual).to(equal(expected))
                             })
-                    await self.fulfillment(of: [finished, value], timeout: testTimeout)
+                    await current.fulfillment(of: [finished, value], timeout: testTimeout)
                     cancellable.cancel()
                 }
             }
