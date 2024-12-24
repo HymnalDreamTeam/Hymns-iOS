@@ -68,23 +68,23 @@ struct UiHymn: Equatable {
 
 class UiHymnBuilder {
 
-    private (set) var hymnIdentifier: HymnIdentifier
-    private (set) var title: String?
-    private (set) var lyrics: [VerseEntity]?
-    private (set) var inlineChords: [ChordLineEntity]?
-    private (set) var pdfSheet: [String: String]?
-    private (set) var category: String?
-    private (set) var subcategory: String?
-    private (set) var author: String?
-    private (set) var composer: String?
-    private (set) var key: String?
-    private (set) var time: String?
-    private (set) var meter: String?
-    private (set) var scriptures: String?
-    private (set) var hymnCode: String?
-    private (set) var languages: [HymnIdentifier]?
-    private (set) var music: [String: String]?
-    private (set) var relevant: [HymnIdentifier]?
+    private(set) var hymnIdentifier: HymnIdentifier
+    private(set) var title: String?
+    private(set) var lyrics: [VerseEntity]?
+    private(set) var inlineChords: [ChordLineEntity]?
+    private(set) var pdfSheet: [String: String]?
+    private(set) var category: String?
+    private(set) var subcategory: String?
+    private(set) var author: String?
+    private(set) var composer: String?
+    private(set) var key: String?
+    private(set) var time: String?
+    private(set) var meter: String?
+    private(set) var scriptures: String?
+    private(set) var hymnCode: String?
+    private(set) var languages: [HymnIdentifier]?
+    private(set) var music: [String: String]?
+    private(set) var relevant: [HymnIdentifier]?
 
     init(hymnIdentifier: HymnIdentifier, title: String?) {
         self.hymnIdentifier = hymnIdentifier

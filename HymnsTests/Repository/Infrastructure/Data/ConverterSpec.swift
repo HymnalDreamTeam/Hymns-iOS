@@ -224,10 +224,10 @@ class ConverterSpec: QuickSpec {
                     expect(convertedResults.map({ $0.label })).to(equal(["Hymn 594", "New tune 7", "New tune 8", "New tune 9", "New tune 10"]))
                 }
                 let expectedResults = [SingleSongResultViewModel(stableId: "hymnType: h, hymnNumber: 594", title: "", destinationView: EmptyView().eraseToAnyView()),
-                                       SingleSongResultViewModel(stableId: "hymnType: nt, hymnNumber: 7", title: "" , destinationView: EmptyView().eraseToAnyView()),
-                                       SingleSongResultViewModel(stableId: "hymnType: nt, hymnNumber: 8", title: "" , destinationView: EmptyView().eraseToAnyView()),
-                                       SingleSongResultViewModel(stableId: "hymnType: nt, hymnNumber: 9", title: "" , destinationView: EmptyView().eraseToAnyView()),
-                                       SingleSongResultViewModel(stableId: "hymnType: nt, hymnNumber: 10", title: "" , destinationView: EmptyView().eraseToAnyView())]
+                                       SingleSongResultViewModel(stableId: "hymnType: nt, hymnNumber: 7", title: "", destinationView: EmptyView().eraseToAnyView()),
+                                       SingleSongResultViewModel(stableId: "hymnType: nt, hymnNumber: 8", title: "", destinationView: EmptyView().eraseToAnyView()),
+                                       SingleSongResultViewModel(stableId: "hymnType: nt, hymnNumber: 9", title: "", destinationView: EmptyView().eraseToAnyView()),
+                                       SingleSongResultViewModel(stableId: "hymnType: nt, hymnNumber: 10", title: "", destinationView: EmptyView().eraseToAnyView())]
                 it("should convert the stable ids correctly") {
                     expect(convertedResults).to(equal(expectedResults))
                 }
@@ -264,7 +264,7 @@ class ConverterSpec: QuickSpec {
                     }
                     let expectedResults = [MultiSongResultViewModel(stableId: "[hymnType: h, hymnNumber: 594, hymnType: nt, hymnNumber: 7, hymnType: nt, hymnNumber: 8, hymnType: nt, hymnNumber: 9, hymnType: nt, hymnNumber: 10]",
                                                                     title: "", destinationView: EmptyView().eraseToAnyView()),
-                                           MultiSongResultViewModel(stableId: "[hymnType: nt, hymnNumber: 8]", title: "" , destinationView: EmptyView().eraseToAnyView())]
+                                           MultiSongResultViewModel(stableId: "[hymnType: nt, hymnNumber: 8]", title: "", destinationView: EmptyView().eraseToAnyView())]
                     it("should convert the stable ids correctly") {
                         expect(convertedResults.0).to(equal(expectedResults))
                     }
@@ -293,7 +293,7 @@ class ConverterSpec: QuickSpec {
                                               SongResultEntity(hymnType: .farsi, hymnNumber: "8", title: "farsi8"),
                                               SongResultEntity(hymnType: .newTune, hymnNumber: "9", title: "nt9", songId: 4),
                                               SongResultEntity(hymnType: .newTune, hymnNumber: "10", title: "nt10", songId: 1),
-                                              SongResultEntity(hymnType: .farsi, hymnNumber: "9", title: "farsi9"),]
+                                              SongResultEntity(hymnType: .farsi, hymnNumber: "9", title: "farsi9") ]
                     var convertedResults: [MultiSongResultViewModel]!
                     beforeEach {
                         convertedResults = target.toMultiSongResultViewModels(songResultEntities: songResultEntities, storeInHistoryStore: true)
@@ -314,7 +314,7 @@ class ConverterSpec: QuickSpec {
                                                                     title: "", destinationView: EmptyView().eraseToAnyView()),
                                            MultiSongResultViewModel(stableId: "[hymnType: F, hymnNumber: 8]",
                                                                     title: "", destinationView: EmptyView().eraseToAnyView()),
-                                           MultiSongResultViewModel(stableId: "[hymnType: nt, hymnNumber: 9]", title: "" , destinationView: EmptyView().eraseToAnyView()),
+                                           MultiSongResultViewModel(stableId: "[hymnType: nt, hymnNumber: 9]", title: "", destinationView: EmptyView().eraseToAnyView()),
                                            MultiSongResultViewModel(stableId: "[hymnType: F, hymnNumber: 9]",
                                                                     title: "", destinationView: EmptyView().eraseToAnyView())]
                     it("should convert the stable ids correctly") {

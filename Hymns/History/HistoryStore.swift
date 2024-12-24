@@ -117,7 +117,7 @@ extension Resolver {
                             }
                         }
                     }
-                    
+
                     // In version 2:
                     //   - hymnTypeRaw has been migrated from the enum value to the HymnType's abbreviated value
                     //   - Removed query parameters, so all songs with query params must be changed to its approprate 'simplified' hymn type
@@ -191,7 +191,7 @@ extension Resolver {
                             }.flatMap { hymnIdentifierEntity -> HymnIdentifier? in
                                 let hymnType = hymnIdentifierEntity["hymnTypeRaw"] as? String
                                 let hymnNumber = hymnIdentifierEntity["hymnNumber"] as? String
-                                
+
                                 guard let hymnType = hymnType,
                                       let hymnType = HymnType.fromAbbreviatedValue(hymnType),
                                       let hymnNumber = hymnNumber else {

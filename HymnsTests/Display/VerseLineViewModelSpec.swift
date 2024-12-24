@@ -14,13 +14,13 @@ class VerseLineViewModelSpec: QuickSpec {
                     target = VerseLineViewModel(verseType: .verse, verseNumber: "one",
                                                 lineEntity: LineEntity(lineContent: "content"))
                 }
-                it ("should set the font size to user defaults font size") {
+                it("should set the font size to user defaults font size") {
                     expect(target.fontSize).to(equal(15))
                 }
-                it ("should set italicized to false") {
+                it("should set italicized to false") {
                     expect(target.isItalicized).to(beFalse())
                 }
-                it ("should not have transliteration") {
+                it("should not have transliteration") {
                     expect(target.transliteration).to(beNil())
                 }
             }
@@ -28,10 +28,10 @@ class VerseLineViewModelSpec: QuickSpec {
                 beforeEach {
                     target = VerseLineViewModel(verseType: .chorus, lineEntity: LineEntity(lineContent: "content"))
                 }
-                it ("should set the font size to user defaults font size") {
+                it("should set the font size to user defaults font size") {
                     expect(target.fontSize).to(equal(15))
                 }
-                it ("should set italicized to false") {
+                it("should set italicized to false") {
                     expect(target.isItalicized).to(beFalse())
                 }
             }
@@ -39,10 +39,10 @@ class VerseLineViewModelSpec: QuickSpec {
                 beforeEach {
                     target = VerseLineViewModel(verseType: .note, lineEntity: LineEntity(lineContent: "content"))
                 }
-                it ("should set the font size to 70% of the user defaults font size") {
+                it("should set the font size to 70% of the user defaults font size") {
                     expect(target.fontSize).to(equal(10.5))
                 }
-                it ("should set italicized to true") {
+                it("should set italicized to true") {
                     expect(target.isItalicized).to(beTrue())
                 }
             }

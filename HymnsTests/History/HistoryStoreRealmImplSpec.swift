@@ -58,7 +58,7 @@ class HistoryStoreRealmImplSpec: AsyncSpec {
 
                         DispatchQueue.main.sync {
                             cancellable = target.recentSongs()
-                                .sink(receiveCompletion: { (completion: Subscribers.Completion<ErrorType>) -> Void in
+                                .sink(receiveCompletion: { (completion: Subscribers.Completion<ErrorType>) in
                                     switch completion {
                                     case .failure:
                                         failureExpectation.fulfill()
@@ -92,7 +92,7 @@ class HistoryStoreRealmImplSpec: AsyncSpec {
 
                         DispatchQueue.main.sync {
                             cancellable = target.recentSongs()
-                                .sink(receiveCompletion: { (completion: Subscribers.Completion<ErrorType>) -> Void in
+                                .sink(receiveCompletion: { (completion: Subscribers.Completion<ErrorType>) in
                                     switch completion {
                                     case .failure:
                                         failureExpectation.fulfill()
@@ -123,7 +123,7 @@ class HistoryStoreRealmImplSpec: AsyncSpec {
 
                             DispatchQueue.main.sync {
                                 cancellable = target.recentSongs()
-                                    .sink(receiveCompletion: { (completion: Subscribers.Completion<ErrorType>) -> Void in
+                                    .sink(receiveCompletion: { (completion: Subscribers.Completion<ErrorType>) in
                                         switch completion {
                                         case .failure:
                                             failureExpectation.fulfill()

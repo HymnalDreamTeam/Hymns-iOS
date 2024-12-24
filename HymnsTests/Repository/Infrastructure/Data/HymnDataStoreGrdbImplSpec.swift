@@ -369,7 +369,7 @@ class HymnDataStoreGrdbImplSpec: AsyncSpec {
                     builder.title = "no match"
                     builder.lyrics = LyricsEntity([VerseEntity(verseType: .verse, lineStrings: ["at all"])])
                 }
-                
+
                 let matchInBothId = HymnIdentifier(hymnType: .korean, hymnNumber: "matchInBoth")
                 let matchInBoth = HymnEntity.with { builder in
                     builder.title = "summer coming"

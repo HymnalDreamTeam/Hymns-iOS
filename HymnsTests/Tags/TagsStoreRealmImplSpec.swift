@@ -69,7 +69,7 @@ class TagStoreRealmImplSpec: AsyncSpec {
 
                         DispatchQueue.main.sync {
                             cancellable = target.getTagsForHymn(hymnIdentifier: classic1151)
-                                .sink(receiveCompletion: { (completion: Subscribers.Completion<ErrorType>) -> Void in
+                                .sink(receiveCompletion: { (completion: Subscribers.Completion<ErrorType>) in
                                     switch completion {
                                     case .failure:
                                         failureExpectation.fulfill()
@@ -171,7 +171,7 @@ class TagStoreRealmImplSpec: AsyncSpec {
 
                         DispatchQueue.main.sync {
                             cancellable = target.getSongsByTag(UiTag(title: "Christ", color: .blue))
-                                .sink(receiveCompletion: { (completion: Subscribers.Completion<ErrorType>) -> Void in
+                                .sink(receiveCompletion: { (completion: Subscribers.Completion<ErrorType>) in
                                     switch completion {
                                     case .failure:
                                         failureExpectation.fulfill()

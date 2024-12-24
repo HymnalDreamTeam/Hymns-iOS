@@ -43,7 +43,7 @@ extension ChordLineViewModel: CustomStringConvertible {
 }
 
 class ChordWordViewModel: ObservableObject, Identifiable {
-    
+
     private static let chordsTransposingPattern = "([^A-G]*)([A-G][#b]?)([^A-G]*)"
 
     @Published var fontSize: Float

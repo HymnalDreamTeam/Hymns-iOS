@@ -169,7 +169,7 @@ extension Resolver {
                             let hymnIdentifierWrapper = (old["hymnIdentifierEntity"] as? MigrationObject).flatMap { hymnIdentifierEntity -> HymnIdentifier? in
                                 let hymnType = hymnIdentifierEntity["hymnTypeRaw"] as? String
                                 let hymnNumber = hymnIdentifierEntity["hymnNumber"] as? String
-                                
+
                                 guard let hymnType = hymnType,
                                       let hymnType = HymnType.fromAbbreviatedValue(hymnType),
                                       let hymnNumber = hymnNumber else {

@@ -56,7 +56,7 @@ class HymnLyricsViewModel: ObservableObject {
                                                       verseLines: verse.lines))
             case .note:
                 verseViewModels.append(VerseViewModel(verseType: verse.verseType, verseNumber: nil, verseLines: verse.lines))
-            case .copyright, .doNotDisplay, .UNRECOGNIZED(_):
+            case .copyright, .doNotDisplay, .UNRECOGNIZED:
                 continue
             }
         }

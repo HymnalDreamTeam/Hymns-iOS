@@ -60,9 +60,9 @@ extension HymnIdEntity: PersistableRecord {
 
 class HymnIdEntityBuilder {
 
-    private (set) var hymnType: HymnType
-    private (set) var hymnNumber: String
-    private (set) var songId: Int64
+    private(set) var hymnType: HymnType
+    private(set) var hymnNumber: String
+    private(set) var songId: Int64
 
     init(hymnType: HymnType, hymnNumber: String, songId: Int64) {
         self.hymnType = hymnType

@@ -7,10 +7,6 @@ import XCTest
 // https://troz.net/post/2020/swiftui_snapshots/
 class HymnMusicSnapshots: XCTestCase {
 
-    override func setUp() {
-        super.setUp()
-    }
-
     func test_empty() {
         let view = HymnMusicView(viewModel: HymnMusicViewModel(musicViews: []))
         assertVersionedSnapshot(matching: view, as: .swiftUiImage(size: CGSize(width: 300, height: 200)))

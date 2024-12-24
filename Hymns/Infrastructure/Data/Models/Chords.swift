@@ -101,7 +101,7 @@ extension ChordWordEntity {
     init(_ word: String) {
         self.word = word
     }
-    
+
     init(_ word: String, chords: String) {
         self.word = word
         self.chords = chords

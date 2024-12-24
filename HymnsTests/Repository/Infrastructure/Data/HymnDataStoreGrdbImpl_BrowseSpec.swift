@@ -27,60 +27,60 @@ class HymnDataStoreGrdbImpl_BrowseSpec: AsyncSpec {
                         builder.subcategory = ["subcategory 1"]
                     })
                     target.saveHymn(HymnIdEntity(hymnIdentifier: classic1151, songId: songId!))
-                    
+
                     songId = target.saveHymn(HymnEntity.with { builder in
                         builder.title = "new song 145"
                         builder.category = ["category 1"]
                         builder.subcategory = ["subcategory 2"]
                     })
                     target.saveHymn(HymnIdEntity(hymnIdentifier: newSong145, songId: songId!))
-                    
+
                     songId = target.saveHymn(HymnEntity.with { builder in
                         builder.title = "songbase 1"
                         builder.category = ["category 2"]
                         builder.subcategory = ["subcategory 1"]
                     })
                     target.saveHymn(HymnIdEntity(hymnIdentifier: songbase1, songId: songId!))
-                    
+
                     songId = target.saveHymn(HymnEntity.with { builder in
                         builder.title = "classic 500"
                         builder.category = ["category 1"]
                         builder.subcategory = ["subcategory 1"]
                     })
                     target.saveHymn(HymnIdEntity(hymnIdentifier: classic500, songId: songId!))
-                    
+
                     songId = target.saveHymn(HymnEntity.with { builder in
                         builder.title = "classic 501"
                         builder.category = ["category 2"]
                         builder.subcategory = ["subcategory 1"]
                     })
                     target.saveHymn(HymnIdEntity(hymnIdentifier: classic501, songId: songId!))
-                    
+
                     songId = target.saveHymn(HymnEntity.with { builder in
                         builder.title = "classic 1109"
                         builder.category = ["category 2"]
                         builder.subcategory = ["subcategory 2"]
                     })
                     target.saveHymn(HymnIdEntity(hymnIdentifier: classic1109, songId: songId!))
-                    
+
                     songId = target.saveHymn(HymnEntity.with { builder in
                         builder.title = "classic 2"
                         builder.category = ["category 1"]
                         builder.subcategory = ["subcategory 5"]
                     })
                     target.saveHymn(HymnIdEntity(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "2"), songId: songId!))
-                    
+
                     songId = target.saveHymn(HymnEntity.with { builder in
                         builder.title = "spanish 1"
                         builder.category = ["category 1"]
                     })
                     target.saveHymn(HymnIdEntity(hymnIdentifier: HymnIdentifier(hymnType: .spanish, hymnNumber: "1"), songId: songId!))
-                    
+
                     songId = target.saveHymn(HymnEntity.with { builder in
                         builder.title = "spanish 2"
                     })
                     target.saveHymn(HymnIdEntity(hymnType: .spanish, hymnNumber: "2", songId: songId!))
-                    
+
                     songId = target.saveHymn(HymnEntity.with { builder in
                         builder.title = "spanish 3"
                         builder.category = ["category 1"]

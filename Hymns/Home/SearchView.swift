@@ -93,7 +93,7 @@ struct SearchView_Previews: PreviewProvider {
         recentSongsViewModel.songResults = [.single(PreviewSongResults.cupOfChrist),
                                             .single(PreviewSongResults.hymn1151),
                                             .single(PreviewSongResults.hymn1334)]
-        
+
         let recentSongsEmptyViewModel = SearchViewModel()
         recentSongsEmptyViewModel.state = .results
 
@@ -113,7 +113,7 @@ struct SearchView_Previews: PreviewProvider {
         searchResults.songResults = [.multi(PreviewSongResults.drinkARiver),
                                      .multi(PreviewSongResults.sinfulPastMulti),
                                      .multi(PreviewSongResults.hymn1334Multi)]
-        
+
         let noResultsViewModel = SearchViewModel()
         noResultsViewModel.state = .empty
         noResultsViewModel.searchActive = true

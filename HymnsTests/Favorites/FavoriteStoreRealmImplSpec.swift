@@ -12,7 +12,7 @@ class FavoriteStoreRealmImplSpec: AsyncSpec {
             var finishedExpectation: XCTestExpectation!
             var valueExpectation: XCTestExpectation!
             var cancellable: Cancellable!
-            
+
             var inMemoryRealm: Realm!
             var target: FavoriteStoreRealmImpl!
             beforeEach {
@@ -20,7 +20,7 @@ class FavoriteStoreRealmImplSpec: AsyncSpec {
                 failureExpectation.isInverted = true
                 finishedExpectation = current.expectation(description: "finished")
                 valueExpectation = current.expectation(description: "value")
-                
+
                 DispatchQueue.main.sync {
                     // Don't worry about force_try in tests.
                     // swiftlint:disable:next force_try
@@ -56,7 +56,7 @@ class FavoriteStoreRealmImplSpec: AsyncSpec {
 
                         DispatchQueue.main.sync {
                             cancellable = target.favorites()
-                                .sink(receiveCompletion: { (completion: Subscribers.Completion<ErrorType>) -> Void in
+                                .sink(receiveCompletion: { (completion: Subscribers.Completion<ErrorType>) in
                                     switch completion {
                                     case .failure:
                                         failureExpectation.fulfill()
@@ -78,7 +78,7 @@ class FavoriteStoreRealmImplSpec: AsyncSpec {
 
                         DispatchQueue.main.sync {
                             cancellable = target.isFavorite(hymnIdentifier: cebuano123)
-                                .sink(receiveCompletion: { (completion: Subscribers.Completion<ErrorType>) -> Void in
+                                .sink(receiveCompletion: { (completion: Subscribers.Completion<ErrorType>) in
                                     switch completion {
                                     case .failure:
                                         failureExpectation.fulfill()
@@ -101,7 +101,7 @@ class FavoriteStoreRealmImplSpec: AsyncSpec {
 
                             DispatchQueue.main.sync {
                                 cancellable = target.isFavorite(hymnIdentifier: cebuano123)
-                                    .sink(receiveCompletion: { (completion: Subscribers.Completion<ErrorType>) -> Void in
+                                    .sink(receiveCompletion: { (completion: Subscribers.Completion<ErrorType>) in
                                         switch completion {
                                         case .failure:
                                             failureExpectation.fulfill()

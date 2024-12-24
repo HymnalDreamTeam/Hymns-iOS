@@ -126,11 +126,11 @@ func createChordLine(_ line: String) -> [ChordWordEntity] {
     if line.isEmpty {
         return [ChordWordEntity("")]
     }
-    
+
     let range = NSRange(line.startIndex..<line.endIndex, in: line)
     let pattern = NSRegularExpression(separatorPattern, options: [])
     let matches = pattern.matches(in: line, range: range)
-    
+
     let chordWords = matches.compactMap { match -> String? in
         if match.numberOfRanges < 1 {
             return nil
@@ -148,10 +148,10 @@ func createChordLine(_ line: String) -> [ChordWordEntity] {
             ChordWordEntity(String(word))
         }
     }
-    
+
     return chordWords.map { chordWord in
         let chordPattern = NSRegularExpression(chordsPattern, options: [])
-        
+
         var word = chordWord
         var chords = ""
         var match = chordPattern.firstMatch(in: word, range: NSRange(word.startIndex..<word.endIndex, in: word))

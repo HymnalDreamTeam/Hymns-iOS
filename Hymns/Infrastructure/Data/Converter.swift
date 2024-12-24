@@ -154,7 +154,7 @@ class ConverterImpl: Converter {
 
         let title = hymnEntity.title
         let lyrics = hymnEntity.lyrics.verses.isEmpty ? nil : hymnEntity.lyrics.verses
-        
+
         let inlineChords: [ChordLineEntity]? = if hymnEntity.inlineChords.chordLines.map({ $0.hasChords }).reduce(false, {$0 || $1}) {
             hymnEntity.inlineChords.chordLines
         } else {
@@ -195,7 +195,7 @@ class ConverterImpl: Converter {
         }
         return (songResultEntities, songResultsPage.hasMorePages ?? false)
     }
-    
+
     private func groupSongResultEntities(_ songResultEntities: [SongResultEntity]) -> [[SongResultEntity]] {
         var groupedEntities = [[SongResultEntity]()]
         var songIdToIndexMap = OrderedDictionary<Int64, Int>()

@@ -145,7 +145,7 @@ class SearchViewModel: ObservableObject {
             return [.estonian]
         case .arabic:
             return [.arabic]
-        case .UNRECOGNIZED(_):
+        case .UNRECOGNIZED:
             return [HymnType]()
         }
     }
