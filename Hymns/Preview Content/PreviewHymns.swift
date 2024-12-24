@@ -21,3 +21,5 @@ private func getHymnFromJson(fileName: String) -> Hymn {
     return try! decoder.decode(Hymn.self, from: jsonData)
 }
 #endif
+
+// swiftlint:enable all

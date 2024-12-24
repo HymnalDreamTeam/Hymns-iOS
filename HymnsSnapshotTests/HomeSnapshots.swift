@@ -7,6 +7,7 @@ import XCTest
 class HomeSnapshots: XCTestCase {
 
     private var originalHasSeenSearchByTooltip: Bool?
+    // swiftlint:disable:next identifier_name
     private var originalShowPreferredSearchLanguageAnnouncementValue: Bool?
 
     override func setUp() {

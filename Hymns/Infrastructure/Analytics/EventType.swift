@@ -40,7 +40,6 @@ struct QueryChanged: AnalyticsEvent {
 }
 
 // Allow non-alphanumeric characters for logging params
-// swiftlint:disable:identifier_name
 struct DisplaySong: AnalyticsEvent {
 
     static let name = "display_song"

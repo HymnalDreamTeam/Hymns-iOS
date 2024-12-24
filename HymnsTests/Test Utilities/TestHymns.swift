@@ -147,3 +147,4 @@ func getModelFromJson<ModelType: Decodable>(for fileName: String, as modelType: 
     let jsonData = jsonString.data(using: .utf8)!
     return try! decoder.decode(ModelType.self, from: jsonData)
 }
+// swiftlint:enable all

@@ -32,7 +32,7 @@ class SettingsViewModelSpec: QuickSpec {
                     beforeEach {
                         given(systemUtil.donationProducts) ~> []
                     }
-                    var settingsSize = 8
+                    let settingsSize = 8
                     it("should contain exactly \(settingsSize) item") {
                         target.populateSettings(result: .constant(nil))
                         expect(target.settings).to(haveCount(settingsSize))

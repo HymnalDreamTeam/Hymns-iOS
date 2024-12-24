@@ -8,9 +8,7 @@ import Resolver
 // swiftlint:disable:next identifier_name
 let HYMN_DATA_STORE_VERISON = 28
 
-/**
- * Service to contact the local Hymn database.
- */
+// Service to contact the local Hymn database.
 // swiftlint:disable file_length
 protocol HymnDataStore {
 
@@ -44,9 +42,6 @@ protocol HymnDataStore {
     func getAllSongs(hymnType: HymnType) -> AnyPublisher<[SongResultEntity], ErrorType>
 }
 
-/**
- * Implementation of `HymnDataStore` that uses `GRDB`.
- */
 // swiftlint:disable:next type_body_length
 class HymnDataStoreGrdbImpl: HymnDataStore {
 
@@ -391,6 +386,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
                 sql: "SELECT * FROM SONG_DATA JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID")
         }
     }
+    // swiftlint:enable force_try
 
     func getResultsBy(author: String) -> AnyPublisher<[SongResultEntity], ErrorType> {
         databaseQueue.readPublisher { database in

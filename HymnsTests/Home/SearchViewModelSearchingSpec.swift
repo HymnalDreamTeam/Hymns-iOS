@@ -5,12 +5,11 @@ import Quick
 import SwiftUI
 @testable import Hymns
 
-// swiftlint:disable type_body_length function_body_length
-/**
- * Tests cases where the `SearchViewModel` performs a search request.
- */
+// Tests cases where the `SearchViewModel` performs a search request.
+// swiftlint:disable:next type_body_length
 class SearchViewModelSearchingSpec: QuickSpec {
 
+    // swiftlint:disable:next function_body_length
     override class func spec() {
         describe("searching") {
             // https://www.vadimbulavin.com/unit-testing-async-code-in-swift/
@@ -333,7 +332,6 @@ class SearchViewModelSearchingSpec: QuickSpec {
                                 testQueue.sync {}
                             }
                             it("should append the second page onto the first page") {
-                                let sr = target.songResults
                                 expect(target.songResults).to(haveCount(14))
                                 for (index, num) in (Array(1...10) + Array(20...23)).enumerated() {
                                     expect(target.songResults[index].multiSongResultViewModel!.title).to(equal("classic\(num)"))

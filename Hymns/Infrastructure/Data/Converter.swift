@@ -22,6 +22,7 @@ class ConverterImpl: Converter {
         self.firebaseLogger = firebaseLogger
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func toHymnEntity(hymn: Hymn) throws -> HymnEntity {
         return HymnEntity.with { [self] builder in
             builder.id = 0
@@ -155,6 +156,7 @@ class ConverterImpl: Converter {
         let title = hymnEntity.title
         let lyrics = hymnEntity.lyrics.verses.isEmpty ? nil : hymnEntity.lyrics.verses
 
+        // swiftlint:disable:next reduce_boolean
         let inlineChords: [ChordLineEntity]? = if hymnEntity.inlineChords.chordLines.map({ $0.hasChords }).reduce(false, {$0 || $1}) {
             hymnEntity.inlineChords.chordLines
         } else {
@@ -245,11 +247,11 @@ class ConverterImpl: Converter {
                 viewModel: DisplayHymnContainerViewModel(hymnToDisplay: entity.hymnIdentifier, storeInHistoryStore: storeInHistoryStore)).eraseToAnyView()
             if let title = entity.title {
                 return SingleSongResultViewModel(stableId: stableId, title: title,
-                                           label: entity.hymnIdentifier.displayTitle,
-                                           destinationView: destination)
+                                                 label: entity.hymnIdentifier.displayTitle,
+                                                 destinationView: destination)
             } else {
                 return SingleSongResultViewModel(stableId: stableId, title: entity.hymnIdentifier.displayTitle,
-                                           destinationView: destination)
+                                                 destinationView: destination)
             }
         }
     }

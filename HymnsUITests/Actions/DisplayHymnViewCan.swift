@@ -94,7 +94,7 @@ public class DisplayHymnViewCan: BaseViewCan {
     }
 
     public func verifyPdfDisplaying(_ string: String) -> DisplayHymnViewCan {
-        // swiftlint:disable force_cast
+        // swiftlint:disable:next force_cast
         XCTAssertEqual(string, app.textViews.element(boundBy: 0).value! as! String)
         return self
     }

@@ -57,7 +57,6 @@ extension HymnEntity {
 }
 
 // Intended force-trys. FetchableRecord is designed for records that reliably decode from rows.
-// swiftlint:disable force_try
 extension HymnEntity: FetchableRecord, MutablePersistableRecord {
     public init(row: Row) {
         self.id = row[CodingKeys.id.rawValue]
@@ -100,6 +99,7 @@ extension HymnEntity: FetchableRecord, MutablePersistableRecord {
         }
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func encode(to container: inout GRDB.PersistenceContainer) {
         if id != 0 {
             container[CodingKeys.id.rawValue] = id
@@ -169,8 +169,6 @@ extension DatabaseValueConvertible {
         (self as? String)?.components(separatedBy: ",")
     }
 }
-
-// swiftlint:enable force_try
 
 extension HymnEntity: PersistableRecord {
     static let databaseTableName = "SONG_DATA"

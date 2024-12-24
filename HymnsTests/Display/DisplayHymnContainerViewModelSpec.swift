@@ -4,7 +4,7 @@ import Nimble
 import Quick
 @testable import Hymns
 
-// swiftlint:disable type_name
+// swiftlint:disable:next type_name
 class DisplayHymnContainerViewModelSpec: QuickSpec {
 
     override class func spec() {

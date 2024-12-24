@@ -50,7 +50,7 @@ class SongbaseV3MigraterImpl: SongbaseV3Migrater {
         self.tagStore = tagStore
     }
 
-    // swiftlint:disable cyclomatic_complexity
+    // swiftlint:disable:next cyclomatic_complexity
     func migrate() async {
         let changed = await readChangedMigrationFile()
         let dropped = await readDroppedMigrationFile()

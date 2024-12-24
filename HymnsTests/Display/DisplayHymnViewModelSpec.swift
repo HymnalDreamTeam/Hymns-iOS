@@ -4,9 +4,10 @@ import Nimble
 import Quick
 @testable import Hymns
 
-// swiftlint:disable type_body_length function_body_length file_length
+// swiftlint:disable type_body_length file_length
 class DisplayHymnViewModelSpec: QuickSpec {
 
+    // swiftlint:disable:next function_body_length
     override class func spec() {
         describe("DisplayHymnViewModel") {
             let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [VerseEntity]())
@@ -584,3 +585,4 @@ class DisplayHymnViewModelSpec: QuickSpec {
         }
     }
 }
+// swiftlint:enable type_body_length file_length

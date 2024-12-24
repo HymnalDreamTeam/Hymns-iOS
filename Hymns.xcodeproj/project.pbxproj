@@ -1052,6 +1052,7 @@
 			isa = PBXGroup;
 			children = (
 				3BE44362248ABBED00763B3C /* Book.swift */,
+				3B609A4C2D1A5C94008FAF89 /* Protos */,
 				3B5935A7243584F700E6993C /* MetaDatum.swift */,
 				3B5935C12435CAC800E6993C /* HymnIdentifier.swift */,
 				3B5935A12435685400E6993C /* Verse.swift */,
@@ -1060,8 +1061,6 @@
 				3B5935A52435848F00E6993C /* Datum.swift */,
 				3B50B967243E44B100EABDE4 /* SongResultsPage.swift */,
 				3B5935B024358D1B00E6993C /* Hymn.swift */,
-				3B9374532CCFFBAA00D36138 /* HymnEntity.proto */,
-				3B9374552CCFFC2300D36138 /* HymnEntity.pb.swift */,
 				3B877E872460E1AF004C10DD /* UiHymn.swift */,
 				3BF93B6027DC1ECF00EE95CA /* Chords.swift */,
 				3B90969A245F7F14000229A2 /* HymnEntity.swift */,
@@ -1116,6 +1115,15 @@
 				3B22326727CD446300FB8934 /* SongResultsRepositorySpec.swift */,
 			);
 			path = Repository;
+			sourceTree = "<group>";
+		};
+		3B609A4C2D1A5C94008FAF89 /* Protos */ = {
+			isa = PBXGroup;
+			children = (
+				3B9374532CCFFBAA00D36138 /* HymnEntity.proto */,
+				3B9374552CCFFC2300D36138 /* HymnEntity.pb.swift */,
+			);
+			path = Protos;
 			sourceTree = "<group>";
 		};
 		3B7555C62437C22300DA17F6 /* Display */ = {
@@ -1780,7 +1788,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nelse echo \"warning: SwiftLint not installed, brew install SwiftLint\"\nfi\n";
+			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\"\n";
 		};
 		5E43F543CF316F97414F0E04 /* Generate Mockingbird Mocks */ = {
 			isa = PBXShellScriptBuildPhase;

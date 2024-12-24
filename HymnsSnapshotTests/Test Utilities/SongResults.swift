@@ -45,3 +45,4 @@ let sinfulPast_multiSongResult = MultiSongResultViewModel(stableId: "What about 
 let hymn1334_multiSongResult = MultiSongResultViewModel(stableId: "Hymn 1334",
                                                         title: "Hymn 1334",
                                                         destinationView: DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1334)).eraseToAnyView())
+// swiftlint:enable all

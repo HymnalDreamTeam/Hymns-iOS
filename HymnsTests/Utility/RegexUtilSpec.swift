@@ -3,9 +3,10 @@ import Nimble
 import XCTest
 @testable import Hymns
 
-// swiftlint:disable identifier_name type_body_length function_body_length
+// swiftlint:disable identifier_name type_body_length
 class RegexUtilSpec: QuickSpec {
 
+    // swiftlint:disable:next function_body_length
     override class func spec() {
         describe("getting from search query") {
             let mapping: [String: (hymnType: HymnType?, hymnNumber: String?)]
@@ -333,3 +334,4 @@ class RegexUtilSpec: QuickSpec {
         }
     }
 }
+// swiftlint:enable identifier_name type_body_length

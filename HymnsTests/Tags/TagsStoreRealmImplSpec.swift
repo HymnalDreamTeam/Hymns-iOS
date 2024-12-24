@@ -5,9 +5,9 @@ import Nimble
 import RealmSwift
 @testable import Hymns
 
-// swiftlint:disable type_body_length function_body_length cyclomatic_complexity
 class TagStoreRealmImplSpec: AsyncSpec {
 
+    // swiftlint:disable:next function_body_length cyclomatic_complexity
     override class func spec() {
         describe("using an in-memory realm") {
             var failureExpectation: XCTestExpectation!

@@ -68,8 +68,7 @@ struct DisplayHymnBottomBar: View {
         }.actionSheet(item: $actionSheet) { item -> ActionSheet in
             switch item {
             case .languages(let viewModels):
-                return
-                ActionSheet(
+                return ActionSheet(
                     title: Text("Languages", comment: "Title for the languages action sheet."),
                     message: Text("Change to another language", comment: "Message for the languages action sheet."),
                     buttons: viewModels.map({ viewModel -> Alert.Button in
@@ -78,8 +77,7 @@ struct DisplayHymnBottomBar: View {
                             })
                     }) + [.cancel()])
             case .relevant(let viewModels):
-                return
-                ActionSheet(
+                return ActionSheet(
                     title: Text("Relevant songs", comment: "Title for the relevant songs action sheet."),
                     message: Text("Change to a relevant hymn", comment: "Message for the relevant songs action sheet."),
                     buttons: viewModels.map({ viewModel -> Alert.Button in
@@ -88,8 +86,7 @@ struct DisplayHymnBottomBar: View {
                             })
                     }) + [.cancel()])
             case .overflow(let buttons):
-                return
-                ActionSheet(
+                return ActionSheet(
                     title: Text("Additional options", comment: "Title for the overflow menu action sheet."),
                     buttons: buttons.map({ button -> Alert.Button in
                             .default(Text(button.label), action: {

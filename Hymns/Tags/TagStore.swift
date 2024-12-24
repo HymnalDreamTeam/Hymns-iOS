@@ -120,6 +120,7 @@ class TagStoreRealmImpl: TagStore {
 }
 
 extension Resolver {
+    // swiftlint:disable:next cyclomatic_complexity
     public static func registerTagStore() {
         register(TagStore.self) {
             // https://stackoverflow.com/questions/28465706/how-to-find-my-realm-file
@@ -231,9 +232,9 @@ extension Resolver {
                             guard let hymnIdentifierWrapper = hymnIdentifierWrapper else {
                                 Crashlytics.crashlytics()
                                     .record(error: TagMigrationError(errorDescription: "Unable to migrate tags"),
-                                                                 userInfo: [
-                                                                    "oldSchemaVersion": oldSchemaVersion,
-                                                                    "old": old, "new": new])
+                                            userInfo: [
+                                                "oldSchemaVersion": oldSchemaVersion,
+                                                "old": old, "new": new])
                                 return
                             }
                             if let tagObject = new["tagObject"] as? MigrationObject {

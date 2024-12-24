@@ -4,9 +4,10 @@ import Nimble
 import Quick
 @testable import Hymns
 
-// swiftlint:disable type_body_length function_body_length
+// swiftlint:disable:next type_body_length
 class SearchViewModelSpec: AsyncSpec {
 
+    // swiftlint:disable:next function_body_length
     override class func spec() {
         describe("SearchViewModel") {
             // https://www.vadimbulavin.com/unit-testing-async-code-in-swift/

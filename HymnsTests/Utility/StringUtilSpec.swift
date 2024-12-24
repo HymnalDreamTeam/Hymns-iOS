@@ -3,7 +3,6 @@ import Nimble
 import XCTest
 @testable import Hymns
 
-// swiftlint:disable identifier_name type_body_length function_body_length
 class StringUtilSpec: QuickSpec {
 
     override class func spec() {

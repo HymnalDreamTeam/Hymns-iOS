@@ -5,12 +5,12 @@ import Quick
 import SwiftUI
 @testable import Hymns
 
-// swiftlint:disable:next type_name
+// swiftlint:disable:next type_name type_body_length
 class DisplayHymnBottomBarViewModelSpec: QuickSpec {
 
+    // swiftlint:disable:next function_body_length
     override class func spec() {
         describe("DisplayHymnBottomBarViewModel") {
-
             let hymnIdentifier = HymnIdentifier(hymnType: .classic, hymnNumber: "23")
             let lyrics = [VerseEntity(verseType: .verse, lineStrings: ["verse 1 line 1", "verse 1 line 2"]),
                           VerseEntity(verseType: .chorus, lineStrings: ["chorus line 1", "chorus line 2"]),
@@ -26,14 +26,11 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                                        title: "title", lyrics: lyrics, pdfSheet: pdfSheet,
                                        category: "Experience of Christ", subcategory: "As Food and Drink",
                                        languages: languages, music: music, relevant: relevant)
-
             var systemUtil: SystemUtilMock!
             var target: DisplayHymnBottomBarViewModel!
-
             beforeEach {
                 systemUtil = mock(SystemUtil.self)
             }
-
             context("no network available") {
                 beforeEach {
                     given(systemUtil.isNetworkAvailable()) ~> false
@@ -51,8 +48,8 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                         it("should show the German song result") {
                             expect(target.buttons).to(haveCount(3))
                             expect(target.buttons[1]).to(equal(.languages([SingleSongResultViewModel(stableId: "hymnType: de, hymnNumber: 2",
-                                                                                               title: "German 2",
-                                                                                               destinationView: EmptyView().eraseToAnyView())])))
+                                                                                                     title: "German 2",
+                                                                                                     destinationView: EmptyView().eraseToAnyView())])))
                         }
                     }
                     context("only Liederbuch language") {
@@ -64,8 +61,8 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                         it("should show the Liederbuch song result") {
                             expect(target.buttons).to(haveCount(3))
                             expect(target.buttons[1]).to(equal(.languages([SingleSongResultViewModel(stableId: "hymnType: lde, hymnNumber: 2",
-                                                                                               title: "Liederbuch 2",
-                                                                                               destinationView: EmptyView().eraseToAnyView())])))
+                                                                                                     title: "Liederbuch 2",
+                                                                                                     destinationView: EmptyView().eraseToAnyView())])))
                         }
                     }
                     context("Liederbuch and German language") {
@@ -78,8 +75,8 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                         it("should show only the Liederbuch song result") {
                             expect(target.buttons).to(haveCount(3))
                             expect(target.buttons[1]).to(equal(.languages([SingleSongResultViewModel(stableId: "hymnType: lde, hymnNumber: 20",
-                                                                                               title: "Liederbuch 20",
-                                                                                               destinationView: EmptyView().eraseToAnyView())])))
+                                                                                                     title: "Liederbuch 20",
+                                                                                                     destinationView: EmptyView().eraseToAnyView())])))
                         }
                     }
                 }
@@ -130,14 +127,14 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                             expect(target.buttons[1]).to(equal(.fontSize(FontPickerViewModel())))
                             expect(target.buttons[2]).to(equal(.languages([
                                 SingleSongResultViewModel(stableId: "hymnType: ht, hymnNumber: 1151", title: "Tagalog 1151",
-                                                    destinationView: EmptyView().eraseToAnyView()),
+                                                          destinationView: EmptyView().eraseToAnyView()),
                                 SingleSongResultViewModel(stableId: "hymnType: tsx, hymnNumber: 216", title: "Chinese Supplement 216 (Simp.)",
-                                                    destinationView: EmptyView().eraseToAnyView())])))
+                                                          destinationView: EmptyView().eraseToAnyView())])))
                             expect(target.buttons[3]).to(equal(.relevant([
                                 SingleSongResultViewModel(stableId: "hymnType: nt, hymnNumber: 1151", title: "New tune 1151",
-                                                    destinationView: EmptyView().eraseToAnyView()),
+                                                          destinationView: EmptyView().eraseToAnyView()),
                                 SingleSongResultViewModel(stableId: "hymnType: ns, hymnNumber: 216", title: "New song 216",
-                                                    destinationView: EmptyView().eraseToAnyView())])))
+                                                          destinationView: EmptyView().eraseToAnyView())])))
                             expect(target.buttons[4]).to(equal(.tags))
                             expect(target.buttons[5]).to(equal(.songInfo(SongInfoDialogViewModel(hymnToDisplay: classic1151, hymn: populatedHymn)!)))
                             expect(target.overflowButtons).to(beNil())
@@ -159,14 +156,14 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                             expect(target.buttons[1]).to(equal(.fontSize(FontPickerViewModel())))
                             expect(target.buttons[2]).to(equal(.languages([
                                 SingleSongResultViewModel(stableId: "hymnType: ht, hymnNumber: 1151", title: "Tagalog 1151",
-                                                    destinationView: EmptyView().eraseToAnyView()),
+                                                          destinationView: EmptyView().eraseToAnyView()),
                                 SingleSongResultViewModel(stableId: "hymnType: tsx, hymnNumber: 216", title: "Chinese Supplement 216 (Simp.)",
-                                                    destinationView: EmptyView().eraseToAnyView())])))
+                                                          destinationView: EmptyView().eraseToAnyView())])))
                             expect(target.buttons[3]).to(equal(.relevant([
                                 SingleSongResultViewModel(stableId: "hymnType: nt, hymnNumber: 1151", title: "New tune 1151",
-                                                    destinationView: EmptyView().eraseToAnyView()),
+                                                          destinationView: EmptyView().eraseToAnyView()),
                                 SingleSongResultViewModel(stableId: "hymnType: ns, hymnNumber: 216", title: "New song 216",
-                                                    destinationView: EmptyView().eraseToAnyView())])))
+                                                          destinationView: EmptyView().eraseToAnyView())])))
                             expect(target.overflowButtons).toNot(beNil())
                             expect(target.overflowButtons!).to(haveCount(2))
                             expect(target.overflowButtons![0]).to(equal(.tags))
@@ -248,15 +245,15 @@ class DisplayHymnBottomBarViewModelSpec: QuickSpec {
                             expect(target.buttons[1]).to(equal(.fontSize(FontPickerViewModel())))
                             expect(target.buttons[2]).to(equal(.languages([
                                 SingleSongResultViewModel(stableId: "hymnType: ht, hymnNumber: 1151", title: "Tagalog 1151",
-                                                    destinationView: EmptyView().eraseToAnyView()),
+                                                          destinationView: EmptyView().eraseToAnyView()),
                                 SingleSongResultViewModel(stableId: "hymnType: tsx, hymnNumber: 216", title: "Chinese Supplement 216 (Simp.)",
-                                                    destinationView: EmptyView().eraseToAnyView())])))
+                                                          destinationView: EmptyView().eraseToAnyView())])))
                             expect(target.buttons[3]).to(equal(.musicPlayback(AudioPlayerViewModel(url: URL(string: "http://www.hymnal.net/en/hymn/h/1151/f=mp3")!))))
                             expect(target.buttons[4]).to(equal(.relevant([
                                 SingleSongResultViewModel(stableId: "hymnType: nt, hymnNumber: 1151", title: "New tune 1151",
-                                                    destinationView: EmptyView().eraseToAnyView()),
+                                                          destinationView: EmptyView().eraseToAnyView()),
                                 SingleSongResultViewModel(stableId: "hymnType: ns, hymnNumber: 216", title: "New song 216",
-                                                    destinationView: EmptyView().eraseToAnyView())])))
+                                                          destinationView: EmptyView().eraseToAnyView())])))
                             expect(target.overflowButtons!).to(haveCount(4))
                             expect(target.overflowButtons![0]).to(equal(.tags))
                             expect(target.overflowButtons![1]).to(equal(.soundCloud(SoundCloudViewModel(url: URL(string: "https://soundcloud.com/search/results?q=title")!))))

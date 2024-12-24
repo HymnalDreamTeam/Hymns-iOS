@@ -201,17 +201,13 @@ extension HymnType {
         case .german:
             NSLocalizedString("German %@", comment: "Will appear in conjunction with something else (e.g. German 7).")
         case .chinese:
-            NSLocalizedString("Chinese %@ (Trad.)",
-                                     comment: "Will appear in conjunction with something else (e.g. Chinese 7 (Trad.)).")
+            NSLocalizedString("Chinese %@ (Trad.)", comment: "Will appear in conjunction with something else (e.g. Chinese 7 (Trad.)).")
         case .chineseSimplified:
-            NSLocalizedString("Chinese %@ (Simp.)",
-                                     comment: "Will appear in conjunction with something else (e.g. Chinese 7 (Simp.)).")
+            NSLocalizedString("Chinese %@ (Simp.)", comment: "Will appear in conjunction with something else (e.g. Chinese 7 (Simp.)).")
         case .chineseSupplement:
-            NSLocalizedString("Chinese Supplement %@ (Trad.)",
-                                     comment: "Will appear in conjunction with something else (e.g. Chinese Supplement 7 (Trad.)).")
+            NSLocalizedString("Chinese Supplement %@ (Trad.)", comment: "Will appear in conjunction with something else (e.g. Chinese Supplement 7 (Trad.)).")
         case .chineseSupplementSimplified:
-            NSLocalizedString("Chinese Supplement %@ (Simp.)",
-                                     comment: "Will appear in conjunction with something else (e.g. Chinese Supplement 7 (Simp.)).")
+            NSLocalizedString("Chinese Supplement %@ (Simp.)", comment: "Will appear in conjunction with something else (e.g. Chinese Supplement 7 (Simp.)).")
         case .cebuano:
             NSLocalizedString("Cebuano %@", comment: "Will appear in conjunction with something else (e.g. Cebuano 7).")
         case .tagalog:
@@ -279,7 +275,7 @@ extension HymnType {
         case .estonian: .estonian
         case .arabic: .arabic
         case .hinos: .portuguese
-        case .UNRECOGNIZED(let i): .UNRECOGNIZED(i)
+        case .UNRECOGNIZED(let int): .UNRECOGNIZED(int)
         }
     }
 }

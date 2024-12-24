@@ -12,3 +12,5 @@ let hymn480_identifier = HymnIdentifier(hymnType: .classic, hymnNumber: "480")
 let sinfulPast_identifier = HymnIdentifier(hymnType: .howardHigashi, hymnNumber: "76")
 let hymn1334_identifier = HymnIdentifier(hymnType: .classic, hymnNumber: "1334")
 let chineseSupplement216_identifier = HymnIdentifier(hymnType: .chineseSupplement, hymnNumber: "216")
+
+// swiftlint:enable identifier_name

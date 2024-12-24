@@ -77,6 +77,7 @@ class HistoryStoreRealmImpl: HistoryStore {
 }
 
 extension Resolver {
+    // swiftlint:disable:next cyclomatic_complexity
     public static func registerHistoryStore() {
         register(HistoryStore.self) {
             // https://stackoverflow.com/questions/28465706/how-to-find-my-realm-file

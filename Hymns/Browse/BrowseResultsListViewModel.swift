@@ -168,8 +168,8 @@ class BrowseResultsListViewModel: ObservableObject {
                         }
                         let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: hymnIdentifier)).eraseToAnyView()
                         return SingleSongResultViewModel(stableId: String(describing: hymnIdentifier),
-                                                   title: title,
-                                                   destinationView: destination)
+                                                         title: title,
+                                                         destinationView: destination)
                     })
             })
             .replaceError(with: [SingleSongResultViewModel]())

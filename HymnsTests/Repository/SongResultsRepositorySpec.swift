@@ -38,8 +38,8 @@ class SongResultsRepositorySpec: AsyncSpec {
     static let maxMatchesInBoth = SongResultEntity(hymnType: .classic, hymnNumber: "7", title: "max matches in both", songId: 0)
     static let maxMatchesInBothButWrongTypeSearchResult = SearchResultEntity(hymnType: .portuguese, hymnNumber: "7",
                                                                              title: "max matches in both but wrong type",
-                                                                 matchInfo: Data([0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]),
-                                                                 songId: 0)
+                                                                             matchInfo: Data([0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff]),
+                                                                             songId: 0)
     static let maxMatchesInBothButWrongType = SongResultEntity(hymnType: .portuguese, hymnNumber: "7",
                                                                title: "max matches in both but wrong type",
                                                                songId: 0)
@@ -47,14 +47,12 @@ class SongResultsRepositorySpec: AsyncSpec {
                                   maxMatchesInBothButWrongTypeSearchResult, twoMatchesInLyricsSearchResult,
                                   maxMatchesInLyricsSearchResult, maxMatchesInTitleSearchResult, maxMatchesInBothSearchResult]
     static let sortedDatabaseResults = [maxMatchesInBoth, maxMatchesInBothButWrongType, maxMatchesInTitle, maxMatchesInLyrics, singleMatchInTitle, twoMatchesInLyrics, singleMatchInLyrics, noMatches]
-
     static let noMatchesSongbaseResult = SongbaseSearchResultEntity(bookId: 1, bookIndex: 1, title: "First Songbase song",
                                                                     matchInfo: Data([0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0]))
     static let noMatchesSongbase = SongResultEntity(hymnType: .songbaseOther, hymnNumber: "1", title: "First Songbase song", songId: 0)
     static let singleMatchInLyricsSongbaseResult = SongbaseSearchResultEntity(bookId: 1, bookIndex: 2, title: "Second Songbase song",
                                                                               matchInfo: Data([0x0, 0x0, 0x0, 0x0, 0x1, 0x0, 0x0, 0x0]))
     static let singleMatchInLyricsSongbase = SongResultEntity(hymnType: .songbaseOther, hymnNumber: "2", title: "Second Songbase song", songId: 0)
-
     static let songbaseResults = [noMatchesSongbaseResult, singleMatchInLyricsSongbaseResult]
     static let sortedSongbaseResults = [singleMatchInLyricsSongbase, noMatchesSongbase]
 

@@ -3,10 +3,11 @@ import Nimble
 import SwiftUI
 @testable import Hymns
 
+// swiftlint:disable:next type_body_length 
 class ConverterSpec: QuickSpec {
 
     // Don't worry about force_try in tests.
-    // swiftlint:disable force_try
+    // swiftlint:disable function_body_length force_try
     override class func spec() {
         describe("Converter") {
             var target: Converter!
@@ -324,4 +325,5 @@ class ConverterSpec: QuickSpec {
             }
         }
     }
+    // swiftlint:enable function_body_length force_try
 }

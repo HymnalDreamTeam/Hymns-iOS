@@ -80,7 +80,7 @@ enum Chord: String {
         }
     }
 }
-// swiftlint:enagle identifier_name cyclomatic_complexity
+// swiftlint:enable identifier_name cyclomatic_complexity
 
 extension ChordLineEntity {
     init(_ chordWords: [ChordWordEntity]) {

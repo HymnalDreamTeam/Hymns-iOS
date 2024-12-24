@@ -4,9 +4,11 @@ import XCTest
 @testable import Hymns
 
 // https://troz.net/post/2020/swiftui_snapshots/
+// swiftlint:disable:next type_name
 class PreferredSearchLanguageSnapshots: XCTestCase {
 
     private var originalPreferredSearchLanguage: Language?
+    // swiftlint:disable:next identifier_name
     private var originalShowPreferredSearchLanguageAnnouncementValue: Bool?
 
     override func setUp() {
