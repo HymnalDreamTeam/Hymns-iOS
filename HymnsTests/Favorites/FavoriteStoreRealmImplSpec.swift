@@ -5,121 +5,128 @@ import Nimble
 import RealmSwift
 @testable import Hymns
 
-class FavoriteStoreRealmImplSpec: QuickSpec {
-
-    @MainActor
-    override func spec() {
+class FavoriteStoreRealmImplSpec: AsyncSpec {
+    override class func spec() {
         describe("using an in-memory realm") {
+            var failureExpectation: XCTestExpectation!
+            var finishedExpectation: XCTestExpectation!
+            var valueExpectation: XCTestExpectation!
+            var cancellable: Cancellable!
+            
             var inMemoryRealm: Realm!
             var target: FavoriteStoreRealmImpl!
             beforeEach {
-                // Don't worry about force_try in tests.
-                // swiftlint:disable:next force_try
-                inMemoryRealm = try! Realm(configuration: Realm.Configuration(inMemoryIdentifier: "FavoriteStoreRealmImplSpec"))
-                target = FavoriteStoreRealmImpl(realm: inMemoryRealm)
+                failureExpectation = current.expectation(description: "failure")
+                failureExpectation.isInverted = true
+                finishedExpectation = current.expectation(description: "finished")
+                valueExpectation = current.expectation(description: "value")
+                
+                DispatchQueue.main.sync {
+                    // Don't worry about force_try in tests.
+                    // swiftlint:disable:next force_try
+                    inMemoryRealm = try! Realm(configuration: Realm.Configuration(inMemoryIdentifier: "FavoriteStoreRealmImplSpec"))
+                    target = FavoriteStoreRealmImpl(realm: inMemoryRealm)
+                }
             }
             afterEach {
-                // Don't worry about force_try in tests.
-                // swiftlint:disable:next force_try
-                try! inMemoryRealm.write {
-                    inMemoryRealm.deleteAll()
+                await current.fulfillment(of: [failureExpectation, finishedExpectation, valueExpectation], timeout: testTimeout)
+                cancellable.cancel()
+
+                DispatchQueue.main.sync {
+                    // Don't worry about force_try in tests.
+                    // swiftlint:disable:next force_try
+                    try! inMemoryRealm.write {
+                        inMemoryRealm.deleteAll()
+                    }
+                    inMemoryRealm.invalidate()
                 }
-                inMemoryRealm.invalidate()
             }
             context("store a few favorites") {
                 beforeEach {
-                    target.storeFavorite(FavoriteEntity(hymnIdentifier: classic1151, songTitle: "Hymn 1151"))
-                    target.storeFavorite(FavoriteEntity(hymnIdentifier: newSong145, songTitle: "Hymn: Jesus shall reign where\\u2019er the sun"))
-                    target.storeFavorite(FavoriteEntity(hymnIdentifier: cebuano123, songTitle: "Naghigda sa lubong\\u2014"))
+                    DispatchQueue.main.sync {
+                        target.storeFavorite(FavoriteEntity(hymnIdentifier: classic1151, songTitle: "Hymn 1151"))
+                        target.storeFavorite(FavoriteEntity(hymnIdentifier: newSong145, songTitle: "Hymn: Jesus shall reign where\\u2019er the sun"))
+                        target.storeFavorite(FavoriteEntity(hymnIdentifier: cebuano123, songTitle: "Naghigda sa lubong\\u2014"))
+                    }
                 }
                 describe("get the list of all favorites") {
                     it("should get all favorited songs") {
-                        let failure = self.expectation(description: "Invalid.failure")
-                        failure.isInverted = true
-                        let finished = self.expectation(description: "Invalid.finished")
                         // finished should not be called because this is a self-updating publisher.
-                        finished.isInverted = true
-                        let value = self.expectation(description: "Invalid.receiveValue")
+                        finishedExpectation.isInverted = true
 
-                        let cancellable = target.favorites()
-                            .sink(receiveCompletion: { (completion: Subscribers.Completion<ErrorType>) -> Void in
-                                switch completion {
-                                case .failure:
-                                    failure.fulfill()
-                                case .finished:
-                                    finished.fulfill()
-                                }
-                                return
-                            }, receiveValue: { entities in
-                                value.fulfill()
-                                expect(entities).to(equal([FavoriteEntity(hymnIdentifier: classic1151, songTitle: "Hymn 1151"),
-                                                           FavoriteEntity(hymnIdentifier: newSong145, songTitle: "Hymn: Jesus shall reign where\\u2019er the sun"),
-                                                           FavoriteEntity(hymnIdentifier: cebuano123, songTitle: "Naghigda sa lubong\\u2014")]))
-                            })
-                        await self.fulfillment(of: [failure, finished, value], timeout: testTimeout)
-                        cancellable.cancel()
+                        DispatchQueue.main.sync {
+                            cancellable = target.favorites()
+                                .sink(receiveCompletion: { (completion: Subscribers.Completion<ErrorType>) -> Void in
+                                    switch completion {
+                                    case .failure:
+                                        failureExpectation.fulfill()
+                                    case .finished:
+                                        finishedExpectation.fulfill()
+                                    }
+                                    return
+                                }, receiveValue: { entities in
+                                    valueExpectation.fulfill()
+                                    expect(entities).to(equal([FavoriteEntity(hymnIdentifier: classic1151, songTitle: "Hymn 1151"),
+                                                               FavoriteEntity(hymnIdentifier: newSong145, songTitle: "Hymn: Jesus shall reign where\\u2019er the sun"),
+                                                               FavoriteEntity(hymnIdentifier: cebuano123, songTitle: "Naghigda sa lubong\\u2014")]))
+                                })
+                        }
                     }
                     it("cebuano123 should be favorited") {
-                        let failure = self.expectation(description: "Invalid.failure")
-                        failure.isInverted = true
-                        let finished = self.expectation(description: "Invalid.finished")
                         // finished should not be called because this is a self-updating publisher.
-                        finished.isInverted = true
-                        let value = self.expectation(description: "Invalid.receiveValue")
+                        finishedExpectation.isInverted = true
 
-                        let cancellable = target.isFavorite(hymnIdentifier: cebuano123)
-                            .sink(receiveCompletion: { (completion: Subscribers.Completion<ErrorType>) -> Void in
-                                switch completion {
-                                case .failure:
-                                    failure.fulfill()
-                                case .finished:
-                                    finished.fulfill()
-                                }
-                                return
-                            }, receiveValue: { isFavorite in
-                                value.fulfill()
-                                expect(isFavorite).to(beTrue())
-                            })
-                        await self.fulfillment(of: [failure, finished, value], timeout: testTimeout)
-                        cancellable.cancel()
-                    }
-                    context("favorites status changes") {
-                        let failure = self.expectation(description: "Invalid.failure")
-                        failure.isInverted = true
-                        let finished = self.expectation(description: "Invalid.finished")
-                        // finished should not be called because this is a self-updating publisher.
-                        finished.isInverted = true
-                        let value = self.expectation(description: "Invalid.receiveValue")
-                        value.expectedFulfillmentCount = 2
-                        var cancellable: AnyCancellable?
-                        var count = 0
-                        beforeEach {
+                        DispatchQueue.main.sync {
                             cancellable = target.isFavorite(hymnIdentifier: cebuano123)
                                 .sink(receiveCompletion: { (completion: Subscribers.Completion<ErrorType>) -> Void in
                                     switch completion {
                                     case .failure:
-                                        failure.fulfill()
+                                        failureExpectation.fulfill()
                                     case .finished:
-                                        finished.fulfill()
+                                        finishedExpectation.fulfill()
                                     }
                                     return
                                 }, receiveValue: { isFavorite in
-                                    value.fulfill()
-                                    count += 1
-                                    if count == 1 {
-                                        expect(isFavorite).to(beTrue())
-                                    } else if count == 2 {
-                                        expect(isFavorite).to(beFalse())
-                                    } else {
-                                        fail("count should only be either 1 or 2")
-                                    }
+                                    valueExpectation.fulfill()
+                                    expect(isFavorite).to(beTrue())
                                 })
                         }
+                    }
+                    context("favorites status changes") {
+                        var count = 0
+                        beforeEach {
+                            // finished should not be called because this is a self-updating publisher.
+                            finishedExpectation.isInverted = true
+                            valueExpectation.expectedFulfillmentCount = 2
+
+                            DispatchQueue.main.sync {
+                                cancellable = target.isFavorite(hymnIdentifier: cebuano123)
+                                    .sink(receiveCompletion: { (completion: Subscribers.Completion<ErrorType>) -> Void in
+                                        switch completion {
+                                        case .failure:
+                                            failureExpectation.fulfill()
+                                        case .finished:
+                                            finishedExpectation.fulfill()
+                                        }
+                                        return
+                                    }, receiveValue: { isFavorite in
+                                        valueExpectation.fulfill()
+                                        count += 1
+                                        if count == 1 {
+                                            expect(isFavorite).to(beTrue())
+                                        } else if count == 2 {
+                                            expect(isFavorite).to(beFalse())
+                                        } else {
+                                            fail("count should only be either 1 or 2")
+                                        }
+                                    })
+                            }
+                        }
                         it("the correct callbacks should be called") {
-                            target.deleteFavorite(primaryKey: FavoriteEntity.createPrimaryKey(hymnIdentifier: cebuano123))
-                            await self.fulfillment(of: [failure, finished, value], timeout: testTimeout)
-                            expect(cancellable).toNot(beNil())
-                            cancellable!.cancel()
+                            // Calling delete should trigger the sink operation above again.
+                            DispatchQueue.main.sync {
+                                target.deleteFavorite(primaryKey: FavoriteEntity.createPrimaryKey(hymnIdentifier: cebuano123))
+                            }
                         }
                     }
                 }
