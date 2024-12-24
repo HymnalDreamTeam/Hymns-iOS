@@ -156,8 +156,7 @@ class ConverterImpl: Converter {
         let title = hymnEntity.title
         let lyrics = hymnEntity.lyrics.verses.isEmpty ? nil : hymnEntity.lyrics.verses
 
-        // swiftlint:disable:next reduce_boolean
-        let inlineChords: [ChordLineEntity]? = if hymnEntity.inlineChords.chordLines.map({ $0.hasChords }).reduce(false, {$0 || $1}) {
+        let inlineChords: [ChordLineEntity]? = if hymnEntity.inlineChords.chordLines.map({ $0.hasChords }).contains(true) {
             hymnEntity.inlineChords.chordLines
         } else {
             nil
