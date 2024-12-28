@@ -145,11 +145,11 @@ PODS:
   - PromisesSwift (2.4.0):
     - PromisesObjC (= 2.4.0)
   - Quick (7.6.2)
-  - Realm (20.0.0):
-    - Realm/Headers (= 20.0.0)
-  - Realm/Headers (20.0.0)
-  - RealmSwift (20.0.0):
-    - Realm (= 20.0.0)
+  - Realm (20.0.1):
+    - Realm/Headers (= 20.0.1)
+  - Realm/Headers (20.0.1)
+  - RealmSwift (20.0.1):
+    - Realm (= 20.0.1)
   - Resolver (1.5.1)
   - SnapshotTesting (1.9.0)
   - swift-collections (1.1.1):
@@ -263,8 +263,8 @@ SPEC CHECKSUMS:
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   PromisesSwift: 9d77319bbe72ebf6d872900551f7eeba9bce2851
   Quick: b8bec97cd4b9f21da0472d45580f763b801fc353
-  Realm: a799b5f9145623fb0bfe149fe81422863631dd0f
-  RealmSwift: f8c4354ebd5053343e6ab9f4eda244145308a51e
+  Realm: 9572204903ef28caeb3c03bb30c1147f354ee3e7
+  RealmSwift: d230b44017a55a1ba97de6a944da1fe3bedb92b5
   Resolver: 0e2ce51257e9366c54afe1b9e9be25059e9b9300
   SnapshotTesting: 6141c48b6aa76ead61431ca665c14ab9a066c53b
   swift-collections: ba248ecaf44ef500b27d5cf94d304218c89892ff
@@ -275,4 +275,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 8f425eff5084325b7320c43a0ad0185311ff31e5
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2
