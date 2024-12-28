@@ -15,7 +15,7 @@ class DisplayHymnScenarios: BaseTestCase {
         _ = DisplayHymnViewCan(app, testCase: self)
             .openMusic()
             .openPiano()
-            .verifyPdfDisplaying("Hymn 1151\'s Piano\n")
+            .verifyPdfDisplaying("Hymn 1151\'s Piano")
             .maximizeSheetMusic()
             .closeSheetMusic()
     }

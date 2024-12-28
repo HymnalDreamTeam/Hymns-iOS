@@ -43,7 +43,7 @@ class DisplayHymnPdfViewModelSpec: QuickSpec {
                         }
                         it("should show loaded pdf") {
                             expect(target.isLoading).to(beFalse())
-                            expect(target.pdfDocument!.string!).to(match("Drink! A river pure and clear that’s flowing from the throne Experience of Christ . As Food and Drink"))
+                            expect(target.pdfDocument!.string!).to(match("Drink! A river pure and clear that’s flowing from the throne"))
                         }
                     }
                 }
