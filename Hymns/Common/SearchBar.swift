@@ -44,18 +44,22 @@ struct SearchBar: View {
                     .keyboardType(searchMode == .keyword ? .default : .asciiCapableNumberPad)
                     .foregroundColor(.primary)
                     .focused($focused)
+                    .highPriorityGesture(
+                        TapGesture().onEnded {
+                            if !self.searchActive {
+                                withAnimation {
+                                    self.searchActive = true
+                                    self.focused = true
+                                }
+                            }
+                        }
+                    )
                 if !self.searchText.isEmpty {
                     Button(action: {
                         self.searchText = ""
                     }, label: {
                         Image(systemName: "xmark.circle.fill").font(.system(size: smallButtonSize))
                     })
-                }
-            }.onTapGesture {
-                if !self.searchActive {
-                    withAnimation {
-                        self.searchActive = true
-                    }
                 }
             }
             .padding(EdgeInsets(top: 8, leading: 6, bottom: 8, trailing: 6))
