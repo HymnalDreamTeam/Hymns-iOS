@@ -1,0 +1,38 @@
+name: Build and Test iOS 16
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-and-test:
+    runs-on: macos-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: See All Xcode Versions
+      run: ls -n /Applications/ | grep Xcode*
+    - name: Set Xcode Version
+      run: sudo xcode-select -s /Applications/Xcode_15.0.app
+    - name: Install Dependencies
+      run: |
+        pod install --repo-update
+      shell: bash
+    - name: Clean Build Test
+      run: |
+        xcodebuild clean build test \
+          -workspace Hymns.xcworkspace \
+          -scheme Hymns \
+          -destination "platform=iOS Simulator,name=iPhone 15 Pro,OS=16.4" \
+          -testPlan MasterTestPlan
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: Test Logs
+        path: /Users/runner/Library/Developer/Xcode/DerivedData/Hymns-*/Logs
+        retention-days: 5
+    - name: Download all workflow run artifacts
+      uses: actions/download-artifact@v4
