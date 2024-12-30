@@ -1,5 +1,5 @@
 {
-  "originHash" : "7b7c425e7c87b673ab5be73f77f41ce5c043c3d44294b373477e61f01e1c6395",
+  "originHash" : "d77e0c769ff02d14cac3b592898e917a29bcccf46f8e075e9831b0db6e678d79",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/facebook/facebook-ios-sdk",
       "state" : {
-        "revision" : "619d1772808425faa010d92293b26eeb9bc1d630",
-        "version" : "17.4.0"
+        "revision" : "c19607d535864533523d1f437c84035e5fb101cf",
+        "version" : "14.1.0"
       }
     },
     {
@@ -87,8 +87,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/groue/GRDB.swift",
       "state" : {
-        "revision" : "2cf6c756e1e5ef6901ebae16576a7e4e4b834622",
-        "version" : "6.29.3"
+        "branch" : "master",
+        "revision" : "3ecb5c54553559217592d21a6d9841becb891b38"
       }
     },
     {
@@ -128,11 +128,11 @@
       }
     },
     {
-      "identity" : "lottie-ios",
+      "identity" : "lottie-spm",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/airbnb/lottie-ios",
+      "location" : "https://github.com/airbnb/lottie-spm",
       "state" : {
-        "revision" : "fe4c6fe3a0aa66cdeb51d549623c82ca9704b9a5",
+        "revision" : "b842598f1295f3ffa1475b1580672d1fe5b83580",
         "version" : "4.5.0"
       }
     },
@@ -159,8 +159,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Quick/Nimble",
       "state" : {
-        "revision" : "f3bedd7c2a858f4513e7d004def200a69238db2f",
-        "version" : "13.6.2"
+        "branch" : "main",
+        "revision" : "23903e10c3ae693d3a1a90d4bfce88f658072bd9"
       }
     },
     {
@@ -177,8 +177,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Quick/Quick",
       "state" : {
-        "revision" : "1163a1b1b114a657c7432b63dd1f92ce99fe11a6",
-        "version" : "7.6.2"
+        "branch" : "main",
+        "revision" : "7953fa26bb4c7652898b6049efd26dfe5caf8b8b"
       }
     },
     {
@@ -186,8 +186,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/realm/realm-core.git",
       "state" : {
-        "revision" : "85eeca41654cc9070ad81a21a4b1d153ad467c33",
-        "version" : "14.13.1"
+        "revision" : "15493076ad9fef22c16cc64cbfbf9e5b65c385f9",
+        "version" : "20.1.0"
       }
     },
     {
@@ -195,8 +195,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/realm/realm-swift",
       "state" : {
-        "revision" : "5553cfd1c789efdb3d6daf7f0cc0733cfe601846",
-        "version" : "10.54.1"
+        "revision" : "bae6c4be7df169fdb047d0ad63f902c1e2665e83",
+        "version" : "20.0.1"
       }
     },
     {
@@ -278,15 +278,6 @@
       "state" : {
         "revision" : "a30ff35e616f507d8a8d122dac32a2150371a87e",
         "version" : "5.1.0"
-      }
-    },
-    {
-      "identity" : "swiftlintplugins",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/SimplyDanny/SwiftLintPlugins",
-      "state" : {
-        "revision" : "f9731bef175c3eea3a0ca960f1be78fcc2bc7853",
-        "version" : "0.57.1"
       }
     },
     {

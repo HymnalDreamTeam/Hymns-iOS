@@ -1,3 +1,5 @@
+import Foundation
+
 import Resolver
 
 class AllSongsViewModel: ObservableObject {

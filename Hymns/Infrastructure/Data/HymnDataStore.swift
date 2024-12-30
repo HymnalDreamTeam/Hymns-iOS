@@ -2,7 +2,6 @@ import Combine
 import FirebaseCrashlytics
 import Foundation
 import GRDB
-import GRDBCombine
 import Resolver
 
 // swiftlint:disable:next identifier_name
@@ -545,7 +544,7 @@ extension Resolver {
                         Crashlytics.crashlytics().record(
                             error: DatabasePathError(errorDescription: "hymnaldb-v\(HYMN_DATA_STORE_VERISON).sqlite"),
                             userInfo: ["error_message": "The desired path 'hymnaldb-v\(HYMN_DATA_STORE_VERISON).sqlite' in Application Support is nil, so we are unable to create a database file. Fall back to useing an in-memory db and initialize it with empty tables"])
-                        return HymnDataStoreGrdbImpl(databaseQueue: DatabaseQueue(), initializeTables: true) as HymnDataStore
+                        return try! HymnDataStoreGrdbImpl(databaseQueue: DatabaseQueue(), initializeTables: true) as HymnDataStore
             }
 
             /// Whether or not we need to create the tables for the database.
@@ -580,7 +579,7 @@ extension Resolver {
                 Crashlytics.crashlytics().log("Unable to create database queue at the desired path, so create an in-memory one and initialize it with empty tables as a fallback")
                 Crashlytics.crashlytics().setCustomValue("in-memory db", forKey: "database_state")
                 Crashlytics.crashlytics().record(error: error)
-                databaseQueue = DatabaseQueue()
+                databaseQueue = try! DatabaseQueue()
                 needToCreateTables = true
             }
             return HymnDataStoreGrdbImpl(databaseQueue: databaseQueue, initializeTables: needToCreateTables) as HymnDataStore
