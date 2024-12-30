@@ -16,17 +16,27 @@ jobs:
       run: ls -n /Applications/ | grep Xcode*
     - name: Set Xcode Version
       run: sudo xcode-select -s /Applications/Xcode_16.1.app
-    - name: Install Dependencies
+    - name: Clean
       run: |
-        pod install --repo-update
-      shell: bash
-    - name: Clean Build Test
-      run: |
-        xcodebuild clean build test \
-          -workspace Hymns.xcworkspace \
+        xcodebuild clean \
+          -project Hymns.xcodeproj \
           -scheme Hymns \
           -destination "platform=iOS Simulator,name=iPhone 15 Pro,OS=17.5" \
-          -destination "platform=iOS Simulator,name=iPhone 15 Pro,OS=18.1" \
+          -destination "platform=iOS Simulator,name=iPhone 16 Pro,OS=18.2"
+    - name: Build
+      run: |
+        xcodebuild build-for-testing \
+          -project Hymns.xcodeproj \
+          -scheme Hymns \
+          -destination "platform=iOS Simulator,name=iPhone 15 Pro,OS=17.5" \
+          -destination "platform=iOS Simulator,name=iPhone 16 Pro,OS=18.2"
+    - name: Test
+      run: |
+        xcodebuild test-without-building \
+          -project Hymns.xcodeproj \
+          -scheme Hymns \
+          -destination "platform=iOS Simulator,name=iPhone 15 Pro,OS=17.5" \
+          -destination "platform=iOS Simulator,name=iPhone 16 Pro,OS=18.1" \
           -testPlan MasterTestPlan
     - name: Upload test results
       uses: actions/upload-artifact@v4
