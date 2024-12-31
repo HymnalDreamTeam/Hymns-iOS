@@ -17,7 +17,7 @@ class HymnDataStoreGrdbImplSpec: AsyncSpec {
             var target: HymnDataStoreGrdbImpl!
             beforeEach {
                 // https://github.com/groue/GRDB.swift/blob/master/README.md#database-queues
-                inMemoryDBQueue = DatabaseQueue()
+                inMemoryDBQueue = try! DatabaseQueue()
                 firebaseLogger = mock(FirebaseLogger.self)
                 target = HymnDataStoreGrdbImpl(databaseQueue: inMemoryDBQueue, firebaseLogger: firebaseLogger, initializeTables: true)
             }
@@ -191,7 +191,7 @@ class HymnDataStoreGrdbImplSpec: AsyncSpec {
                             .receive(on: testQueue)
                             .sink(receiveCompletion: { state in
                                 completion.fulfill()
-                                expect(state).to(equal(.failure(.data(description: "SQLite error 1 with statement `SELECT * FROM SONG_DATA JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID WHERE HYMN_TYPE = ? AND HYMN_NUMBER = ?`: no such table: SONG_DATA"))))
+                                expect(state).to(equal(.failure(.data(description: "SQLite error 1: no such table: SONG_DATA - while executing `SELECT * FROM SONG_DATA JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID WHERE HYMN_TYPE = ? AND HYMN_NUMBER = ?`"))))
                             }, receiveValue: { _ in
                                 value.fulfill()
                             })
