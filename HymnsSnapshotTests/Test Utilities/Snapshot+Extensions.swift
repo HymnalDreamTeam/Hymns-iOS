@@ -42,7 +42,7 @@ public func assertVersionedSnapshot<Value, Format>(matching value: @autoclosure 
         // Check bundled snapshot so it will work with Xcode Cloud
         // https://jaanus.com/snapshot-testing-xcode-cloud/
         // https://gist.github.com/jaanus/7e14b31f7f445435aadac09d24397da8
-        if !isRecording, !recording,
+        if !recording,
            let bundledSnapshotDirectory = Bundle.main.resourceURL?
             .appendingPathComponent("PlugIns")
             .appendingPathComponent("HymnsSnapshotTests.xctest")
@@ -62,7 +62,7 @@ public func assertVersionedSnapshot<Value, Format>(matching value: @autoclosure 
                 .absoluteString
         }
         if let failureMessage = verifySnapshot(
-            matching: try value(),
+            of: try value(),
             as: snapshotting,
             named: locale.identifier,
             record: recording,
