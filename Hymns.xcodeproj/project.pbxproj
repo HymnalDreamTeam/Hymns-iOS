@@ -1728,7 +1728,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -eu\n\n# Prevent Xcode 13 from running this script while indexing.\n[[ \"${ACTION}\" == \"indexbuild\" ]] && exit 0\n\n\"${HOME}/Library/Developer/Xcode/DerivedData/Hymns-fejfocbolthugxgdoiddnwdyoewj/SourcePackages/checkouts/mockingbird/mockingbird\" generate \\\n  --targets \"Hymns\" \\\n  --only-protocols \\\n  --disable-swiftlint \\\n  --outputs \"${SRCROOT}/MockingbirdMocks/HymnsTests-HymnsMocks.generated.swift\"\n";
+			shellScript = "set -eu\n\n# Prevent Xcode 13 from running this script while indexing.\n[[ \"${ACTION}\" == \"indexbuild\" ]] && exit 0\n\nPRODUCTS_DIR=$(dirname $BUILT_PRODUCTS_DIR)\nBUILD_DIR=$(dirname $PRODUCTS_DIR)\nDERIVED_DATA=$(dirname $BUILD_DIR)\n\n\"${DERIVED_DATA}/SourcePackages/checkouts/mockingbird/mockingbird\" generate \\\n  --targets \"Hymns\" \\\n  --only-protocols \\\n  --disable-swiftlint \\\n  --outputs \"${SRCROOT}/MockingbirdMocks/HymnsTests-HymnsMocks.generated.swift\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
