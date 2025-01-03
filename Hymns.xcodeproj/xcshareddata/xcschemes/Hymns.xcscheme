@@ -97,7 +97,7 @@
          </CommandLineArgument>
       </CommandLineArguments>
       <StoreKitConfigurationFileReference
-         identifier = "../Hymns/Donation/Coffee Donations.storekit">
+         identifier = "../../Hymns/Donation/Coffee Donations.storekit">
       </StoreKitConfigurationFileReference>
    </LaunchAction>
    <ProfileAction

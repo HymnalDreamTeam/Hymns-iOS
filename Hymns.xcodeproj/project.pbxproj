@@ -210,6 +210,7 @@
 		3BBCC21724E0D3FD00977961 /* SoundCloudView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBCC21624E0D3FD00977961 /* SoundCloudView.swift */; };
 		3BBCC21B24E1048400977961 /* ToolTip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBCC21A24E1048300977961 /* ToolTip.swift */; };
 		3BBCC21D24E1C51A00977961 /* SoundCloudViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBCC21C24E1C51900977961 /* SoundCloudViewModel.swift */; };
+		3BBDD0282D2886FC0043F6F1 /* RealmSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 3BDFF73A2D232BC0005F2A10 /* RealmSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		3BBFFF5527D32ED900AE60C5 /* WrappedHStackSnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BBFFF5427D32ED900AE60C5 /* WrappedHStackSnapshots.swift */; };
 		3BC1328D243826280082A274 /* PreviewHymns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC1328C243826270082A274 /* PreviewHymns.swift */; };
 		3BC1329724385A580082A274 /* HomeContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BC1329624385A580082A274 /* HomeContainerView.swift */; };
@@ -351,6 +352,20 @@
 			remoteInfo = Hymns;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		3BBDD0292D2886FC0043F6F1 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				3BBDD0282D2886FC0043F6F1 /* RealmSwift in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		3B020E7E251DCD0C007B7EBB /* DisplayHymnContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayHymnContainerView.swift; sourceTree = "<group>"; };
@@ -1462,6 +1477,7 @@
 				3B057FE724553E9000ACC848 /* Setup Firebase Environment GoogleService-Info.plist */,
 				3BC5B159247F590000F5D63A /* Copy Preview Resources */,
 				3B1B900D2429CF55009FDCC5 /* Resources */,
+				3BBDD0292D2886FC0043F6F1 /* Embed Frameworks */,
 				3B057FE624552AB000ACC848 /* Initialize Crashlytics */,
 			);
 			buildRules = (
