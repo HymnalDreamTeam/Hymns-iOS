@@ -2233,6 +2233,7 @@
 				DEVELOPMENT_TEAM = VBX3S26MR4;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Hymns/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2284,6 +2285,7 @@
 				DEVELOPMENT_TEAM = VBX3S26MR4;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Hymns/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2474,6 +2476,7 @@
 				DEVELOPMENT_TEAM = VBX3S26MR4;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Hymns/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
