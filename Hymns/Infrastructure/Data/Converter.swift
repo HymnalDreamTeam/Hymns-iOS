@@ -153,7 +153,7 @@ class ConverterImpl: Converter {
             return nil
         }
 
-        let title = hymnEntity.title
+        let title = hymnEntity.hasTitle ? hymnEntity.title : nil
         let lyrics = hymnEntity.lyrics.verses.isEmpty ? nil : hymnEntity.lyrics.verses
 
         let inlineChords: [ChordLineEntity]? = if hymnEntity.inlineChords.chordLines.map({ $0.hasChords }).contains(true) {
@@ -228,7 +228,7 @@ class ConverterImpl: Converter {
                 let hymnIdentifiers = songResultEntities.map { songResultEntity in
                     songResultEntity.hymnIdentifier
                 }
-                let title = songResultEntities[0].title ?? hymnIdentifiers[0].displayTitle
+                let title = songResultEntities[0].title
                 return UiSongResult(name: title, identifiers: hymnIdentifiers)
             })
         return UiSongResultsPage(results: groupedResults, hasMorePages: hasMorePages)
@@ -257,11 +257,10 @@ class ConverterImpl: Converter {
 
     func toMultiSongResultViewModels(songResultsPage: UiSongResultsPage) -> ([MultiSongResultViewModel], Bool) {
         let hasMorePages = songResultsPage.hasMorePages ?? false
-        let songResults = songResultsPage.results.map { songResult -> MultiSongResultViewModel in
-            let title = songResult.name
-            let labels = songResult.identifiers.prefix(3).map({ identifier in
-                identifier.displayTitle
-            })
+        let songResults = songResultsPage.results.compactMap { songResult -> MultiSongResultViewModel? in
+            let title = songResult.name ?? songResult.identifiers.first?.displayTitle
+            guard let title = title else { return nil }
+            let labels = songResult.name != nil ? songResult.identifiers.prefix(3).map(\.displayTitle) : nil
             let destination = DisplayHymnContainerView(viewModel:
                                                         DisplayHymnContainerViewModel(hymnToDisplay: songResult.identifiers[0],
                                                                                       storeInHistoryStore: true)).eraseToAnyView()
