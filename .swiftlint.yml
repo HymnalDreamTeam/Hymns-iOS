@@ -28,8 +28,8 @@ included: # paths to include during linting. `--path` is ignored if present.
   - HymnsSnapshotTests
   - HymnsUITests
 excluded: # paths to ignore during linting. Takes precedence over `included`.
-  - Pods
   - Hymns/Infrastructure/Data/Models/Protos
+  - MockingbirdMocks
 
 function_body_length: # 
  - 200 # warning if function has < 200 lines

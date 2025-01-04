@@ -216,9 +216,6 @@ class ConverterSpec: QuickSpec {
                 it("should convert correctly") {
                     expect(convertedPage).to(equal(expectedPage))
                 }
-                context("missing title") {
-                    
-                }
             }
             describe("toSingleSongResultViewModels") {
                 let songResultEntities = [SongResultEntity(hymnType: .classic, hymnNumber: "594", title: "c594", songId: 1),

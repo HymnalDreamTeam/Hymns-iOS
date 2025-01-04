@@ -122,14 +122,14 @@ class ChordViewModelSpec: QuickSpec {
                 afterEach {
                     userDefaultsManager.fontSize = initialFontSize
                 }
-                it ("should read from user defaults") {
+                it("should read from user defaults") {
                     expect(target.fontSize).to(equal(1))
                 }
                 context("font size updated") {
                     beforeEach {
                         userDefaultsManager.fontSize = 10
                     }
-                    it ("should update font size") {
+                    it("should update font size") {
                         expect(target.fontSize).to(equal(10))
                     }
                 }

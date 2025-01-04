@@ -38,6 +38,7 @@ class LaunchRouterViewModelSpec: AsyncSpec {
                                                                              appropriateFor: nil, create: true).path
                             allFiles.forEach { file in
                                 expect(fileManager.createFile(atPath: "\(applicationSupportPath)/\(file)",
+                                                              // swiftlint:disable:next non_optional_string_data_conversion
                                                               contents: "file 1".data(using: .utf8))).to(beTrue())
                             }
                             allFiles.forEach { file in

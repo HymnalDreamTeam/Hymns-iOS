@@ -1483,6 +1483,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				3B1C7D502D29E97300F19492 /* PBXTargetDependency */,
 			);
 			name = Hymns;
 			productName = Hymns;
@@ -1501,6 +1502,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				3B1C7D522D29E9AB00F19492 /* PBXTargetDependency */,
 				3B1B902A2429CF57009FDCC5 /* PBXTargetDependency */,
 			);
 			name = HymnsTests;
@@ -1519,6 +1521,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				3B1C7D542D29E9BD00F19492 /* PBXTargetDependency */,
 				3B1B90352429CF57009FDCC5 /* PBXTargetDependency */,
 			);
 			name = HymnsUITests;
@@ -1537,6 +1540,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				3B1C7D562D29E9C100F19492 /* PBXTargetDependency */,
 				3BE7C91F249CAB2700B04A1F /* PBXTargetDependency */,
 			);
 			name = HymnsSnapshotTests;
@@ -1599,6 +1603,7 @@
 				A3E10D6E2D2174F100184609 /* XCRemoteSwiftPackageReference "Nimble" */,
 				3BDFF7392D232BC0005F2A10 /* XCRemoteSwiftPackageReference "realm-swift" */,
 				3BC1C1002D23573F00B2042D /* XCRemoteSwiftPackageReference "lottie-spm" */,
+				3B1C7D4E2D29E92600F19492 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
 			);
 			productRefGroup = 3B1B90102429CF55009FDCC5 /* Products */;
 			projectDirPath = "";
@@ -2067,6 +2072,22 @@
 			isa = PBXTargetDependency;
 			target = 3B1B900E2429CF55009FDCC5 /* Hymns */;
 			targetProxy = 3B1B90342429CF57009FDCC5 /* PBXContainerItemProxy */;
+		};
+		3B1C7D502D29E97300F19492 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 3B1C7D4F2D29E97300F19492 /* SwiftLintBuildToolPlugin */;
+		};
+		3B1C7D522D29E9AB00F19492 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 3B1C7D512D29E9AB00F19492 /* SwiftLintBuildToolPlugin */;
+		};
+		3B1C7D542D29E9BD00F19492 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 3B1C7D532D29E9BD00F19492 /* SwiftLintBuildToolPlugin */;
+		};
+		3B1C7D562D29E9C100F19492 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 3B1C7D552D29E9C100F19492 /* SwiftLintBuildToolPlugin */;
 		};
 		3BE7C91F249CAB2700B04A1F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2677,6 +2698,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		3B1C7D4E2D29E92600F19492 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SimplyDanny/SwiftLintPlugins";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.57.1;
+			};
+		};
 		3BC1C1002D23573F00B2042D /* XCRemoteSwiftPackageReference "lottie-spm" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/airbnb/lottie-spm";
@@ -2792,6 +2821,26 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		3B1C7D4F2D29E97300F19492 /* SwiftLintBuildToolPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3B1C7D4E2D29E92600F19492 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
+			productName = "plugin:SwiftLintBuildToolPlugin";
+		};
+		3B1C7D512D29E9AB00F19492 /* SwiftLintBuildToolPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3B1C7D4E2D29E92600F19492 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
+			productName = "plugin:SwiftLintBuildToolPlugin";
+		};
+		3B1C7D532D29E9BD00F19492 /* SwiftLintBuildToolPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3B1C7D4E2D29E92600F19492 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
+			productName = "plugin:SwiftLintBuildToolPlugin";
+		};
+		3B1C7D552D29E9C100F19492 /* SwiftLintBuildToolPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3B1C7D4E2D29E92600F19492 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
+			productName = "plugin:SwiftLintBuildToolPlugin";
+		};
 		3B534C0A2D23A76100D76151 /* RealmSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3BDFF7392D232BC0005F2A10 /* XCRemoteSwiftPackageReference "realm-swift" */;

@@ -544,6 +544,8 @@ extension Resolver {
                         Crashlytics.crashlytics().record(
                             error: DatabasePathError(errorDescription: "hymnaldb-v\(HYMN_DATA_STORE_VERISON).sqlite"),
                             userInfo: ["error_message": "The desired path 'hymnaldb-v\(HYMN_DATA_STORE_VERISON).sqlite' in Application Support is nil, so we are unable to create a database file. Fall back to useing an in-memory db and initialize it with empty tables"])
+                        // Creating in-memory database is already a backup solution.
+                        // swiftlint:disable:next force_try
                         return try! HymnDataStoreGrdbImpl(databaseQueue: DatabaseQueue(), initializeTables: true) as HymnDataStore
             }
 
@@ -579,6 +581,8 @@ extension Resolver {
                 Crashlytics.crashlytics().log("Unable to create database queue at the desired path, so create an in-memory one and initialize it with empty tables as a fallback")
                 Crashlytics.crashlytics().setCustomValue("in-memory db", forKey: "database_state")
                 Crashlytics.crashlytics().record(error: error)
+                // Creating in-memory database is already a backup solution.
+                // swiftlint:disable:next force_try
                 databaseQueue = try! DatabaseQueue()
                 needToCreateTables = true
             }

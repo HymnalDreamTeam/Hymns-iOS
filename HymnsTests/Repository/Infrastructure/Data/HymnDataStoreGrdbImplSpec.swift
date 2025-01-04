@@ -17,6 +17,7 @@ class HymnDataStoreGrdbImplSpec: AsyncSpec {
             var target: HymnDataStoreGrdbImpl!
             beforeEach {
                 // https://github.com/groue/GRDB.swift/blob/master/README.md#database-queues
+                // swiftlint:disable:next force_try
                 inMemoryDBQueue = try! DatabaseQueue()
                 firebaseLogger = mock(FirebaseLogger.self)
                 target = HymnDataStoreGrdbImpl(databaseQueue: inMemoryDBQueue, firebaseLogger: firebaseLogger, initializeTables: true)
