@@ -529,6 +529,7 @@
 		3BA1F8A827B894D4004410D0 /* DisplayHymnPdfViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayHymnPdfViewModel.swift; sourceTree = "<group>"; };
 		3BA30A57278D00ED00A88807 /* FontPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontPicker.swift; sourceTree = "<group>"; };
 		3BA30A59278D010200A88807 /* FontPickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontPickerViewModel.swift; sourceTree = "<group>"; };
+		3BA3EA392D29FFD900A92DE0 /* ci_post_clone.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = ci_post_clone.sh; sourceTree = "<group>"; };
 		3BA4612424771C460068F269 /* SongInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongInfoViewModel.swift; sourceTree = "<group>"; };
 		3BA4612624771EAD0068F269 /* SongInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongInfoView.swift; sourceTree = "<group>"; };
 		3BA4612A24772B250068F269 /* SongInfoDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongInfoDialogView.swift; sourceTree = "<group>"; };
@@ -823,6 +824,7 @@
 		3B1B90062429CF55009FDCC5 = {
 			isa = PBXGroup;
 			children = (
+				3BA3EA382D29FFCB00A92DE0 /* ci_scripts */,
 				3B1B90112429CF55009FDCC5 /* Hymns */,
 				3B1B902B2429CF57009FDCC5 /* HymnsTests */,
 				3BE7C91A249CAB2700B04A1F /* HymnsSnapshotTests */,
@@ -1196,6 +1198,14 @@
 				3B87B830244988B100AEC7E9 /* SettingsViewModelSpec.swift */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		3BA3EA382D29FFCB00A92DE0 /* ci_scripts */ = {
+			isa = PBXGroup;
+			children = (
+				3BA3EA392D29FFD900A92DE0 /* ci_post_clone.sh */,
+			);
+			path = ci_scripts;
 			sourceTree = "<group>";
 		};
 		3BA46123247718FB0068F269 /* Song Info */ = {
