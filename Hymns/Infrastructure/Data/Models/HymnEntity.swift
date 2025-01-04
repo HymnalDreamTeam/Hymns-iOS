@@ -60,7 +60,9 @@ extension HymnEntity {
 extension HymnEntity: FetchableRecord, MutablePersistableRecord {
     public init(row: Row) {
         self.id = row[CodingKeys.id.rawValue]
-        self.title = row[CodingKeys.title.rawValue]
+        if row[CodingKeys.title.rawValue] != nil {
+            self.title = row[CodingKeys.title.rawValue]
+        }
         if row[CodingKeys.lyrics.rawValue] != nil, let lyrics = try? LyricsEntity(serializedBytes: row[CodingKeys.lyrics.rawValue] as Data) {
             self.lyrics = lyrics
         }

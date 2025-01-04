@@ -338,9 +338,13 @@ struct HymnEntity: @unchecked Sendable {
   }
 
   var title: String {
-    get {return _storage._title}
+    get {return _storage._title ?? String()}
     set {_uniqueStorage()._title = newValue}
   }
+  /// Returns true if `title` has been explicitly set.
+  var hasTitle: Bool {return _storage._title != nil}
+  /// Clears the value of `title`. Subsequent reads from it will return its default value.
+  mutating func clearTitle() {_uniqueStorage()._title = nil}
 
   var lyrics: LyricsEntity {
     get {return _storage._lyrics ?? LyricsEntity()}
@@ -746,7 +750,7 @@ extension HymnEntity: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
   fileprivate class _StorageClass {
     var _id: Int64 = 0
     var _references: [HymnIdentifierEntity] = []
-    var _title: String = String()
+    var _title: String? = nil
     var _lyrics: LyricsEntity? = nil
     var _category: [String] = []
     var _subcategory: [String] = []
@@ -860,9 +864,9 @@ extension HymnEntity: SwiftProtobuf.Message, SwiftProtobuf._MessageImplementatio
       if !_storage._references.isEmpty {
         try visitor.visitRepeatedMessageField(value: _storage._references, fieldNumber: 2)
       }
-      if !_storage._title.isEmpty {
-        try visitor.visitSingularStringField(value: _storage._title, fieldNumber: 3)
-      }
+      try { if let v = _storage._title {
+        try visitor.visitSingularStringField(value: v, fieldNumber: 3)
+      } }()
       try { if let v = _storage._lyrics {
         try visitor.visitSingularMessageField(value: v, fieldNumber: 4)
       } }()

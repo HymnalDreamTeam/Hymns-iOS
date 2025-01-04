@@ -5,7 +5,7 @@ syntax = "proto3";
 message HymnEntity {
   int64 id = 1;
   repeated HymnIdentifierEntity references = 2;
-  string title = 3;
+  optional string title = 3;
   LyricsEntity lyrics = 4;
   repeated string category = 5;
   repeated string subcategory = 6;
