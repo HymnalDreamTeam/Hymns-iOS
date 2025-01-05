@@ -13,7 +13,7 @@ public struct ToastOptions {
 }
 
 /// https://github.com/sanzaru/SimpleToast
-struct SimpleToast<Item, ToastContent>: ViewModifier where Item: Identifiable, ToastContent: View {
+struct SimpleToast<Item, ToastContent>: ViewModifier where ToastContent: View {
 
     @State private var timer: Timer?
     @State private var offset = CGSize.zero
@@ -132,7 +132,7 @@ struct Toast_Previews: PreviewProvider {
 extension View {
     public func toast<Item, ToastContent>(item: Binding<Item?>, options: ToastOptions = ToastOptions(),
                                           completion: (() -> Void)? = nil,
-                                          content: @escaping (Item) -> ToastContent) -> some View where Item: Identifiable, ToastContent: View {
+                                          content: @escaping (Item) -> ToastContent) -> some View where ToastContent: View {
         self.modifier(
             SimpleToast(item: item, options: options, completion: completion, content: content)
         )

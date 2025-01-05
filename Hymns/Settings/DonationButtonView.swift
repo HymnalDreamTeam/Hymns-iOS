@@ -4,10 +4,10 @@ import SwiftUI
 struct DonationButtonView: View {
 
     private let coffeeDonations: [any CoffeeDonation]
-    @Binding var resultBinding: Result<SettingsToastItem, Error>?
+    @Binding var resultBinding: SettingsResult<SettingsToastItem, Error>?
     @State private var showDonationOptions = false
 
-    init(coffeeDonations: [any CoffeeDonation], resultBinding: Binding<Result<SettingsToastItem, Error>?>) {
+    init(coffeeDonations: [any CoffeeDonation], resultBinding: Binding<SettingsResult<SettingsToastItem, Error>?>) {
         self.coffeeDonations = coffeeDonations
         self._resultBinding = resultBinding
     }

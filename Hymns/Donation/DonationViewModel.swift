@@ -10,14 +10,14 @@ class DonationViewModel: ObservableObject {
     static let donationCoffee10Id = "donation_coffee_10"
 
     @Published var coffeeDonations: [DonationType]
-    @Binding var resultBinding: Result<SettingsToastItem, Error>?
+    @Binding var resultBinding: SettingsResult<SettingsToastItem, Error>?
 
     private let firebaseLogger: FirebaseLogger
     private let donationTypeToDonation: [DonationType: CoffeeDonation]
 
     init(coffeeDonations: [any CoffeeDonation],
          firebaseLogger: FirebaseLogger = Resolver.resolve(),
-         resultBinding: Binding<Result<SettingsToastItem, Error>?>) {
+         resultBinding: Binding<SettingsResult<SettingsToastItem, Error>?>) {
         self.donationTypeToDonation = coffeeDonations.compactMap { coffeeDonation -> (donationType: DonationType, coffeeDonation: CoffeeDonation)? in
             guard let donationType = DonationType(rawValue: coffeeDonation.id) else {
                 firebaseLogger.logError(

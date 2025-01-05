@@ -20,7 +20,7 @@ class SettingsViewModel: ObservableObject {
         self.systemUtil = systemUtil
     }
 
-    func populateSettings(result: Binding<Result<SettingsToastItem, Error>?>) {
+    func populateSettings(result: Binding<SettingsResult<SettingsToastItem, Error>?>) {
         let repeatChorusViewModel = RepeatChorusViewModel()
         let clearHistoryViewModel = SimpleSettingViewModel(title: NSLocalizedString("Clear recent songs", comment: "Clear the 'recent songs' list."), action: {
             do {
@@ -57,11 +57,11 @@ enum SettingsModel {
     case preferredSearchLanguage
     case clearHistory(SimpleSettingViewModel)
     case aboutUs
-    case feedback(Binding<Result<SettingsToastItem, Error>?>)
+    case feedback(Binding<SettingsResult<SettingsToastItem, Error>?>)
     case privacyPolicy
     case clearUserDefaults
     case version(SimpleSettingViewModel)
-    case donate(coffeeDonations: [any CoffeeDonation], resultBinding: Binding<Result<SettingsToastItem, Error>?>)
+    case donate(coffeeDonations: [any CoffeeDonation], resultBinding: Binding<SettingsResult<SettingsToastItem, Error>?>)
 }
 
 extension SettingsModel {

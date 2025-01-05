@@ -3,7 +3,7 @@ import MessageUI
 
 struct FeedbackView: View {
 
-    @Binding var result: Result<SettingsToastItem, Error>?
+    @Binding var result: SettingsResult<SettingsToastItem, Error>?
     @State var isShowingMailView = false
 
     var body: some View {
@@ -14,17 +14,6 @@ struct FeedbackView: View {
         }).sheet(isPresented: $isShowingMailView) {
                 MailFeedbackView(result: self.$result)
         }.padding().foregroundColor(.primary).disabled(!MFMailComposeViewController.canSendMail())
-    }
-}
-
-extension Result: Identifiable {
-    public var id: Int {
-        switch self {
-        case .success:
-            return 0
-        case .failure:
-            return 1
-        }
     }
 }
 

@@ -7,7 +7,7 @@ struct SettingsView: View {
 
     @ObservedObject private var viewModel: SettingsViewModel
 
-    @State var result: Result<SettingsToastItem, Error>?
+    @State var result: SettingsResult<SettingsToastItem, Error>?
 
     private let firebaseLogger: FirebaseLogger
 
@@ -72,6 +72,19 @@ struct SettingsView: View {
             }
         }
     }
+}
+
+// Create a bespoke result item insted of using Swift.Result because
+// Swift.Result mysteriously causes a crash:
+// EXC_BAD_ACCESS KERN_INVALID_ADDRESS 0x0000000000000000
+// https://console.firebase.google.com/u/0/project/release-a8614/crashlytics/app/ios:com.lukelu.Hymns/issues/f9b8fbc490df5f4eeef8237dac104e7c?time=last-seven-days&types=crash&sessionEventKey=de70ea435d1a4375b181bd5c33fe5790_2035012781348792825
+enum SettingsResult<Success, Failure> where Failure: Error {
+
+    /// A success, storing a `Success` value.
+    case success(Success)
+
+    /// A failure, storing a `Failure` value.
+    case failure(Failure)
 }
 
 public enum SettingsToastItem {

@@ -34,7 +34,7 @@ class DonationViewModelSpec: AsyncSpec {
                     }
                 }
                 describe("initiatePurchase") {
-                    var result: Result<SettingsToastItem, Error>?
+                    var result: SettingsResult<SettingsToastItem, Error>?
                     beforeEach {
                         target = DonationViewModel(coffeeDonations: [coffeeDonation1], resultBinding: .init(get: {
                             result
@@ -53,7 +53,7 @@ class DonationViewModelSpec: AsyncSpec {
                         }
                         it("should set the result to sucess.other") {
                             expect(target.resultBinding).toNot(beNil())
-                            expect(target.resultBinding.debugDescription).to(equal("Optional(Swift.Result<Hymns.SettingsToastItem, Swift.Error>.success(Hymns.SettingsToastItem.donate(Hymns.DonationResult.other)))"))
+                            expect(target.resultBinding.debugDescription).to(equal("Optional(Hymns.SettingsResult<Hymns.SettingsToastItem, Swift.Error>.success(Hymns.SettingsToastItem.donate(Hymns.DonationResult.other)))"))
                         }
                     }
                     context("with recognized coffee donation") {
@@ -64,7 +64,7 @@ class DonationViewModelSpec: AsyncSpec {
                             }
                             it("should set the result to sucess.success") {
                                 expect(target.resultBinding).toNot(beNil())
-                                expect(target.resultBinding.debugDescription).to(equal("Optional(Swift.Result<Hymns.SettingsToastItem, Swift.Error>.success(Hymns.SettingsToastItem.donate(Hymns.DonationResult.success)))"))
+                                expect(target.resultBinding.debugDescription).to(equal("Optional(Hymns.SettingsResult<Hymns.SettingsToastItem, Swift.Error>.success(Hymns.SettingsToastItem.donate(Hymns.DonationResult.success)))"))
                             }
                         }
                         context("purchase cancelled") {
@@ -74,7 +74,7 @@ class DonationViewModelSpec: AsyncSpec {
                             }
                             it("should set the result to sucess.success") {
                                 expect(target.resultBinding).toNot(beNil())
-                                expect(target.resultBinding.debugDescription).to(equal("Optional(Swift.Result<Hymns.SettingsToastItem, Swift.Error>.success(Hymns.SettingsToastItem.donate(Hymns.DonationResult.cancelled)))"))
+                                expect(target.resultBinding.debugDescription).to(equal("Optional(Hymns.SettingsResult<Hymns.SettingsToastItem, Swift.Error>.success(Hymns.SettingsToastItem.donate(Hymns.DonationResult.cancelled)))"))
                             }
                         }
                         context("purchase pending") {
@@ -84,7 +84,7 @@ class DonationViewModelSpec: AsyncSpec {
                             }
                             it("should set the result to sucess.success") {
                                 expect(target.resultBinding).toNot(beNil())
-                                expect(target.resultBinding.debugDescription).to(equal("Optional(Swift.Result<Hymns.SettingsToastItem, Swift.Error>.success(Hymns.SettingsToastItem.donate(Hymns.DonationResult.other)))"))
+                                expect(target.resultBinding.debugDescription).to(equal("Optional(Hymns.SettingsResult<Hymns.SettingsToastItem, Swift.Error>.success(Hymns.SettingsToastItem.donate(Hymns.DonationResult.other)))"))
                             }
                         }
                         context("purchase other") {
@@ -94,7 +94,7 @@ class DonationViewModelSpec: AsyncSpec {
                             }
                             it("should set the result to sucess.success") {
                                 expect(target.resultBinding).toNot(beNil())
-                                expect(target.resultBinding.debugDescription).to(equal("Optional(Swift.Result<Hymns.SettingsToastItem, Swift.Error>.success(Hymns.SettingsToastItem.donate(Hymns.DonationResult.other)))"))
+                                expect(target.resultBinding.debugDescription).to(equal("Optional(Hymns.SettingsResult<Hymns.SettingsToastItem, Swift.Error>.success(Hymns.SettingsToastItem.donate(Hymns.DonationResult.other)))"))
                             }
                         }
                         context("purchase error") {
@@ -106,7 +106,7 @@ class DonationViewModelSpec: AsyncSpec {
                             }
                             it("should set the result to sucess.success") {
                                 expect(target.resultBinding).toNot(beNil())
-                                expect(target.resultBinding.debugDescription).to(equal("Optional(Swift.Result<Hymns.SettingsToastItem, Swift.Error>.failure(StoreKit.Product.PurchaseError.productUnavailable))"))
+                                expect(target.resultBinding.debugDescription).to(equal("Optional(Hymns.SettingsResult<Hymns.SettingsToastItem, Swift.Error>.failure(StoreKit.Product.PurchaseError.productUnavailable))"))
                             }
                         }
                     }
