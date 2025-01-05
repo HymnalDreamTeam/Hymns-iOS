@@ -5,6 +5,15 @@
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
+      <PostActions>
+         <ExecutionAction
+            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+            <ActionContent
+               title = "Run Script"
+               scriptText = "# Disable package and macro fingerprint validation to enable the SwiftLint plugin during the build process.&#10;defaults write com.apple.dt.Xcode IDESkipPackagePluginFingerprintValidatation -bool YES&#10;defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES&#10;&#10;">
+            </ActionContent>
+         </ExecutionAction>
+      </PostActions>
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"

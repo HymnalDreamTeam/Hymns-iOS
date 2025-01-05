@@ -79,7 +79,7 @@ public func assertVersionedSnapshot<Value, Format>(matching value: @autoclosure 
 // Copied from swift-snapshot-testing
 func sanitizePathComponent(_ string: String) -> String {
   return string
-    .replacingOccurrences(of: "\\W+", with: "-", options: .regularExpression)
+    .replacingOccurrences(of: "\\W+", with: "_", options: .regularExpression)
     .replacingOccurrences(of: "^-|-$", with: "", options: .regularExpression)
 }
 

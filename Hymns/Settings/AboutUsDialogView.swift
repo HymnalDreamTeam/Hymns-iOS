@@ -1,6 +1,7 @@
+import PreviewSnapshots
+import Resolver
 import SwiftUI
 import UIKit
-import Resolver
 
 struct AboutUsDialogView: View {
 
@@ -37,7 +38,18 @@ struct AboutUsDialogView: View {
 #if DEBUG
 struct AboutUsDialogView_Previews: PreviewProvider {
     static var previews: some View {
-        AboutUsDialogView()
+        snapshots.previews
+    }
+
+    static var snapshots: PreviewSnapshots<String> {
+        PreviewSnapshots(
+            configurations: [
+                .init(name: "default", state: "")
+            ],
+            configure: { _ in
+                AboutUsDialogView()
+            }
+        )
     }
 }
 #endif

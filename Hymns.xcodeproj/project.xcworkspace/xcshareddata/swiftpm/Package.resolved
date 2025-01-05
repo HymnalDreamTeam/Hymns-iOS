@@ -1,5 +1,5 @@
 {
-  "originHash" : "be49427f232fc181568549212feccaef8c2e7bc3d6e6d98b491df636ccf77a7a",
+  "originHash" : "9c920eaa452599f0f64f780fe04514434d499928293eba4a666f6c2033bcbe6d",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -287,6 +287,15 @@
       "state" : {
         "revision" : "f9731bef175c3eea3a0ca960f1be78fcc2bc7853",
         "version" : "0.57.1"
+      }
+    },
+    {
+      "identity" : "swiftui-preview-snapshots",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/doordash-oss/swiftui-preview-snapshots",
+      "state" : {
+        "revision" : "36cd3662a48ef75cc13eae182d468178279a0445",
+        "version" : "1.1.1"
       }
     },
     {

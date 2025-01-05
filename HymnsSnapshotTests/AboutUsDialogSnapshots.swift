@@ -1,3 +1,4 @@
+import PreviewSnapshotsTesting
 import SnapshotTesting
 import SwiftUI
 import XCTest
@@ -6,9 +7,7 @@ import XCTest
 // https://troz.net/post/2020/swiftui_snapshots/
 class AboutUsDialogSnapshots: XCTestCase {
 
-    func test_dialog() {
-        assertVersionedSnapshot(
-            matching: AboutUsDialogView().ignoresSafeArea(),
-            as: .swiftUiImage())
+    func test() {
+        AboutUsDialogView_Previews.snapshots.assertVersionedSnapshots(as: .swiftUiImage())
     }
 }

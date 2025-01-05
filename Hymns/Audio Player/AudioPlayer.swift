@@ -1,5 +1,6 @@
 import AVFoundation
 import Combine
+import PreviewSnapshots
 import SwiftEventBus
 import SwiftUI
 
@@ -106,35 +107,67 @@ struct AudioPlayer: View {
 
 #if DEBUG
 struct AudioView_Previews: PreviewProvider {
+
+    struct PreviewState: NamedPreviewState {
+        let name: String
+        let playbackState: PlaybackState
+        let showSpeedAdjuster: Bool
+        let shouldRepeat: Bool
+        let currentSpeed: Float
+        let currentTime: TimeInterval
+        let songDuration: TimeInterval?
+
+        init(name: String,
+             playbackState: PlaybackState = .stopped,
+             showSpeedAdjuster: Bool = true,
+             shouldRepeat: Bool = false,
+             currentSpeed: Float = 1.0,
+             currentTime: TimeInterval = 0,
+             songDuration: TimeInterval? = nil) {
+            self.name = name
+            self.playbackState = playbackState
+            self.showSpeedAdjuster = showSpeedAdjuster
+            self.shouldRepeat = shouldRepeat
+            self.currentSpeed = currentSpeed
+            self.currentTime = currentTime
+            self.songDuration = songDuration
+        }
+    }
+
     static var previews: some View {
+        snapshots.previews
+    }
 
-        let playingViewModel = AudioPlayerViewModel(url: URL(string: "url")!)
-        playingViewModel.playbackState = .playing
-        playingViewModel.songDuration = 100
-        playingViewModel.currentTime = 50
-        let currentlyPlaying = AudioPlayer(viewModel: playingViewModel)
-
-        let stoppedViewModel = AudioPlayerViewModel(url: URL(string: "url")!)
-        stoppedViewModel.playbackState = .stopped
-        stoppedViewModel.songDuration = 500
-        stoppedViewModel.shouldRepeat = true
-        let stopped = AudioPlayer(viewModel: stoppedViewModel)
-
-        let bufferingViewModel = AudioPlayerViewModel(url: URL(string: "url")!)
-        bufferingViewModel.playbackState = .buffering
-        bufferingViewModel.songDuration = 20
-        let buffering = AudioPlayer(viewModel: bufferingViewModel)
-
-        let noSpeedAdjusterViewModel = AudioPlayerViewModel(url: URL(string: "url")!)
-        noSpeedAdjusterViewModel.showSpeedAdjuster = false
-        let noSpeedAdjuster = AudioPlayer(viewModel: noSpeedAdjusterViewModel)
-
-        return Group {
-            currentlyPlaying.previewDisplayName("currently playing")
-            stopped.previewDisplayName("stopped")
-            buffering.previewDisplayName("buffering")
-            noSpeedAdjuster.previewDisplayName("no speed adjuster")
-        }.padding().previewLayout(.sizeThatFits)
+    static var snapshots: PreviewSnapshots<PreviewState> {
+        PreviewSnapshots(
+            states: [
+                .init(name: "currently playing",
+                      playbackState: .playing,
+                      currentTime: 50,
+                      songDuration: 100),
+                .init(name: "stopped",
+                      playbackState: .stopped,
+                      shouldRepeat: true,
+                      songDuration: 500),
+                .init(name: "buffering",
+                      playbackState: .buffering,
+                      songDuration: 20),
+                .init(name: "no speed adjuster",
+                      showSpeedAdjuster: false)
+            ],
+            configure: { state in
+                let viewModel = AudioPlayerViewModel(url: URL(string: "url")!)
+                viewModel.playbackState = state.playbackState
+                viewModel.showSpeedAdjuster = state.showSpeedAdjuster
+                viewModel.shouldRepeat = state.shouldRepeat
+                viewModel.currentSpeed = state.currentSpeed
+                viewModel.currentTime = state.currentTime
+                viewModel.songDuration = state.songDuration
+                return AudioPlayer(viewModel: viewModel)
+                    .padding()
+                    .previewLayout(.sizeThatFits)
+            }
+        )
     }
 }
 #endif
