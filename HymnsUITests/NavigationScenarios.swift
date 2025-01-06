@@ -8,6 +8,26 @@ class NavigationScenarios: BaseTestCase {
         app.launch()
     }
 
+    func test_closeFunctionality_fromSearch() {
+        _ = HomeViewCan(app, testCase: self)
+            .activateSearch()
+            .typeSearchText("search param")
+            .waitForButtons("Hymn 1151, Click me!")
+            .tapResult("Hymn 1151, Click me!")
+            .waitForStaticTexts("Hymn 1151", "verse 1 line 1")
+            .close()
+        // Test to ensure that we can still perform searches
+            .switchToHome()
+            .verifySearchText("search param")
+            .verifyClearTextExists()
+            .clearText()
+            .verifyClearTextNotExists()
+            .verifySearchTextNotExists("search param")
+            .typeSearchText("search param")
+            .verifySearchText("search param")
+            .verifyClearTextExists()
+    }
+
     func test_closeFunctionality_fromHome() {
         let displayHymnViewCan = HomeViewCan(app, testCase: self)
             .tapResult("Hymn 1151, classic1151")
