@@ -30,6 +30,13 @@ jobs:
           -allowProvisioningUpdates \
           -destination "platform=iOS Simulator,name=iPhone 15 Pro,OS=17.5" \
           -destination "platform=iOS Simulator,name=iPhone 16 Pro,OS=18.1"
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      if: failure()
+      with:
+        name: Build Artifacts
+        path: /Users/luke/Library/Developer/Xcode/DerivedData/Hymns-*/Build/Products
+        retention-days: 5
     - name: Upload test results
       uses: actions/upload-artifact@v4
       if: failure()
