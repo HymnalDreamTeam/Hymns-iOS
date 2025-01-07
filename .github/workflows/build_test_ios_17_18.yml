@@ -35,7 +35,7 @@ jobs:
       if: failure()
       with:
         name: Build Artifacts
-        path: /Users/luke/Library/Developer/Xcode/DerivedData/Hymns-*/Build/Products
+        path: /Users/runner/Library/Developer/Xcode/DerivedData/Hymns-*/Build/Products
         retention-days: 5
     - name: Upload test results
       uses: actions/upload-artifact@v4
