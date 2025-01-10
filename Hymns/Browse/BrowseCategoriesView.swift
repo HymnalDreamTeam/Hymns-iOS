@@ -1,3 +1,4 @@
+import Prefire
 import SwiftUI
 
 struct BrowseCategoriesView: View {
@@ -24,7 +25,7 @@ struct BrowseCategoriesView: View {
 }
 
 #if DEBUG
-struct BrowseCategoriesView_Previews: PreviewProvider {
+struct BrowseCategoriesView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
         let errorViewModel = BrowseCategoriesViewModel(hymnType: .classic)
         errorViewModel.categories = nil
@@ -45,9 +46,9 @@ struct BrowseCategoriesView_Previews: PreviewProvider {
                                                  SubcategoryViewModel(subcategory: "Subcategory 3", count: 1)])]
         let results = BrowseCategoriesView(viewModel: resultsViewModel)
         return Group {
-            error.previewDisplayName("Error")
-            loading.previewDisplayName("Loading")
-            results.previewDisplayName("Results")
+            error.previewDisplayName("error")
+            loading.previewDisplayName("loading")
+            results.previewDisplayName("results")
         }
     }
 }
