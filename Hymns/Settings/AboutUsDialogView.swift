@@ -34,10 +34,6 @@ struct AboutUsDialogView: View {
     }
 }
 
-#if DEBUG
-struct AboutUsDialogView_Previews: PreviewProvider {
-    static var previews: some View {
-        AboutUsDialogView()
-    }
+#Preview {
+    AboutUsDialogView()
 }
-#endif
