@@ -1,0 +1,5 @@
+test_configuration:
+  - template_file_path: TestUtilities/PreviewTests.stencil
+  - snapshot_devices:
+      - iPhone 16 Pro
+

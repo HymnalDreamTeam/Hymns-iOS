@@ -1,0 +1,331 @@
+// swiftlint:disable all
+// swiftformat:disable all
+
+import XCTest
+import SwiftUI
+import Prefire
+{% for import in argument.imports %}
+import {{ import }}
+{% endfor %}
+{% if argument.mainTarget %}
+@testable import {{ argument.mainTarget }}
+{% endif %}
+{% for import in argument.testableImports %}
+@testable import {{ import }}
+{% endfor %}
+@testable import SnapshotTesting
+#if canImport(AccessibilitySnapshot)
+    import AccessibilitySnapshot
+#endif
+
+@MainActor class PreviewTests: XCTestCase, Sendable {
+    private var simulatorDevice: String?{% if argument.simulatorDevice %} = "{{ argument.simulatorDevice|default:nil }}"{% endif %}
+    private var requiredOSVersion: Int?{% if argument.simulatorOSVersion %} = {{ argument.simulatorOSVersion }}{% endif %}
+    private let snapshotDevices: [String]{% if argument.snapshotDevices %} = {{ argument.snapshotDevices|split:"|" }}{% else %} = []{% endif %}
+#if os(iOS)
+    private let deviceConfig: ViewImageConfig = .iPhoneX
+#elseif os(tvOS)
+    private let deviceConfig: ViewImageConfig = .tv
+#endif
+
+    
+    {% if argument.file %}
+
+    private var file: StaticString { .init(stringLiteral: "{{ argument.file }}") }
+    {% endif %}
+
+    @MainActor override func setUp() async throws {
+        try await super.setUp()
+
+        checkEnvironments()
+        UIView.setAnimationsEnabled(false)
+    }
+
+    // MARK: - PreviewProvider
+
+    {% for type in types.types where type.implements.PrefireProvider or type.based.PrefireProvider or type|annotated:"PrefireProvider" %}
+    func test_{{ type.name|lowerFirstLetter|replace:"_Previews", "" }}() {
+        for preview in {{ type.name }}._allPreviews {
+            if let failure = assertSnapshots(for: PrefireSnapshot(preview, previewName: "{{ type.name|replace:"_Previews", "" }}", device: deviceConfig)) {
+                XCTFail(failure)
+            }
+        }
+    }
+    {%- if not forloop.last %}
+
+    {% endif %}
+    {% endfor %}
+    {% if argument.previewsMacros %}
+    // MARK: - Macros
+
+    {{ argument.previewsMacros }}
+
+    {% endif %}
+    // MARK: Private
+
+    private func assertSnapshots<Content: SwiftUI.View>(for prefireSnapshot: PrefireSnapshot<Content>) -> String? {
+        guard !snapshotDevices.isEmpty else {
+            return assertSnapshot(for: prefireSnapshot)
+        }
+
+        for deviceName in snapshotDevices {
+            var snapshot = prefireSnapshot
+            guard let device = PreviewDevice(rawValue: deviceName).snapshotDevice() else {
+                fatalError("Unknown device name from configuration file: \(deviceName)")
+            }
+
+            snapshot.name = "\(prefireSnapshot.name)-\(deviceName)"
+            snapshot.device = device
+
+            // Ignore specific device safe area
+            snapshot.device.safeArea = .zero
+
+            // Ignore specific device display scale
+            snapshot.traits = UITraitCollection(displayScale: 2.0)
+
+            if let failure = assertSnapshot(for: snapshot) {
+                XCTFail(failure)
+            }
+        }
+
+        return nil
+    }
+
+    private func assertSnapshot<Content: SwiftUI.View>(for prefireSnapshot: PrefireSnapshot<Content>) -> String? {
+        var delay: TimeInterval = 0
+        var precision: Float = 1
+        var perceptualPrecision: Float = 1
+
+        let view = prefireSnapshot.content
+            .onPreferenceChange(DelayPreferenceKey.self) { delay = $0 }
+            .onPreferenceChange(PrecisionPreferenceKey.self) { precision = $0 }
+            .onPreferenceChange(PerceptualPrecisionPreferenceKey.self) { perceptualPrecision = $0 }
+
+        let matchingView = prefireSnapshot.isScreen ? AnyView(view) : AnyView(view
+            .frame(width: prefireSnapshot.device.size?.width)
+            .fixedSize(horizontal: false, vertical: true)
+        )
+
+        let osVersion = UIDevice.current.systemVersion
+        let fileUrl = URL(string: "\(file)")!
+        let fileName = fileUrl.deletingPathExtension().lastPathComponent
+
+        let snapshotDirectory: String
+        // Check bundled snapshot so it will work with Xcode Cloud
+        // https://jaanus.com/snapshot-testing-xcode-cloud/
+        // https://gist.github.com/jaanus/7e14b31f7f445435aadac09d24397da8
+        if let bundledSnapshotDirectory = Bundle.main.resourceURL?
+            .appendingPathComponent("PlugIns")
+            .appendingPathComponent("HymnsSnapshotTests.xctest")
+            .appendingPathComponent("__Snapshots__")
+            .appendingPathComponent(osVersion)
+            .appendingPathComponent(fileName)
+            .path(percentEncoded: false),
+           case let bundledSnapshot = "\(bundledSnapshotDirectory)\(prefireSnapshot.name).png",
+           FileManager.default.fileExists(atPath: bundledSnapshot) {
+            snapshotDirectory = bundledSnapshotDirectory
+        } else {
+            snapshotDirectory = fileUrl
+                .deletingLastPathComponent()
+                .appendingPathComponent("__Snapshots__")
+                .appendingPathComponent(osVersion)
+                .appendingPathComponent(fileName)
+                .absoluteString
+        }
+
+        let failure = verifySnapshot(
+            of: matchingView,
+            as: .prefireImage(precision: { precision },
+                              perceptualPrecision: { perceptualPrecision },
+                              duration: { delay },
+                              layout: prefireSnapshot.isScreen ? .device(config: prefireSnapshot.device) : .sizeThatFits,
+                              traits: prefireSnapshot.traits){% if argument.file %},
+            // If previewName exists, then use the snapshot name as the name and use the previewName
+            // as the test name. This way, something like "AudioView_Previews"'s "currently Playing"
+            // test will have the snapshot file name: "AudioView.curently-playing.png".
+            named: prefireSnapshot.previewName.map { _ in prefireSnapshot.name },
+            snapshotDirectory: snapshotDirectory,
+            file: file{% endif %},
+            testName: prefireSnapshot.previewName ?? prefireSnapshot.name
+        )
+
+        #if canImport(AccessibilitySnapshot)
+            let vc = UIHostingController(rootView: matchingView)
+            vc.view.frame = UIScreen.main.bounds
+
+            SnapshotTesting.assertSnapshot(
+                matching: vc,
+                as: .wait(for: delay, on: .accessibilityImage(showActivationPoints: .always)){% if argument.file %},
+                file: file{% endif %},
+                testName: prefireSnapshot.name + ".accessibility"
+            )
+        #endif
+        return failure
+    }
+
+    /// Check environments to avoid problems with snapshots on different devices or OS.
+    private func checkEnvironments() {
+        if let simulatorDevice, let deviceModel = ProcessInfo().environment["SIMULATOR_MODEL_IDENTIFIER"] {
+            guard deviceModel.contains(simulatorDevice) else {
+                fatalError("Switch to using \(simulatorDevice) for these tests. (You are using \(deviceModel))")
+            }
+        }
+
+        if let requiredOSVersion {
+            let osVersion = ProcessInfo().operatingSystemVersion
+            guard osVersion.majorVersion == requiredOSVersion else {
+                fatalError("Switch to iOS \(requiredOSVersion) for these tests. (You are using \(osVersion))")
+            }
+        }
+    }
+}
+
+@MainActor struct PrefireSnapshot<Content: SwiftUI.View> {
+    var content: Content
+    var name: String
+    var previewName: String?
+    var isScreen: Bool
+    var device: ViewImageConfig
+    var traits: UITraitCollection = .init()
+
+    init(_ preview: _Preview, testName: String = #function, previewName: String, device: ViewImageConfig) where Content == AnyView {
+        content = preview.content
+        name = preview.displayName ?? testName
+        self.previewName = previewName
+        isScreen = preview.layout == .device
+        self.device = preview.device?.snapshotDevice() ?? device
+    }
+
+    init(_ view: Content, name: String, isScreen: Bool, device: ViewImageConfig, traits: UITraitCollection = .init()) {
+        content = view
+        self.name = name
+        self.isScreen = isScreen
+        self.device = device
+        self.traits = traits
+    }
+
+    init(_ view: UIView, name: String, isScreen: Bool, device: ViewImageConfig, traits: UITraitCollection = .init()) where Content == ViewRepresentable<UIView> {
+        content = ViewRepresentable(view: view)
+        self.name = name
+        self.isScreen = isScreen
+        self.device = device
+        self.traits = traits
+    }
+
+    init(_ viewController: UIViewController, name: String, isScreen: Bool, device: ViewImageConfig, traits: UITraitCollection = .init()) where Content == ViewControllerRepresentable<UIViewController> {
+        content = ViewControllerRepresentable(viewController: viewController)
+        self.name = name
+        self.isScreen = isScreen
+        self.device = device
+        self.traits = traits
+    }
+}
+
+// MARK: - SnapshotTesting + Extensions
+
+private extension PreviewDevice {
+    func snapshotDevice() -> ViewImageConfig? {
+        switch rawValue {
+#if os(iOS)
+        case "iPhone 16 Pro Max", "iPhone 15 Pro Max", "iPhone 14 Pro Max", "iPhone 13 Pro Max", "iPhone 12 Pro Max":
+            return .iPhone13ProMax
+        case "iPhone 16 Pro", "iPhone 15 Pro", "iPhone 14 Pro", "iPhone 13 Pro", "iPhone 12 Pro":
+            return .iPhone13Pro
+        case "iPhone 16", "iPhone 15", "iPhone 14", "iPhone 13", "iPhone 12", "iPhone 11", "iPhone 10":
+            return .iPhoneX
+        case "iPhone 6", "iPhone 6s", "iPhone 7", "iPhone 8":
+            return .iPhone8
+        case "iPhone 6 Plus", "iPhone 6s Plus", "iPhone 8 Plus":
+            return .iPhone8Plus
+        case "iPhone SE (1st generation)", "iPhone SE (2nd generation)":
+            return .iPhoneSe
+        case "iPad":
+            return .iPad10_2
+        case "iPad Mini":
+            return .iPadMini
+        case "iPad Pro 11":
+            return .iPadPro11
+        case "iPad Pro 12.9":
+            return .iPadPro12_9
+#elseif os(tvOS)
+        case "Apple TV":
+            return .tv
+#endif
+        default: return nil
+        }
+    }
+}
+
+private extension Snapshotting where Value: SwiftUI.View, Format == UIImage {
+    @MainActor
+    static func prefireImage(
+        drawHierarchyInKeyWindow: Bool = false,
+        precision: @escaping () -> Float,
+        perceptualPrecision: @escaping () -> Float,
+        duration: @escaping () -> TimeInterval,
+        layout: SwiftUISnapshotLayout = .sizeThatFits,
+        traits: UITraitCollection = .init()
+    ) -> Snapshotting {
+        let config: ViewImageConfig
+
+        switch layout {
+        #if os(iOS) || os(tvOS)
+        case let .device(config: deviceConfig):
+            config = deviceConfig
+        #endif
+        case .sizeThatFits:
+            config = .init(safeArea: .zero, size: nil, traits: traits)
+        case let .fixed(width: width, height: height):
+            let size = CGSize(width: width, height: height)
+            config = .init(safeArea: .zero, size: size, traits: traits)
+        }
+
+        return SimplySnapshotting<UIImage>(pathExtension: "png", diffing: .prefireImage(precision: precision, perceptualPrecision: perceptualPrecision, scale: traits.displayScale))
+            .asyncPullback { view in
+                var config = config
+                let controller: UIViewController
+
+                if config.size != nil {
+                    controller = UIHostingController(rootView: view)
+                } else {
+                    let hostingController = UIHostingController(rootView: view)
+
+                    let maxSize = CGSize.zero
+                    config.size = hostingController.sizeThatFits(in: maxSize)
+
+                    controller = hostingController
+                }
+
+                return Async<UIImage> { callback in
+                    let strategy = snapshotView(
+                        config: config,
+                        drawHierarchyInKeyWindow: drawHierarchyInKeyWindow,
+                        traits: traits,
+                        view: controller.view,
+                        viewController: controller
+                    )
+
+                    let duration = duration()
+                    if duration != .zero {
+                        let expectation = XCTestExpectation(description: "Wait")
+                        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+                            expectation.fulfill()
+                        }
+                        _ = XCTWaiter.wait(for: [expectation], timeout: duration + 1)
+                    }
+                    strategy.run(callback)
+                }
+            }
+    }
+}
+
+private extension Diffing where Value == UIImage {
+    static func prefireImage(precision: @escaping () -> Float, perceptualPrecision: @escaping () -> Float, scale: CGFloat?) -> Diffing {
+        lazy var originalDiffing = Diffing.image(precision: precision(), perceptualPrecision: perceptualPrecision(), scale: scale)
+        return Diffing(
+            toData: { originalDiffing.toData($0) },
+            fromData: { originalDiffing.fromData($0) },
+            diff: { originalDiffing.diff($0, $1) }
+        )
+    }
+}

@@ -285,6 +285,9 @@
 		5CA7849E242D14C800B57903 /* FavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CA7849D242D14C800B57903 /* FavoritesView.swift */; };
 		5CA784A0242D1A3200B57903 /* BrowseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CA7849F242D1A3200B57903 /* BrowseView.swift */; };
 		5CA784A4242D1CF800B57903 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CA784A3242D1CF800B57903 /* SearchView.swift */; };
+		A30FE43B2D30ECA400C22524 /* Prefire in Frameworks */ = {isa = PBXBuildFile; productRef = A30FE43A2D30ECA400C22524 /* Prefire */; };
+		A30FE43F2D30ED1C00C22524 /* PreviewTests.stencil in Resources */ = {isa = PBXBuildFile; fileRef = A30FE43E2D30ED0F00C22524 /* PreviewTests.stencil */; };
+		A30FE4412D30EEBA00C22524 /* Prefire in Frameworks */ = {isa = PBXBuildFile; productRef = A30FE4402D30EEBA00C22524 /* Prefire */; };
 		A3E10D472D21744A00184609 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = A3E10D462D21744A00184609 /* FirebaseAnalytics */; };
 		A3E10D492D21744A00184609 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = A3E10D482D21744A00184609 /* FirebaseCrashlytics */; };
 		A3E10D4C2D21745600184609 /* SwiftProtobuf in Frameworks */ = {isa = PBXBuildFile; productRef = A3E10D4B2D21745600184609 /* SwiftProtobuf */; };
@@ -657,6 +660,7 @@
 		5CA7849F242D1A3200B57903 /* BrowseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseView.swift; sourceTree = "<group>"; };
 		5CA784A3242D1CF800B57903 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		867851DF58D578E3CD9A0DAF /* HymnsTests-HymnsMocks.generated.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; name = "HymnsTests-HymnsMocks.generated.swift"; path = "MockingbirdMocks/HymnsTests-HymnsMocks.generated.swift"; sourceTree = "<group>"; };
+		A30FE43E2D30ED0F00C22524 /* PreviewTests.stencil */ = {isa = PBXFileReference; lastKnownFileType = text; path = PreviewTests.stencil; sourceTree = "<group>"; };
 		B51BA5C82430075300CA52F7 /* DisplayHymnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayHymnView.swift; sourceTree = "<group>"; };
 		B560B615243F978D00FD5867 /* MasterTestPlan.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = MasterTestPlan.xctestplan; sourceTree = SOURCE_ROOT; };
 		B56305B6244223A5003BC132 /* CustomTitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTitleView.swift; sourceTree = "<group>"; };
@@ -693,6 +697,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A30FE4412D30EEBA00C22524 /* Prefire in Frameworks */,
 				3BC1C1022D23573F00B2042D /* Lottie in Frameworks */,
 				3BDFF73B2D232BC0005F2A10 /* RealmSwift in Frameworks */,
 				A3E10D612D2174BC00184609 /* GRDB in Frameworks */,
@@ -730,6 +735,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A30FE43B2D30ECA400C22524 /* Prefire in Frameworks */,
 				A3E10D6D2D2174EA00184609 /* SnapshotTesting in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1397,6 +1403,7 @@
 		3BE7C924249CAE9800B04A1F /* TestUtilities */ = {
 			isa = PBXGroup;
 			children = (
+				A30FE43E2D30ED0F00C22524 /* PreviewTests.stencil */,
 				3BE7C925249CAEAA00B04A1F /* Snapshot+Extensions.swift */,
 				3BDD8709249DC337006288C8 /* HymnIdentifiers.swift */,
 				3BE7C928249CB16B00B04A1F /* SongResults.swift */,
@@ -1550,6 +1557,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				A30FE43D2D30ECAD00C22524 /* PBXTargetDependency */,
 				3B1C7D562D29E9C100F19492 /* PBXTargetDependency */,
 				3BE7C91F249CAB2700B04A1F /* PBXTargetDependency */,
 			);
@@ -1614,6 +1622,7 @@
 				3BDFF7392D232BC0005F2A10 /* XCRemoteSwiftPackageReference "realm-swift" */,
 				3BC1C1002D23573F00B2042D /* XCRemoteSwiftPackageReference "lottie-spm" */,
 				3B1C7D4E2D29E92600F19492 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
+				A30FE4392D30ECA400C22524 /* XCRemoteSwiftPackageReference "Prefire" */,
 			);
 			productRefGroup = 3B1B90102429CF55009FDCC5 /* Products */;
 			projectDirPath = "";
@@ -1677,6 +1686,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BC6DB002A81818500FAE847 /* __Snapshots__ in Resources */,
+				A30FE43F2D30ED1C00C22524 /* PreviewTests.stencil in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2103,6 +2113,10 @@
 			isa = PBXTargetDependency;
 			target = 3B1B900E2429CF55009FDCC5 /* Hymns */;
 			targetProxy = 3BE7C91E249CAB2700B04A1F /* PBXContainerItemProxy */;
+		};
+		A30FE43D2D30ECAD00C22524 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = A30FE43C2D30ECAD00C22524 /* PrefireTestsPlugin */;
 		};
 /* End PBXTargetDependency section */
 
@@ -2732,6 +2746,14 @@
 				minimumVersion = 20.0.0;
 			};
 		};
+		A30FE4392D30ECA400C22524 /* XCRemoteSwiftPackageReference "Prefire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/BarredEwe/Prefire";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 3.1.0;
+			};
+		};
 		A3E10D452D21744A00184609 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
@@ -2870,6 +2892,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3BDFF7392D232BC0005F2A10 /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = RealmSwift;
+		};
+		A30FE43A2D30ECA400C22524 /* Prefire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A30FE4392D30ECA400C22524 /* XCRemoteSwiftPackageReference "Prefire" */;
+			productName = Prefire;
+		};
+		A30FE43C2D30ECAD00C22524 /* PrefireTestsPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A30FE4392D30ECA400C22524 /* XCRemoteSwiftPackageReference "Prefire" */;
+			productName = "plugin:PrefireTestsPlugin";
+		};
+		A30FE4402D30EEBA00C22524 /* Prefire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A30FE4392D30ECA400C22524 /* XCRemoteSwiftPackageReference "Prefire" */;
+			productName = Prefire;
 		};
 		A3E10D462D21744A00184609 /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
