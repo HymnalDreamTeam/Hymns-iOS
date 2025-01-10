@@ -1,5 +1,6 @@
 import AVFoundation
 import Combine
+import Prefire
 import SwiftEventBus
 import SwiftUI
 
@@ -12,6 +13,11 @@ struct AudioPlayer: View {
 
     init(viewModel: AudioPlayerViewModel) {
         self.viewModel = viewModel
+    }
+
+    fileprivate init(viewModel: AudioPlayerViewModel, showSpeedPicker: Bool) {
+        self.viewModel = viewModel
+        self._showSpeedPicker = State(initialValue: showSpeedPicker)
     }
 
     var body: some View {
@@ -105,7 +111,7 @@ struct AudioPlayer: View {
 }
 
 #if DEBUG
-struct AudioView_Previews: PreviewProvider {
+struct AudioPlayer_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
 
         let playingViewModel = AudioPlayerViewModel(url: URL(string: "url")!)
@@ -129,11 +135,16 @@ struct AudioView_Previews: PreviewProvider {
         noSpeedAdjusterViewModel.showSpeedAdjuster = false
         let noSpeedAdjuster = AudioPlayer(viewModel: noSpeedAdjusterViewModel)
 
+        let adjustingSpeedViewModel = AudioPlayerViewModel(url: URL(string: "url")!)
+        adjustingSpeedViewModel.currentSpeed = 0.5
+        let adjustingSpeed = AudioPlayer(viewModel: adjustingSpeedViewModel, showSpeedPicker: true)
+
         return Group {
             currentlyPlaying.previewDisplayName("currently playing")
             stopped.previewDisplayName("stopped")
             buffering.previewDisplayName("buffering")
             noSpeedAdjuster.previewDisplayName("no speed adjuster")
+            adjustingSpeed.previewDisplayName("adjusting speed")
         }.padding().previewLayout(.sizeThatFits)
     }
 }
