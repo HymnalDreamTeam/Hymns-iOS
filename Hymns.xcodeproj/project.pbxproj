@@ -1360,7 +1360,7 @@
 		3BE7C91A249CAB2700B04A1F /* HymnsSnapshotTests */ = {
 			isa = PBXGroup;
 			children = (
-				3BE7C924249CAE9800B04A1F /* Test Utilities */,
+				3BE7C924249CAE9800B04A1F /* TestUtilities */,
 				3B52698B24A00919006E72E1 /* AboutUsDialogSnapshots.swift */,
 				3BBA15E724CC99850010EEC8 /* AudioPlayerSnapshots.swift */,
 				3BA91ED924EE106A00294830 /* BrowseAllSongsSnapshots.swift */,
@@ -1394,14 +1394,14 @@
 			path = HymnsSnapshotTests;
 			sourceTree = "<group>";
 		};
-		3BE7C924249CAE9800B04A1F /* Test Utilities */ = {
+		3BE7C924249CAE9800B04A1F /* TestUtilities */ = {
 			isa = PBXGroup;
 			children = (
 				3BE7C925249CAEAA00B04A1F /* Snapshot+Extensions.swift */,
 				3BDD8709249DC337006288C8 /* HymnIdentifiers.swift */,
 				3BE7C928249CB16B00B04A1F /* SongResults.swift */,
 			);
-			path = "Test Utilities";
+			path = TestUtilities;
 			sourceTree = "<group>";
 		};
 		5EE892D7F10336028C084AC2 /* Frameworks */ = {
