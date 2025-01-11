@@ -1,5 +1,6 @@
-import SwiftUI
+import Prefire
 import Resolver
+import SwiftUI
 
 struct BrowseResultsListView: View {
 
@@ -35,21 +36,27 @@ struct BrowseResultsListView: View {
 }
 
 #if DEBUG
-struct BrowseResultsListView_Previews: PreviewProvider {
+struct BrowseResultsListView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
         let emptyViewModel = BrowseResultsListViewModel(tag: UiTag(title: "Best songs", color: .none))
+        emptyViewModel.songResults = []
         let empty = BrowseResultsListView(viewModel: emptyViewModel)
+
+        let loadingViewModel = BrowseResultsListViewModel(tag: UiTag(title: "Best songs", color: .none))
+        loadingViewModel.songResults = nil
+        let loading = BrowseResultsListView(viewModel: loadingViewModel)
 
         let resultObjects = [SingleSongResultViewModel(stableId: "Hymn 114", title: "Hymn 114", destinationView: EmptyView().eraseToAnyView()),
                              SingleSongResultViewModel(stableId: "Cup of Christ", title: "Cup of Christ", destinationView: EmptyView().eraseToAnyView()),
                              SingleSongResultViewModel(stableId: "Avengers - Endgame", title: "Avengers - Endgame", destinationView: EmptyView().eraseToAnyView())]
-        let resultsViewModel = BrowseResultsListViewModel(category: "Experience of Christ")
+        let resultsViewModel = BrowseResultsListViewModel(tag: UiTag(title: "Best songs", color: .none))
         resultsViewModel.songResults = resultObjects
         let results = BrowseResultsListView(viewModel: resultsViewModel)
 
         return Group {
-            empty.previewDisplayName("error state")
-            results.previewDisplayName("browse results")
+            empty.previewDisplayName("error")
+            loading.previewDisplayName("loading")
+            results.previewDisplayName("results")
         }
     }
 }
