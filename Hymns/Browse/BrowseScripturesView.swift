@@ -1,3 +1,4 @@
+import Prefire
 import Resolver
 import SwiftUI
 
@@ -29,7 +30,7 @@ struct BrowseScripturesView: View {
 }
 
 #if DEBUG
-struct BrowseScripturesView_Previews: PreviewProvider {
+struct BrowseScripturesView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
         let errorViewModel = BrowseScripturesViewModel()
         errorViewModel.scriptures = nil
@@ -47,9 +48,9 @@ struct BrowseScripturesView_Previews: PreviewProvider {
                                   scriptureSongs: [ScriptureSongViewModel(reference: "13:5", title: "White horse?", hymnIdentifier: PreviewHymnIdentifiers.hymn40)])]
         let results = BrowseScripturesView(viewModel: resultsViewModel)
         return Group {
-            error.previewDisplayName("Error")
-            loading.previewDisplayName("Loading")
-            results.previewDisplayName("Results")
+            error.previewDisplayName("error")
+            loading.previewDisplayName("loading")
+            results.previewDisplayName("results")
         }
     }
 }
