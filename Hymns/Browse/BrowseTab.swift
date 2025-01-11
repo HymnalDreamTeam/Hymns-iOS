@@ -72,26 +72,3 @@ extension BrowseTab: TabItem {
         lhs.label == rhs.label
     }
 }
-
-#if DEBUG
-struct BrowseTab_Previews: PreviewProvider {
-    static var previews: some View {
-        var classicTab: BrowseTab = .classic(EmptyView().eraseToAnyView())
-        let newTunesTab: BrowseTab = .newTunes(EmptyView().eraseToAnyView())
-        let newSongsTab: BrowseTab = .newSongs(EmptyView().eraseToAnyView())
-        let childrensTab: BrowseTab = .children(EmptyView().eraseToAnyView())
-        let scripturesTab: BrowseTab = .scripture(EmptyView().eraseToAnyView())
-        let allTab: BrowseTab = .all(EmptyView().eraseToAnyView())
-
-        let currentTabClassic = Binding<BrowseTab>(
-            get: {classicTab},
-            set: {classicTab = $0})
-        return Group {
-            TabBar(currentTab: currentTabClassic,
-                   tabItems: [classicTab, newTunesTab, newSongsTab, childrensTab, scripturesTab, allTab],
-                   tabSpacing: .maxWidth,
-                   showIndicator: true)
-        }
-    }
-}
-#endif
