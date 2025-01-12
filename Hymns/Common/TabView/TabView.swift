@@ -1,4 +1,5 @@
 import Foundation
+import Prefire
 import SwiftUI
 
 /**
@@ -14,8 +15,12 @@ public struct IndicatorTabView<TabType: TabItem>: View {
     private let showIndicator: Bool
     private let showDivider: Bool
 
-    init(currentTab: Binding<TabType>, tabItems: [TabType], tabAlignment: TabAlignment = .top,
-         tabSpacing: TabSpacing = .maxWidth, showIndicator: Bool = true, showDivider: Bool = true) {
+    init(currentTab: Binding<TabType>,
+         tabItems: [TabType],
+         tabAlignment: TabAlignment = .top,
+         tabSpacing: TabSpacing = .maxWidth,
+         showIndicator: Bool = true,
+         showDivider: Bool = true) {
         self._currentTab = currentTab
         self.tabItems = tabItems
         self.tabAlignment = tabAlignment
@@ -55,7 +60,7 @@ public enum TabAlignment {
 }
 
 #if DEBUG
-struct IndicatorTabView_Previews: PreviewProvider {
+struct IndicatorTabView_Previews: PreviewProvider, PrefireProvider {
 
     static var previews: some View {
 
@@ -64,18 +69,27 @@ struct IndicatorTabView_Previews: PreviewProvider {
         let tabItems: [HymnTab] = [selectedTab, .music(Text("%_PREVIEW_% Music here").eraseToAnyView())]
 
         return Group {
-                IndicatorTabView(currentTab: selectedTabBinding, tabItems: tabItems)
-                    .previewDisplayName("Tabs")
-                IndicatorTabView(currentTab: selectedTabBinding, tabItems: tabItems, showDivider: false)
-                    .previewDisplayName("No divider")
-                IndicatorTabView(currentTab: selectedTabBinding, tabItems: tabItems, tabAlignment: .bottom)
-                    .previewDisplayName("bottom tabs")
-                IndicatorTabView(currentTab: selectedTabBinding, tabItems: tabItems)
-                    .previewDevice(PreviewDevice(rawValue: "iPhone SE"))
-                    .previewDisplayName("iPhone SE")
-                IndicatorTabView(currentTab: selectedTabBinding, tabItems: tabItems)
-                    .previewDevice(PreviewDevice(rawValue: "iPad Air 2"))
-                    .previewDisplayName("iPad Air 2")
+            IndicatorTabView(currentTab: selectedTabBinding,
+                             tabItems: tabItems)
+                .previewDisplayName("top tabs -- divider")
+            IndicatorTabView(currentTab: selectedTabBinding,
+                             tabItems: tabItems,
+                             showDivider: false)
+                .previewDisplayName("top tabs -- no divider")
+            IndicatorTabView(currentTab: selectedTabBinding,
+                             tabItems: tabItems,
+                             tabAlignment: .bottom)
+                .previewDisplayName("bottom tabs -- divider")
+            IndicatorTabView(currentTab: selectedTabBinding,
+                             tabItems: tabItems,
+                             tabAlignment: .bottom,
+                             showDivider: false)
+                .previewDisplayName("bottom tabs -- no divider")
+            IndicatorTabView(currentTab: selectedTabBinding,
+                             tabItems: tabItems,
+                             tabSpacing: .custom(spacing: 250),
+                             showIndicator: false)
+                .previewDisplayName("custom tab spacing + no show indicator")
         }
     }
 }
