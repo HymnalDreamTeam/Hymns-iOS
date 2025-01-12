@@ -1,3 +1,4 @@
+import Prefire
 import SwiftUI
 
 /**
@@ -165,8 +166,7 @@ enum TabSpacing: Equatable {
 }
 
 #if DEBUG
-struct TabBar_Previews: PreviewProvider {
-
+struct TabBar_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
         var search: HomeTab = .search
         var browse: HomeTab = .browse
