@@ -1,3 +1,4 @@
+import Prefire
 import SwiftUI
 
 public struct ChordWordView: View {
@@ -23,7 +24,7 @@ public struct ChordWordView: View {
 }
 
  #if DEBUG
- struct ChordWordView_Previews: PreviewProvider {
+struct ChordWordView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
         let multipleChordsViewModel = ChordWordViewModel(ChordWordEntity("Drink", chords: "Am G"))
         let multipleChords = ChordWordView(multipleChordsViewModel)
@@ -38,11 +39,11 @@ public struct ChordWordView: View {
         let noChords = ChordWordView(noChordsViewModel)
 
         Group {
-            multipleChords.previewLayout(.sizeThatFits).previewDisplayName("Multiple chords")
-            singleChord.previewLayout(.sizeThatFits).previewDisplayName("Single chord")
-            emptyChords.previewLayout(.sizeThatFits).previewDisplayName("Empty chords")
-            noChords.previewLayout(.sizeThatFits).previewDisplayName("Nil chord")
-        }
+            multipleChords.previewDisplayName("Multiple chords")
+            singleChord.previewDisplayName("Single chord")
+            emptyChords.previewDisplayName("Empty chords")
+            noChords.previewDisplayName("Nil chord")
+        }.padding().previewLayout(.sizeThatFits)
     }
  }
  #endif
