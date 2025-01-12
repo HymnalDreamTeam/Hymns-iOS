@@ -1,5 +1,6 @@
-import SwiftUI
+import Prefire
 import Resolver
+import SwiftUI
 
 struct TagListView: View {
 
@@ -44,7 +45,7 @@ struct TagListView: View {
 }
 
 #if DEBUG
-struct TagListView_Previews: PreviewProvider {
+struct TagListView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
 
         let loadingViewModel = TagListViewModel()
