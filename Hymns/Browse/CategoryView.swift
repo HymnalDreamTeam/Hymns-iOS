@@ -1,10 +1,17 @@
+import Prefire
 import SwiftUI
 
 struct CategoryView: View {
 
-    @State fileprivate var isExpanded = false
+    @State fileprivate var isExpanded: Bool
 
     let viewModel: CategoryViewModel
+
+    init(viewModel: CategoryViewModel,
+         isExpanded: Bool = false) {
+        self.isExpanded = isExpanded
+        self.viewModel = viewModel
+    }
 
     var body: some View {
         Section {
@@ -29,18 +36,16 @@ struct CategoryView: View {
 }
 
 #if DEBUG
-struct CategoryView_Previews: PreviewProvider {
-
+struct CategoryView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
-
         let viewModel = CategoryViewModel(category: "Category",
                                           hymnType: nil,
                                           subcategories: [SubcategoryViewModel(subcategory: "Subcategory 1", count: 5),
                                                           SubcategoryViewModel(subcategory: "Subcategory 2", count: 1)])
-
-        return Group {
-            CategoryView(viewModel: viewModel).previewLayout(.sizeThatFits)
-        }
+        return List {
+            CategoryView(viewModel: viewModel)
+            CategoryView(viewModel: viewModel, isExpanded: true).listRowSeparator(.hidden)
+        }.listStyle(.plain).background(Color(.systemBackground))
     }
 }
 #endif
