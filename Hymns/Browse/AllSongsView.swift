@@ -18,10 +18,6 @@ struct AllSongsView: View {
     }
 }
 
-#if DEBUG
-struct AllSongsView_Previews: PreviewProvider {
-    static var previews: some View {
-        AllSongsView()
-    }
+#Preview {
+    AllSongsView()
 }
-#endif

@@ -1,4 +1,5 @@
 import AVFoundation
+import Prefire
 import SwiftUI
 
 /**
@@ -50,12 +51,28 @@ struct AudioSlider: View {
 }
 
 #if DEBUG
-struct AudioPlayerControlsView_Previews: PreviewProvider {
+struct AudioSlider_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
-        let viewModel = AudioPlayerViewModel(url: URL(string: "https://www.hymnal.net/Hymns/NewSongs/mp3/ns0767.mp3")!)
-        viewModel.currentTime = 12
-        viewModel.songDuration = 100
-        return AudioSlider(viewModel: viewModel)
+        let startViewModel = AudioPlayerViewModel(url: URL(string: "https://www.hymnal.net/Hymns/NewSongs/mp3/ns0767.mp3")!)
+        startViewModel.currentTime = 0
+        startViewModel.songDuration = 100
+        let start = AudioSlider(viewModel: startViewModel)
+
+        let middleViewModel = AudioPlayerViewModel(url: URL(string: "https://www.hymnal.net/Hymns/NewSongs/mp3/ns0767.mp3")!)
+        middleViewModel.currentTime = 12
+        middleViewModel.songDuration = 100
+        let middle = AudioSlider(viewModel: middleViewModel)
+
+        let endViewModel = AudioPlayerViewModel(url: URL(string: "https://www.hymnal.net/Hymns/NewSongs/mp3/ns0767.mp3")!)
+        endViewModel.currentTime = 100
+        endViewModel.songDuration = 100
+        let end = AudioSlider(viewModel: endViewModel)
+
+        return Group {
+            start.previewDisplayName("start")
+            middle.previewDisplayName("middle")
+            end.previewDisplayName("end")
+        }.padding().previewLayout(.sizeThatFits)
     }
 }
 #endif
