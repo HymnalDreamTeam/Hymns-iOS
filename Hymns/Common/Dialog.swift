@@ -1,3 +1,4 @@
+import Prefire
 import SwiftUI
 
 /**
@@ -36,7 +37,7 @@ struct Dialog<Content: View>: View {
 }
 
 #if DEBUG
-struct Dialog_Previews: PreviewProvider {
+struct Dialog_Previews: PreviewProvider, PrefireProvider {
 
     static var previews: some View {
         let backgroundText = Text("""
@@ -48,16 +49,13 @@ Palo santo seitan actually aesthetic. Narwhal plaid chambray schlitz pour-over k
 
 Dummy text? More like dummy thicc text, amirite?
 """)
-
         let viewModel = DialogViewModel(contentBuilder: {
-            Text("%_PREVIEW_% Example Dialog").eraseToAnyView()
+            Text("%_PREVIEW_% Example Dialog").foregroundColor(.green).padding().eraseToAnyView()
         })
         let dialog = Dialog(viewModel: .constant(viewModel))
-        return Group {
-            ZStack {
-                backgroundText
-                dialog
-            }.toPreviews()
+        return ZStack {
+            backgroundText
+            dialog
         }
     }
 }
