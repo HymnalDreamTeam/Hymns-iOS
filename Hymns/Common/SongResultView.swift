@@ -1,3 +1,4 @@
+import Prefire
 import SwiftUI
 
 /// Song Result view that shows only a single hymn identfier.
@@ -20,14 +21,14 @@ struct SingleSongResultView: View {
 }
 
 #if DEBUG
-struct SingleSongResultView_Previews: PreviewProvider {
+struct SingleSongResultView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
-        SingleSongResultView(
-            viewModel: SingleSongResultViewModel(stableId: "Hymn 480",
-                                                 title: "O Lord, breathe Thy Spirit on me",
-                                                 label: "Hymn 255",
-                                                 destinationView: Text("%_PREVIEW_% Destination").eraseToAnyView()))
-        .previewLayout(.fixed(width: 250, height: 100))
+        let viewModel = SingleSongResultViewModel(stableId: "Hymn 480",
+                                                  title: "O Lord, breathe Thy Spirit on me",
+                                                  label: "Hymn 255",
+                                                  destinationView: Text("%_PREVIEW_% Destination").eraseToAnyView())
+        SingleSongResultView(viewModel: viewModel)
+            .previewLayout(.fixed(width: 250, height: 100))
     }
 }
 #endif
@@ -65,14 +66,14 @@ struct MultiSongResultView: View {
 }
 
 #if DEBUG
-struct MultiSongResultView_Previews: PreviewProvider {
+struct MultiSongResultView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
-        MultiSongResultView(
-            viewModel: MultiSongResultViewModel(stableId: "Hymn 480",
-                                                title: "O Lord, breathe Thy Spirit on me",
-                                                labels: ["Hymn 255", "Songbase 442"],
-                                                destinationView: Text("%_PREVIEW_% Destination").eraseToAnyView()))
-        .previewLayout(.fixed(width: 250, height: 100))
+        let viewModel = MultiSongResultViewModel(stableId: "Hymn 480",
+                                                 title: "O Lord, breathe Thy Spirit on me",
+                                                 labels: ["Hymn 255", "Songbase 442"],
+                                                 destinationView: Text("%_PREVIEW_% Destination").eraseToAnyView())
+        return MultiSongResultView(viewModel: viewModel)
+            .previewLayout(.fixed(width: 250, height: 100))
     }
 }
 #endif
