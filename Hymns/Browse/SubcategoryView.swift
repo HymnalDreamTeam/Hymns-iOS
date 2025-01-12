@@ -1,4 +1,5 @@
 import Foundation
+import Prefire
 import SwiftUI
 
 struct SubcategoryViewModel: Equatable, Hashable {
@@ -34,15 +35,15 @@ struct SubcategoryView: View {
 }
 
 #if DEBUG
-struct SubcategoryView_Previews: PreviewProvider {
-
+struct SubcategoryView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
-
         let viewModel = SubcategoryViewModel(subcategory: "His Worship", count: 5)
-
         return Group {
-            SubcategoryView(viewModel: viewModel).previewLayout(.sizeThatFits)
-        }
+            SubcategoryView(viewModel: viewModel).previewDisplayName("default")
+            SubcategoryView(viewModel: viewModel)
+                .environment(\.sizeCategory, .accessibilityMedium)
+                .previewDisplayName("accessibility size")
+        }.padding().previewLayout(.sizeThatFits)
     }
 }
 #endif
