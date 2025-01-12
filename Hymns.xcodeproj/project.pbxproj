@@ -2259,7 +2259,7 @@
 				BUNDLE_ID_SUFFIX = .dev;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 80;
+				CURRENT_PROJECT_VERSION = 81;
 				DEVELOPMENT_ASSET_PATHS = "\"Hymns/Preview Content\"";
 				DEVELOPMENT_TEAM = VBX3S26MR4;
 				ENABLE_PREVIEWS = YES;
@@ -2270,7 +2270,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.80;
+				MARKETING_VERSION = 0.1.81;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -2311,7 +2311,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
 				BUNDLE_ID_SUFFIX = "";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 80;
+				CURRENT_PROJECT_VERSION = 81;
 				DEVELOPMENT_ASSET_PATHS = "\"Hymns/Preview Content\"";
 				DEVELOPMENT_TEAM = VBX3S26MR4;
 				ENABLE_PREVIEWS = YES;
@@ -2322,7 +2322,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.80;
+				MARKETING_VERSION = 0.1.81;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -2502,7 +2502,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon${BUNDLE_ID_SUFFIX}";
 				BUNDLE_ID_SUFFIX = .beta;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 80;
+				CURRENT_PROJECT_VERSION = 81;
 				DEVELOPMENT_ASSET_PATHS = "\"Hymns/Preview Content\"";
 				DEVELOPMENT_TEAM = VBX3S26MR4;
 				ENABLE_PREVIEWS = YES;
@@ -2513,7 +2513,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.80;
+				MARKETING_VERSION = 0.1.81;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
