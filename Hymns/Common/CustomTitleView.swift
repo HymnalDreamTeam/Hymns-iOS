@@ -1,3 +1,4 @@
+import Prefire
 import SwiftUI
 
 struct CustomTitle: View {
@@ -16,9 +17,10 @@ struct CustomTitle: View {
 }
 
 #if DEBUG
-struct CustomTitle_Previews: PreviewProvider {
+struct CustomTitle_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
-        CustomTitle(title: "Favorites").previewLayout(.fixed(width: 200, height: 50))
+        CustomTitle(title: "Favorites")
+            .previewLayout(.fixed(width: 200, height: 50))
     }
 }
 #endif
