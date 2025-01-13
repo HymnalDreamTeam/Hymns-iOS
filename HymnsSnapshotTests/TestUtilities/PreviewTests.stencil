@@ -69,22 +69,31 @@ import {{ import }}
         }
 
         for deviceName in snapshotDevices {
-            var snapshot = prefireSnapshot
-            guard let device = PreviewDevice(rawValue: deviceName).snapshotDevice() else {
-                fatalError("Unknown device name from configuration file: \(deviceName)")
-            }
+            for interfaceStyle: UIUserInterfaceStyle in [.light, .dark] {
+                var snapshot = prefireSnapshot
+                guard let device = PreviewDevice(rawValue: deviceName).snapshotDevice() else {
+                    fatalError("Unknown device name from configuration file: \(deviceName)")
+                }
 
-            snapshot.name = "\(prefireSnapshot.name)-\(deviceName)"
-            snapshot.device = device
+                if interfaceStyle == .light {
+                     snapshot.name = "\(prefireSnapshot.name)-\(deviceName)"
+                } else {
+                    snapshot.name = "\(prefireSnapshot.name)-\(deviceName)-dark"
+                }
+                snapshot.device = device
 
-            // Ignore specific device safe area
-            snapshot.device.safeArea = .zero
+                // Ignore specific device safe area
+                snapshot.device.safeArea = .zero
 
-            // Ignore specific device display scale
-            snapshot.traits = UITraitCollection(displayScale: 2.0)
+                // Ignore specific device display scale
+                snapshot.traits = UITraitCollection { mutableTraits in
+                    mutableTraits.displayScale = 2.0
+                    mutableTraits.userInterfaceStyle = interfaceStyle
+                }
 
-            if let failure = assertSnapshot(for: snapshot) {
-                XCTFail(failure)
+                if let failure = assertSnapshot(for: snapshot) {
+                    XCTFail(failure)
+                }
             }
         }
 
