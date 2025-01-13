@@ -59,7 +59,7 @@
 		3B2E84BD2470D66C00EA4329 /* new_song_500.json in Resources */ = {isa = PBXBuildFile; fileRef = 3B2E84BC2470D66C00EA4329 /* new_song_500.json */; };
 		3B2E84C12471CD4700EA4329 /* classic_1109.json in Resources */ = {isa = PBXBuildFile; fileRef = 3B2E84C02471CD4700EA4329 /* classic_1109.json */; };
 		3B363BF62BAE9EA500CA9B89 /* BadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B363BF52BAE9EA500CA9B89 /* BadgeView.swift */; };
-		3B369CEC246D07580068A29C /* PDFViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B369CEB246D07580068A29C /* PDFViewer.swift */; };
+		3B369CEC246D07580068A29C /* PdfViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B369CEB246D07580068A29C /* PdfViewer.swift */; };
 		3B369CEE246D08A50068A29C /* PDFPreloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B369CED246D08A50068A29C /* PDFPreloader.swift */; };
 		3B369CF0246D0D570068A29C /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B369CEF246D0D570068A29C /* WebView.swift */; };
 		3B3999BD2A0D96A700AB6F4C /* LaunchRouterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B3999BC2A0D96A700AB6F4C /* LaunchRouterViewModel.swift */; };
@@ -432,7 +432,7 @@
 		3B2E84C02471CD4700EA4329 /* classic_1109.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = classic_1109.json; sourceTree = "<group>"; };
 		3B35097A29957B79002A75DD /* StoreKitTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKitTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/StoreKitTest.framework; sourceTree = DEVELOPER_DIR; };
 		3B363BF52BAE9EA500CA9B89 /* BadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeView.swift; sourceTree = "<group>"; };
-		3B369CEB246D07580068A29C /* PDFViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFViewer.swift; sourceTree = "<group>"; };
+		3B369CEB246D07580068A29C /* PdfViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PdfViewer.swift; sourceTree = "<group>"; };
 		3B369CED246D08A50068A29C /* PDFPreloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFPreloader.swift; sourceTree = "<group>"; };
 		3B369CEF246D0D570068A29C /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		3B3999BC2A0D96A700AB6F4C /* LaunchRouterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchRouterViewModel.swift; sourceTree = "<group>"; };
@@ -970,7 +970,7 @@
 				3BE50CA72964A566001C2E66 /* TitleWithBackButton.swift */,
 				B56305B8244223D7003BC132 /* FontViewModifier.swift */,
 				3B20368D248C0E8200D90DF5 /* ErrorView.swift */,
-				3B369CEB246D07580068A29C /* PDFViewer.swift */,
+				3B369CEB246D07580068A29C /* PdfViewer.swift */,
 				3BA91ECF24ECD65100294830 /* MarqueeView.swift */,
 				3B3DF63C24A280D100E60ED9 /* IconSizeConstants.swift */,
 				3BBCC21A24E1048300977961 /* ToolTip.swift */,
@@ -1852,7 +1852,7 @@
 				3BA91ED024ECD65100294830 /* MarqueeView.swift in Sources */,
 				3BB10D77299754AF00E84EB5 /* CoffeeDonation.swift in Sources */,
 				3B04D2FC24898137008C7E5E /* TagEntity.swift in Sources */,
-				3B369CEC246D07580068A29C /* PDFViewer.swift in Sources */,
+				3B369CEC246D07580068A29C /* PdfViewer.swift in Sources */,
 				5CA784A0242D1A3200B57903 /* BrowseView.swift in Sources */,
 				3BA4612724771EAD0068F269 /* SongInfoView.swift in Sources */,
 				3B8DD373249F2AC2001C6A7F /* HistoryStoreTestImpl.swift in Sources */,

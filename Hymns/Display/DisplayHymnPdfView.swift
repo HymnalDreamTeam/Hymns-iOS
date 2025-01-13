@@ -34,7 +34,7 @@ struct DisplayHymnPdfView: View {
                     .accessibility(label: Text("Maximize sheet music", comment: "A11y label for maximizing the sheet music."))
                     .padding().padding(.top, 15)
             }).zIndex(1)
-            PDFViewer(pdfDocument)
+            PdfViewer(pdfDocument)
         }.fullScreenCover(isPresented: $showPdfSheet) {
             ZStack(alignment: .topLeading) {
                 Button(action: {
@@ -42,7 +42,7 @@ struct DisplayHymnPdfView: View {
                 }, label: {
                     Text("Close", comment: "Close the full screen PDF view.").padding()
                 }).zIndex(1)
-                PDFViewer(pdfDocument)
+                PdfViewer(pdfDocument)
             }
         }.eraseToAnyView()
     }
