@@ -1,3 +1,4 @@
+import Prefire
 import SwiftUI
 
 public struct ToastOptions {
@@ -58,19 +59,21 @@ struct SimpleToast<Item, ToastContent>: ViewModifier where ToastContent: View {
 }
 
 #if DEBUG
-struct Toast_Previews: PreviewProvider {
+struct Toast_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
         let top =
             Text("%_PREVIEW_% Content here")
                 .maxSize()
-                .toast(item: .constant(TagColor.blue), options: ToastOptions(alignment: .top)) { _ -> AnyView in
+                .toast(item: .constant(TagColor.blue),
+                       options: ToastOptions(alignment: .top)) { _ -> AnyView in
                     Text("%_PREVIEW_% Toast text").padding()
                         .eraseToAnyView()
         }
         let center =
             Text("%_PREVIEW_% Content here")
                 .maxSize()
-                .toast(item: .constant(TagColor.blue), options: ToastOptions(alignment: .center)) { _ -> AnyView in
+                .toast(item: .constant(TagColor.blue),
+                       options: ToastOptions(alignment: .center)) { _ -> AnyView in
                     VStack {
                         Text("%_PREVIEW_% Toast line 1")
                         Text("%_PREVIEW_% Toast line 2")
@@ -80,7 +83,8 @@ struct Toast_Previews: PreviewProvider {
         let bottom =
             Text("%_PREVIEW_% Content here")
                 .maxSize()
-                .toast(item: .constant(TagColor.blue), options: ToastOptions(alignment: .bottom)) { _ -> AnyView in
+                .toast(item: .constant(TagColor.blue),
+                       options: ToastOptions(alignment: .bottom)) { _ -> AnyView in
                     HStack {
                         Image(systemName: "checkmark").foregroundColor(.green).padding()
                         Text("%_PREVIEW_% Toast text").padding(.trailing)
@@ -90,40 +94,19 @@ struct Toast_Previews: PreviewProvider {
         let bottomWithOutBackdrop =
             Text("%_PREVIEW_% Content here")
                 .maxSize()
-                .toast(item: .constant(TagColor.blue), options: ToastOptions(alignment: .bottom, backdrop: false)) { _ -> AnyView in
+                .toast(item: .constant(TagColor.blue),
+                       options: ToastOptions(alignment: .bottom, backdrop: false)) { _ -> AnyView in
                     HStack {
                         Image(systemName: "checkmark").foregroundColor(.green).padding()
                         Text("%_PREVIEW_% Toast text").padding(.trailing)
                     }
                     .eraseToAnyView()
         }
-        let darkMode =
-            Text("%_PREVIEW_% Content here")
-                .maxSize()
-                .toast(item: .constant(TagColor.blue), options: ToastOptions(alignment: .bottom)) { _ -> AnyView in
-                    HStack {
-                        Image(systemName: "checkmark").foregroundColor(.green).padding()
-                        Text("%_PREVIEW_% Toast text").padding(.trailing)
-                    }
-                    .eraseToAnyView()
-            }.background(Color(.systemBackground)).environment(\.colorScheme, .dark)
-        let darkModeWithoutBackdrop =
-            Text("%_PREVIEW_% Content here")
-                .maxSize()
-                .toast(item: .constant(TagColor.blue), options: ToastOptions(alignment: .bottom, backdrop: false)) { _ -> AnyView in
-                    HStack {
-                        Image(systemName: "checkmark").foregroundColor(.green).padding()
-                        Text("%_PREVIEW_% Toast text").padding(.trailing)
-                    }
-                    .eraseToAnyView()
-            }.background(Color(.systemBackground)).environment(\.colorScheme, .dark)
         return Group {
             top.previewDisplayName("top")
             center.previewDisplayName("center")
             bottom.previewDisplayName("bottom")
             bottomWithOutBackdrop.previewDisplayName("bottom without backdrop")
-            darkMode.previewDisplayName("dark mode")
-            darkModeWithoutBackdrop.previewDisplayName("dark mode without backdrop")
         }
     }
 }
