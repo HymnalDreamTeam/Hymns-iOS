@@ -31,10 +31,6 @@ struct TitleWithBackButton: View {
     }
 }
 
-#if DEBUG
-struct TitleWithBackButton_Previews: PreviewProvider {
-    static var previews: some View {
-        TitleWithBackButton("Custom Title").previewLayout(.fixed(width: 200, height: 50))
-    }
+#Preview(traits: .fixedLayout(width: 200, height: 50)) {
+    TitleWithBackButton("Custom Title")
 }
-#endif
