@@ -1,3 +1,4 @@
+import Prefire
 import SwiftUI
 
 struct SongInfoView: View {
@@ -12,9 +13,9 @@ struct SongInfoView: View {
                     Text(viewModel.type.label).font(.callout).bold()
                     VStack(alignment: .leading) {
                         ForEach(viewModel.values, id: \.self) { value in
-                                NavigationLink(value: Route.browseResults(viewModel.createSongInfoItem(value))) {
-                                    Text(value).font(.callout)
-                                }
+                            NavigationLink(value: Route.browseResults(viewModel.createSongInfoItem(value))) {
+                                Text(value).font(.callout)
+                            }
                         }
                     }
                 }
@@ -23,9 +24,9 @@ struct SongInfoView: View {
                     Text(viewModel.type.label).font(.callout).bold()
                     VStack(alignment: .leading) {
                         ForEach(viewModel.values, id: \.self) { value in
-                                NavigationLink(value: Route.browseResults(viewModel.createSongInfoItem(value))) {
-                                    Text(value).font(.callout)
-                                }
+                            NavigationLink(value: Route.browseResults(viewModel.createSongInfoItem(value))) {
+                                Text(value).font(.callout)
+                            }
                         }
                     }
                 }
@@ -35,12 +36,12 @@ struct SongInfoView: View {
 }
 
 #if DEBUG
-struct SongInfoView_Previews: PreviewProvider {
+struct SongInfoView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
         let viewModel = SongInfoViewModel(type: .category, values: ["Worship of the Father", "The Son's Redemption"])
         return Group {
-            SongInfoView(viewModel: viewModel).toPreviews()
-        }
+            SongInfoView(viewModel: viewModel)
+        }.previewLayout(.sizeThatFits)
     }
 }
 #endif

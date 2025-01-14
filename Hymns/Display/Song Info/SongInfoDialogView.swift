@@ -1,3 +1,4 @@
+import Prefire
 import SwiftUI
 
 struct SongInfoDialogView: View {
@@ -25,7 +26,7 @@ struct SongInfoDialogView: View {
 }
 
  #if DEBUG
- struct SongInfoDialogView_Previews: PreviewProvider {
+struct SongInfoDialogView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
         let hymn = UiHymn(hymnIdentifier: PreviewHymnIdentifiers.hymn40, title: "", lyrics: nil, author: "MC")
 
@@ -43,9 +44,9 @@ struct SongInfoDialogView: View {
                                         SongInfoViewModel(type: .author, values: ["Will Will Will Jeng Jeng Jeng", "Titus Titus Titus Ting Ting Ting"])]
         let longValues = SongInfoDialogView(viewModel: longValuesViewModel)
         return Group {
-            dialog.toPreviews()
-            longValues.previewLayout(.sizeThatFits).previewDisplayName("long values")
-        }
+            dialog.previewDisplayName("regular values")
+            longValues.previewDisplayName("long values")
+        }.previewLayout(.sizeThatFits)
     }
  }
  #endif
