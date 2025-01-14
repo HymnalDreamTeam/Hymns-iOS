@@ -1,3 +1,4 @@
+import Prefire
 import SwiftUI
 
 /**
@@ -91,7 +92,7 @@ enum SearchMode: Int {
 }
 
 #if DEBUG
-struct SearchBar_Previews: PreviewProvider {
+struct SearchBar_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
         let placeholderText = "Search by numbers or words"
         var emptySearchText = ""
@@ -118,7 +119,7 @@ struct SearchBar_Previews: PreviewProvider {
                 searchInactiveBar.previewDisplayName("inactive")
                 searchActiveBar.previewDisplayName("active")
                 searchTextBar.previewDisplayName("with search text")
-            }.previewLayout(.sizeThatFits)
+            }.padding().previewLayout(.sizeThatFits)
     }
 }
 #endif
