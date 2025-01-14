@@ -1,3 +1,4 @@
+import Prefire
 import SwiftUI
 
 // https://stackoverflow.com/a/58876712/1907538
@@ -84,7 +85,7 @@ struct WrappedHStack<Item: Hashable, Content: View>: View {
 
 #if DEBUG
 /// Note: as height of view is calculated dynamically the result works in run-time, not in Preview
-struct WrappedHStack_Previews: PreviewProvider {
+struct WrappedHStack_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
         let severalItems = Binding.constant([
             "Multiline really relaly long tag name that takes up many lines. So many lines, in fact, that it could be three lines.",
@@ -145,7 +146,6 @@ In the local church.
                     WrappedHStack(items: severalItems) { item in
                         Text(item)
                     }
-                    Button("Click me") {}
                 }
             }.previewDisplayName("several items")
             ScrollView {
@@ -154,7 +154,6 @@ In the local church.
                     WrappedHStack(items: hundredItems, horizontalSpacing: 0, verticalSpacing: 0) { item in
                         Text(item)
                     }
-                    Button("Click me") {}
                 }
             }.previewDisplayName("hundred items")
             ScrollView {
@@ -163,9 +162,8 @@ In the local church.
                     WrappedHStack(items: lyrics, horizontalSpacing: 0, verticalSpacing: 0) { item in
                         Text(item)
                     }
-                    Button("Click me") {}
                 }
-            }.previewDisplayName("Lyrics")
+            }.previewDisplayName("lyrics")
         }
     }
 }
