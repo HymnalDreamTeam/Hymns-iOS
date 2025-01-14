@@ -1,3 +1,4 @@
+import Prefire
 import Resolver
 import SwiftUI
 
@@ -49,7 +50,7 @@ struct DisplayHymnPdfView: View {
 }
 
 #if DEBUG
-struct DisplayHymnPdfView_Previews: PreviewProvider {
+struct DisplayHymnPdfView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
         let loadingViewModel = DisplayHymnPdfViewModel(url: URL(string: "http://www.dummylink.com")!)
         let loading = DisplayHymnPdfView(viewModel: loadingViewModel)
@@ -59,15 +60,14 @@ struct DisplayHymnPdfView_Previews: PreviewProvider {
         let error = DisplayHymnPdfView(viewModel: errorViewModel)
 
         // Seed the preloader with a dummy pdf so the initial state should be the pdf, since no loading is required.
-        let loaded = DisplayHymnPdfView(viewModel: DisplayHymnPdfViewModel(preloader: PdfLoaderTestImpl(), url: URL(string: "http://www.dummypdf.com")!))
+        let loadedViewModel = DisplayHymnPdfViewModel(preloader: PdfLoaderTestImpl(), url: URL(string: "http://www.dummypdf.com")!)
+        loadedViewModel.pdfDocument = PdfLoaderTestImpl.createPdf()
+        loadedViewModel.isLoading = false
+        let loaded = DisplayHymnPdfView(viewModel: loadedViewModel)
         return Group {
-            loading.previewDisplayName("Loading")
-            error.previewDisplayName("Error")
-            loaded.previewDisplayName("Loaded")
-            loaded.background(Color(.systemBackground)).environment(\.colorScheme, .dark).previewDisplayName("Dark Mode")
-            loaded
-                .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
-                .previewDisplayName("a11y extra extra large")
+            loading.previewDisplayName("loading")
+            error.previewDisplayName("error")
+            loaded.previewDisplayName("loaded")
         }
     }
 }

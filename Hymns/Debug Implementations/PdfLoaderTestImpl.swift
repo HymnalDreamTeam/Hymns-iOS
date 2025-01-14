@@ -7,7 +7,7 @@ import PDFKit
  */
 class PdfLoaderTestImpl: PDFLoader {
 
-    private var pdfStore = [
+    private static let pdfStore = [
         "/en/hymn/h/1151/f=ppdf": "Hymn 1151's Piano",
         "/en/hymn/h/1151/f=gtpdf": "Hymn 1151's Chords",
         "/en/hymn/h/3/f=ppdf": "Hymn 3's Piano",
@@ -20,11 +20,17 @@ class PdfLoaderTestImpl: PDFLoader {
     }
 
     func get(url: URL) -> PDFDocument? {
+        PdfLoaderTestImpl.createPdf(url)
+    }
+
+    static func createPdf(_ url: URL? = nil) -> PDFDocument? {
         PDFDocument(data: createPdfData(url))
     }
 
-    func createPdfData(_ url: URL) -> Data {
-        let storedResponse = self.pdfStore[url.absoluteString]
+    static func createPdfData(_ url: URL?) -> Data {
+        let storedResponse = url.flatMap { url in
+            self.pdfStore[url.absoluteString]
+        }
 
         let format = UIGraphicsPDFRendererFormat()
         let pageWidth = 8.5 * 72.0
