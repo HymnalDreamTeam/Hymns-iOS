@@ -34,13 +34,12 @@ struct LottieView: UIViewRepresentable {
     }
 }
 
-#if DEBUG
-struct LottieView_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            LottieView(fileName: "firstLaunchAnimation", shouldLoop: true)
-            LottieView(fileName: "soundCloudPlayingAnimation", shouldLoop: true)
-        }
-    }
+#Preview("firstLaunchAnimation") {
+    LottieView(fileName: "firstLaunchAnimation", shouldLoop: true)
+        .prefireIgnored()
 }
-#endif
+
+#Preview("soundCloudPlayingAnimation") {
+    LottieView(fileName: "soundCloudPlayingAnimation", shouldLoop: true)
+        .prefireIgnored()
+}
