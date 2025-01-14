@@ -1,3 +1,4 @@
+import Prefire
 import Resolver
 import StoreKit
 import SwiftUI
@@ -52,7 +53,7 @@ struct DonationView: View {
 }
 
 #if DEBUG
-struct DonationView_Previews: PreviewProvider {
+struct DonationView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
         let errorViewModel = DonationViewModel(coffeeDonations: [CoffeeDonation](), resultBinding: .constant(nil))
         errorViewModel.coffeeDonations = []
