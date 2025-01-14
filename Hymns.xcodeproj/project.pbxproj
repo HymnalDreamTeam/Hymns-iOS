@@ -58,7 +58,7 @@
 		3B2E84BB2470D63000EA4329 /* classic_1151.json in Resources */ = {isa = PBXBuildFile; fileRef = 3B2E84BA2470D63000EA4329 /* classic_1151.json */; };
 		3B2E84BD2470D66C00EA4329 /* new_song_500.json in Resources */ = {isa = PBXBuildFile; fileRef = 3B2E84BC2470D66C00EA4329 /* new_song_500.json */; };
 		3B2E84C12471CD4700EA4329 /* classic_1109.json in Resources */ = {isa = PBXBuildFile; fileRef = 3B2E84C02471CD4700EA4329 /* classic_1109.json */; };
-		3B363BF62BAE9EA500CA9B89 /* BadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B363BF52BAE9EA500CA9B89 /* BadgeView.swift */; };
+		3B363BF62BAE9EA500CA9B89 /* Badge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B363BF52BAE9EA500CA9B89 /* Badge.swift */; };
 		3B369CEC246D07580068A29C /* PdfViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B369CEB246D07580068A29C /* PdfViewer.swift */; };
 		3B369CEE246D08A50068A29C /* PDFPreloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B369CED246D08A50068A29C /* PDFPreloader.swift */; };
 		3B369CF0246D0D570068A29C /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B369CEF246D0D570068A29C /* WebView.swift */; };
@@ -431,7 +431,7 @@
 		3B2E84BC2470D66C00EA4329 /* new_song_500.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = new_song_500.json; sourceTree = "<group>"; };
 		3B2E84C02471CD4700EA4329 /* classic_1109.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = classic_1109.json; sourceTree = "<group>"; };
 		3B35097A29957B79002A75DD /* StoreKitTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKitTest.framework; path = Platforms/iPhoneOS.platform/Developer/Library/Frameworks/StoreKitTest.framework; sourceTree = DEVELOPER_DIR; };
-		3B363BF52BAE9EA500CA9B89 /* BadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeView.swift; sourceTree = "<group>"; };
+		3B363BF52BAE9EA500CA9B89 /* Badge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Badge.swift; sourceTree = "<group>"; };
 		3B369CEB246D07580068A29C /* PdfViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PdfViewer.swift; sourceTree = "<group>"; };
 		3B369CED246D08A50068A29C /* PDFPreloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFPreloader.swift; sourceTree = "<group>"; };
 		3B369CEF246D0D570068A29C /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
@@ -979,7 +979,7 @@
 				3BB931A624E37F3A00E0C873 /* LottieView.swift */,
 				3B369CEF246D0D570068A29C /* WebView.swift */,
 				3B7451C6249535E1008B80BC /* WrappedHStack.swift */,
-				3B363BF52BAE9EA500CA9B89 /* BadgeView.swift */,
+				3B363BF52BAE9EA500CA9B89 /* Badge.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -1937,7 +1937,7 @@
 				3B1B90152429CF55009FDCC5 /* SceneDelegate.swift in Sources */,
 				B5809DFC244F614000EF0C63 /* FavoritesViewModel.swift in Sources */,
 				3B5322C22A0730E700D53A61 /* AppError.swift in Sources */,
-				3B363BF62BAE9EA500CA9B89 /* BadgeView.swift in Sources */,
+				3B363BF62BAE9EA500CA9B89 /* Badge.swift in Sources */,
 				3B20368E248C0E8200D90DF5 /* ErrorView.swift in Sources */,
 				3B25C0E824503B6900C435E1 /* RecentSong.swift in Sources */,
 				3B2DA3212494C38000F5F5B1 /* TagColor.swift in Sources */,

@@ -37,10 +37,17 @@ struct BadgeModifier: ViewModifier {
         }
     }
 }
+
 extension View {
     func badge<Content: View>(badgeContent: Content = Image("circle.fill"),
                               position: Alignment = .topTrailing,
                               shouldShow: Binding<Bool> = .constant(true)) -> some View {
         self.modifier(BadgeModifier(badgeContent: badgeContent, position: position, shouldShow: shouldShow))
     }
+}
+
+#Preview(traits: .sizeThatFitsLayout) {
+    Image(systemName: "magnifyingglass")
+        .padding()
+        .badge(shouldShow: .constant(true))
 }
