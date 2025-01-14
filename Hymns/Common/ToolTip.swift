@@ -1,3 +1,4 @@
+import Prefire
 import SwiftUI
 
 struct ToolTipModifier<Label: View>: ViewModifier {
@@ -286,7 +287,7 @@ struct ToolTipView<Label>: View where Label: View {
 }
 
 #if DEBUG
-struct ToolTipView_Previews: PreviewProvider {
+struct ToolTipView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
         Group {
             ToolTipView(tapAction: {}, label: {
@@ -332,7 +333,7 @@ struct ToolTipView_Previews: PreviewProvider {
                                                                             ToolTipConfiguration.BodyConfiguration.Size(
                                                                                 height: 0.5, width: 0.5, sizeType: .relative))
             )).previewDisplayName("half-sized")
-        }.previewLayout(.fixed(width: 250, height: 100))
+        }.padding().previewLayout(.fixed(width: 200, height: 100))
     }
 }
 #endif
