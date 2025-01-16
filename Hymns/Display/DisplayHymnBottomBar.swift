@@ -1,3 +1,4 @@
+import Prefire
 import Resolver
 import SwiftUI
 
@@ -180,10 +181,11 @@ extension DisplayHymnSheet: Identifiable {
 }
 
 #if DEBUG
-struct DisplayHymnBottomBar_Previews: PreviewProvider {
+struct DisplayHymnBottomBar_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
         var dialogModel: DialogViewModel<AnyView>?
-        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"), title: "temp", lyrics: [VerseEntity]())
+        let hymn: UiHymn = UiHymn(hymnIdentifier: HymnIdentifier(hymnType: .classic, hymnNumber: "23"),
+                                  title: "temp", lyrics: [VerseEntity]())
 
         let noButtonsViewModel = DisplayHymnBottomBarViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151, hymn: hymn)
         noButtonsViewModel.buttons = []
@@ -207,11 +209,16 @@ struct DisplayHymnBottomBar_Previews: PreviewProvider {
         maximumViewModel.buttons = [
             .soundCloud(SoundCloudViewModel(url: URL(string: "https://soundcloud.com/search?q=query")!)),
             .youTube(URL(string: "https://www.youtube.com/results?search_query=search")!),
-            .languages([SingleSongResultViewModel(stableId: "empty language view", title: "language", destinationView: EmptyView().eraseToAnyView())]),
+            .languages([SingleSongResultViewModel(stableId: "empty language view",
+                                                  title: "language",
+                                                  destinationView: EmptyView().eraseToAnyView())]),
             .musicPlayback(AudioPlayerViewModel(url: URL(string: "https://www.hymnal.net/Hymns/NewSongs/mp3/ns0767.mp3")!)),
-            .relevant([SingleSongResultViewModel(stableId: "empty relevant view", title: "relevant", destinationView: EmptyView().eraseToAnyView())]),
+            .relevant([SingleSongResultViewModel(stableId: "empty relevant view",
+                                                 title: "relevant",
+                                                 destinationView: EmptyView().eraseToAnyView())]),
             .songInfo(SongInfoDialogViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151,
-                                              hymn: UiHymn(hymnIdentifier: PreviewHymnIdentifiers.hymn1151, title: "", lyrics: nil, author: "MC"))!)
+                                              hymn: UiHymn(hymnIdentifier: PreviewHymnIdentifiers.hymn1151,
+                                                           title: "", lyrics: nil, author: "MC"))!)
         ]
         let maximum = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
             get: {dialogModel},
@@ -221,28 +228,32 @@ struct DisplayHymnBottomBar_Previews: PreviewProvider {
         overflowViewModel.buttons = [
             .share("lyrics"),
             .fontSize(FontPickerViewModel()),
-            .languages([SingleSongResultViewModel(stableId: "empty language view", title: "language", destinationView: EmptyView().eraseToAnyView())]),
+            .languages([SingleSongResultViewModel(stableId: "empty language view",
+                                                  title: "language", destinationView: EmptyView().eraseToAnyView())]),
             .musicPlayback(AudioPlayerViewModel(url: URL(string: "https://www.hymnal.net/Hymns/NewSongs/mp3/ns0767.mp3")!)),
-            .relevant([SingleSongResultViewModel(stableId: "empty relevant view", title: "relevant", destinationView: EmptyView().eraseToAnyView())]),
-            .tags
+            .relevant([SingleSongResultViewModel(stableId: "empty relevant view",
+                                                 title: "relevant",
+                                                 destinationView: EmptyView().eraseToAnyView())])
         ]
         overflowViewModel.overflowButtons = [
+            .tags,
             .soundCloud(SoundCloudViewModel(url: URL(string: "https://soundcloud.com/search?q=query")!)),
             .youTube(URL(string: "https://www.youtube.com/results?search_query=search")!),
             .songInfo(SongInfoDialogViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151,
-                                              hymn: UiHymn(hymnIdentifier: PreviewHymnIdentifiers.hymn1151, title: "", lyrics: nil, author: "MC"))!)
+                                              hymn: UiHymn(hymnIdentifier: PreviewHymnIdentifiers.hymn1151,
+                                                           title: "", lyrics: nil, author: "MC"))!)
         ]
         let overflow = DisplayHymnBottomBar(dialogModel: Binding<DialogViewModel<AnyView>?>(
             get: {dialogModel},
             set: {dialogModel = $0}), viewModel: overflowViewModel)
 
         return Group {
-            noButtons.previewDisplayName("0 buttons").previewLayout(.fixed(width: 50, height: 50))
-            oneButton.previewDisplayName("one button").previewLayout(.fixed(width: 50, height: 50))
-            twoButtons.previewDisplayName("two buttons").previewLayout(.fixed(width: 100, height: 50))
-            maximum.previewDisplayName("maximum number of buttons").previewLayout(.fixed(width: 500, height: 50))
-            overflow.previewDisplayName("overflow menu").previewLayout(.fixed(width: 500, height: 50))
-        }
+            noButtons.previewDisplayName("0 buttons")
+            oneButton.previewDisplayName("one button")
+            twoButtons.previewDisplayName("two buttons")
+            maximum.previewDisplayName("maximum number of buttons")
+            overflow.previewDisplayName("overflow menu")
+        }.previewLayout(.sizeThatFits)
     }
 }
 #endif
