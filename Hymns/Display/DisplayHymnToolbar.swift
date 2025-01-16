@@ -1,5 +1,6 @@
-import SwiftUI
+import Prefire
 import Resolver
+import SwiftUI
 
 struct DisplayHymnToolbar: View {
 
@@ -56,29 +57,29 @@ struct DisplayHymnToolbar: View {
 }
 
 #if DEBUG
-struct DisplayHymnToolbar_Previews: PreviewProvider {
+struct DisplayHymnToolbar_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
         let loading = DisplayHymnToolbar(viewModel: DisplayHymnViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151))
 
-        let classic40ViewModel = DisplayHymnViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn40)
-        classic40ViewModel.title = "Hymn 40"
-        classic40ViewModel.isFavorited = true
-        let classic40 = DisplayHymnToolbar(viewModel: classic40ViewModel)
+        let missingFavoriteViewModel = DisplayHymnViewModel(hymnToDisplay: PreviewHymnIdentifiers.cupOfChrist)
+        missingFavoriteViewModel.title = "Cup of Christ"
+        let missingFavorite = DisplayHymnToolbar(viewModel: missingFavoriteViewModel)
 
-        let classic1151ViewModel = DisplayHymnViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)
-        classic1151ViewModel.title = "Hymn 1151"
-        classic1151ViewModel.isFavorited = false
-        let classic1151 = DisplayHymnToolbar(viewModel: classic1151ViewModel)
+        let notFavoriteViewModel = DisplayHymnViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151)
+        notFavoriteViewModel.title = "Hymn 1151"
+        notFavoriteViewModel.isFavorited = false
+        let notFavorite = DisplayHymnToolbar(viewModel: notFavoriteViewModel)
 
-        let cupOfChristViewModel = DisplayHymnViewModel(hymnToDisplay: PreviewHymnIdentifiers.cupOfChrist)
-        cupOfChristViewModel.title = "Cup of Christ"
-        cupOfChristViewModel.isFavorited = true
-        let cupOfChrist = DisplayHymnToolbar(viewModel: cupOfChristViewModel)
+        let favoriteViewModel = DisplayHymnViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn40)
+        favoriteViewModel.title = "Hymn 40"
+        favoriteViewModel.isFavorited = true
+        let favorite = DisplayHymnToolbar(viewModel: favoriteViewModel)
+
         return Group {
             loading.previewDisplayName("loading")
-            classic40.previewDisplayName("classic 40")
-            classic1151.previewDisplayName("classic 1151")
-            cupOfChrist.toPreviews("cup of christ")
+            missingFavorite.previewDisplayName("missing favorite")
+            notFavorite.previewDisplayName("not favorite")
+            favorite.previewDisplayName("favorite")
         }.previewLayout(.sizeThatFits)
     }
 }
