@@ -1,5 +1,6 @@
 import Foundation
 import MobileCoreServices
+import Prefire
 import SwiftUI
 
 public struct InlineChordsView: View {
@@ -54,7 +55,7 @@ public struct InlineChordsView: View {
 }
 
  #if DEBUG
- struct InlineChordsView_Previews: PreviewProvider {
+struct InlineChordsView_Previews: PreviewProvider, PrefireProvider {
 
     static var previews: some View {
         let hymnsViewModel = InlineChordsViewModel(chordLines: [
@@ -125,16 +126,10 @@ public struct InlineChordsView: View {
         let noChords = InlineChordsView(viewModel: noChordsViewModel)
 
         return Group {
-            ScrollView(showsIndicators: false) {
-                hymns
-            }.previewDisplayName("Hymn 1151")
-            ScrollView(showsIndicators: false) {
-                transposed
-            }.previewDisplayName("Transposed chords")
-            ScrollView(showsIndicators: false) {
-                noChords
-            }.previewDisplayName("No chords")
-        }
+            hymns.previewDisplayName("Hymn 1151")
+            transposed.previewDisplayName("Transposed chords")
+            noChords.previewDisplayName("No chords")
+        }.snapshot(delay: 0.2)
     }
  }
  #endif
