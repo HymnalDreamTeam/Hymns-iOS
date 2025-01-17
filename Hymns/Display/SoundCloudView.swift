@@ -1,3 +1,4 @@
+import Prefire
 import SwiftEventBus
 import SwiftUI
 
@@ -132,19 +133,23 @@ struct ToolTipPreferenceKey: PreferenceKey {
 }
 
 #if DEBUG
-struct SoundCloudView_Previews: PreviewProvider {
+struct SoundCloudView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
 
-        let defaultStateViewModel = SoundCloudViewModel(url: URL(string: "https://soundcloud.com/anthonyjohntunes/broken-vessels-amazing-grace-hillsong-live-cover")!)
+        let defaultStateViewModel = SoundCloudViewModel(url: URL(string: "https://www.example.com")!)
         let defaultState = SoundCloudView(dialogModel: .constant(nil), soundCloudPlayer: .constant(nil), viewModel: defaultStateViewModel)
 
         let minimizeCaretViewModel = SoundCloudViewModel(url: URL(string: "https://www.example.com")!)
         minimizeCaretViewModel.showMinimizeCaret = true
+        // Set the timer connection to nil or else it causes the caret to be flaky
+        minimizeCaretViewModel.timerConnection = nil
         let minimizeCaret = SoundCloudView(dialogModel: .constant(nil), soundCloudPlayer: .constant(nil), viewModel: minimizeCaretViewModel)
 
         let minimizeCaretAndToolTipViewModel = SoundCloudViewModel(url: URL(string: "https://www.example.com")!)
         minimizeCaretAndToolTipViewModel.showMinimizeCaret = true
         minimizeCaretAndToolTipViewModel.showMinimizeToolTip = true
+        // Set the timer connection to nil or else it causes the caret to be flaky
+        minimizeCaretAndToolTipViewModel.timerConnection = nil
         let minimizeCaretAndToolTip = SoundCloudView(dialogModel: .constant(nil), soundCloudPlayer: .constant(nil), viewModel: minimizeCaretAndToolTipViewModel)
 
         return
@@ -152,7 +157,7 @@ struct SoundCloudView_Previews: PreviewProvider {
                 defaultState.previewDisplayName("default state")
                 minimizeCaret.previewDisplayName("minimize caret is shown")
                 minimizeCaretAndToolTip.previewDisplayName("minimize caret and tooltip is shown")
-        }
+            }.snapshot(precision: 0.99)
     }
 }
 #endif
