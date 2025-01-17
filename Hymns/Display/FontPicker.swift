@@ -1,3 +1,4 @@
+import Prefire
 import SwiftEventBus
 import SwiftUI
 
@@ -28,11 +29,11 @@ struct FontPicker: View {
 }
 
 #if DEBUG
-struct FontPicker_Previews: PreviewProvider {
+struct FontPicker_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
         let viewModel = FontPickerViewModel()
         viewModel.fontSize = 18.0
-        return FontPicker(viewModel: viewModel)
+        return FontPicker(viewModel: viewModel).previewLayout(.sizeThatFits)
     }
 }
 #endif
