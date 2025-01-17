@@ -1,5 +1,6 @@
-import SwiftUI
+import Prefire
 import Resolver
+import SwiftUI
 
 struct HymnMusicView: View {
 
@@ -23,7 +24,7 @@ struct HymnMusicView: View {
 }
 
 #if DEBUG
-struct HymnMusicView_Previews: PreviewProvider {
+struct HymnMusicView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
         let error = HymnMusicView(viewModel: HymnMusicViewModel(musicViews: []))
         let pianoOnly = HymnMusicView(viewModel: HymnMusicViewModel(musicViews: [.piano(Text("%_PREVIEW_% Piano sheet music here").eraseToAnyView())]))
@@ -31,16 +32,18 @@ struct HymnMusicView_Previews: PreviewProvider {
         let pianoSelectedViewModel = HymnMusicViewModel(musicViews: [.piano(Text("%_PREVIEW_% Piano sheet music here").eraseToAnyView()),
                                                                      .guitar(Text("%_PREVIEW_% Guitar sheet music here").eraseToAnyView())])
         let pianoSelected = HymnMusicView(viewModel: pianoSelectedViewModel)
+
+        let guitar: HymnMusicTab = .guitar(Text("%_PREVIEW_% Guitar sheet music here").eraseToAnyView())
         let guitarSelectedViewModel = HymnMusicViewModel(musicViews: [.piano(Text("%_PREVIEW_% Piano sheet music here").eraseToAnyView()),
-                                                                      .guitar(Text("%_PREVIEW_% Guitar sheet music here").eraseToAnyView())])
-        guitarSelectedViewModel.currentTab = .guitar(Text("%_PREVIEW_% Guitar sheet music here").eraseToAnyView())
+                                                                      guitar])
+        guitarSelectedViewModel.currentTab = guitar
         let guitarSelected = HymnMusicView(viewModel: guitarSelectedViewModel)
         return Group {
-            error.previewDisplayName("Empty")
-            pianoOnly.previewDisplayName("Piano only")
-            guitarOnly.previewDisplayName("Guitar only")
-            pianoSelected.previewDisplayName("Piano selected")
-            guitarSelected.previewDisplayName("Guitar selected")
+            error.previewDisplayName("error")
+            pianoOnly.previewDisplayName("piano only")
+            guitarOnly.previewDisplayName("guitar only")
+            pianoSelected.previewDisplayName("piano selected")
+            guitarSelected.previewDisplayName("guitar selected")
         }
     }
 }
