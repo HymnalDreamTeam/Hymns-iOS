@@ -1,3 +1,4 @@
+import Prefire
 import Resolver
 import SwiftUI
 
@@ -39,7 +40,7 @@ struct FavoritesView: View {
 }
 
 #if DEBUG
-struct FavoritesView_Previews: PreviewProvider {
+struct FavoritesView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
         let loadingViewModel = FavoritesViewModel()
         let loading = FavoritesView(viewModel: loadingViewModel)
