@@ -1,4 +1,5 @@
 import MobileCoreServices
+import Prefire
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -62,7 +63,7 @@ enum HymnLyricsToast: Identifiable {
 }
 
 #if DEBUG
-struct HymnLyricsView_Previews: PreviewProvider {
+struct HymnLyricsView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
         let classic40ViewModel = HymnLyricsViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn40,
                                                      lyrics: classic40_preview.lyrics.verses)!
@@ -82,10 +83,18 @@ struct HymnLyricsView_Previews: PreviewProvider {
         let chineseSupplement216 = HymnLyricsView(viewModel: chineseSupplement216ViewModel)
 
         return Group {
-            classic40.previewDisplayName("classic40")
-            classic1151.previewDisplayName("classic1151")
-            classic1334.previewDisplayName("classic1334")
-            chineseSupplement216.previewDisplayName("chineseSupplement216")
+            ScrollView {
+                classic40
+            }.previewDisplayName("classic40")
+            ScrollView {
+                classic1151
+            }.previewDisplayName("classic1151")
+            ScrollView {
+                classic1334
+            }.previewDisplayName("classic1334")
+            ScrollView {
+                chineseSupplement216}
+            .previewDisplayName("chineseSupplement216")
         }
     }
 }
