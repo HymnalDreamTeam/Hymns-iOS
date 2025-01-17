@@ -35,24 +35,3 @@ struct SoundCloudPlayer: View {
         }
     }
 }
-
-#if DEBUG
-struct SoundCloudPlayer_Previews: PreviewProvider {
-    static var previews: some View {
-        var published = Published<String?>(initialValue: nil)
-
-        let emptyViewModel = SoundCloudPlayerViewModel(dialogModel: .constant(nil), title: published.projectedValue)
-        emptyViewModel.showPlayer = false
-        let empty = SoundCloudPlayer(viewModel: emptyViewModel)
-
-        let playerViewModel = SoundCloudPlayerViewModel(dialogModel: .constant(nil), title: published.projectedValue)
-        playerViewModel.showPlayer = true
-        let player = SoundCloudPlayer(viewModel: playerViewModel)
-
-        return Group {
-            empty.previewDisplayName("empty")
-            player.previewDisplayName("player")
-        }
-    }
-}
-#endif
