@@ -1,3 +1,4 @@
+import Prefire
 import Resolver
 import SwiftUI
 
@@ -83,58 +84,56 @@ struct SearchView: View {
 }
 
 #if DEBUG
-struct SearchView_Previews: PreviewProvider {
+struct SearchView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
-        let defaultViewModel = SearchViewModel()
+        let emptyHistoryStore = HistoryStoreTestImpl()
+        // swiftlint:disable:next force_try
+        try! emptyHistoryStore.clearHistory()
 
-        let recentSongsViewModel = SearchViewModel()
+        let defaultViewModel = SearchViewModel(historyStore: emptyHistoryStore)
+        let defaultView = SearchView(viewModel: defaultViewModel)
+
+        // HistoryStoreTestImpl has recent songs pre-loaded
+        let recentSongsViewModel = SearchViewModel(historyStore: HistoryStoreTestImpl())
         recentSongsViewModel.state = .results
         recentSongsViewModel.label = "Recent hymns"
-        recentSongsViewModel.songResults = [.single(PreviewSongResults.cupOfChrist),
-                                            .single(PreviewSongResults.hymn1151),
-                                            .single(PreviewSongResults.hymn1334)]
-
-        let recentSongsEmptyViewModel = SearchViewModel()
-        recentSongsEmptyViewModel.state = .results
+        let recentSongs = SearchView(viewModel: recentSongsViewModel)
 
         let searchActiveViewModel = SearchViewModel()
         searchActiveViewModel.state = .results
         searchActiveViewModel.searchActive = true
+        let searchActive = SearchView(viewModel: searchActiveViewModel)
 
         let loadingViewModel = SearchViewModel()
         loadingViewModel.state = .loading
         loadingViewModel.searchActive = true
         loadingViewModel.searchParameter = "She loves me not"
+        let loading = SearchView(viewModel: loadingViewModel)
 
-        let searchResults = SearchViewModel()
-        searchResults.state = .results
-        searchResults.searchActive = true
-        searchResults.searchParameter = "Do you love me?"
-        searchResults.songResults = [.multi(PreviewSongResults.drinkARiver),
-                                     .multi(PreviewSongResults.sinfulPastMulti),
-                                     .multi(PreviewSongResults.hymn1334Multi)]
+        let searchResultsViewModel = SearchViewModel()
+        searchResultsViewModel.state = .results
+        searchResultsViewModel.searchActive = true
+        searchResultsViewModel.searchParameter = "Do you love me?"
+        searchResultsViewModel.showSearchByTypeToolTip = false
+        searchResultsViewModel.songResults = [.multi(PreviewSongResults.drinkARiver),
+                                              .multi(PreviewSongResults.sinfulPastMulti),
+                                              .multi(PreviewSongResults.hymn1334Multi)]
+        let searchResults = SearchView(viewModel: searchResultsViewModel)
 
         let noResultsViewModel = SearchViewModel()
         noResultsViewModel.state = .empty
         noResultsViewModel.searchActive = true
         noResultsViewModel.searchParameter = "She loves me not"
+        let noResults = SearchView(viewModel: noResultsViewModel)
 
         return Group {
-            SearchView(viewModel: defaultViewModel)
-                .previewDisplayName("Default state")
-            SearchView(viewModel: recentSongsViewModel)
-                .previewDisplayName("Recent songs")
-            SearchView(viewModel: recentSongsEmptyViewModel)
-                .previewDisplayName("No recent songs")
-            SearchView(viewModel: searchActiveViewModel)
-                .previewDisplayName("Active search without recent songs")
-            SearchView(viewModel: loadingViewModel)
-                .previewDisplayName("Active search loading")
-            SearchView(viewModel: searchResults)
-                .previewDisplayName("Search results")
-            SearchView(viewModel: noResultsViewModel)
-                .previewDisplayName("No results")
-        }
+            defaultView.previewDisplayName("default")
+            recentSongs.previewDisplayName("recent songs")
+            searchActive.previewDisplayName("search active")
+            loading.previewDisplayName("loading")
+            searchResults.previewDisplayName("results")
+            noResults.previewDisplayName("no results")
+        }.snapshot(delay: 0.5)
     }
 }
 #endif
