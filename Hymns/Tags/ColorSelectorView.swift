@@ -30,8 +30,6 @@ struct ColorSelectorView: View {
     }
 }
 
-struct SelectLabelView_Previews: PreviewProvider {
-    static var previews: some View {
-        ColorSelectorView(tagColor: .constant(.blue))
-    }
+#Preview(traits: .sizeThatFitsLayout) {
+    ColorSelectorView(tagColor: .constant(.blue)).padding()
 }
