@@ -17,10 +17,6 @@ struct FeedbackView: View {
     }
 }
 
-#if DEBUG
-struct FeedbackView_Previews: PreviewProvider {
-    static var previews: some View {
-        FeedbackView(result: .constant(nil)).toPreviews()
-    }
+#Preview(traits: .sizeThatFitsLayout) {
+    FeedbackView(result: .constant(nil))
 }
-#endif
