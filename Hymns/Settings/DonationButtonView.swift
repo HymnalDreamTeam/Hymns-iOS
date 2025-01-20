@@ -24,10 +24,6 @@ struct DonationButtonView: View {
     }
 }
 
-#if DEBUG
-struct DonationButtonView_Previews: PreviewProvider {
-    static var previews: some View {
-        DonationButtonView(coffeeDonations: [], resultBinding: .constant(nil)).previewLayout(.sizeThatFits)
-    }
+#Preview(traits: .sizeThatFitsLayout) {
+    DonationButtonView(coffeeDonations: [], resultBinding: .constant(nil))
 }
-#endif
