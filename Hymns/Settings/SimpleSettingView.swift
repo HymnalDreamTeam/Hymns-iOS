@@ -1,3 +1,4 @@
+import Prefire
 import SwiftUI
 
 struct SimpleSettingView: View {
@@ -15,34 +16,14 @@ struct SimpleSettingView: View {
 }
 
 #if DEBUG
-struct SimpleSettingView_Previews: PreviewProvider {
+struct SimpleSettingView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
         let theme = SimpleSettingViewModel(title: "Theme", subtitle: "Using system theme", action: {})
         let privacyPolicy = SimpleSettingViewModel(title: "Privacy policy", action: {})
         return Group {
-            Group {
-                Group {
-                    SimpleSettingView(viewModel: theme)
-                    SimpleSettingView(viewModel: privacyPolicy)
-                }.previewDisplayName("Regular")
-
-                Group {
-                    SimpleSettingView(viewModel: theme)
-                    SimpleSettingView(viewModel: privacyPolicy)
-                }
-                .environment(\.colorScheme, .dark)
-                .previewDisplayName("Dark Mode")
-            }
-            .previewLayout(.fixed(width: 200, height: 50))
-
-            Group {
-                SimpleSettingView(viewModel: theme)
-                SimpleSettingView(viewModel: privacyPolicy)
-            }
-            .previewLayout(.fixed(width: 450, height: 150))
-            .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
-            .previewDisplayName("Extra Extra Extra Large")
-        }
+            SimpleSettingView(viewModel: privacyPolicy).previewDisplayName("no subtitle")
+            SimpleSettingView(viewModel: theme).previewDisplayName("with subtitle")
+        }.previewLayout(.sizeThatFits)
     }
 }
 #endif
