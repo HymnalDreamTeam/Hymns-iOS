@@ -1,3 +1,4 @@
+import Prefire
 import SwiftUI
 
 struct RepeatChorusView: View {
@@ -27,7 +28,7 @@ struct RepeatChorusView: View {
 }
 
 #if DEBUG
-struct RepeatChorusView_Previews: PreviewProvider {
+struct RepeatChorusView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
         let repeatOnViewModel = RepeatChorusViewModel()
         repeatOnViewModel.shouldRepeatChorus = .constant(true)
@@ -38,9 +39,9 @@ struct RepeatChorusView_Previews: PreviewProvider {
         let repeatOff = RepeatChorusView(viewModel: repeatOffViewModel)
 
         return Group {
-            repeatOn
-            repeatOff.toPreviews()
-        }
+            repeatOn.previewDisplayName("repeat on")
+            repeatOff.previewDisplayName("repeat off")
+        }.previewLayout(.sizeThatFits)
     }
 }
 #endif
