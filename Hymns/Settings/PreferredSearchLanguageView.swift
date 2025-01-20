@@ -48,10 +48,11 @@ struct PreferredSearchLanguageView: View {
     }
 }
 
-#if DEBUG
-struct PreferredSearchLanguageView_Previews: PreviewProvider {
-    static var previews: some View {
-        return PreferredSearchLanguageView()
-    }
+#Preview("PreferredSearchLanguageView tooltip") {
+    PreferredSearchLanguageView()
 }
-#endif
+
+#Preview("PreferredSearchLanguageView no tooltip") {
+    PreferredSearchLanguageView(preferredSearchLanguage: .spanish,
+                                showPreferredSearchLanguageAnnouncement: false)
+}
