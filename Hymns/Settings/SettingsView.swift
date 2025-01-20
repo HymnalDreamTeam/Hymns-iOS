@@ -1,4 +1,5 @@
 import MessageUI
+import Prefire
 import Resolver
 import StoreKit
 import SwiftUI
@@ -94,7 +95,7 @@ public enum SettingsToastItem {
 }
 
 #if DEBUG
-struct SettingsView_Previews: PreviewProvider {
+struct SettingsView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
 
         let loadingViewModel = SettingsViewModel()
