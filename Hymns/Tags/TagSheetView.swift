@@ -1,16 +1,20 @@
-import SwiftUI
+import Prefire
 import Resolver
+import SwiftUI
 
 struct TagSheetView: View {
 
     @ObservedObject private var viewModel: TagSheetViewModel
-    @State private var tagName = ""
-    @State private var tagColor = TagColor.none
+    @State private var tagName: String
+    @State private var tagColor: TagColor
     var sheet: Binding<DisplayHymnSheet?>
 
-    init(viewModel: TagSheetViewModel, sheet: Binding<DisplayHymnSheet?>) {
+    init(viewModel: TagSheetViewModel, sheet: Binding<DisplayHymnSheet?>,
+         tagName: String = "", tagColor: TagColor = .none) {
         self.viewModel = viewModel
         self.sheet = sheet
+        self.tagName = tagName
+        self.tagColor = tagColor
     }
 
     var body: some View {
@@ -64,28 +68,39 @@ struct TagSheetView: View {
 }
 
 #if DEBUG
-struct TagSheetView_Previews: PreviewProvider {
+struct TagSheetView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
-        let noTagsViewModel = TagSheetViewModel(hymnToDisplay: PreviewHymnIdentifiers.cupOfChrist)
+        let noTagsViewModel = NoOpTagSheetViewModel(hymnToDisplay: PreviewHymnIdentifiers.cupOfChrist)
         let noTags = TagSheetView(viewModel: noTagsViewModel, sheet: Binding.constant(.tags))
 
-        let oneTagViewModel = TagSheetViewModel(hymnToDisplay: PreviewHymnIdentifiers.cupOfChrist)
+        let oneTagViewModel = NoOpTagSheetViewModel(hymnToDisplay: PreviewHymnIdentifiers.cupOfChrist)
         oneTagViewModel.tags = [UiTag(title: "Lord's table", color: .green)]
         let oneTag = TagSheetView(viewModel: oneTagViewModel, sheet: Binding.constant(.tags))
 
-        let manyTagsViewModel = TagSheetViewModel(hymnToDisplay: PreviewHymnIdentifiers.cupOfChrist)
+        let manyTagsViewModel = NoOpTagSheetViewModel(hymnToDisplay: PreviewHymnIdentifiers.cupOfChrist)
         manyTagsViewModel.tags = [UiTag(title: "Long tag name", color: .none),
                                   UiTag(title: "Tag 1", color: .green),
                                   UiTag(title: "Tag 1", color: .red),
                                   UiTag(title: "Tag 1", color: .yellow),
                                   UiTag(title: "Tag 2", color: .blue),
                                   UiTag(title: "Tag 3", color: .blue)]
-        let manyTags = TagSheetView(viewModel: manyTagsViewModel, sheet: Binding.constant(.tags))
+        let manyTags = TagSheetView(viewModel: manyTagsViewModel, sheet: Binding.constant(.tags),
+                                    tagName: "new tag", tagColor: .yellow)
         return Group {
             noTags.previewDisplayName("no tags")
             oneTag.previewDisplayName("one tag")
             manyTags.previewDisplayName("many tags")
         }
+    }
+}
+
+class NoOpTagSheetViewModel: TagSheetViewModel {
+    override func fetchHymn() {
+        // no op
+    }
+
+    override func fetchTags() {
+        // no op
     }
 }
 #endif
