@@ -22,10 +22,6 @@ struct ClearUserDefaultsView: View {
     }
 }
 
-#if DEBUG
-struct ClearUserDefaultsView_Previews: PreviewProvider {
-    static var previews: some View {
-        ClearUserDefaultsView().toPreviews()
-    }
+#Preview(traits: .sizeThatFitsLayout) {
+    ClearUserDefaultsView().prefireIgnored()
 }
-#endif
