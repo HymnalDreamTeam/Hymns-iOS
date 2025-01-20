@@ -29,10 +29,7 @@ struct PrivacyPolicyView: View {
     }
 }
 
-#if DEBUG
-struct PrivacyPolicyView_Previews: PreviewProvider {
-    static var previews: some View {
-        PrivacyPolicyView(showPrivacyPolicy: .constant(true))
-    }
+#Preview {
+    PrivacyPolicyView(showPrivacyPolicy: .constant(true))
+        .snapshot(delay: 0.5)
 }
-#endif
