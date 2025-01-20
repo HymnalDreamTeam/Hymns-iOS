@@ -57,12 +57,22 @@ struct HomeTabView: View {
     }
 }
 
-#if DEBUG
-struct HomeTabView_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            HomeTabView(selectedTab: .constant(.search))
-        }
-    }
+#Preview("HomeTabView search", traits: .sizeThatFitsLayout) {
+    HomeTabView(selectedTab: .constant(.search))
 }
-#endif
+
+#Preview("HomeTabView browse", traits: .sizeThatFitsLayout) {
+    HomeTabView(selectedTab: .constant(.browse))
+}
+
+#Preview("HomeTabView favorites", traits: .sizeThatFitsLayout) {
+    HomeTabView(selectedTab: .constant(.favorites))
+}
+
+#Preview("settings", traits: .sizeThatFitsLayout) {
+    HomeTabView(selectedTab: .constant(.settings))
+}
+
+#Preview("HomeTabView settings without badge", traits: .sizeThatFitsLayout) {
+    HomeTabView(showPreferredSearchLanguageAnnouncement: false, selectedTab: .constant(.settings))
+}
