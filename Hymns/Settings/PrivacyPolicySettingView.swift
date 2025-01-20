@@ -14,10 +14,6 @@ struct PrivacyPolicySettingView: View {
     }
 }
 
-#if DEBUG
-struct PrivacyPolicySettingView_Previews: PreviewProvider {
-    static var previews: some View {
-        PrivacyPolicySettingView().toPreviews()
-    }
+#Preview(traits: .sizeThatFitsLayout) {
+    PrivacyPolicySettingView()
 }
-#endif
