@@ -68,7 +68,6 @@
 		3B3DF63924A1CBAF00E60ED9 /* TagSheetSnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B3DF63824A1CBAF00E60ED9 /* TagSheetSnapshots.swift */; };
 		3B3DF63D24A280D100E60ED9 /* IconSizeConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B3DF63C24A280D100E60ED9 /* IconSizeConstants.swift */; };
 		3B43717F24764BEF000B42AC /* DisplayHymnBottomBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B43717E24764BEF000B42AC /* DisplayHymnBottomBar.swift */; };
-		3B43718124766700000B42AC /* Previews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B43718024766700000B42AC /* Previews.swift */; };
 		3B446B342A00EB460039FC18 /* SongLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B446B332A00EB460039FC18 /* SongLink.swift */; };
 		3B451047291204140091017D /* HymnAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B451046291204140091017D /* HymnAttribute.swift */; };
 		3B451049291394AD0091017D /* SongInfoViewModelSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B451048291394AD0091017D /* SongInfoViewModelSpec.swift */; };
@@ -441,7 +440,6 @@
 		3B3DF63824A1CBAF00E60ED9 /* TagSheetSnapshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagSheetSnapshots.swift; sourceTree = "<group>"; };
 		3B3DF63C24A280D100E60ED9 /* IconSizeConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconSizeConstants.swift; sourceTree = "<group>"; };
 		3B43717E24764BEF000B42AC /* DisplayHymnBottomBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayHymnBottomBar.swift; sourceTree = "<group>"; };
-		3B43718024766700000B42AC /* Previews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Previews.swift; sourceTree = "<group>"; };
 		3B446B332A00EB460039FC18 /* SongLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongLink.swift; sourceTree = "<group>"; };
 		3B451046291204140091017D /* HymnAttribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HymnAttribute.swift; sourceTree = "<group>"; };
 		3B451048291394AD0091017D /* SongInfoViewModelSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongInfoViewModelSpec.swift; sourceTree = "<group>"; };
@@ -882,7 +880,6 @@
 				3BC1328E24384FA40082A274 /* Preview Hymns */,
 				3BC1328C243826270082A274 /* PreviewHymns.swift */,
 				3B45B907243BF74700D38BEF /* PreviewHymnIdentifiers.swift */,
-				3B43718024766700000B42AC /* Previews.swift */,
 				3B45B905243BF1C900D38BEF /* PreviewSongResults.swift */,
 			);
 			path = "Preview Content";
@@ -1894,7 +1891,6 @@
 				3BE210FA249B592F00D4E417 /* TestImplHymns.swift in Sources */,
 				3BD4AE9F27D8A0A500B4040A /* InlineChordsViewModel.swift in Sources */,
 				3B87B82624493F7F00AEC7E9 /* SimpleSettingView.swift in Sources */,
-				3B43718124766700000B42AC /* Previews.swift in Sources */,
 				3BC1328D243826280082A274 /* PreviewHymns.swift in Sources */,
 				3B25C0E32450398F00C435E1 /* String+Extensions.swift in Sources */,
 				B582E4452493266700329DA5 /* AboutUsDialogView.swift in Sources */,
