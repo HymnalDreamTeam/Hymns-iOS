@@ -16,10 +16,6 @@ struct AboutUsButtonView: View {
     }
 }
 
-#if DEBUG
-struct AboutUsView_Previews: PreviewProvider {
-    static var previews: some View {
-        AboutUsButtonView()
-    }
+#Preview(traits: .sizeThatFitsLayout) {
+    AboutUsButtonView()
 }
-#endif
