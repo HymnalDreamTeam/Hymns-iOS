@@ -135,7 +135,7 @@ struct SearchView_Previews: PreviewProvider, PrefireProvider {
                 searchResults
             }.previewDisplayName("results")
             noResults.previewDisplayName("no results")
-        }
+        }.snapshot(delay: 0.5)
     }
 }
 

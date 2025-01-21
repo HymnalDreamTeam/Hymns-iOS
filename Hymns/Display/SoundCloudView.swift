@@ -157,7 +157,7 @@ struct SoundCloudView_Previews: PreviewProvider, PrefireProvider {
                 defaultState.previewDisplayName("default state")
                 minimizeCaret.previewDisplayName("minimize caret is shown")
                 minimizeCaretAndToolTip.previewDisplayName("minimize caret and tooltip is shown")
-            }.snapshot(precision: 0.99)
+            }.snapshot(delay: 1.0, precision: 0.99)
     }
 }
 #endif
