@@ -86,31 +86,29 @@ struct SearchView: View {
 #if DEBUG
 struct SearchView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
-        let emptyHistoryStore = HistoryStoreTestImpl()
-        // swiftlint:disable:next force_try
-        try! emptyHistoryStore.clearHistory()
-
-        let defaultViewModel = SearchViewModel(historyStore: emptyHistoryStore)
+        let defaultViewModel = NoOpSearchViewModel()
         let defaultView = SearchView(viewModel: defaultViewModel)
 
-        // HistoryStoreTestImpl has recent songs pre-loaded
-        let recentSongsViewModel = SearchViewModel(historyStore: HistoryStoreTestImpl())
+        let recentSongsViewModel = NoOpSearchViewModel()
         recentSongsViewModel.state = .results
         recentSongsViewModel.label = "Recent hymns"
+        recentSongsViewModel.songResults = [
+            .single(SingleSongResultViewModel(stableId: "classic1151", title: "Hymn 1151", destinationView: EmptyView().eraseToAnyView())),
+            .single(SingleSongResultViewModel(stableId: "classic2", title: "Classic 2", destinationView: EmptyView().eraseToAnyView()))]
         let recentSongs = SearchView(viewModel: recentSongsViewModel)
 
-        let searchActiveViewModel = SearchViewModel()
+        let searchActiveViewModel = NoOpSearchViewModel()
         searchActiveViewModel.state = .results
         searchActiveViewModel.searchActive = true
         let searchActive = SearchView(viewModel: searchActiveViewModel)
 
-        let loadingViewModel = SearchViewModel()
+        let loadingViewModel = NoOpSearchViewModel()
         loadingViewModel.state = .loading
         loadingViewModel.searchActive = true
         loadingViewModel.searchParameter = "She loves me not"
         let loading = SearchView(viewModel: loadingViewModel)
 
-        let searchResultsViewModel = SearchViewModel()
+        let searchResultsViewModel = NoOpSearchViewModel()
         searchResultsViewModel.state = .results
         searchResultsViewModel.searchActive = true
         searchResultsViewModel.searchParameter = "Do you love me?"
@@ -120,7 +118,7 @@ struct SearchView_Previews: PreviewProvider, PrefireProvider {
                                               .multi(PreviewSongResults.hymn1334Multi)]
         let searchResults = SearchView(viewModel: searchResultsViewModel)
 
-        let noResultsViewModel = SearchViewModel()
+        let noResultsViewModel = NoOpSearchViewModel()
         noResultsViewModel.state = .empty
         noResultsViewModel.searchActive = true
         noResultsViewModel.searchParameter = "She loves me not"
@@ -128,12 +126,22 @@ struct SearchView_Previews: PreviewProvider, PrefireProvider {
 
         return Group {
             defaultView.previewDisplayName("default")
-            recentSongs.previewDisplayName("recent songs")
+            NavigationStack {
+                recentSongs
+            }.previewDisplayName("recent songs")
             searchActive.previewDisplayName("search active")
             loading.previewDisplayName("loading")
-            searchResults.previewDisplayName("results")
+            NavigationStack {
+                searchResults
+            }.previewDisplayName("results")
             noResults.previewDisplayName("no results")
-        }.snapshot(delay: 0.5)
+        }
+    }
+}
+
+class NoOpSearchViewModel: SearchViewModel {
+    override func setUp() {
+        // no op
     }
 }
 #endif
