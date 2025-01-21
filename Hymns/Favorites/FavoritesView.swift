@@ -42,22 +42,30 @@ struct FavoritesView: View {
 #if DEBUG
 struct FavoritesView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
-        let loadingViewModel = FavoritesViewModel()
+        let loadingViewModel = NoOpFavoritesViewModel()
         let loading = FavoritesView(viewModel: loadingViewModel)
 
-        let emptyViewModel = FavoritesViewModel()
+        let emptyViewModel = NoOpFavoritesViewModel()
         emptyViewModel.favorites = [SingleSongResultViewModel]()
         let empty = FavoritesView(viewModel: emptyViewModel)
 
-        let favoritesViewModel = FavoritesViewModel()
+        let favoritesViewModel = NoOpFavoritesViewModel()
         favoritesViewModel.favorites = [PreviewSongResults.cupOfChrist, PreviewSongResults.hymn1151, PreviewSongResults.joyUnspeakable, PreviewSongResults.sinfulPast]
         let favorites = FavoritesView(viewModel: favoritesViewModel)
 
         return Group {
             loading.previewDisplayName("loading")
             empty.previewDisplayName("empty")
-            favorites.previewDisplayName("favorites")
+            NavigationStack {
+                favorites
+            }.previewDisplayName("favorites")
         }
+    }
+}
+
+class NoOpFavoritesViewModel: FavoritesViewModel {
+    override func fetchFavorites() {
+        // no op
     }
 }
 #endif
