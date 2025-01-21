@@ -31,5 +31,5 @@ struct PrivacyPolicyView: View {
 
 #Preview {
     PrivacyPolicyView(showPrivacyPolicy: .constant(true))
-        .snapshot(delay: 0.5)
+        .prefireIgnored()
 }
