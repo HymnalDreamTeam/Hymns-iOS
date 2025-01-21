@@ -86,8 +86,12 @@ struct SearchView: View {
 #if DEBUG
 struct SearchView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
-        let defaultViewModel = NoOpSearchViewModel()
-        let defaultView = SearchView(viewModel: defaultViewModel)
+        let loadingViewModel = NoOpSearchViewModel()
+        let loading = SearchView(viewModel: loadingViewModel)
+
+        let emptyViewModel = NoOpSearchViewModel()
+        emptyViewModel.state = .results
+        let empty = SearchView(viewModel: emptyViewModel)
 
         let recentSongsViewModel = NoOpSearchViewModel()
         recentSongsViewModel.state = .results
@@ -102,11 +106,11 @@ struct SearchView_Previews: PreviewProvider, PrefireProvider {
         searchActiveViewModel.searchActive = true
         let searchActive = SearchView(viewModel: searchActiveViewModel)
 
-        let loadingViewModel = NoOpSearchViewModel()
-        loadingViewModel.state = .loading
-        loadingViewModel.searchActive = true
-        loadingViewModel.searchParameter = "She loves me not"
-        let loading = SearchView(viewModel: loadingViewModel)
+        let searchingViewModel = NoOpSearchViewModel()
+        searchingViewModel.state = .loading
+        searchingViewModel.searchActive = true
+        searchingViewModel.searchParameter = "She loves me not"
+        let searching = SearchView(viewModel: searchingViewModel)
 
         let searchResultsViewModel = NoOpSearchViewModel()
         searchResultsViewModel.state = .results
@@ -125,12 +129,13 @@ struct SearchView_Previews: PreviewProvider, PrefireProvider {
         let noResults = SearchView(viewModel: noResultsViewModel)
 
         return Group {
-            defaultView.previewDisplayName("default")
+            loading.previewDisplayName("loading")
+            empty.previewDisplayName("empty")
             NavigationStack {
                 recentSongs
             }.previewDisplayName("recent songs")
             searchActive.previewDisplayName("search active")
-            loading.previewDisplayName("loading")
+            searching.previewDisplayName("searching")
             NavigationStack {
                 searchResults
             }.previewDisplayName("results")
