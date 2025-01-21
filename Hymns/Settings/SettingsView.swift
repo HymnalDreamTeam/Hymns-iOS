@@ -98,14 +98,14 @@ public enum SettingsToastItem {
 struct SettingsView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
 
-        let loadingViewModel = SettingsViewModel()
+        let loadingViewModel = NoOpSettingsViewModel()
         let loading = SettingsView(viewModel: loadingViewModel)
 
-        let errorViewModel = SettingsViewModel()
+        let errorViewModel = NoOpSettingsViewModel()
         errorViewModel.settings = nil
         let error = SettingsView(viewModel: errorViewModel)
 
-        let settingsViewModel = SettingsViewModel()
+        let settingsViewModel = NoOpSettingsViewModel()
         settingsViewModel.settings = [.repeatChorus(RepeatChorusViewModel()), .aboutUs, .privacyPolicy, .clearUserDefaults]
         let settings = SettingsView(viewModel: settingsViewModel)
 
@@ -114,6 +114,12 @@ struct SettingsView_Previews: PreviewProvider, PrefireProvider {
             error.previewDisplayName("error")
             settings.previewDisplayName("settings")
         }
+    }
+}
+
+class NoOpSettingsViewModel: SettingsViewModel {
+    override func populateSettings(result: Binding<SettingsResult<SettingsToastItem, any Error>?>) {
+        // no op
     }
 }
 #endif
