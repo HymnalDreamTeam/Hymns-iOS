@@ -38,18 +38,18 @@ struct BrowseResultsListView: View {
 #if DEBUG
 struct BrowseResultsListView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
-        let emptyViewModel = BrowseResultsListViewModel(tag: UiTag(title: "Best songs", color: .none))
+        let emptyViewModel = NoOpBrowseResultsListViewModel(tag: UiTag(title: "Best songs", color: .none))
         emptyViewModel.songResults = []
         let empty = BrowseResultsListView(viewModel: emptyViewModel)
 
-        let loadingViewModel = BrowseResultsListViewModel(tag: UiTag(title: "Best songs", color: .none))
+        let loadingViewModel = NoOpBrowseResultsListViewModel(tag: UiTag(title: "Best songs", color: .none))
         loadingViewModel.songResults = nil
         let loading = BrowseResultsListView(viewModel: loadingViewModel)
 
         let resultObjects = [SingleSongResultViewModel(stableId: "Hymn 114", title: "Hymn 114", destinationView: EmptyView().eraseToAnyView()),
                              SingleSongResultViewModel(stableId: "Cup of Christ", title: "Cup of Christ", destinationView: EmptyView().eraseToAnyView()),
                              SingleSongResultViewModel(stableId: "Avengers - Endgame", title: "Avengers - Endgame", destinationView: EmptyView().eraseToAnyView())]
-        let resultsViewModel = BrowseResultsListViewModel(tag: UiTag(title: "Best songs", color: .none))
+        let resultsViewModel = NoOpBrowseResultsListViewModel(tag: UiTag(title: "Best songs", color: .none))
         resultsViewModel.songResults = resultObjects
         let results = BrowseResultsListView(viewModel: resultsViewModel)
 
@@ -58,6 +58,13 @@ struct BrowseResultsListView_Previews: PreviewProvider, PrefireProvider {
             loading.previewDisplayName("loading")
             results.previewDisplayName("results")
         }
+    }
+}
+
+class NoOpBrowseResultsListViewModel: BrowseResultsListViewModel {
+
+    override func fetchResults() {
+        // no op
     }
 }
 #endif
