@@ -92,7 +92,8 @@ struct InlineChordsView_Previews: PreviewProvider, PrefireProvider {
             ChordLineEntity(createChordLine("[G]Drink! A river pure and clear")),
             ChordLineEntity(createChordLine("That’s [G7]flowing from the throne;")),
             ChordLineEntity(createChordLine("[C]Eat! The tree of life with fruits")),
-            ChordLineEntity(createChordLine("[G]Here there [D7]is no [G-C-G]night!")),
+            // Make sure long line wraps correctly
+            ChordLineEntity(createChordLine("[G]Here there [D7]is no [G-C-G]night! [G]Here there [D7]is no [G-C-G]night! [G]Here there [D7]is no [G-C-G]night!")),
             ChordLineEntity(createChordLine("")),
             // Chorus
             ChordLineEntity(createChordLine("")),
