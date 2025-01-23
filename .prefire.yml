@@ -1,3 +1,4 @@
+# Default generated test file is {DERIVED_DATA}/SourcePackages/plugins/Hymns.output/HymnsSnapshotTests/PrefireTestsPlugin/Generated/PreviewTests.generated.swift
 test_configuration:
   - template_file_path: TestUtilities/PreviewTests.stencil
   - snapshot_devices:

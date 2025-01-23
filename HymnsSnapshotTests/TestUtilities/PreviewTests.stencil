@@ -130,8 +130,7 @@ import {{ import }}
             .appendingPathComponent(osVersion)
             .appendingPathComponent(fileName)
             .path(percentEncoded: false),
-           case let bundledSnapshot = "\(bundledSnapshotDirectory)\(prefireSnapshot.name).png",
-           FileManager.default.fileExists(atPath: bundledSnapshot) {
+           FileManager.default.fileExists(atPath: bundledSnapshotDirectory) {
             snapshotDirectory = bundledSnapshotDirectory
         } else {
             snapshotDirectory = fileUrl
