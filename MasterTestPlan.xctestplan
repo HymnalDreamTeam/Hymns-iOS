@@ -9,6 +9,12 @@
     }
   ],
   "defaultOptions" : {
+    "language" : "en",
+    "locationScenario" : {
+      "identifier" : "New York, NY, USA",
+      "referenceType" : "built-in"
+    },
+    "region" : "US",
     "testExecutionOrdering" : "random"
   },
   "testTargets" : [
