@@ -119,6 +119,16 @@ import {{ import }}
         let fileUrl = URL(string: "\(file)")!
         let fileName = fileUrl.deletingPathExtension().lastPathComponent
 
+        let sanitizedName = sanitizePathComponent(prefireSnapshot.name)
+        let snapshotFileName: String
+        if let previewName = prefireSnapshot.previewName {
+            snapshotFileName = "\(previewName).\(sanitizedName).png"
+        } else {
+            // Note: If there were ever a second preview for the same view, then
+            // this would likely break.
+            snapshotFileName = "\(sanitizedName).1.png"
+        }
+
         let snapshotDirectory: String
         // Check bundled snapshot so it will work with Xcode Cloud
         // https://jaanus.com/snapshot-testing-xcode-cloud/
@@ -130,7 +140,7 @@ import {{ import }}
             .appendingPathComponent(osVersion)
             .appendingPathComponent(fileName)
             .path(percentEncoded: false),
-           FileManager.default.fileExists(atPath: bundledSnapshotDirectory) {
+           FileManager.default.fileExists(atPath: "\(bundledSnapshotDirectory)\(snapshotFileName)") {
             snapshotDirectory = bundledSnapshotDirectory
         } else {
             snapshotDirectory = fileUrl
