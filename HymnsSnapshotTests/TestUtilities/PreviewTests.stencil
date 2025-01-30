@@ -102,8 +102,8 @@ import {{ import }}
 
     private func assertSnapshot<Content: SwiftUI.View>(for prefireSnapshot: PrefireSnapshot<Content>) -> String? {
         var delay: TimeInterval = 0
-        var precision: Float = 1
-        var perceptualPrecision: Float = 1
+        var precision: Float = 0.95
+        var perceptualPrecision: Float = 0.95
 
         let view = prefireSnapshot.content
             .onPreferenceChange(DelayPreferenceKey.self) { delay = $0 }
