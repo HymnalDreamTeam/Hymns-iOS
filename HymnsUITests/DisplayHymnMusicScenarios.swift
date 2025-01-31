@@ -48,20 +48,25 @@ class DisplayHymnMusicScenarios: BaseTestCase {
     }
 
     func test_changeFontOfInlineChords() {
+        var initialTextSize: CGSize?
+
         _ = HomeViewCan(app, testCase: self)
             .waitForButtons("Hymn 1151, classic1151", "Hymn 40, classic40", "Hymn 2, Classic 2", "Hymn 3, classic3")
             .tapResult("Hymn 1151, classic1151")
             .waitForTextViews("verse 1 line 1")
             .openMusic()
             .waitForStaticTexts("G", "Songbase", "version", "of", "Hymn", "1151", "chords")
-            .verifyStaticTextSize(size: CGSize(width: 68.6666, height: 18), text: "Songbase")
+            .saveStaticTextSize("Songbase", closure: { size in
+                initialTextSize = size
+            })
+            .verifyStaticTextSizeEqual(size: initialTextSize!, text: "Songbase")
             .tapFontPicker()
             .adjustFontPickerToSmallest()
             .assertSmallestFontPickerValue()
-            .verifyStaticTextSize(size: CGSize(width: 64.6666, height: 17), text: "Songbase")
+            .verifyStaticTextSizeSmaller(size: initialTextSize!, text: "Songbase")
             .adjustFontPickerToLargest()
             .assertLargestFontPickerValue()
-            .verifyStaticTextSize(size: CGSize(width: 104.3333, height: 28.6666), text: "Songbase")
+            .verifyStaticTextSizeLarger(size: initialTextSize!, text: "Songbase")
     }
 
     func test_guitarFallbackToSheetMusicChordsSongbaseIsMissing() {

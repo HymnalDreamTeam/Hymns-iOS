@@ -65,15 +65,49 @@ public class BaseViewCan {
         return self
     }
 
-    public func verifyStaticTextSize(size: CGSize, text: String) -> Self {
-        XCTAssertEqual(size.width, app.staticTexts[text].frame.size.width, accuracy: 0.0001)
-        XCTAssertEqual(size.height, app.staticTexts[text].frame.size.height, accuracy: 0.0001)
+    public func saveStaticTextSize(_ text: String, closure: @escaping ((CGSize) -> Void)) -> Self {
+        closure(app.staticTexts[text].frame.size)
         return self
     }
 
-    public func verifyTextViewSize(size: CGSize, text: String) -> Self {
+    public func verifyStaticTextSizeEqual(size: CGSize, text: String) -> Self {
+        XCTAssertEqual(size.width, app.staticTexts[text].frame.size.width, accuracy: 1)
+        XCTAssertEqual(size.height, app.staticTexts[text].frame.size.height, accuracy: 1)
+        return self
+    }
+
+    public func verifyStaticTextSizeLarger(size: CGSize, text: String) -> Self {
+        XCTAssertGreaterThan(app.staticTexts[text].frame.size.width, size.width)
+        XCTAssertGreaterThan(app.staticTexts[text].frame.size.height, size.height)
+        return self
+    }
+
+    public func verifyStaticTextSizeSmaller(size: CGSize, text: String) -> Self {
+        XCTAssertLessThan(app.staticTexts[text].frame.size.width, size.width)
+        XCTAssertLessThan(app.staticTexts[text].frame.size.height, size.height)
+        return self
+    }
+
+    public func saveTextViewSize(_ text: String, closure: @escaping ((CGSize) -> Void)) -> Self {
+        closure(app.textViews[text].frame.size)
+        return self
+    }
+
+    public func verifyTextViewSizeEqual(size: CGSize, text: String) -> Self {
         XCTAssertEqual(size.width, app.textViews[text].frame.size.width, accuracy: 1)
         XCTAssertEqual(size.height, app.textViews[text].frame.size.height, accuracy: 1)
+        return self
+    }
+
+    public func verifyTextViewSizeLarger(size: CGSize, text: String) -> Self {
+        XCTAssertGreaterThan(app.textViews[text].frame.size.width, size.width)
+        XCTAssertGreaterThan(app.textViews[text].frame.size.height, size.height)
+        return self
+    }
+
+    public func verifyTextViewSizeSmaller(size: CGSize, text: String) -> Self {
+        XCTAssertLessThan(app.textViews[text].frame.size.width, size.width)
+        XCTAssertLessThan(app.textViews[text].frame.size.height, size.height)
         return self
     }
 

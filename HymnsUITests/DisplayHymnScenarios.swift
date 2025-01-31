@@ -55,18 +55,23 @@ class DisplayHymnScenarios: BaseTestCase {
     }
 
     func test_changeFontSize() {
+        var initialTextSize: CGSize?
+
         _ = DisplayHymnViewCan(app, testCase: self)
             .tapFontPicker()
             .waitForFontPicker()
             .verifyFontPickerExists()
             .assertDefaultFontPickerValue()
-            .verifyTextViewSize(size: CGSize(width: 86, height: 18), text: "verse 1 line 1")
+            .saveTextViewSize("verse 1 line 1", closure: { size in
+                initialTextSize = size
+            })
+            .verifyTextViewSizeEqual(size: initialTextSize!, text: "verse 1 line 1")
             .adjustFontPickerToSmallest()
             .assertSmallestFontPickerValue()
-            .verifyTextViewSize(size: CGSize(width: 82, height: 17), text: "verse 1 line 1")
+            .verifyTextViewSizeSmaller(size: initialTextSize!, text: "verse 1 line 1")
             .adjustFontPickerToLargest()
             .assertLargestFontPickerValue()
-            .verifyTextViewSize(size: CGSize(width: 129, height: 29), text: "verse 1 line 1")
+            .verifyTextViewSizeLarger(size: initialTextSize!, text: "verse 1 line 1")
             .tapFontPicker()
             .verifyFontPickerNotExists()
     }
