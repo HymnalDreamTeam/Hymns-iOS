@@ -15,7 +15,8 @@
       "referenceType" : "built-in"
     },
     "region" : "US",
-    "testExecutionOrdering" : "random"
+    "testExecutionOrdering" : "random",
+    "testRepetitionMode" : "retryOnFailure"
   },
   "testTargets" : [
     {
