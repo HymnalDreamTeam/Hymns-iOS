@@ -8,7 +8,7 @@ class DisplayHymnScenarios: BaseTestCase {
         _ = HomeViewCan(app, testCase: self)
             .waitForButtons("Hymn 1151, classic1151", "Hymn 40, classic40", "Hymn 2, Classic 2", "Hymn 3, classic3")
             .tapResult("Hymn 1151, classic1151")
-            .waitForStaticTexts("verse 1 line 1")
+            .waitForTextViews("verse 1 line 1")
     }
 
     func test_maximizePdf() {
@@ -60,13 +60,13 @@ class DisplayHymnScenarios: BaseTestCase {
             .waitForFontPicker()
             .verifyFontPickerExists()
             .assertDefaultFontPickerValue()
-            .verifyStaticTextSize(size: CGSize(width: 86.6666, height: 18), text: "verse 1 line 1")
+            .verifyTextViewSize(size: CGSize(width: 86, height: 18), text: "verse 1 line 1")
             .adjustFontPickerToSmallest()
             .assertSmallestFontPickerValue()
-            .verifyStaticTextSize(size: CGSize(width: 82, height: 17), text: "verse 1 line 1")
+            .verifyTextViewSize(size: CGSize(width: 82, height: 17), text: "verse 1 line 1")
             .adjustFontPickerToLargest()
             .assertLargestFontPickerValue()
-            .verifyStaticTextSize(size: CGSize(width: 129.6666, height: 28.6666), text: "verse 1 line 1")
+            .verifyTextViewSize(size: CGSize(width: 129, height: 29), text: "verse 1 line 1")
             .tapFontPicker()
             .verifyFontPickerNotExists()
     }
@@ -77,13 +77,15 @@ class DisplayHymnScenarios: BaseTestCase {
             .waitForStaticTexts("Languages", "Change to another language")
             .waitForButtons("Cebuano 1151", "Chinese Supplement 216 (Simp.)", "Chinese Supplement 216 (Trad.)", "Dutch 35", "Tagalog 1151", "Cancel")
             .pressCancel()
-            .waitForStaticTexts("verse 1 line 1")
+            .waitForTextViews("verse 1 line 1")
             .verifyStaticTextsNotExists("Languages", "Change to another language")
             .openLanguages()
+            .waitForStaticTexts("Languages", "Change to another language")
             .pressButton("Chinese Supplement 216 (Trad.)")
-            .waitForStaticTexts("Chinese Supplement 216 (Trad.)", "chinese verse 1 chinese line 1")
+            .waitForStaticTexts("Chinese Supplement 216 (Trad.)")
+            .waitForTextViews("chinese verse 1 chinese line 1")
             .goBack()
-            .waitForStaticTexts("verse 1 line 1")
+            .waitForTextViews("verse 1 line 1")
     }
 
     func test_relevant() {
@@ -92,23 +94,25 @@ class DisplayHymnScenarios: BaseTestCase {
             .waitForStaticTexts("Relevant songs", "Change to a relevant hymn")
             .waitForButtons("Hymn 2")
             .pressCancel()
-            .waitForStaticTexts("verse 1 line 1")
+            .waitForTextViews("verse 1 line 1")
             .verifyStaticTextsNotExists("Relevant songs", "Change to a relevant hymn")
             .openRelevant()
+            .waitForStaticTexts("Relevant songs", "Change to a relevant hymn")
             .pressButton("Hymn 2")
-            .waitForStaticTexts("Hymn 2", "classic hymn 2 verse 1")
+            .waitForStaticTexts("Hymn 2")
+            .waitForTextViews("classic hymn 2 verse 1")
     }
 
     func test_favorite() {
         app.launch()
         _ = HomeViewCan(app, testCase: self)
             .tapResult("Hymn 3, classic3")
-            .waitForStaticTexts("classic hymn 3 verse 1")
+            .waitForTextViews("classic hymn 3 verse 1")
             .favoriteSong()
             .goBackToHome()
             .goToFavorites()
             .tapFavorite("Hymn 3, Classic 3")
-            .waitForStaticTexts("classic hymn 3 verse 1")
+            .waitForTextViews("classic hymn 3 verse 1")
             .unfavoriteSong()
             .goBackToFavorites()
             .verifyButtonsNotExist("Hymn 3, Classic 3")
@@ -117,15 +121,15 @@ class DisplayHymnScenarios: BaseTestCase {
     func test_swipeBetweenHymns() {
         _ = DisplayHymnViewCan(app, testCase: self)
             .swipeLeft()
-            .waitForStaticTexts("classic hymn 1152")
+            .waitForTextViews("classic hymn 1152")
             .tapFontPicker()
             .waitForFontPicker()
             .swipeRight()
-            .waitForStaticTexts("classic hymn 1152")
+            .waitForTextViews("classic hymn 1152")
             .tapFontPicker()
             .swipeRight()
             .verifyFontPickerNotExists()
-            .waitForStaticTexts("verse 1 line 1")
+            .waitForTextViews("verse 1 line 1")
     }
 
     func test_scrolling() {

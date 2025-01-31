@@ -11,7 +11,7 @@ class HomeScenarios: BaseTestCase {
         _ = HomeViewCan(app, testCase: self)
             .waitForButtons("Hymn 1151, classic1151", "Hymn 40, classic40", "Hymn 2, Classic 2", "Hymn 3, classic3")
             .tapResult("Hymn 1151, classic1151")
-            .waitForStaticTexts("Hymn 1151", "verse 1 line 1")
+            .waitForTextViews("verse 1 line 1")
     }
 
     func test_goToSongFromNumber() {
@@ -22,7 +22,7 @@ class HomeScenarios: BaseTestCase {
             .typeSearchText("1151")
             .waitForButtons("Hymn 1151, Hymn 1151")
             .tapResult("Hymn 1151, Hymn 1151")
-            .waitForStaticTexts("Hymn 1151", "verse 1 line 1")
+            .waitForTextViews("verse 1 line 1")
     }
 
     func test_goToSongFromSearchResults() {
@@ -31,7 +31,7 @@ class HomeScenarios: BaseTestCase {
             .typeSearchText("search param")
             .waitForButtons("Hymn 1151, Click me!")
             .tapResult("Hymn 1151, Click me!")
-            .waitForStaticTexts("Hymn 1151", "verse 1 line 1")
+            .waitForTextViews("verse 1 line 1")
     }
 
     func test_switchBetweenTabs() {

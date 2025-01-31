@@ -14,7 +14,7 @@ class NavigationScenarios: BaseTestCase {
             .typeSearchText("search param")
             .waitForButtons("Hymn 1151, Click me!")
             .tapResult("Hymn 1151, Click me!")
-            .waitForStaticTexts("Hymn 1151", "verse 1 line 1")
+            .waitForTextViews("verse 1 line 1")
             .close()
         // Test to ensure that we can still perform searches
             .switchToHome()
@@ -39,7 +39,7 @@ class NavigationScenarios: BaseTestCase {
     func test_closeFunctionality_fromSongInfo() {
         let displayHymnViewCan = HomeViewCan(app, testCase: self)
             .tapResult("Hymn 1151, classic1151")
-            .waitForStaticTexts("verse 1 line 1")
+            .waitForTextViews("verse 1 line 1")
             .openOverflowMenu()
             .waitForStaticTexts("Additional options")
             .openSongInfo()
@@ -106,16 +106,16 @@ class NavigationScenarios: BaseTestCase {
             .goToAllSongs()
             .tapHymnType("Howard Higashi Songs")
             .tapResult("2. Higashi title 2")
-            .waitForStaticTexts("howard higashi verse 1 line 2")
+            .waitForTextViews("howard higashi verse 1 line 2")
             .openLanguages()
             .pressButton("Chinese Supplement 216 (Trad.)")
-            .waitForStaticTexts("chinese verse 1 chinese line 1")
+            .waitForTextViews("chinese verse 1 chinese line 1")
             .goBack()
             // "Back" goes to the original song.
-            .waitForStaticTexts("howard higashi verse 1 line 2")
+            .waitForTextViews("howard higashi verse 1 line 2")
             .openLanguages()
             .pressButton("Chinese Supplement 216 (Trad.)")
-            .waitForStaticTexts("chinese verse 1 chinese line 1")
+            .waitForTextViews("chinese verse 1 chinese line 1")
             // "Close" goes all the way back the beginning.
             .close()
             .switchToBrowse()
@@ -125,32 +125,32 @@ class NavigationScenarios: BaseTestCase {
     /// Once we are on Hymn 1151, we can run the same set of functions to test navigation.
     private func testNavigationToDifferentLanguageFromHymn1151(_ displayHymnViewCan: DisplayHymnViewCan) -> DisplayHymnViewCan {
         displayHymnViewCan
-            .waitForStaticTexts("verse 1 line 1")
+            .waitForTextViews("verse 1 line 1")
             .openLanguages()
             .pressButton("Chinese Supplement 216 (Trad.)")
-            .waitForStaticTexts("chinese verse 1 chinese line 1")
+            .waitForTextViews("chinese verse 1 chinese line 1")
             // "Back" goes to the original song.
             .goBack()
-            .waitForStaticTexts("verse 1 line 1")
+            .waitForTextViews("verse 1 line 1")
             .openLanguages()
             .waitForStaticTexts("Languages", "Change to another language")
             .pressButton("Chinese Supplement 216 (Trad.)")
-            .waitForStaticTexts("chinese verse 1 chinese line 1")
+            .waitForTextViews("chinese verse 1 chinese line 1")
             .close()
     }
 
     private func testNavigationToDifferentRelevantFromHymn1151(_ displayHymnViewCan: DisplayHymnViewCan) -> DisplayHymnViewCan {
         displayHymnViewCan
-            .waitForStaticTexts("verse 1 line 1")
+            .waitForTextViews("verse 1 line 1")
             .openRelevant()
             .pressButton("Hymn 2")
-            .waitForStaticTexts("classic hymn 2 verse 1")
+            .waitForTextViews("classic hymn 2 verse 1")
             // "Back" goes to the original song.
             .goBack()
-            .waitForStaticTexts("verse 1 line 1")
+            .waitForTextViews("verse 1 line 1")
             .openRelevant()
             .pressButton("Hymn 2")
-            .waitForStaticTexts("classic hymn 2 verse 1")
+            .waitForTextViews("classic hymn 2 verse 1")
             .close()
     }
 }

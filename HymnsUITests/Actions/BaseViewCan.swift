@@ -51,6 +51,13 @@ public class BaseViewCan {
         return self
     }
 
+    public func waitForTextViews(_ strings: String...) -> Self {
+        for string in strings {
+            XCTAssertTrue(app.textViews[string].waitForExistence(timeout: 1))
+        }
+        return self
+    }
+
     public func waitForStaticTexts(_ strings: String...) -> Self {
         for string in strings {
             XCTAssertTrue(app.staticTexts[string].waitForExistence(timeout: 1))
@@ -64,6 +71,12 @@ public class BaseViewCan {
         return self
     }
 
+    public func verifyTextViewSize(size: CGSize, text: String) -> Self {
+        XCTAssertEqual(size.width, app.textViews[text].frame.size.width, accuracy: 1)
+        XCTAssertEqual(size.height, app.textViews[text].frame.size.height, accuracy: 1)
+        return self
+    }
+
     public func waitForSliders(_ strings: String...) -> Self {
         for string in strings {
             XCTAssertTrue(app.sliders[string].waitForExistence(timeout: 1))
@@ -71,8 +84,8 @@ public class BaseViewCan {
         return self
     }
 
-    public func checkStaticTextCount(_ string: String, _ count: Int) -> Self {
-        XCTAssertEqual(app.staticTexts.matching(identifier: "classic hymn 2 chorus").count, count)
+    public func checkTextViewsCount(_ string: String, _ count: Int) -> Self {
+        XCTAssertEqual(app.textViews.matching(identifier: "classic hymn 2 chorus").count, count)
         return self
     }
 

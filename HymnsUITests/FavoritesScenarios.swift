@@ -13,6 +13,6 @@ class FavoritesScenarios: BaseTestCase {
     func test_goToFavorite() {
         _ = FavoritesViewCan(app, testCase: self)
             .tapFavorite("Hymn 2, classic2")
-            .waitForStaticTexts("classic hymn 2 verse 1")
+            .waitForTextViews("classic hymn 2 verse 1")
     }
 }

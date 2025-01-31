@@ -12,15 +12,15 @@ class SettingsScenarios: BaseTestCase {
         _ = HomeViewCan(app, testCase: self)
             .waitForButtons("Hymn 2, Classic 2")
             .tapResult("Hymn 2, Classic 2")
-            .waitForStaticTexts("classic hymn 2 chorus")
-            .checkStaticTextCount("classic hymn 2 chorus", 1)
+            .waitForTextViews("classic hymn 2 chorus")
+            .checkTextViewsCount("classic hymn 2 chorus", 1)
             .goBackToHome()
             .goToSettings()
             .toggleRepeatChorus()
             .returnToHome()
             .tapHome()
             .tapResult("Hymn 2, Classic 2")
-            .checkStaticTextCount("classic hymn 2 chorus", 2)
+            .checkTextViewsCount("classic hymn 2 chorus", 2)
     }
 
     func test_clearHistory() {

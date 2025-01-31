@@ -93,14 +93,21 @@ public class DisplayHymnViewCan: BaseViewCan {
         return pressButton(transposition == 0 ? "Transpose" : String(format: "Capo %+d", transposition))
     }
 
-    public func verifyPdfDisplaying(_ string: String) -> DisplayHymnViewCan {
-        // swiftlint:disable force_cast
-        if #available(iOS 18, *) {
-            XCTAssertEqual(string, app.textViews.element(boundBy: 0).value! as! String)
-        } else {
-            XCTAssertEqual("\(string)\n", app.textViews.element(boundBy: 0).value! as! String)
+    private func onScreenValuePredicate(_ identifier: String) -> NSPredicate {
+        NSPredicate { (evaluatedObject, _) -> Bool in
+            guard let element = evaluatedObject as? XCUIElementSnapshot else { return false }
+            return element.value as? String == identifier &&
+                element.frame.minX >= 0 &&
+            element.frame.maxX <= self.app.frame.maxX
         }
-        // swiftlint:enable force_cast
+    }
+
+    public func verifyPdfDisplaying(_ string: String) -> DisplayHymnViewCan {
+        if #available(iOS 18, *) {
+            XCTAssertTrue(app.textViews.element(matching: onScreenValuePredicate(string)).waitForExistence(timeout: 1))
+        } else {
+            XCTAssertTrue(app.textViews.element(matching: onScreenValuePredicate("\(string)\n")).waitForExistence(timeout: 1))
+        }
         return self
     }
 
@@ -223,7 +230,7 @@ public class DisplayHymnViewCan: BaseViewCan {
         return pressButton("Cancel")
     }
 
-    private func onScreenPredicate(_ identifier: String) -> NSPredicate {
+    private func onScreenLabelPredicate(_ identifier: String) -> NSPredicate {
         NSPredicate { (evaluatedObject, _) -> Bool in
             guard let element = evaluatedObject as? XCUIElementSnapshot else { return false }
             return element.label == identifier &&
@@ -232,15 +239,29 @@ public class DisplayHymnViewCan: BaseViewCan {
         }
     }
 
+    public override func waitForTextViews(_ identifiers: String...) -> Self {
+        for identifier in identifiers {
+            XCTAssertTrue(
+                app.textViews
+                    .element(matching: onScreenLabelPredicate(identifier))
+                    .waitForExistence(timeout: 1))
+            XCTAssertTrue(
+                app.textViews.matching(identifier: identifier)
+                    .element(matching: onScreenLabelPredicate(identifier))
+                    .isHittable)
+        }
+        return self
+    }
+
     public override func waitForStaticTexts(_ identifiers: String...) -> Self {
         for identifier in identifiers {
             XCTAssertTrue(
                 app.staticTexts
-                    .element(matching: onScreenPredicate(identifier))
+                    .element(matching: onScreenLabelPredicate(identifier))
                     .waitForExistence(timeout: 1))
             XCTAssertTrue(
                 app.staticTexts.matching(identifier: identifier)
-                    .element(matching: onScreenPredicate(identifier))
+                    .element(matching: onScreenLabelPredicate(identifier))
                     .isHittable)
         }
         return self
@@ -250,7 +271,7 @@ public class DisplayHymnViewCan: BaseViewCan {
         for identifier in identifiers {
             XCTAssertFalse(
                 app.staticTexts
-                    .element(matching: onScreenPredicate(identifier))
+                    .element(matching: onScreenLabelPredicate(identifier))
                     .isHittable)
         }
         return self
@@ -260,11 +281,11 @@ public class DisplayHymnViewCan: BaseViewCan {
         for identifier in identifiers {
             XCTAssertTrue(
                 app.buttons
-                    .element(matching: onScreenPredicate(identifier))
+                    .element(matching: onScreenLabelPredicate(identifier))
                     .waitForExistence(timeout: 1))
             XCTAssertTrue(
                 app.buttons
-                    .element(matching: onScreenPredicate(identifier))
+                    .element(matching: onScreenLabelPredicate(identifier))
                     .isHittable)
         }
         return self
@@ -274,7 +295,7 @@ public class DisplayHymnViewCan: BaseViewCan {
         for identifier in identifiers {
             XCTAssertFalse(
                 app.staticTexts
-                    .element(matching: onScreenPredicate(identifier))
+                    .element(matching: onScreenLabelPredicate(identifier))
                     .isHittable)
         }
         return self
@@ -282,7 +303,7 @@ public class DisplayHymnViewCan: BaseViewCan {
 
     public override func pressButton(_ buttonText: String) -> Self {
         _ = waitForButtons(buttonText)
-        app.buttons.element(matching: onScreenPredicate(buttonText)).tap()
+        app.buttons.element(matching: onScreenLabelPredicate(buttonText)).tap()
         return self
     }
 }
