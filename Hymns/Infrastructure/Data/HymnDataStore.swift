@@ -5,7 +5,7 @@ import GRDB
 import Resolver
 
 // swiftlint:disable:next identifier_name
-let HYMN_DATA_STORE_VERISON = 28
+let HYMN_DATA_STORE_VERISON = 29
 
 // Service to contact the local Hymn database.
 // swiftlint:disable file_length

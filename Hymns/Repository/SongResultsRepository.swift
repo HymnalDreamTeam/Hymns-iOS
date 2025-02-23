@@ -166,12 +166,40 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
             return 0
         }
 
-        let isPreferredSearchLanguage = entity.hymnType.language == preferredSearchLanguage
-
         // Weight the match of the title twice as much as the match of the lyrics.
-        // If the hymn is the same as the default search language, then give it extra weight. This has the
-        //   effect of bubbling the songs of the default search type to the top.
-        return UInt64(matchArray[0]) * 2 + UInt64(matchArray[1]) + UInt64(isPreferredSearchLanguage ? 3 : 0)
+        let titleMatch = UInt64(matchArray[0])
+        let titleMultiplier = fibonacci(index: titleMatch) * 2
+
+        let lyricsMatch = UInt64(matchArray[1])
+        let lyricsMultiplier = fibonacci(index: lyricsMatch)
+
+        // If the hymn is the same as the default search language, then give it extra weight.
+        // This has the effect of bubbling the songs of the default search type to the top.
+        let isPreferredSearchLanguage = entity.hymnType.language == preferredSearchLanguage
+        let preferredLanguageExtraWeight = UInt64(isPreferredSearchLanguage ? 3 : 0)
+
+        return (titleMatch * titleMultiplier) + (lyricsMatch * lyricsMultiplier) + preferredLanguageExtraWeight
+    }
+
+    private func fibonacci(index: UInt64) -> UInt64 {
+        if index <= 1 {
+            return index
+        }
+        var num1 = UInt64(0)
+        var num2 = UInt64(1)
+        for _ in 2...index {
+            let result = num1 + num2
+            // Max multiplier will be 1000 to avoid getting into integer overflow land with
+            // fibonacci sequences. Realistically, this should never hit, because it means
+            // that the user typed in 1000 words into the search bar and all 1000 words
+            // matched with the lyrics of a hymn.
+            if result > 1000 {
+                return 1000
+            }
+            num1 = num2
+            num2 = result
+        }
+        return num2
     }
 
     func createNetworkCall() -> AnyPublisher<SongResultsPage, ErrorType> {
