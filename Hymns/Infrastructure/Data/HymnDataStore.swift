@@ -250,7 +250,7 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
             try SearchResultEntity.fetchAll(
                 database,
                 sql:
-                    "SELECT SONG_DATA.SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, matchinfo(SEARCH_VIRTUAL_SONG_DATA, 's') , SONG_DATA.ID " +
+                    "SELECT SONG_DATA.SONG_TITLE, HYMN_TYPE, HYMN_NUMBER, matchinfo(SEARCH_VIRTUAL_SONG_DATA, 's'), SONG_DATA.ID " +
                     "FROM SONG_DATA " +
                     "JOIN SEARCH_VIRTUAL_SONG_DATA ON (SEARCH_VIRTUAL_SONG_DATA.docid = SONG_DATA.rowid) " +
                     "JOIN SONG_IDS ON SONG_DATA.ID = SONG_IDS.SONG_ID " +
