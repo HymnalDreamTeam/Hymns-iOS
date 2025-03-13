@@ -121,6 +121,20 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
     }
 
     func loadFromDatabase() -> AnyPublisher<([SongResultEntity], Bool), ErrorType> {
+        // Only hit DB on page 1 because DB isn't pagineated.
+        if pageNumber != 1 {
+            return Just(([SongResultEntity](), false)).mapError({ _ -> ErrorType in
+                // This will never be triggered.
+            }).eraseToAnyPublisher()
+        }
+
+        // Go straight to network for exact search.
+        if RegexUtil.containsQuote(searchParameter) {
+            return Just(([SongResultEntity](), false)).mapError({ _ -> ErrorType in
+                // This will never be triggered.
+            }).eraseToAnyPublisher()
+        }
+
         if !dataStore.databaseInitializedProperly {
             return Just<Void>(()).tryMap { _ -> ([SongResultEntity], Bool) in
                 throw ErrorType.data(description: "database was not intialized properly")
@@ -150,6 +164,7 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
         var sanitizedParam = searchParameter.trim()
         sanitizedParam = RegexUtil.replaceOs(sanitizedParam.trim())
         sanitizedParam = RegexUtil.replaceApostrophes(sanitizedParam.trim())
+        sanitizedParam = RegexUtil.replaceCurlyQuotes(sanitizedParam.trim())
         return sanitizedParam
     }
 
@@ -203,6 +218,6 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
     }
 
     func createNetworkCall() -> AnyPublisher<SongResultsPage, ErrorType> {
-        service.search(for: searchParameter, onPage: pageNumber)
+        service.search(for: RegexUtil.replaceCurlyQuotes(searchParameter.trim()), onPage: pageNumber)
     }
 }

@@ -337,7 +337,6 @@ class SearchViewModel: ObservableObject {
                         // search parameter has changed by the time the call completed, so just drop this.
                         return
                     }
-
                     // Call is completed, so set isLoading to false.
                     self.isLoading = false
 
@@ -354,7 +353,7 @@ class SearchViewModel: ObservableObject {
                         break
                     }
                 },
-                receiveValue: { [weak self] (songResults, hasMorePages) in
+                receiveValue: { [weak self] (newResults, hasMorePages) in
                     guard let self = self else { return }
                     if searchInput != self.searchParameter {
                         // search parameter has changed by the time results came back, so just drop this.
@@ -362,11 +361,11 @@ class SearchViewModel: ObservableObject {
                     }
 
                     // Filter out duplicates
-                    self.songResults.append(contentsOf: songResults.filter({ newViewModel -> Bool in
+                    songResults.append(contentsOf: newResults.filter({ newViewModel -> Bool in
                         !self.songResults.contains(newViewModel)
                     }))
                     self.hasMorePages = hasMorePages
-                    if !self.songResults.isEmpty {
+                    if !songResults.isEmpty {
                         self.state = .results
                     }
             }).store(in: &disposables)

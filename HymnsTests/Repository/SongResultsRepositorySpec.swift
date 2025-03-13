@@ -400,6 +400,98 @@ class SongResultsRepositorySpec: AsyncSpec {
                             cancellable.cancel()
                         }
                     }
+                    context("network results page 2") {
+                        beforeEach {
+                            given(service.search(for: "Chenaniah", onPage: 2)) ~> { _, _ in
+                                Just(self.networkResult).mapError({ _ -> ErrorType in
+                                    // This will never be triggered.
+                                }).eraseToAnyPublisher()
+                            }
+                        }
+                        it("should not hit the database") {
+                            given(converter.toUiSongResultsPage(songResultEntities: [SongResultEntity](), hasMorePages: false)) ~> UiSongResultsPage(results: [UiSongResult](), hasMorePages: false)
+                            let networkSongResultEntities = [
+                                SongResultEntity(hymnType: .classic, hymnNumber: "1151", title: "classic 1151 again", songId: 0),
+                                SongResultEntity(hymnType: .cebuano, hymnNumber: "123", title: "cebuano 123", songId: 0)]
+                            given(converter.toSongResultEntities(songResultsPage: self.networkResult)) ~> (networkSongResultEntities, self.networkResult.hasMorePages!)
+                            let convertedNetworkResultPage = UiSongResultsPage(
+                                results: [UiSongResult(name: "classic 1151 again", identifiers: [classic1151]),
+                                          UiSongResult(name: "cebuano 123", identifiers: [cebuano123])],
+                                hasMorePages: false)
+                            given(converter.toUiSongResultsPage(songResultEntities: networkSongResultEntities, hasMorePages: false)) ~> convertedNetworkResultPage
+
+                            value.expectedFulfillmentCount = 2
+                            var valueCount = 0
+                            let cancellable = target.search(searchParameter: "Chenaniah", pageNumber: 2)
+                                .print(current.description)
+                                .sink(receiveCompletion: { state in
+                                    completion.fulfill()
+                                    expect(state).to(equal(.finished))
+                                }, receiveValue: { page in
+                                    value.fulfill()
+                                    valueCount += 1
+                                    if valueCount == 1 {
+                                        expect(page.results).to(beEmpty())
+                                        expect(page.hasMorePages).to(beFalse())
+                                    } else if valueCount == 2 {
+                                        expect(page).to(equal(convertedNetworkResultPage))
+                                    } else {
+                                        XCTFail("receiveValue should only be called twice")
+                                    }
+                                })
+                            verify(dataStore.getDatabaseInitializedProperly()).wasNeverCalled()
+                            verify(dataStore.searchHymn("Chenaniah")).wasNeverCalled()
+                            verify(service.search(for: "Chenaniah", onPage: 2)).wasCalled(exactly(1))
+                            await current.fulfillment(of: [completion, value], timeout: testTimeout)
+                            cancellable.cancel()
+                        }
+                    }
+                    context("search param has a quote") {
+                        beforeEach {
+                            given(service.search(for: "\"Chenaniah\"", onPage: 1)) ~> { _, _ in
+                                Just(self.networkResult).mapError({ _ -> ErrorType in
+                                    // This will never be triggered.
+                                }).eraseToAnyPublisher()
+                            }
+                        }
+                        it("should not hit the database") {
+                            given(converter.toUiSongResultsPage(songResultEntities: [SongResultEntity](), hasMorePages: false)) ~> UiSongResultsPage(results: [UiSongResult](), hasMorePages: false)
+                            let networkSongResultEntities = [
+                                SongResultEntity(hymnType: .classic, hymnNumber: "1151", title: "classic 1151 again", songId: 0),
+                                SongResultEntity(hymnType: .cebuano, hymnNumber: "123", title: "cebuano 123", songId: 0)]
+                            given(converter.toSongResultEntities(songResultsPage: self.networkResult)) ~> (networkSongResultEntities, self.networkResult.hasMorePages!)
+                            let convertedNetworkResultPage = UiSongResultsPage(
+                                results: [UiSongResult(name: "classic 1151 again", identifiers: [classic1151]),
+                                          UiSongResult(name: "cebuano 123", identifiers: [cebuano123])],
+                                hasMorePages: false)
+                            given(converter.toUiSongResultsPage(songResultEntities: networkSongResultEntities, hasMorePages: false)) ~> convertedNetworkResultPage
+
+                            value.expectedFulfillmentCount = 2
+                            var valueCount = 0
+                            let cancellable = target.search(searchParameter: "“Chenaniah”", pageNumber: 1)
+                                .print(current.description)
+                                .sink(receiveCompletion: { state in
+                                    completion.fulfill()
+                                    expect(state).to(equal(.finished))
+                                }, receiveValue: { page in
+                                    value.fulfill()
+                                    valueCount += 1
+                                    if valueCount == 1 {
+                                        expect(page.results).to(beEmpty())
+                                        expect(page.hasMorePages).to(beFalse())
+                                    } else if valueCount == 2 {
+                                        expect(page).to(equal(convertedNetworkResultPage))
+                                    } else {
+                                        XCTFail("receiveValue should only be called twice")
+                                    }
+                                })
+                            verify(dataStore.getDatabaseInitializedProperly()).wasNeverCalled()
+                            verify(dataStore.searchHymn("Chenaniah")).wasNeverCalled()
+                            verify(service.search(for: "\"Chenaniah\"", onPage: 1)).wasCalled(exactly(1))
+                            await current.fulfillment(of: [completion, value], timeout: testTimeout)
+                            cancellable.cancel()
+                        }
+                    }
                 }
             }
         }

@@ -332,6 +332,92 @@ class RegexUtilSpec: QuickSpec {
                 expect(RegexUtil.getVerseFromReference("cf. 80")).to(beNil())
             }
         }
+        describe("replace Os") {
+            it("notFound__doesNothing") {
+                expect(RegexUtil.replaceOs("there is no match in this at all")).to(equal("there is no match in this at all"))
+            }
+            it("OFound__replaceWithOOrOh") {
+                expect(RegexUtil.replaceOs("O Christ, He is the fountain")).to(equal("(O OR Oh) Christ, He is the fountain"))
+            }
+            it("oFound__replaceWithOOrOh") {
+                expect(RegexUtil.replaceOs("o Christ, He is the fountain")).to(equal("(O OR Oh) Christ, He is the fountain"))
+            }
+            it("ohFound__replaceWithOOrOh") {
+                expect(RegexUtil.replaceOs("oh Christ, He is the fountain")).to(equal("(O OR Oh) Christ, He is the fountain"))
+            }
+            it("oHFound__replaceWithOOrOh") {
+                expect(RegexUtil.replaceOs("oH Christ, He is the fountain")).to(equal("(O OR Oh) Christ, He is the fountain"))
+            }
+            it("OhFound__replaceWithOOrOh") {
+                expect(RegexUtil.replaceOs("Oh Christ, He is the fountain")).to(equal("(O OR Oh) Christ, He is the fountain"))
+            }
+            it("OHFound__replaceWithOOrOh") {
+                expect(RegexUtil.replaceOs("OH Christ, He is the fountain")).to(equal("(O OR Oh) Christ, He is the fountain"))
+            }
+        }
+        describe("replace apostrophe") {
+            it("notFound__doesNothing") {
+                expect(RegexUtil.replaceApostrophes("there is no match in this at all")).to(equal("there is no match in this at all"))
+            }
+            it("apostropheFound__replaceWithQuoteOrApostrophe") {
+                expect(RegexUtil.replaceApostrophes("Christ’s the fountain")).to(equal("(Christ’s OR Christ's) the fountain"))
+            }
+            it("quoteFound__replaceWithQuoteOrApostrophe") {
+                expect(RegexUtil.replaceApostrophes("Christ's the fountain")).to(equal("(Christ’s OR Christ's) the fountain"))
+            }
+            it("bothFound__replaceWithQuoteOrApostrophe") {
+                expect(RegexUtil.replaceApostrophes("Christ's the founta’in")).to(equal("(Christ’s OR Christ's) the (founta’in OR founta'in)"))
+            }
+        }
+        describe("contains quote") {
+            context("does not contain") {
+                it("should be false") {
+                    expect(RegexUtil.containsQuote("there is no match in this at all")).to(beFalse())
+                }
+            }
+            context("does contain “") {
+                it("should be true") {
+                    expect(RegexUtil.containsQuote("th“ere is no match in this at all")).to(beTrue())
+                }
+            }
+            context("does contain ”") {
+                it("should be true") {
+                    expect(RegexUtil.containsQuote("th”ere is no match in this at all")).to(beTrue())
+                }
+            }
+            context("does contain \"") {
+                it("should be true") {
+                    expect(RegexUtil.containsQuote("th\"ere is no match in this at all")).to(beTrue())
+                }
+            }
+            context("does contain all three") {
+                it("should be true") {
+                    expect(RegexUtil.containsQuote("“Christ he \"is”")).to(beTrue())
+                }
+            }
+        }
+        describe("replace curly quotes") {
+            context("not found") {
+                it("do nothing") {
+                    expect(RegexUtil.replaceCurlyQuotes("there is no match in this at all")).to(equal("there is no match in this at all"))
+                }
+            }
+            context("open brace found") {
+                it("replace with straight quotes") {
+                    expect(RegexUtil.replaceCurlyQuotes("“Chr“ist “he is“")).to(equal("\"Chr\"ist \"he is\""))
+                }
+            }
+            context("close brace found") {
+                it("replace with straight quotes") {
+                    expect(RegexUtil.replaceCurlyQuotes("”Chr”ist ”he is”")).to(equal("\"Chr\"ist \"he is\""))
+                }
+            }
+            context("both found") {
+                it("replace with straight quotes") {
+                    expect(RegexUtil.replaceCurlyQuotes("“Christ he is”")).to(equal("\"Christ he is\""))
+                }
+            }
+        }
     }
 }
 // swiftlint:enable identifier_name type_body_length

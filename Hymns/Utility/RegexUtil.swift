@@ -240,6 +240,20 @@ public class RegexUtil {
                                               range: NSRange(location: 0, length: str.utf16.count),
                                               withTemplate: "($1’$3 OR $1'$3)")
     }
+
+    static func containsQuote(_ str: String) -> Bool {
+        do {
+            let regex = try NSRegularExpression(pattern: "“|”|\"")
+            let range = NSRange(location: 0, length: str.utf16.count)
+            return regex.firstMatch(in: str, options: [], range: range) != nil
+        } catch {
+            return false
+        }
+    }
+
+    static func replaceCurlyQuotes(_ str: String) -> String {
+        return str.replacingOccurrences(of: "”", with: "\"").replacingOccurrences(of: "“", with: "\"")
+    }
 }
 
 // https://www.hackingwithswift.com/articles/108/how-to-use-regular-expressions-in-swift
