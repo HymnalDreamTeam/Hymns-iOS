@@ -41,7 +41,26 @@ struct MailFeedbackView: UIViewControllerRepresentable {
         let mailVC = MFMailComposeViewController()
         let randomIssueNum = Int.random(in: 1000000000...9999999999)
         mailVC.setToRecipients(["hymnalappfeedback@gmail.com"])
-        mailVC.setSubject("Hymnal App Feedback # \(randomIssueNum)")
+        mailVC.setSubject("Hymns Mobile Feedback (iOS) # \(randomIssueNum)")
+
+        // Add device information in HTML format
+        let device = UIDevice.current
+        let osVersion = device.systemVersion
+        let deviceModel = device.model
+
+        // Add app version in HTML format
+        let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "N/A"
+        let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "N/A"
+
+        let deviceInfoHTML = """
+                    <br><br>
+                    <hr>
+                    <b>Device Information:</b><br>
+                    Type: \(deviceModel)<br>
+                    OS: iOS \(osVersion)<br>
+                    App Version: \(appVersion) (\(buildNumber))
+                """
+        mailVC.setMessageBody(deviceInfoHTML, isHTML: true)
         mailVC.mailComposeDelegate = context.coordinator
         return mailVC
     }
