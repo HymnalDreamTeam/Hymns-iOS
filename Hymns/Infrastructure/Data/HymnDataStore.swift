@@ -5,7 +5,7 @@ import GRDB
 import Resolver
 
 // swiftlint:disable:next identifier_name
-let HYMN_DATA_STORE_VERISON = 29
+let HYMN_DATA_STORE_VERISON = 30
 
 // Service to contact the local Hymn database.
 // swiftlint:disable file_length
@@ -141,15 +141,15 @@ class HymnDataStoreGrdbImpl: HymnDataStore {
 
                     // CREATE VIRTUAL TABLE IF NOT EXISTS SEARCH_VIRTUAL_SONG_DATA USING FTS4(
                     //   SONG_TITLE TEXT,
-                    //   SONG_LYRICS TEXT NOT NULL,
-                    //   tokenize=porter,
+                    //   FLATTENED_LYRICS TEXT NOT NULL,
+                    //   tokenize=simple,
                     //   content=SONG_DATA
                     // )
                     try database.create(virtualTable: "SEARCH_VIRTUAL_SONG_DATA", ifNotExists: true, using: FTS4()) { table in
                         table.synchronize(withTable: HymnEntity.databaseTableName)
-                        table.tokenizer = .porter
+                        table.tokenizer = .simple
                         table.column(HymnEntity.CodingKeys.title.rawValue)
-                        table.column(HymnEntity.CodingKeys.lyrics.rawValue)
+                        table.column(HymnEntity.CodingKeys.flattenedLyrics.rawValue)
                     }
                 } catch {
                     databaseInitializedProperly = false

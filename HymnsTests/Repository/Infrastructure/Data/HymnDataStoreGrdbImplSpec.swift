@@ -346,13 +346,13 @@ class HymnDataStoreGrdbImplSpec: AsyncSpec {
                 let jennysSongId = HymnIdentifier(hymnType: .chineseSupplement, hymnNumber: "321")
                 let jennysSong = HymnEntity.with { builder in
                     builder.title = "Jenny's Song"
-                    builder.lyrics = LyricsEntity([VerseEntity(verseType: .verse, lineStrings: ["winter is coming"])])
+                    builder.flattenedLyrics = "winter is coming"
                 }
 
                 let rainsOfCastamereId = HymnIdentifier(hymnType: .chinese, hymnNumber: "123")
                 let rainsOfCastamere = HymnEntity.with { builder in
                     builder.title = "The Rains of Castamere"
-                    builder.lyrics = LyricsEntity([VerseEntity(verseType: .verse, lineStrings: ["summer is coming"])])
+                    builder.flattenedLyrics = "summer is coming"
                 }
 
                 let matchInTitleId = HymnIdentifier(hymnType: .howardHigashi, hymnNumber: "matchInTitle")
@@ -368,18 +368,18 @@ class HymnDataStoreGrdbImplSpec: AsyncSpec {
                 let noMatchId = HymnIdentifier(hymnType: .chineseSupplement, hymnNumber: "noMatch")
                 let noMatch = HymnEntity.with { builder in
                     builder.title = "no match"
-                    builder.lyrics = LyricsEntity([VerseEntity(verseType: .verse, lineStrings: ["at all"])])
+                    builder.flattenedLyrics = "at all"
                 }
 
                 let matchInBothId = HymnIdentifier(hymnType: .korean, hymnNumber: "matchInBoth")
                 let matchInBoth = HymnEntity.with { builder in
                     builder.title = "summer coming"
-                    builder.lyrics = LyricsEntity([VerseEntity(verseType: .verse, lineStrings: ["no, really. summer is!"])])
+                    builder.flattenedLyrics = "no, really. summer is!"
                 }
 
                 let missingId = HymnEntity.with { builder in
                     builder.title = "missing id"
-                    builder.lyrics = LyricsEntity([VerseEntity(verseType: .verse, lineStrings: ["summer is coming"])])
+                    builder.flattenedLyrics = "summer is coming"
                 }
 
                 var searchResults = [SearchResultEntity]()
