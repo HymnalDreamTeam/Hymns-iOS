@@ -85,7 +85,12 @@ struct DisplayHymnView: View {
             }
         }.hideNavigationBar()
             .onAppear {
+                // Disable the idle timer when the view appears
+                UIApplication.shared.isIdleTimerDisabled = true
                 self.viewModel.fetchHymn()
+            }.onDisappear {
+                // Re-enable the idle timer when the view disappears
+                UIApplication.shared.isIdleTimerDisabled = false
             }.task {
                 firebaseLogger.logScreenView(screenName: "DisplayHymnView")
             }.background(Color(.systemBackground))
