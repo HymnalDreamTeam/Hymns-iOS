@@ -427,62 +427,47 @@ class HymnDataStoreGrdbImplSpec: AsyncSpec {
                     publisher.cancel()
                 }
                 it("should return three results") {
-                    expect(searchResults).to(haveCount(4))
+                    expect(searchResults).to(haveCount(3))
                 }
                 describe("first result") {
-                    it("should be Jenny's Song") {
+                    it("should be Rains of Castamere") {
                         let searchResult = searchResults[0]
-                        expect(searchResult.hymnType).to(equal(jennysSongId.hymnType))
-                        expect(searchResult.hymnNumber).to(equal(jennysSongId.hymnNumber))
-                        expect(searchResult.title).to(equal(jennysSong.title))
+                        expect(searchResult.hymnType).to(equal(rainsOfCastamereId.hymnType))
+                        expect(searchResult.hymnNumber).to(equal(rainsOfCastamereId.hymnNumber))
+                        expect(searchResult.title).to(equal(rainsOfCastamere.title))
                     }
                     it("should match lyrics and title") {
                         let searchResult = searchResults[0]
                         let matchInfo = searchResult.matchInfo
                         let byteArray = [UInt8](matchInfo)
                         expect(byteArray).to(haveCount(8))
-                        expect(byteArray).to(equal([0, 0, 0, 0, 2, 0, 0, 0])) // Match of length-2 in lyrics.
-                    }
-                }
-                describe("second result") {
-                    it("should be Rains of Castamere") {
-                        let searchResult = searchResults[1]
-                        expect(searchResult.hymnType).to(equal(rainsOfCastamereId.hymnType))
-                        expect(searchResult.hymnNumber).to(equal(rainsOfCastamereId.hymnNumber))
-                        expect(searchResult.title).to(equal(rainsOfCastamere.title))
-                    }
-                    it("should match lyrics but not title") {
-                        let searchResult = searchResults[1]
-                        let matchInfo = searchResult.matchInfo
-                        let byteArray = [UInt8](matchInfo)
-                        expect(byteArray).to(haveCount(8))
                         expect(byteArray).to(equal([0, 0, 0, 0, 3, 0, 0, 0])) // Match of length-3 in lyrics.
                     }
                 }
-                describe("third result") {
-                    it("should be matchInTitle") {
-                        let searchResult = searchResults[2]
+                describe("second result") {
+                    it("should be matchInBoth") {
+                        let searchResult = searchResults[1]
                         expect(searchResult.hymnType).to(equal(matchInBothId.hymnType))
                         expect(searchResult.hymnNumber).to(equal(matchInBothId.hymnNumber))
                         expect(searchResult.title).to(equal(matchInBoth.title))
                     }
                     it("should match title but not lyrics") {
-                        let searchResult = searchResults[2]
+                        let searchResult = searchResults[1]
                         let matchInfo = searchResult.matchInfo
                         let byteArray = [UInt8](matchInfo)
                         expect(byteArray).to(haveCount(8))
                         expect(byteArray).to(equal([1, 0, 0, 0, 2, 0, 0, 0])) // Match of length-1 in title and match of length-2 in lyrics.
                     }
                 }
-                describe("fourth result") {
-                    it("should be matchInTitle") {
-                        let searchResult = searchResults[3]
+                describe("third result") {
+                    it("should be matchInTitleReplacement") {
+                        let searchResult = searchResults[2]
                         expect(searchResult.hymnType).to(equal(matchInTitleReplacementId.hymnType))
                         expect(searchResult.hymnNumber).to(equal(matchInTitleReplacementId.hymnNumber))
                         expect(searchResult.title).to(equal(matchInTitleReplacement.title))
                     }
                     it("should match title but not lyrics") {
-                        let searchResult = searchResults[3]
+                        let searchResult = searchResults[2]
                         let matchInfo = searchResult.matchInfo
                         let byteArray = [UInt8](matchInfo)
                         expect(byteArray).to(haveCount(8))

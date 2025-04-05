@@ -369,6 +369,45 @@ class RegexUtilSpec: QuickSpec {
                 expect(RegexUtil.replaceApostrophes("Christ's the founta’in")).to(equal("(Christ’s OR Christ's) the (founta’in OR founta'in)"))
             }
         }
+        describe("remove punctuation") {
+            it("should return an empty string for an empty input") {
+                expect(RegexUtil.removePunctuation("")).to(beEmpty())
+            }
+            it("should return the same string if there is no punctuation") {
+                let input = "HelloWorld"
+                expect(RegexUtil.removePunctuation(input)).to(equal(input))
+            }
+            it("should remove basic punctuation marks") {
+                let input = "Hello, World!"
+                expect(RegexUtil.removePunctuation(input)).to(equal("Hello World"))
+            }
+            it("should remove multiple punctuation marks") {
+                let input = "This is a test... with multiple!!! punctuation?? marks."
+                expect(RegexUtil.removePunctuation(input)).to(equal("This is a test with multiple punctuation marks"))
+            }
+            it("should remove punctuation at the beginning and end") {
+                let input = "!Hello World?"
+                expect(RegexUtil.removePunctuation(input)).to(equal("Hello World"))
+            }
+            it("should return an empty string if the input contains only punctuation") {
+                expect(RegexUtil.removePunctuation(",.!?")).to(beEmpty())
+            }
+            it("should remove punctuation while preserving mixed case") {
+                let input = "Some TeSt W!.';iTh' $ pUnCtUaTiOn."
+                expect(RegexUtil.removePunctuation(input)).to(equal("Some TeSt WiTh $ pUnCtUaTiOn"))
+            }
+            it("should remove a wider range of ASCII punctuation") {
+                let input = "This string contains: #$%&'()*+,-./:;<=>?@[]^_`{|}~"
+                expect(RegexUtil.removePunctuation(input)).to(equal("This string contains $+<=>^`|~"))
+            }
+            it("should remove international punctuation (based on the current pattern)") {
+                let input = "你好，世界！" // Chinese with punctuation
+                expect(RegexUtil.removePunctuation(input)).to(equal("你好世界"))
+
+                let input2 = "café." // French with punctuation
+                expect(RegexUtil.removePunctuation(input2)).to(equal("café"))
+            }
+        }
         describe("contains quote") {
             context("does not contain") {
                 it("should be false") {
@@ -402,12 +441,12 @@ class RegexUtilSpec: QuickSpec {
                     expect(RegexUtil.replaceCurlyQuotes("there is no match in this at all")).to(equal("there is no match in this at all"))
                 }
             }
-            context("open brace found") {
+            context("open quote found") {
                 it("replace with straight quotes") {
                     expect(RegexUtil.replaceCurlyQuotes("“Chr“ist “he is“")).to(equal("\"Chr\"ist \"he is\""))
                 }
             }
-            context("close brace found") {
+            context("close quote found") {
                 it("replace with straight quotes") {
                     expect(RegexUtil.replaceCurlyQuotes("”Chr”ist ”he is”")).to(equal("\"Chr\"ist \"he is\""))
                 }

@@ -97,8 +97,8 @@ struct SearchView_Previews: PreviewProvider, PrefireProvider {
         recentSongsViewModel.state = .results
         recentSongsViewModel.label = "Recent hymns"
         recentSongsViewModel.songResults = [
-            .single(SingleSongResultViewModel(stableId: "classic1151", title: "Hymn 1151", destinationView: EmptyView().eraseToAnyView())),
-            .single(SingleSongResultViewModel(stableId: "classic2", title: "Classic 2", destinationView: EmptyView().eraseToAnyView()))]
+            .single(SingleSongResultViewModel(stableId: HymnIdentifier(hymnType: .classic, hymnNumber: "1151"), title: "Hymn 1151", destinationView: EmptyView().eraseToAnyView())),
+            .single(SingleSongResultViewModel(stableId: HymnIdentifier(hymnType: .classic, hymnNumber: "2"), title: "Classic 2", destinationView: EmptyView().eraseToAnyView()))]
         let recentSongs = SearchView(viewModel: recentSongsViewModel)
 
         let searchActiveViewModel = NoOpSearchViewModel()

@@ -6,7 +6,7 @@ enum SongResultViewModel {
     case single(SingleSongResultViewModel)
     case multi(MultiSongResultViewModel)
 
-    var stableId: String {
+    var stableId: AnyHashable {
         switch self {
         case .single(let viewModel):
             return viewModel.stableId
@@ -41,6 +41,28 @@ enum SongResultViewModel {
             return nil
         }
     }
+
+    func overlaps(with other: SongResultViewModel) -> Bool {
+        if let selfSingle = self.singleSongResultViewModel, let otherSingle = other.singleSongResultViewModel {
+            return selfSingle.overlaps(with: otherSingle)
+        }
+
+        if let selfMulti = self.multiSongResultViewModel, let otherMulti = other.multiSongResultViewModel {
+            return selfMulti.overlaps(with: otherMulti)
+        }
+        return false
+    }
+
+    func merge(with other: SongResultViewModel) -> SongResultViewModel? {
+        if let selfSingle = self.singleSongResultViewModel, let otherSingle = other.singleSongResultViewModel {
+            return .single(selfSingle.merge(with: otherSingle))
+        }
+
+        if let selfMulti = self.multiSongResultViewModel, let otherMulti = other.multiSongResultViewModel {
+            return .multi(selfMulti.merge(with: otherMulti))
+        }
+        return nil
+    }
 }
 
 extension SongResultViewModel: Hashable, Equatable {
@@ -69,13 +91,12 @@ class SingleSongResultViewModel: Identifiable {
 
     private let systemUtil: SystemUtil
 
-    /// Unique string to identify a SongResultsViewModel. Two models with the same id are considered semantically the same.
-    let stableId: String
+    let stableId: HymnIdentifier
     let title: String
     let label: String?
     let destinationView: AnyView
 
-    init(stableId: String, title: String, label: String? = nil, destinationView: AnyView,
+    init(stableId: HymnIdentifier, title: String, label: String? = nil, destinationView: AnyView,
          systemUtil: SystemUtil = Resolver.resolve()) {
         self.stableId = stableId
         self.title = title
@@ -93,6 +114,15 @@ extension SingleSongResultViewModel: Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(stableId)
     }
+
+    func overlaps(with other: SingleSongResultViewModel) -> Bool {
+        return stableId == other.stableId
+    }
+
+    func merge(with other: SingleSongResultViewModel) -> SingleSongResultViewModel {
+        // Nothing to merge, so just return itself.
+        return self
+    }
 }
 
 extension SingleSongResultViewModel: CustomStringConvertible {
@@ -105,13 +135,12 @@ class MultiSongResultViewModel: Identifiable {
 
     private let systemUtil: SystemUtil
 
-    /// Unique string to identify a SongResultsViewModel. Two models with the same id are considered semantically the same.
-    let stableId: String
+    let stableId: [HymnIdentifier]
     let title: String
     let labels: [String]?
     let destinationView: AnyView
 
-    init(stableId: String, title: String, labels: [String]? = nil, destinationView: AnyView,
+    init(stableId: [HymnIdentifier], title: String, labels: [String]? = nil, destinationView: AnyView,
          systemUtil: SystemUtil = Resolver.resolve()) {
         self.stableId = stableId
         self.title = title
@@ -128,6 +157,18 @@ extension MultiSongResultViewModel: Hashable {
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(stableId)
+    }
+
+    func overlaps(with other: MultiSongResultViewModel) -> Bool {
+        !Set(self.stableId).isDisjoint(with: (Set(other.stableId)))
+    }
+
+    func merge(with other: MultiSongResultViewModel) -> MultiSongResultViewModel {
+        var newStableId = stableId
+        newStableId.append(contentsOf: other.stableId.filter({ stableId -> Bool in
+            !newStableId.contains(stableId)
+        }))
+        return MultiSongResultViewModel(stableId: newStableId, title: title, destinationView: destinationView)
     }
 }
 

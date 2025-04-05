@@ -77,6 +77,8 @@ public class RegexUtil {
      */
     static let dashPattern = "\\A(-*\\s*)"
 
+    static let punctuationPattern = "[\\p{Punct}]"
+
     static func getHymnType(searchQuery: String) -> HymnType? {
         let regex = NSRegularExpression(searchTextPattern, options: .caseInsensitive)
 
@@ -239,6 +241,13 @@ public class RegexUtil {
         return regex.stringByReplacingMatches(in: str,
                                               range: NSRange(location: 0, length: str.utf16.count),
                                               withTemplate: "($1’$3 OR $1'$3)")
+    }
+
+    static func removePunctuation(_ str: String) -> String {
+        let regex = NSRegularExpression(punctuationPattern, options: .caseInsensitive)
+        return regex.stringByReplacingMatches(in: str,
+                                              range: NSRange(location: 0, length: str.utf16.count),
+                                              withTemplate: "")
     }
 
     static func containsQuote(_ str: String) -> Bool {

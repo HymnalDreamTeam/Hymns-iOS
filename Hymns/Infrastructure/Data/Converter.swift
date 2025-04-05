@@ -240,16 +240,15 @@ class ConverterImpl: Converter {
 
     func toSingleSongResultViewModels(songResultEntities: [SongResultEntity], storeInHistoryStore: Bool) -> [SingleSongResultViewModel] {
         songResultEntities.map { entity in
-            let stableId = String(describing: entity.hymnIdentifier)
             let destination =
             DisplayHymnContainerView(
                 viewModel: DisplayHymnContainerViewModel(hymnToDisplay: entity.hymnIdentifier, storeInHistoryStore: storeInHistoryStore)).eraseToAnyView()
             if let title = entity.title {
-                return SingleSongResultViewModel(stableId: stableId, title: title,
+                return SingleSongResultViewModel(stableId: entity.hymnIdentifier, title: title,
                                                  label: entity.hymnIdentifier.displayTitle,
                                                  destinationView: destination)
             } else {
-                return SingleSongResultViewModel(stableId: stableId, title: entity.hymnIdentifier.displayTitle,
+                return SingleSongResultViewModel(stableId: entity.hymnIdentifier, title: entity.hymnIdentifier.displayTitle,
                                                  destinationView: destination)
             }
         }
@@ -264,7 +263,7 @@ class ConverterImpl: Converter {
             let destination = DisplayHymnContainerView(viewModel:
                                                         DisplayHymnContainerViewModel(hymnToDisplay: songResult.identifiers[0],
                                                                                       storeInHistoryStore: true)).eraseToAnyView()
-            return MultiSongResultViewModel(stableId: String(describing: songResult.identifiers),
+            return MultiSongResultViewModel(stableId: songResult.identifiers,
                                             title: title,
                                             labels: labels,
                                             destinationView: destination)
@@ -288,7 +287,7 @@ class ConverterImpl: Converter {
             let destination = DisplayHymnContainerView(viewModel:
                                                         DisplayHymnContainerViewModel(hymnToDisplay: firstEntity.hymnIdentifier,
                                                                                       storeInHistoryStore: true)).eraseToAnyView()
-            return MultiSongResultViewModel(stableId: String(describing: identifiers), title: firstTitle, labels: labels, destinationView: destination)
+            return MultiSongResultViewModel(stableId: identifiers, title: firstTitle, labels: labels, destinationView: destination)
         }
     }
 }

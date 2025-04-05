@@ -25,7 +25,7 @@ class FavoritesViewModel: ObservableObject {
                     let title = entity.songTitle ?? identifier.displayTitle
                     let label = entity.songTitle != nil ? identifier.displayTitle : nil
                     let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: identifier)).eraseToAnyView()
-                    return SingleSongResultViewModel(stableId: String(describing: identifier), title: title,
+                    return SingleSongResultViewModel(stableId: identifier, title: title,
                                                      label: label, destinationView: destination)
                 }
             })

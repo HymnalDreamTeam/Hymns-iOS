@@ -238,12 +238,13 @@ class ConverterSpec: QuickSpec {
                     expect(convertedResults.map({ $0.label })).to(equal(["Hymn 594", "New tune 7", "New tune 8", "New tune 9", "New tune 10", nil]))
                 }
                 it("should convert the stable ids correctly") {
-                    expect(convertedResults.map({ $0.stableId })).to(equal(["hymnType: h, hymnNumber: 594",
-                                                                            "hymnType: nt, hymnNumber: 7",
-                                                                            "hymnType: nt, hymnNumber: 8",
-                                                                            "hymnType: nt, hymnNumber: 9",
-                                                                            "hymnType: nt, hymnNumber: 10",
-                                                                            "hymnType: nt, hymnNumber: 12"]))
+                    expect(convertedResults.map({ $0.stableId })).to(equal(
+                        [HymnIdentifier(hymnType: .classic, hymnNumber: "594"),
+                         HymnIdentifier(hymnType: .newTune, hymnNumber: "7"),
+                         HymnIdentifier(hymnType: .newTune, hymnNumber: "8"),
+                         HymnIdentifier(hymnType: .newTune, hymnNumber: "9"),
+                         HymnIdentifier(hymnType: .newTune, hymnNumber: "10"),
+                         HymnIdentifier(hymnType: .newTune, hymnNumber: "12")]))
                 }
             }
             describe("toMultiSongResultViewModels") {
@@ -280,9 +281,13 @@ class ConverterSpec: QuickSpec {
                         expect(convertedResults.0.map({ $0.labels })).to(equal([["Hymn 594", "New tune 7", "New tune 8"], ["New tune 8"], nil]))
                     }
                     it("should convert the stable ids correctly") {
-                        expect(convertedResults.0.map({ $0.stableId })).to(equal(["[hymnType: h, hymnNumber: 594, hymnType: nt, hymnNumber: 7, hymnType: nt, hymnNumber: 8, hymnType: nt, hymnNumber: 9, hymnType: nt, hymnNumber: 10]",
-                                                                                  "[hymnType: nt, hymnNumber: 8]",
-                                                                                  "[hymnType: nt, hymnNumber: 10, hymnType: h, hymnNumber: 10]"]))
+                        expect(convertedResults.0.map({ $0.stableId })).to(equal([
+                            [HymnIdentifier(hymnType: .classic, hymnNumber: "594"), HymnIdentifier(hymnType: .newTune, hymnNumber: "7"),
+                             HymnIdentifier(hymnType: .newTune, hymnNumber: "8"), HymnIdentifier(hymnType: .newTune, hymnNumber: "9"),
+                             HymnIdentifier(hymnType: .newTune, hymnNumber: "10")],
+                            [HymnIdentifier(hymnType: .newTune, hymnNumber: "8")],
+                            [HymnIdentifier(hymnType: .newTune, hymnNumber: "10"), HymnIdentifier(hymnType: .classic, hymnNumber: "10")]
+                        ]))
                     }
                     context("nil hasMorePages") {
                         let nilHasMorePages = UiSongResultsPage(results: [UiSongResult(name: "classic594",
@@ -326,12 +331,17 @@ class ConverterSpec: QuickSpec {
                     it("should convert the labels correctly") {
                         expect(convertedResults.map({ $0.labels })).to(equal([["Hymn 594", "New tune 7", "New tune 8"], ["Farsi 8"], ["New tune 9"], ["Farsi 9"]]))
                     }
-                    let expectedResults = [MultiSongResultViewModel(stableId: "[hymnType: h, hymnNumber: 594, hymnType: nt, hymnNumber: 7, hymnType: nt, hymnNumber: 8, hymnType: nt, hymnNumber: 10]",
+                    let expectedResults = [MultiSongResultViewModel(stableId:
+                                                                        [HymnIdentifier(hymnType: .classic, hymnNumber: "594"),
+                                                                         HymnIdentifier(hymnType: .newTune, hymnNumber: "7"),
+                                                                         HymnIdentifier(hymnType: .newTune, hymnNumber: "8"),
+                                                                         HymnIdentifier(hymnType: .newTune, hymnNumber: "10")],
                                                                     title: "", destinationView: EmptyView().eraseToAnyView()),
-                                           MultiSongResultViewModel(stableId: "[hymnType: F, hymnNumber: 8]",
+                                           MultiSongResultViewModel(stableId: [HymnIdentifier(hymnType: .farsi, hymnNumber: "8")],
                                                                     title: "", destinationView: EmptyView().eraseToAnyView()),
-                                           MultiSongResultViewModel(stableId: "[hymnType: nt, hymnNumber: 9]", title: "", destinationView: EmptyView().eraseToAnyView()),
-                                           MultiSongResultViewModel(stableId: "[hymnType: F, hymnNumber: 9]",
+                                           MultiSongResultViewModel(stableId: [HymnIdentifier(hymnType: .newTune, hymnNumber: "9")], title: "",
+                                                                    destinationView: EmptyView().eraseToAnyView()),
+                                           MultiSongResultViewModel(stableId: [HymnIdentifier(hymnType: .farsi, hymnNumber: "9")],
                                                                     title: "", destinationView: EmptyView().eraseToAnyView())]
                     it("should convert the stable ids correctly") {
                         expect(convertedResults).to(equal(expectedResults))

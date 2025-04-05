@@ -270,9 +270,9 @@ struct DisplayHymnView_Previews: PreviewProvider, PrefireProvider {
         fullSongSongInfoDialogViewModel.songInfo = [SongInfoViewModel(type: .hymnCode, values: ["value1", "value2"])]
         fullSongBottomBarViewModel.buttons = [
             .share("Shareable lyrics"),
-            .languages([SingleSongResultViewModel(stableId: "Empty title view", title: "language",
+            .languages([SingleSongResultViewModel(stableId: HymnIdentifier(hymnType: .liedboek, hymnNumber: "1"), title: "language",
                                                   destinationView: EmptyView().eraseToAnyView())]),
-            .relevant([SingleSongResultViewModel(stableId: "Empty relevant view", title: "relevant",
+            .relevant([SingleSongResultViewModel(stableId: HymnIdentifier(hymnType: .liedboek, hymnNumber: "2"), title: "relevant",
                                                  destinationView: EmptyView().eraseToAnyView())]),
             .musicPlayback(AudioPlayerViewModel(url: URL(string: "https://www.hymnal.net/Hymns/NewSongs/mp3/ns0767.mp3")!)),
             .songInfo(fullSongSongInfoDialogViewModel)

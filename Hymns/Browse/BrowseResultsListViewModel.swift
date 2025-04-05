@@ -167,7 +167,7 @@ class BrowseResultsListViewModel: ObservableObject {
                             title = String(format: hymnType.displayLabel, songResult.hymnNumber)
                         }
                         let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: hymnIdentifier)).eraseToAnyView()
-                        return SingleSongResultViewModel(stableId: String(describing: hymnIdentifier),
+                        return SingleSongResultViewModel(stableId: hymnIdentifier,
                                                          title: title,
                                                          destinationView: destination)
                     })

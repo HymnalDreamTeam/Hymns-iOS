@@ -23,7 +23,7 @@ struct SingleSongResultView: View {
 #if DEBUG
 struct SingleSongResultView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
-        let viewModel = SingleSongResultViewModel(stableId: "Hymn 480",
+        let viewModel = SingleSongResultViewModel(stableId: HymnIdentifier(hymnType: .classic, hymnNumber: "480"),
                                                   title: "O Lord, breathe Thy Spirit on me",
                                                   label: "Hymn 255",
                                                   destinationView: Text("%_PREVIEW_% Destination").eraseToAnyView())
@@ -68,7 +68,7 @@ struct MultiSongResultView: View {
 #if DEBUG
 struct MultiSongResultView_Previews: PreviewProvider, PrefireProvider {
     static var previews: some View {
-        let viewModel = MultiSongResultViewModel(stableId: "Hymn 480",
+        let viewModel = MultiSongResultViewModel(stableId: [HymnIdentifier(hymnType: .classic, hymnNumber: "255")],
                                                  title: "O Lord, breathe Thy Spirit on me",
                                                  labels: ["Hymn 255", "Songbase 442"],
                                                  destinationView: Text("%_PREVIEW_% Destination").eraseToAnyView())

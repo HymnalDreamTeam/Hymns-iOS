@@ -209,11 +209,11 @@ struct DisplayHymnBottomBar_Previews: PreviewProvider, PrefireProvider {
         maximumViewModel.buttons = [
             .soundCloud(SoundCloudViewModel(url: URL(string: "https://soundcloud.com/search?q=query")!)),
             .youTube(URL(string: "https://www.youtube.com/results?search_query=search")!),
-            .languages([SingleSongResultViewModel(stableId: "empty language view",
+            .languages([SingleSongResultViewModel(stableId: HymnIdentifier(hymnType: .liedboek, hymnNumber: "1"),
                                                   title: "language",
                                                   destinationView: EmptyView().eraseToAnyView())]),
             .musicPlayback(AudioPlayerViewModel(url: URL(string: "https://www.hymnal.net/Hymns/NewSongs/mp3/ns0767.mp3")!)),
-            .relevant([SingleSongResultViewModel(stableId: "empty relevant view",
+            .relevant([SingleSongResultViewModel(stableId: HymnIdentifier(hymnType: .liedboek, hymnNumber: "3"),
                                                  title: "relevant",
                                                  destinationView: EmptyView().eraseToAnyView())]),
             .songInfo(SongInfoDialogViewModel(hymnToDisplay: PreviewHymnIdentifiers.hymn1151,
@@ -228,10 +228,10 @@ struct DisplayHymnBottomBar_Previews: PreviewProvider, PrefireProvider {
         overflowViewModel.buttons = [
             .share("lyrics"),
             .fontSize(FontPickerViewModel()),
-            .languages([SingleSongResultViewModel(stableId: "empty language view",
+            .languages([SingleSongResultViewModel(stableId: HymnIdentifier(hymnType: .liedboek, hymnNumber: "1"),
                                                   title: "language", destinationView: EmptyView().eraseToAnyView())]),
             .musicPlayback(AudioPlayerViewModel(url: URL(string: "https://www.hymnal.net/Hymns/NewSongs/mp3/ns0767.mp3")!)),
-            .relevant([SingleSongResultViewModel(stableId: "empty relevant view",
+            .relevant([SingleSongResultViewModel(stableId: HymnIdentifier(hymnType: .liedboek, hymnNumber: "3"),
                                                  title: "relevant",
                                                  destinationView: EmptyView().eraseToAnyView())])
         ]

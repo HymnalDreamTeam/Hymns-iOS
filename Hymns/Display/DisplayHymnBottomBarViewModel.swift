@@ -109,7 +109,7 @@ class DisplayHymnBottomBarViewModel: ObservableObject {
         }
         return languages.map { language in
             let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: language)).eraseToAnyView()
-            return SingleSongResultViewModel(stableId: String(describing: language),
+            return SingleSongResultViewModel(stableId: language,
                                              title: String(format: language.hymnType.displayLabel, language.hymnNumber),
                                              destinationView: destination)
         }
@@ -122,7 +122,7 @@ class DisplayHymnBottomBarViewModel: ObservableObject {
 
         return relevants.map { relevant in
             let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: relevant)).eraseToAnyView()
-            return SingleSongResultViewModel(stableId: String(describing: relevant), title: relevant.displayTitle, destinationView: destination)
+            return SingleSongResultViewModel(stableId: relevant, title: relevant.displayTitle, destinationView: destination)
         }
     }
 

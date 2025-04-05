@@ -46,9 +46,12 @@ struct BrowseResultsListView_Previews: PreviewProvider, PrefireProvider {
         loadingViewModel.songResults = nil
         let loading = BrowseResultsListView(viewModel: loadingViewModel)
 
-        let resultObjects = [SingleSongResultViewModel(stableId: "Hymn 114", title: "Hymn 114", destinationView: EmptyView().eraseToAnyView()),
-                             SingleSongResultViewModel(stableId: "Cup of Christ", title: "Cup of Christ", destinationView: EmptyView().eraseToAnyView()),
-                             SingleSongResultViewModel(stableId: "Avengers - Endgame", title: "Avengers - Endgame", destinationView: EmptyView().eraseToAnyView())]
+        let resultObjects = [SingleSongResultViewModel(stableId: HymnIdentifier(hymnType: .classic, hymnNumber: "114"), title: "Hymn 114",
+                                                       destinationView: EmptyView().eraseToAnyView()),
+                             SingleSongResultViewModel(stableId: HymnIdentifier(hymnType: .classic, hymnNumber: "110"), title: "Cup of Christ",
+                                                       destinationView: EmptyView().eraseToAnyView()),
+                             SingleSongResultViewModel(stableId: HymnIdentifier(hymnType: .classic, hymnNumber: "113"), title: "Avengers - Endgame",
+                                                       destinationView: EmptyView().eraseToAnyView())]
         let resultsViewModel = NoOpBrowseResultsListViewModel(tag: UiTag(title: "Best songs", color: .none))
         resultsViewModel.songResults = resultObjects
         let results = BrowseResultsListView(viewModel: resultsViewModel)

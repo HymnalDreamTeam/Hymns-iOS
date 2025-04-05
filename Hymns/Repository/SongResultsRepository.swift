@@ -143,10 +143,30 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
             }).eraseToAnyPublisher()
         }
 
-        let dataStoreResults = dataStore.searchHymn(santize(searchParameter))
+        let titleSearch = dataStore.searchHymn(santizeForTitleSearch(searchParameter))
+        let lyricsSearch = dataStore.searchHymn(sanitizeForLyricsSearch(searchParameter))
 
-        return dataStoreResults
-            .reduce(([SongResultEntity](), false)) { (_, searchResultEntities) -> ([SongResultEntity], Bool) in
+        return Publishers.Zip(titleSearch, lyricsSearch)
+            .map { (titleResults, lyricsResults) in
+                return lyricsResults.reduce(into: titleResults) { combined, lyricsResult in
+                    if let index = combined.firstIndex(where: {
+                        $0.hymnType == lyricsResult.hymnType && $0.hymnNumber == lyricsResult.hymnNumber
+                    }), combined[index].matchInfo.count == 8, lyricsResult.matchInfo.count == 8 {
+                        var mergedMatchInfo = Data()
+                        mergedMatchInfo.append(combined[index].matchInfo.subdata(in: 0..<4))
+                        mergedMatchInfo.append(lyricsResult.matchInfo.subdata(in: 4..<8))
+                        combined[index] = SearchResultEntity(
+                            hymnType: combined[index].hymnType,
+                            hymnNumber: combined[index].hymnNumber,
+                            title: combined[index].title,
+                            matchInfo: mergedMatchInfo,
+                            songId: combined[index].songId
+                        )
+                    } else {
+                        combined.append(lyricsResult)
+                    }
+                }
+            }.reduce(([SongResultEntity](), false)) { (_, searchResultEntities) -> ([SongResultEntity], Bool) in
                 let sortedSongResults = searchResultEntities.sorted { (entity1, entity2) -> Bool in
                     let rank1 = self.calculateRank(entity1)
                     let rank2 = self.calculateRank(entity2)
@@ -160,12 +180,18 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
         }.eraseToAnyPublisher()
     }
 
-    private func santize(_ searchParameter: String) -> String {
+    private func santizeForTitleSearch(_ searchParameter: String) -> String {
         var sanitizedParam = searchParameter.trim()
         sanitizedParam = RegexUtil.replaceOs(sanitizedParam.trim())
         sanitizedParam = RegexUtil.replaceApostrophes(sanitizedParam.trim())
-        sanitizedParam = RegexUtil.replaceCurlyQuotes(sanitizedParam.trim())
         return sanitizedParam
+    }
+
+    private func sanitizeForLyricsSearch(_ searchParameter: String) -> String {
+        var strippedInput = searchParameter.trim()
+        strippedInput = RegexUtil.removePunctuation(strippedInput)
+        strippedInput = strippedInput.lowercased()
+        return strippedInput
     }
 
     /*
@@ -183,10 +209,10 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
 
         // Weight the match of the title twice as much as the match of the lyrics.
         let titleMatch = UInt64(matchArray[0])
-        let titleMultiplier = fibonacci(index: titleMatch) * 2
+        let titleMultiplier = multipler(num: titleMatch) * 2
 
         let lyricsMatch = UInt64(matchArray[1])
-        let lyricsMultiplier = fibonacci(index: lyricsMatch)
+        let lyricsMultiplier = multipler(num: lyricsMatch)
 
         // If the hymn is the same as the default search language, then give it extra weight.
         // This has the effect of bubbling the songs of the default search type to the top.
@@ -196,25 +222,11 @@ private class SearchSubscription<SubscriberType: Subscriber>: NetworkBoundSubscr
         return (titleMatch * titleMultiplier) + (lyricsMatch * lyricsMultiplier) + preferredLanguageExtraWeight
     }
 
-    private func fibonacci(index: UInt64) -> UInt64 {
-        if index <= 1 {
-            return index
+    private func multipler(num: UInt64) -> UInt64 {
+        if num >= 64 {
+            return 100000
         }
-        var num1 = UInt64(0)
-        var num2 = UInt64(1)
-        for _ in 2...index {
-            let result = num1 + num2
-            // Max multiplier will be 1000 to avoid getting into integer overflow land with
-            // fibonacci sequences. Realistically, this should never hit, because it means
-            // that the user typed in 1000 words into the search bar and all 1000 words
-            // matched with the lyrics of a hymn.
-            if result > 1000 {
-                return 1000
-            }
-            num1 = num2
-            num2 = result
-        }
-        return num2
+        return 1 << num // bitwise shift for exponential growth
     }
 
     func createNetworkCall() -> AnyPublisher<SongResultsPage, ErrorType> {

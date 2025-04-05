@@ -268,9 +268,9 @@ class SearchViewModelSearchingSpec: QuickSpec {
                     let page2 = Array(20...23).map { int -> UiSongResult in
                         return UiSongResult(name: "classic\(int)", identifiers: [HymnIdentifier(hymnType: .classic, hymnNumber: "\(int)")])
                     }
-                    // add a few results from page1 to ensure that they are deduped.
+                    // add a few overlapping results to ensure that they are merged correctly.
                     + [UiSongResult(name: "classic1", identifiers: [HymnIdentifier(hymnType: .classic, hymnNumber: "1")]),
-                       UiSongResult(name: "classic2", identifiers: [HymnIdentifier(hymnType: .classic, hymnNumber: "2")])]
+                       UiSongResult(name: "classic2", identifiers: [HymnIdentifier(hymnType: .classic, hymnNumber: "2"), HymnIdentifier(hymnType: .farsi, hymnNumber: "2")])]
                     context("first page complete successfully") {
                         beforeEach {
                             given(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 1)) ~> { _, _ in
@@ -305,7 +305,7 @@ class SearchViewModelSearchingSpec: QuickSpec {
                         describe("load on nonexistent result") {
                             beforeEach {
                                 target.loadMore(at:
-                                        .multi(MultiSongResultViewModel(stableId: "empty does not exist view", title: "does not exist",
+                                        .multi(MultiSongResultViewModel(stableId: [HymnIdentifier(hymnType: .classic, hymnNumber: "1")], title: "does not exist",
                                                                         destinationView: EmptyView().eraseToAnyView())))
                             }
                             it("should not fetch the next page") {
@@ -315,7 +315,7 @@ class SearchViewModelSearchingSpec: QuickSpec {
                         describe("load more does not reach threshold") {
                             beforeEach {
                                 target.loadMore(at:
-                                        .single(SingleSongResultViewModel(stableId: "hymnType: h, hymnNumber: 6", title: "classic6", label: "Hymn 6",
+                                        .single(SingleSongResultViewModel(stableId: HymnIdentifier(hymnType: .classic, hymnNumber: "6"), title: "classic6", label: "Hymn 6",
                                                                           destinationView: EmptyView().eraseToAnyView())))
                             }
                             it("should not fetch the next page") {
@@ -325,15 +325,21 @@ class SearchViewModelSearchingSpec: QuickSpec {
                         describe("load more meets threshold") {
                             beforeEach {
                                 target.loadMore(at:
-                                        .multi(MultiSongResultViewModel(stableId: "[hymnType: h, hymnNumber: 7]", title: "classic7", labels: ["Hymn 7"],
+                                        .multi(MultiSongResultViewModel(stableId: [HymnIdentifier(hymnType: .classic, hymnNumber: "7")], title: "classic7", labels: ["Hymn 7"],
                                                                         destinationView: EmptyView().eraseToAnyView())))
                                 testQueue.sync {}
                                 testQueue.sync {}
                                 testQueue.sync {}
                             }
-                            it("should append the second page onto the first page") {
+                            it("should append the second page onto the first page, merging overlaps") {
                                 expect(target.songResults).to(haveCount(14))
                                 for (index, num) in (Array(1...10) + Array(20...23)).enumerated() {
+                                    if num == 2 {
+                                        expect(target.songResults[index].multiSongResultViewModel!.stableId).to(equal([HymnIdentifier(hymnType: .classic, hymnNumber: "2"),
+                                                                                                                       HymnIdentifier(hymnType: .farsi, hymnNumber: "2")]))
+                                    } else {
+                                        expect(target.songResults[index].multiSongResultViewModel!.stableId).to(equal([HymnIdentifier(hymnType: .classic, hymnNumber: "\(num)")]))
+                                    }
                                     expect(target.songResults[index].multiSongResultViewModel!.title).to(equal("classic\(num)"))
                                 }
                             }
@@ -346,8 +352,8 @@ class SearchViewModelSearchingSpec: QuickSpec {
                             describe("no more pages to load") {
                                 beforeEach {
                                     target.loadMore(at:
-                                            .single(SingleSongResultViewModel(stableId: "hymnType: h, hymnNumber: 23", title: "classic23", label: "Hymn 23",
-                                                                              destinationView: EmptyView().eraseToAnyView())))
+                                            .single(SingleSongResultViewModel(stableId: HymnIdentifier(hymnType: .classic, hymnNumber: "23"),
+                                                                              title: "classic23", label: "Hymn 23", destinationView: EmptyView().eraseToAnyView())))
                                 }
                                 it("should not fetch the next page") {
                                     verify(songResultsRepository.search(searchParameter: searchParameter, pageNumber: 3)).wasNeverCalled()
@@ -387,7 +393,7 @@ class SearchViewModelSearchingSpec: QuickSpec {
                         describe("try to load more") {
                             beforeEach {
                                 target.loadMore(at:
-                                        .single(SingleSongResultViewModel(stableId: "hymnType: h, hymnNumber: 7", title: "classic7", label: "Hymn 7",
+                                        .single(SingleSongResultViewModel(stableId: HymnIdentifier(hymnType: .classic, hymnNumber: "7"), title: "classic7", label: "Hymn 7",
                                                                           destinationView: EmptyView().eraseToAnyView())))
                                 testQueue.sync {}
                             }
@@ -410,7 +416,7 @@ class SearchViewModelSearchingSpec: QuickSpec {
                             describe("loading more") {
                                 beforeEach {
                                     target.loadMore(at:
-                                            .single(SingleSongResultViewModel(stableId: "hymnType: h, hymnNumber: 7", title: "classic7", label: "Hymn 7",
+                                            .single(SingleSongResultViewModel(stableId: HymnIdentifier(hymnType: .classic, hymnNumber: "7"), title: "classic7", label: "Hymn 7",
                                                                               destinationView: EmptyView().eraseToAnyView())))
                                     testQueue.sync {}
                                     testQueue.sync {}

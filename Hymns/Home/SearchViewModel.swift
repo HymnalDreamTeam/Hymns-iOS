@@ -203,8 +203,7 @@ class SearchViewModel: ObservableObject {
                     let title = recentSong.songTitle ?? identifier.displayTitle
                     let label = recentSong.songTitle != nil ? identifier.displayTitle : nil
                     let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: identifier, storeInHistoryStore: true)).eraseToAnyView()
-                    return SingleSongResultViewModel(stableId: String(describing: identifier), title: title,
-                                                     label: label, destinationView: destination)
+                    return SingleSongResultViewModel(stableId: identifier, title: title, label: label, destinationView: destination)
                 }
             })
             .map({ singleSongResultViewModels -> [SongResultViewModel] in
@@ -250,12 +249,11 @@ class SearchViewModel: ObservableObject {
                         return number1 < number2
                     }).map { songResultEntity -> SingleSongResultViewModel in
                         let identifier = HymnIdentifier(hymnType: songResultEntity.hymnType, hymnNumber: songResultEntity.hymnNumber)
-                        let stableId = String(describing: identifier)
                         let destination = DisplayHymnContainerView(viewModel: DisplayHymnContainerViewModel(hymnToDisplay: identifier, storeInHistoryStore: true)).eraseToAnyView()
                         if let title = songResultEntity.title {
-                            return SingleSongResultViewModel(stableId: stableId, title: title, label: identifier.displayTitle, destinationView: destination)
+                            return SingleSongResultViewModel(stableId: identifier, title: title, label: identifier.displayTitle, destinationView: destination)
                         } else {
-                            return SingleSongResultViewModel(stableId: stableId, title: identifier.displayTitle, destinationView: destination)
+                            return SingleSongResultViewModel(stableId: identifier, title: identifier.displayTitle, destinationView: destination)
                         }
                     }
             }).map({ singleSongResultViewModels -> [SongResultViewModel] in
@@ -309,6 +307,7 @@ class SearchViewModel: ObservableObject {
         return hasMorePages && !isLoading && thresholdMet
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     private func performSearch(page: Int) {
         label = nil
 
@@ -325,7 +324,7 @@ class SearchViewModel: ObservableObject {
                 self.converter.toMultiSongResultViewModels(songResultsPage: songResultsPage)
             })
             .map({ (multiSongResultViewModels, hasMorePages) in
-                (multiSongResultViewModels.map { .multi($0) }, hasMorePages)
+                (multiSongResultViewModels.map { SongResultViewModel.multi($0) }, hasMorePages)
             })
             .subscribe(on: backgroundQueue)
             .receive(on: mainQueue)
@@ -360,10 +359,16 @@ class SearchViewModel: ObservableObject {
                         return
                     }
 
-                    // Filter out duplicates
-                    songResults.append(contentsOf: newResults.filter({ newViewModel -> Bool in
-                        !self.songResults.contains(newViewModel)
-                    }))
+                    // Merge overlaps
+                    for newResult in newResults {
+                        if let index = songResults.firstIndex(where: { songResult in
+                            songResult.overlaps(with: newResult)
+                        }), let mergedResult = songResults[index].merge(with: newResult) {
+                            songResults[index] = mergedResult
+                        } else {
+                            songResults.append(newResult)
+                        }
+                    }
                     self.hasMorePages = hasMorePages
                     if !songResults.isEmpty {
                         self.state = .results
